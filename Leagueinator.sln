@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_Model", "Leagueinator_Model\Leagueinator_Model.csproj", "{CF28809D-4EF7-421A-9023-A94CFEA1CD0D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{843B1448-8BFD-48C5-8013-55565631A750} = {843B1448-8BFD-48C5-8013-55565631A750}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leagueinator_Utility", "Leagueinator_Utility\Leagueinator_Utility.csproj", "{843B1448-8BFD-48C5-8013-55565631A750}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CF28809D-4EF7-421A-9023-A94CFEA1CD0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF28809D-4EF7-421A-9023-A94CFEA1CD0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF28809D-4EF7-421A-9023-A94CFEA1CD0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF28809D-4EF7-421A-9023-A94CFEA1CD0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{843B1448-8BFD-48C5-8013-55565631A750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{843B1448-8BFD-48C5-8013-55565631A750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{843B1448-8BFD-48C5-8013-55565631A750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{843B1448-8BFD-48C5-8013-55565631A750}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {760B2261-70D5-455B-BEBB-11D489F88A6D}
+	EndGlobalSection
+EndGlobal
