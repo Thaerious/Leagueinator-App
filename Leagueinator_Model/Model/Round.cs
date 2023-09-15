@@ -1,7 +1,7 @@
-﻿using Leagueinator_Utility.Utility;
+﻿using Leagueinator.Utility;
 using System.Collections.ObjectModel;
 
-namespace Leagueinator_Model.Model {
+namespace Leagueinator.Model {
     [Serializable]
     public class Round {
         public readonly LeagueSettings Settings;

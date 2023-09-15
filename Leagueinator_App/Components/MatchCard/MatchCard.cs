@@ -1,11 +1,12 @@
-﻿using Leagueinator.Model;
+﻿using Leagueinator.Components;
+using Leagueinator.Model;
 using Leagueinator.Utility;
 using System.Diagnostics;
-using static Leagueinator.Utility.ObservableDiscreteCollection<Leagueinator.Model.PlayerInfo>;
+using System.Windows.Forms;
 
-namespace WinFormsApp1.MatchCard {
+namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchCard : UserControl {
-        CollectionChangedHnd? hnd1, hnd2;
+        ObservableDiscreteCollection<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
 
         public Match Match {
             get => this._match;
@@ -87,7 +88,7 @@ namespace WinFormsApp1.MatchCard {
 
             flowPanel.Controls.Add(label);
 
-            new ControlDragHandlers<PlayerInfo>(label,
+            _ = new ControlDragHandlers<PlayerInfo>(label,
                 () => { // get data from source
                     int index = flowPanel.Controls.IndexOf(label);
                     return this.Match.Teams[team].Players[index];
@@ -111,6 +112,11 @@ namespace WinFormsApp1.MatchCard {
         public void ClearLabels() {
             this.flowTeam0.Controls.Clear();
             this.flowTeam1.Controls.Clear();
+        }
+
+        public int Lane {
+            get => int.Parse(this.labelLane.Text);
+            set => this.labelLane.Text = value.ToString();
         }
 
         private Match? _match;

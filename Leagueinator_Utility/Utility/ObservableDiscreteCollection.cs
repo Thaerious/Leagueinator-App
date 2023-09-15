@@ -1,6 +1,6 @@
-﻿using Leagueinator_Utility.Utility;
+﻿using Leagueinator.Utility;
 
-namespace Leagueinator_Utility.Utility {
+namespace Leagueinator.Utility {
     public enum CollectionChangedAction {
         Remove, Add, Replace
     }
@@ -35,7 +35,7 @@ namespace Leagueinator_Utility.Utility {
 
                 if (this.inner.ContainsKey(k)) {
                     if (value == null) this.Remove(k);
-                    this.Replace(k, value);
+                    else this.Replace(k, value);
                 }
                 else if (value != null) {
                     this.Set(k, value);

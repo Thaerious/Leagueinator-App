@@ -1,4 +1,4 @@
-﻿namespace Leagueinator_Utility.Utility {
+﻿namespace Leagueinator.Utility {
     public enum ListPos {
         FIRST, LAST
     }

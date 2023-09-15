@@ -8,7 +8,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_Model", "Leagu
 		{843B1448-8BFD-48C5-8013-55565631A750} = {843B1448-8BFD-48C5-8013-55565631A750}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leagueinator_Utility", "Leagueinator_Utility\Leagueinator_Utility.csproj", "{843B1448-8BFD-48C5-8013-55565631A750}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_Utility", "Leagueinator_Utility\Leagueinator_Utility.csproj", "{843B1448-8BFD-48C5-8013-55565631A750}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leagueinator_App", "Leagueinator_App\Leagueinator_App.csproj", "{553E6015-35F0-42B9-8666-59B46C924D39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,10 @@ Global
 		{843B1448-8BFD-48C5-8013-55565631A750}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{843B1448-8BFD-48C5-8013-55565631A750}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{843B1448-8BFD-48C5-8013-55565631A750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{553E6015-35F0-42B9-8666-59B46C924D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{553E6015-35F0-42B9-8666-59B46C924D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{553E6015-35F0-42B9-8666-59B46C924D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{553E6015-35F0-42B9-8666-59B46C924D39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

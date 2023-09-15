@@ -1,8 +1,8 @@
-﻿using Leagueinator_Utility.Utility;
+﻿using Leagueinator.Utility;
 using System.Collections;
 using System.Collections.ObjectModel;
 
-namespace Leagueinator_Model.Model {
+namespace Leagueinator.Model {
     [Serializable]
     public class LeagueEvent : IEnumerable<Round> {
         public readonly string Date;

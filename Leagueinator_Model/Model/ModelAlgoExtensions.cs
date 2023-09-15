@@ -1,4 +1,4 @@
-﻿namespace Leagueinator_Model.Model {
+﻿namespace Leagueinator.Model {
     public static class ModelAlgoExtensions {
 
         /// <summary>

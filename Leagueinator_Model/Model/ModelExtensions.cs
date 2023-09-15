@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace Leagueinator_Model.Model {
+namespace Leagueinator.Model {
 
     [AttributeUsage(AttributeTargets.Property)]
     public class Model : Attribute { }

@@ -1,6 +1,6 @@
-﻿using Leagueinator_Utility.Utility;
+﻿using Leagueinator.Utility;
 
-namespace Leagueinator_Model.Model {
+namespace Leagueinator.Model {
     [Serializable]
     public class Team {
         public readonly LeagueSettings Settings;

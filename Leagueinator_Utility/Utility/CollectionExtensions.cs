@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Leagueinator_Utility.Utility {
+namespace Leagueinator.Utility {
     public static class CollectionExtensions {
 
         public static List<T> AddUnique<T>(this List<T> list, T t) {

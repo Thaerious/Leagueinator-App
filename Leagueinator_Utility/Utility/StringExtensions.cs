@@ -1,4 +1,4 @@
-﻿namespace Leagueinator_Utility.Utility {
+﻿namespace Leagueinator.Utility {
     public static class StringExtensions {
         public static string DelString<T>(this IEnumerable<T> list, string del = ", ") {
             return string.Join(del, list.Select(t => t?.ToString()).ToArray());

@@ -1,4 +1,4 @@
-﻿namespace Leagueinator_Model.Model {
+﻿namespace Leagueinator.Model {
 
     public enum MATCH_TYPE {
         RoundRobin, Brackets, Ranked, Penache, None

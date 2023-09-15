@@ -1,4 +1,6 @@
-﻿namespace WinFormsApp1.MatchCard {
+﻿using System.Windows.Forms;
+
+namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchLabel : Label {
         private ContextMenuStrip contextMenu;
         private System.ComponentModel.IContainer components;

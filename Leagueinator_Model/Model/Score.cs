@@ -1,4 +1,4 @@
-﻿namespace Leagueinator_Model.Model {
+﻿namespace Leagueinator.Model {
     [Serializable]
     public enum Result {
         WIN, LOSS, TIE

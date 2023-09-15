@@ -1,4 +1,6 @@
-﻿namespace Leagueinator {
+﻿using Leagueinator.App.Forms.Main;
+
+namespace Leagueinator_App {
     internal static class Program {
         /// <summary>
         ///  The main entry point for the application.
@@ -8,7 +10,7 @@
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Leagueinator.App.Forms.Main.FormMain());
+            Application.Run(new FormMain());
         }
     }
 }

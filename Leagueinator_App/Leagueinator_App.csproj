@@ -2,27 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows7.0</TargetFramework>
-    <RootNamespace>Leagueinator_App</RootNamespace>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Deterministic>false</Deterministic>
-    <StartupObject>Leagueinator.Program</StartupObject>
-    <AssemblyVersion>0.1.*</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Leagueinator_Model\Leagueinator_Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="MatchCard\MatchCard.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="MatchCard\MatchLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
 
 </Project>

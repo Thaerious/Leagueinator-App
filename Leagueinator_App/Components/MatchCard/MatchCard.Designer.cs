@@ -1,4 +1,4 @@
-﻿namespace WinFormsApp1.MatchCard {
+﻿namespace Leagueinator.App.Components.MatchCard {
     partial class MatchCard {
         /// <summary> 
         /// Required designer variable.

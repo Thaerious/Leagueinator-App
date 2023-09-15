@@ -1,4 +1,4 @@
-﻿namespace Leagueinator_Utility.Utility {
+﻿namespace Leagueinator.Utility {
     public static class ArrayExtensions {
         public static T[] Populate<T>(this T[] array, Func<T> provider) {
             for (int i = 0; i < array.Length; i++) {

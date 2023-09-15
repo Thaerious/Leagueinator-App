@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Leagueinator_Utility.Utility {
+namespace Leagueinator.Utility {
     public static class RectangleExtensions {
         public static Rectangle[] SplitHorz(this Rectangle rect, params int[] percents) {
             var rectangles = new Rectangle[percents.Length];

@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Leagueinator_Utility.Utility {
+namespace Leagueinator.Utility {
     internal static class RandomExtensions {
         private static readonly Random rng = new();
 

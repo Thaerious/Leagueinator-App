@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Leagueinator_Utility.Utility {
+namespace Leagueinator.Utility {
     public class XMLStringBuilder {
         private readonly StringBuilder sb = new();
         private int Depth => this.CurrentTag.Count;

@@ -1,7 +1,7 @@
 ﻿namespace Leagueinator.App.Forms {
     public class IsSaved {
         public delegate void IsSavedEvent(bool value);
-        public event IsSavedEvent Update;
+        public event IsSavedEvent Update = delegate { }; // BLOG
         public static IsSaved Singleton = new IsSaved();
 
         private IsSaved() { }

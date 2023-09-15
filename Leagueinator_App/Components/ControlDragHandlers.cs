@@ -2,7 +2,7 @@
 using DragEventArgs = System.Windows.Forms.DragEventArgs;
 using DragEventHandler = System.Windows.Forms.DragEventHandler;
 
-namespace WinFormsApp1.MatchCard {
+namespace Leagueinator.Components {
 
     class DataPacket<T> {
         public T? data;
@@ -11,9 +11,9 @@ namespace WinFormsApp1.MatchCard {
 
     public class ControlDragHandlers<T> {
         private readonly Control control;
-        private readonly Func<T> getData;
-        private readonly Func<T, T> sendData;
-        private readonly Action<T> sendResponse;
+        private readonly Func<T?> getData;
+        private readonly Func<T?, T?> sendData;
+        private readonly Action<T?> sendResponse;
 
         /// <summary>
         /// Assign drag drop handlers to control.
@@ -22,11 +22,11 @@ namespace WinFormsApp1.MatchCard {
         /// When the drop occurs 'sendData' is called on the destination.
         /// Any value returned from 'sendData' will be returned to the source with 'sendResponse'.
         /// </summary>
-        /// <param name="control"></param>
-        /// <param name="getData"></param>
-        /// <param name="sendData"></param>
-        /// <param name="sendResponse"></param>
-        public ControlDragHandlers(Control control, Func<T> getData, Func<T, T> sendData, Action<T> sendResponse) {
+        /// <param Name="control"></param>
+        /// <param Name="getData"></param>
+        /// <param Name="sendData"></param>
+        /// <param Name="sendResponse"></param>
+        public ControlDragHandlers(Control control, Func<T?> getData, Func<T?, T?> sendData, Action<T?> sendResponse) {
             this.control = control;
             this.getData = getData;
             this.sendData = sendData;
@@ -38,24 +38,25 @@ namespace WinFormsApp1.MatchCard {
         }
 
         public void OnDragStart(object? sender, MouseEventArgs? e) {
-            if (e.Button != MouseButtons.Left) return;
+            if (e?.Button != MouseButtons.Left) return;
 
             var packet = new DataPacket<T> {
                 data = this.getData()
             };
 
             this.control.DoDragDrop(packet, DragDropEffects.Move);
-            if (this.sendResponse != null) this.sendResponse(packet.response);
+            this.sendResponse?.Invoke(packet.response);
         }
 
-        private void OnDropStart(object? receiver, DragEventArgs? e) {
-            DataPacket<T> packet = (DataPacket<T>)e.Data.GetData(typeof(DataPacket<T>));
-            if (packet == null) return;
+        private void OnDropStart(object? receiver, DragEventArgs e) {
+            if (e?.Data == null) return;
+            var data = e?.Data.GetData(typeof(DataPacket<T>));
 
+            if (data is not DataPacket<T> packet) return; // BLOG
             packet.response = this.sendData(packet.data);
         }
 
-        public void OnDragEnter(object? sender, DragEventArgs? e) {
+        public void OnDragEnter(object? sender, DragEventArgs e) {
             e.Effect = DragDropEffects.Move;
         }
     }
