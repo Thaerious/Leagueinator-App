@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Utility;
+using Newtonsoft.Json;
 
 namespace Leagueinator.Model {
     [Serializable]
@@ -54,7 +55,7 @@ namespace Leagueinator.Model {
             }
         }
 
-        private readonly ObservableDiscreteCollection<PlayerInfo> _players;
+        [JsonProperty] private readonly ObservableDiscreteCollection<PlayerInfo> _players;
     }
 
     public class TeamBye : Team {

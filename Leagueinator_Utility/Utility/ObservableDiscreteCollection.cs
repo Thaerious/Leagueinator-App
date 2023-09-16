@@ -1,4 +1,6 @@
 ﻿using Leagueinator.Utility;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Leagueinator.Utility {
     public enum CollectionChangedAction {
@@ -83,12 +85,10 @@ namespace Leagueinator.Utility {
             return this.Values.Contains(value);
         }
 
-        public int Count => this.inner.Count;
+        [Newtonsoft.Json.JsonIgnore] public int Count => this.inner.Count;
+        [Newtonsoft.Json.JsonIgnore] public List<V?> Values => this.inner.Values.ToList();
+        [Newtonsoft.Json.JsonIgnore] public List<int> Keys => this.inner.Keys.ToList();
 
-        public List<V?> Values => this.inner.Values.ToList();
-
-        public List<int> Keys => this.inner.Keys.ToList();
-
-        private readonly Dictionary<int, V?> inner = new();
+        [JsonProperty] private Dictionary<int, V?> inner = new();
     }
 }

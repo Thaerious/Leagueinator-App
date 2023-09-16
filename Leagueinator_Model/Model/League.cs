@@ -5,6 +5,12 @@ namespace Leagueinator.Model {
     public class League {
         [Model] public List<LeagueEvent> Events { get; private set; } = new List<LeagueEvent>();
 
+        public League() {}
+
+        public League(List<LeagueEvent> events) {
+            this.Events = events;
+        }
+
         /// <summary>
         /// Add a new Event to the league.
         /// Will add all current league players to the event.

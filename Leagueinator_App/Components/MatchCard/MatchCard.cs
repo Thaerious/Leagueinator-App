@@ -97,12 +97,13 @@ namespace Leagueinator.App.Components.MatchCard {
                     int index = flowPanel.Controls.IndexOf(label);
                     var response = this.Match.Teams[team].Players[index];
                     this.Match.Teams[team].Players[index] = pi;
+                    Debug.WriteLine(this.Match);
                     return response;
                 },
                 (pi) => { // response to source
                     int index = flowPanel.Controls.IndexOf(label);
                     var response = this.Match.Teams[team].Players[index];
-                    this.Match.Teams[team].Players[index] = pi;
+                    this.Match.Teams[team].Players[index] = pi;                    
                 }
             );
 

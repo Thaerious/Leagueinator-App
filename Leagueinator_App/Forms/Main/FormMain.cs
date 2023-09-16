@@ -2,6 +2,7 @@
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
 using Leagueinator.Model;
+using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
@@ -18,6 +19,7 @@ namespace Leagueinator.App.Forms.Main {
                     this.printToolStripMenuItem.Enabled = false;
                     this.closeToolStripMenuItem.Enabled = false;
                     this.eventsToolStripMenuItem.Enabled = false;
+                    this.eventPanel.Visible = false;
                 }
                 else {
                     this.saveToolStripMenuItem.Enabled = true;
@@ -25,6 +27,7 @@ namespace Leagueinator.App.Forms.Main {
                     this.printToolStripMenuItem.Enabled = true;
                     this.closeToolStripMenuItem.Enabled = true;
                     this.eventsToolStripMenuItem.Enabled = true;
+                    this.eventPanel.Visible = true;
                 }
             }
         }
@@ -65,30 +68,38 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void LoadFile(string filename) {
-            //try {
-            //    BinaryFormatter formatter = new BinaryFormatter();
-            //    using (FileStream stream = new FileStream(filename, FileMode.Open)) {
-            //        this.League = (League)formatter.Deserialize(stream);
-            //    }
-            //    this.filename = filename;
-            //    IsSaved.Singleton.Value = true;
-            //}
-            //catch (Exception ex) {
-            //    MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    Debug.WriteLine(ex.Message);
-            //    Debug.WriteLine(ex.StackTrace);
-            //}
+            try {
+
+                using (FileStream stream = new FileStream(filename, FileMode.Open)) {
+                    this.League = JsonSerializer.Deserialize<League>(stream);
+                }
+                this.filename = filename;
+                IsSaved.Singleton.Value = true;
+
+                Debug.WriteLine(this.League.ToXML());
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+            }
         }
 
         private void SaveAs(string filename) {
-            using FileStream stream = new FileStream(filename, FileMode.OpenOrCreate);
+            using FileStream stream = new FileStream(filename, FileMode.Create);
             JsonSerializer.Serialize(stream, this.League);
+            Debug.WriteLine(JsonSerializer.Serialize(this.League));
             this.filename = filename;
             IsSaved.Singleton.Value = true;
         }
 
         private void File_Load(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            using OpenFileDialog dialog = new OpenFileDialog();
+            SetupFileDialog(dialog);
+
+            if (dialog.ShowDialog() == DialogResult.OK) {
+                this.LoadFile(dialog.FileName);
+            }
         }
 
         private void File_New(object sender, EventArgs e) {
@@ -104,15 +115,6 @@ namespace Leagueinator.App.Forms.Main {
             throw new NotImplementedException();
         }
 
-        //private void File_Load(object sender, EventArgs e) {
-        //    using OpenFileDialog dialog = new OpenFileDialog();
-        //    SetupFileDialog(dialog);
-
-        //    if (dialog.ShowDialog() == DialogResult.OK) {
-        //        this.LoadFile(dialog.FileName);
-        //    }
-        //}
-
         private void File_SaveAs(object sender, EventArgs e) {
             using SaveFileDialog dialog = new SaveFileDialog();
             SetupFileDialog(dialog);
@@ -123,13 +125,12 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void File_Save(object sender, EventArgs e) {
-            throw new NotImplementedException();
-            //    if (this.filename.IsEmpty()) {
-            //        this.File_SaveAs(sender, e);
-            //    }
-            //    else {
-            //        this.SaveAs(this.filename);
-            //    }
+            if (this.filename.IsEmpty()) {
+                this.File_SaveAs(sender, e);
+            }
+            else {
+                this.SaveAs(this.filename);
+            }
         }
 
         private void File_Print(object sender, EventArgs e) {

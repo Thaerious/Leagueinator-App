@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Utility;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Model {
@@ -6,10 +7,10 @@ namespace Leagueinator.Model {
     public class Round {
         public readonly LeagueSettings Settings;
 
-        [Model] public ObservableCollection<Match> Matches => this._matches;
+        [JsonProperty] [Model] public ObservableCollection<Match> Matches => this._matches;
 
         [Model]
-        public ObservableCollection<PlayerInfo> IdlePlayers { get; } = new ObservableCollection<PlayerInfo>();
+        [JsonProperty]  public ObservableCollection<PlayerInfo> IdlePlayers { get; } = new ObservableCollection<PlayerInfo>();
 
         public List<Team> Teams => this.SeekDeep<Team>().Where(t => !t.Players.Values.IsEmpty()).ToList();
 
@@ -61,7 +62,7 @@ namespace Leagueinator.Model {
             _ = xsb.InlineTag("Idle", this.IdlePlayers.DelString());
 
             for (int i = 0; i < this._matches.Count; i++) {
-                _ = this._matches[i].Players.Count == 0 ? xsb.InlineTag("Match", "", $"lane='{i}'") : xsb.AppendXML(this._matches[i].ToXML(i));
+                _ = xsb.AppendXML(this._matches[i].ToXML(i));
             }
 
             _ = xsb.CloseTag();

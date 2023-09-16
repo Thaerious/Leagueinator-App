@@ -1,11 +1,12 @@
 ﻿using Leagueinator.Utility;
+using Newtonsoft.Json;
 
 namespace Leagueinator.Model {
     [Serializable]
     public class Match {
         public readonly LeagueSettings Settings;
 
-        private readonly Team[] _teams;
+        [JsonProperty] private readonly Team[] _teams;
 
         [Model] public Team[] Teams => this._teams;
 

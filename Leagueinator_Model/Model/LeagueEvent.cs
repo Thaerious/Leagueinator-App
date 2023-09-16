@@ -1,25 +1,28 @@
 ﻿using Leagueinator.Utility;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Model {
     [Serializable]
-    public class LeagueEvent : IEnumerable<Round> {
+    public class LeagueEvent {
         public readonly string Date;
         public readonly LeagueSettings Settings;
         public readonly string Name;
 
         [Model]
+        [JsonProperty]
         public ObservableCollection<Round> Rounds {
             get; private set;
         } = new ObservableCollection<Round>();
 
-        public List<Match> Matches => this.SeekDeep<Match>().ToList();
+        [JsonIgnore] public List<Match> Matches => this.SeekDeep<Match>().ToList();
 
-        public List<Team> Teams => this.SeekDeep<Team>().Where(t => !t.Players.Values.IsEmpty()).ToList();
+        [JsonIgnore] public List<Team> Teams => this.SeekDeep<Team>().Where(t => !t.Players.Values.IsEmpty()).ToList();
 
-        public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
+        [JsonIgnore] public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
 
+        [JsonConstructor]
         public LeagueEvent(string date, string name, LeagueSettings settings) {
             this.Date = date;
             this.Name = name;
@@ -85,18 +88,6 @@ namespace Leagueinator.Model {
         }
         public override string ToString() {
             return this.ToXML().ToString();
-        }
-
-        public IEnumerator<Round> GetEnumerator() {
-            return this.Rounds.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return this.Rounds.GetEnumerator();
-        }
-
-        public int IndexOf(Round round) {
-            return this.Rounds.IndexOf(round);
         }
 
         public Round PrevRound(Round round) {

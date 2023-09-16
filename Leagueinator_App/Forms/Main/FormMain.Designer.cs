@@ -188,6 +188,7 @@
             this.eventPanel.Name = "eventPanel";
             this.eventPanel.Size = new Size(1278, 708);
             this.eventPanel.TabIndex = 1;
+            this.eventPanel.Visible = false;
             // 
             // FormMain
             // 
