@@ -2,6 +2,8 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Leagueinator.App.Components.MatchCard;
+using Newtonsoft.Json.Linq;
+using System;
 
 namespace Leagueinator.App.Components.EventPanel {
 
@@ -11,17 +13,19 @@ namespace Leagueinator.App.Components.EventPanel {
         /// On set the current round is replaced in both the league event
         /// and this panel.
         /// </summary>
-        public Round CurrentRound {
+        public Round? CurrentRound {
             get {
-                if (this.currentRoundIndex == -1) return null;
-                return this.LeagueEvent.Rounds[this.currentRoundIndex];
+                if (this.LeagueEvent == null) return null;
+                if (this._currentRoundIndex == -1) return null;
+                return this.LeagueEvent.Rounds[this._currentRoundIndex];
             }
         }
 
         public int CurrentRoundIndex {
-            get => this.currentRoundIndex;
+            get => this._currentRoundIndex;
             private set {
-                this.currentRoundIndex = value;
+                if (this._currentRoundIndex == value) return;
+                this._currentRoundIndex = value;
                 this.UpdateMatchCards();
             }
         }
@@ -36,13 +40,19 @@ namespace Leagueinator.App.Components.EventPanel {
             get { return this.leagueEvent; }
             set {
                 if (value != null) {
+                    if (value == this.LeagueEvent) return; 
+
                     this.leagueEvent = value;
                     this.flowRounds.Controls.Clear();
-                    this.playerListBox.Items.Clear();
-                    this.CurrentRoundIndex = -1;
+                    this.playerListBox.Items.Clear();                    
 
                     foreach (Round round in value.Rounds) this.AddRoundButton(round);
 
+                    this._currentRoundIndex = value.Rounds.Count - 1;
+                    if (this._currentRoundIndex >= 0) {
+                        this.flowRounds.Controls[this._currentRoundIndex].BackColor = Color.LightGreen;
+                        this.playerListBox.Round = this?.LeagueEvent?.Rounds[this._currentRoundIndex];
+                    }
                     this.UpdateMatchCards();
 
                     // Whenever a round is added or removed.
@@ -55,11 +65,10 @@ namespace Leagueinator.App.Components.EventPanel {
                             case NotifyCollectionChangedAction.Remove:
                                 this.flowRounds.Controls.RemoveAt(args.OldStartingIndex);
                                 for (int i = 0; i < this.flowRounds.Controls.Count; i++) {
-                                    Debug.WriteLine(i);
                                     this.flowRounds.Controls[i].Text = $"Round #{i + 1}";
                                 }
 
-                                if (args.OldStartingIndex == this.currentRoundIndex) {
+                                if (args.OldStartingIndex == this._currentRoundIndex) {
                                     //this.playerListBox.Items.Clear();
                                     this.CurrentRoundIndex = -1;
                                 }
@@ -86,10 +95,6 @@ namespace Leagueinator.App.Components.EventPanel {
             this.flowRounds.Controls.Add(button);
 
             button.Click += new EventHandler(this.RoundButtonClick);
-
-            if (this.CurrentRoundIndex == -1) {
-                this.RoundButtonClick(button, null);
-            }
         }
 
         /// <summary>
@@ -97,7 +102,9 @@ namespace Leagueinator.App.Components.EventPanel {
         /// </summary>
         /// <param Name="source"></param>
         /// <param Name="_"></param>
-        private void RoundButtonClick(object source, EventArgs _) {
+        private void RoundButtonClick(object? source, EventArgs _) {
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+
             Button button = (Button)source;
             int index = this.flowRounds.Controls.IndexOf(button);
 
@@ -130,13 +137,8 @@ namespace Leagueinator.App.Components.EventPanel {
 
         }
 
-        internal void RefreshRound() {
-            // TODO REMOVE THIS METHOD
-            this.UpdateMatchCards();
-        }
-
         private LeagueEvent? leagueEvent = null;
 
-        private int currentRoundIndex = -1;
+        private int _currentRoundIndex = -1;
     }
 }

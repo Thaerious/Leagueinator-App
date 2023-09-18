@@ -1,8 +1,7 @@
-﻿using Leagueinator.Utility;
+﻿using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
-namespace Leagueinator.Utility {
+namespace Leagueinator.Utility.ObservableDiscreteCollection {
     public enum CollectionChangedAction {
         Remove, Add, Replace
     }
@@ -11,7 +10,7 @@ namespace Leagueinator.Utility {
     public class ObservableDiscreteCollection<V> {
         public delegate void CollectionChangedHnd(ObservableDiscreteCollection<V> source, Args args);
         public event CollectionChangedHnd CollectionChanged = delegate { };
-        public readonly int MaxSize;
+        [JsonProperty] public readonly int MaxSize;
 
         public class Args {
             public readonly int Key;
@@ -86,9 +85,9 @@ namespace Leagueinator.Utility {
         }
 
         [Newtonsoft.Json.JsonIgnore] public int Count => this.inner.Count;
-        [Newtonsoft.Json.JsonIgnore] public List<V?> Values => this.inner.Values.ToList();
+        [DoSeek] [Newtonsoft.Json.JsonIgnore] public List<V?> Values => this.inner.Values.ToList();
         [Newtonsoft.Json.JsonIgnore] public List<int> Keys => this.inner.Keys.ToList();
 
-        [JsonProperty] private Dictionary<int, V?> inner = new();
+        [JsonProperty] private readonly Dictionary<int, V?> inner = new();
     }
 }

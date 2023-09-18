@@ -133,7 +133,6 @@
             this.matchCard1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point);
             this.matchCard1.Location = new Point(3, 4);
             this.matchCard1.Margin = new Padding(3, 4, 3, 4);
-            this.matchCard1.Match = null;
             this.matchCard1.MaximumSize = new Size(620, 110);
             this.matchCard1.MinimumSize = new Size(620, 110);
             this.matchCard1.Name = "matchCard1";

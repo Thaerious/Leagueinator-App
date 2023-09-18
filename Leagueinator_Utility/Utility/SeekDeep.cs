@@ -1,34 +1,11 @@
 ﻿using System.Collections;
 using System.Reflection;
 
-namespace Leagueinator.Model {
+namespace Leagueinator.Utility.Seek {
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    public class DoSeek : Attribute { }
 
-    [AttributeUsage(AttributeTargets.Property)]
-    public class Model : Attribute { }
-
-    public static class ModelExtensions {
-        public static List<T> SeekAll<T>(this object isModel) where T : class {
-            var list = new List<T>();
-            Type type = isModel.GetType();
-            PropertyInfo[] propertyInfos = type.GetProperties();
-
-            foreach (PropertyInfo prop in propertyInfos) {
-                if (!prop.CanRead) continue;
-                if (prop.GetIndexParameters().Length > 0) continue;
-
-                if (typeof(IEnumerable<T>).IsAssignableFrom(prop.PropertyType)) {
-                    object? value = prop.GetValue(isModel);
-                    if (value is not null) list.AddRange((IEnumerable<T>)value);
-                }
-                else if (prop.PropertyType == typeof(T)) {
-                    object? value = prop.GetValue(isModel);
-                    if (value is not null) list.Add((T)value);
-                }
-            }
-
-            return list;
-        }
-
+    public static class SeekAlogrithm {
         /// <summary>
         /// Build a list all member varialbes that are instances of type T that are annotated with 
         /// 
@@ -56,11 +33,11 @@ namespace Leagueinator.Model {
                 list.Add((T)target);
             }
 
-            // Recurse over each property marked with the "Model" annotation.
+            // Recurse over each property marked with the "SeekDeep" annotation.
             foreach (PropertyInfo prop in type.GetProperties()) {
                 if (!prop.CanRead) continue;
                 if (prop.GetIndexParameters().Length > 0) continue;
-                if (prop.GetCustomAttribute<Model>() is null) continue;
+                if (prop.GetCustomAttribute<DoSeek>() is null) continue;
 
                 List<T> l = target.SeekDeepHelper<T>(prop);
                 list.AddRange(l);

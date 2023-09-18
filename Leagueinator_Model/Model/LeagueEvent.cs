@@ -1,7 +1,9 @@
 ﻿using Leagueinator.Utility;
+using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Leagueinator.Model {
     [Serializable]
@@ -10,7 +12,7 @@ namespace Leagueinator.Model {
         public readonly LeagueSettings Settings;
         public readonly string Name;
 
-        [Model]
+        [DoSeek]
         [JsonProperty]
         public ObservableCollection<Round> Rounds {
             get; private set;
@@ -41,6 +43,9 @@ namespace Leagueinator.Model {
         /// The round will be populated with empty matches equal to the lane cound.
         /// </summary>
         public Round NewRound() {
+            Debug.WriteLine("New Round");
+            Debug.WriteLine(this.SeekDeep<PlayerInfo>().Unique().Count);
+            Debug.WriteLine(this.SeekDeep<PlayerInfo>().Unique().DelString());
             var round = new Round(this.SeekDeep<PlayerInfo>().Unique(), this.Settings);
             this.Rounds.Add(round);
             return round;

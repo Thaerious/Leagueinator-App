@@ -1,21 +1,20 @@
 ﻿using Leagueinator.Utility;
+using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 
 namespace Leagueinator.Model {
     [Serializable]
     public class Match {
-        public readonly LeagueSettings Settings;
+        public readonly LeagueSettings Settings;               
 
-        [JsonProperty] private readonly Team[] _teams;
+        [JsonIgnore] [DoSeek] public Team[] Teams => this._teams;
 
-        [Model] public Team[] Teams => this._teams;
-
-        public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
+        [JsonIgnore] public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
 
         /// <summary>
         /// Count the number of teams that have more than 0 players.
         /// </summary>
-        public int Count => this._teams.Where(t => t != null && t.Players.Values.IsNotEmpty()).Count();
+        [JsonIgnore] public int Count => this._teams.Where(t => t != null && t.Players.Values.IsNotEmpty()).Count();
 
         public int EndsPlayed { get; set; }
 
@@ -86,5 +85,7 @@ namespace Leagueinator.Model {
         public void CopyFrom(Match that) {
             throw new NotImplementedException();
         }
+
+        [JsonProperty] private readonly Team[] _teams;
     }
 }

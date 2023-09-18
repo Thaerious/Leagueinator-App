@@ -3,9 +3,10 @@ using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
 using Leagueinator.Model;
 using Leagueinator.Utility;
+using Leagueinator.Utility.Seek;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.Json;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -28,6 +29,10 @@ namespace Leagueinator.App.Forms.Main {
                     this.closeToolStripMenuItem.Enabled = true;
                     this.eventsToolStripMenuItem.Enabled = true;
                     this.eventPanel.Visible = true;
+
+                    if (value.Events.Count > 0) {
+                        this.eventPanel.LeagueEvent = value.Events.Last();
+                    }
                 }
             }
         }
@@ -37,8 +42,16 @@ namespace Leagueinator.App.Forms.Main {
 
         public FormMain() {
             InitializeComponent();
-            this.eventPanel.OnAddRound += (s, args) => {
+            this.eventPanel.OnAddRound += (s) => {
+                if (this.eventPanel.LeagueEvent is null) return;
                 this.eventPanel.LeagueEvent.NewRound();
+            };
+
+            this.eventPanel.OnDeleteRound += (s) => {
+                if (this.eventPanel is null) return;
+                if (this.eventPanel.LeagueEvent is null) return;
+                if (this.eventPanel.CurrentRound is null) return;
+                this.eventPanel.LeagueEvent.Rounds.Remove(this.eventPanel.CurrentRound);
             };
 
             this.eventPanel.PlayerListBox.OnDelete += this.PlayerListBox_OnDelete;
@@ -69,28 +82,30 @@ namespace Leagueinator.App.Forms.Main {
 
         private void LoadFile(string filename) {
             try {
-
-                using (FileStream stream = new FileStream(filename, FileMode.Open)) {
-                    this.League = JsonSerializer.Deserialize<League>(stream);
+                using (StreamReader inputFile = new StreamReader(filename)) {
+                    string leagueJson = inputFile.ReadToEnd();
+                    this.League = JsonConvert.DeserializeObject<League>(leagueJson) as League;
                 }
                 this.filename = filename;
                 IsSaved.Singleton.Value = true;
-
-                Debug.WriteLine(this.League.ToXML());
             }
-            catch (Exception ex) {
-                MessageBox.Show(ex.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Debug.WriteLine(ex.Message);
-                Debug.WriteLine(ex.StackTrace);
+            catch (Exception exception) {
+                MessageBox.Show(exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void SaveAs(string filename) {
-            using FileStream stream = new FileStream(filename, FileMode.Create);
-            JsonSerializer.Serialize(stream, this.League);
-            Debug.WriteLine(JsonSerializer.Serialize(this.League));
-            this.filename = filename;
-            IsSaved.Singleton.Value = true;
+            try {
+                var leagueJson = JsonConvert.SerializeObject(this.League);
+                using (StreamWriter outputFile = new StreamWriter(filename)) {
+                    outputFile.Write(leagueJson);
+                }
+                this.filename = filename;
+                IsSaved.Singleton.Value = true;
+            }
+            catch (Exception exception) {
+                MessageBox.Show(exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void File_Load(object sender, EventArgs e) {
@@ -139,8 +154,8 @@ namespace Leagueinator.App.Forms.Main {
             //    //if (round == null) return;
             //    ////ScoreCardPrinter.Print(round);
 
-            //    //int currentRoundIndex = this.editEventPanel.LeagueEvent.Rounds.IndexOf(this.editEventPanel.CurrentRound);
-            //    //var mcp = new MatchCardPrinter(round, currentRoundIndex);
+            //    //int _currentRoundIndex = this.editEventPanel.LeagueEvent.Rounds.IndexOf(this.editEventPanel.CurrentRound);
+            //    //var mcp = new MatchCardPrinter(round, _currentRoundIndex);
 
             //    //if (this.printDialog.ShowDialog() == DialogResult.OK) {
             //    //    this.printDocument.PrintPage += mcp.HndPrint;
@@ -195,7 +210,21 @@ namespace Leagueinator.App.Forms.Main {
         private League? _league;
 
         private void Dev_PrintCurrentEvent(object sender, EventArgs e) {
-            Debug.WriteLine(this.eventPanel.LeagueEvent.ToString());
+            if (this.eventPanel.LeagueEvent == null) {
+                Debug.WriteLine("League Event is [NULL]");
+            }
+            else {
+                Debug.WriteLine(this.eventPanel.LeagueEvent.ToString());
+            }            
+        }
+
+        private void Dev_PrintLeague(object sender, EventArgs e) {
+            if (this.League == null) {
+                Debug.WriteLine("League is [NULL]");
+            }
+            else {
+                Debug.WriteLine(this.League.ToString());
+            }
         }
     }
 }

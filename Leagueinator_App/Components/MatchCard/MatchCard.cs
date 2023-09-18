@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Components;
 using Leagueinator.Model;
 using Leagueinator.Utility;
+using Leagueinator.Utility.ObservableDiscreteCollection;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -11,8 +12,11 @@ namespace Leagueinator.App.Components.MatchCard {
         public Match Match {
             get => this._match;
             set {
+                ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");
+
                 if (this._match == value) return;
 
+                // if the current match is not null remove the previous handlers
                 if (this._match != null) {
                     value.Teams[0].Players.CollectionChanged -= this.hnd1;
                     value.Teams[1].Players.CollectionChanged -= this.hnd2;
@@ -40,7 +44,6 @@ namespace Leagueinator.App.Components.MatchCard {
         }
 
         private void PlayersCollectionChanged(FlowLayoutPanel flow, ObservableDiscreteCollection<PlayerInfo> source, ObservableDiscreteCollection<PlayerInfo>.Args args) {
-            Debug.WriteLine("PlayerCollectionChanged");
             Label label = (Label)flow.Controls[args.Key];
 
             switch (args.Action) {
@@ -97,7 +100,6 @@ namespace Leagueinator.App.Components.MatchCard {
                     int index = flowPanel.Controls.IndexOf(label);
                     var response = this.Match.Teams[team].Players[index];
                     this.Match.Teams[team].Players[index] = pi;
-                    Debug.WriteLine(this.Match);
                     return response;
                 },
                 (pi) => { // response to source

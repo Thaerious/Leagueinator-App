@@ -1,5 +1,8 @@
 ﻿using Leagueinator.Utility;
+using Leagueinator.Utility.ObservableDiscreteCollection;
+using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Leagueinator.Model {
     [Serializable]
@@ -7,7 +10,7 @@ namespace Leagueinator.Model {
         public readonly LeagueSettings Settings;
         public int Bowls = 0;  // number of bowls for
 
-        [Model] public ObservableDiscreteCollection<PlayerInfo> Players => this._players;
+        [JsonIgnore] [DoSeek] public ObservableDiscreteCollection<PlayerInfo> Players => this._players;
 
         public Team(LeagueSettings settings) {
             this.Settings = settings;

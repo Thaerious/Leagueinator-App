@@ -1,10 +1,14 @@
 ﻿using Leagueinator.Utility;
+using Leagueinator.Utility.Seek;
+using Newtonsoft.Json;
 
 namespace Leagueinator.Model {
     [Serializable]
     public class League {
-        [Model] public List<LeagueEvent> Events { get; private set; } = new List<LeagueEvent>();
+        [JsonProperty] [DoSeek] public List<LeagueEvent> Events { get; private set; } = new List<LeagueEvent>();
 
+
+        [JsonConstructor]
         public League() {}
 
         public League(List<LeagueEvent> events) {

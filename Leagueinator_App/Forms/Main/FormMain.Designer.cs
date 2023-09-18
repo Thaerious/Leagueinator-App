@@ -42,6 +42,7 @@
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel.EventPanel();
+            printLeagueToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -153,7 +154,7 @@
             // 
             // devToolStripMenuItem
             // 
-            devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { printCurrentEventToolStripMenuItem });
+            devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { printLeagueToolStripMenuItem, printCurrentEventToolStripMenuItem });
             devToolStripMenuItem.Name = "devToolStripMenuItem";
             devToolStripMenuItem.Size = new Size(59, 29);
             devToolStripMenuItem.Text = "Dev";
@@ -161,7 +162,7 @@
             // printCurrentEventToolStripMenuItem
             // 
             printCurrentEventToolStripMenuItem.Name = "printCurrentEventToolStripMenuItem";
-            printCurrentEventToolStripMenuItem.Size = new Size(261, 34);
+            printCurrentEventToolStripMenuItem.Size = new Size(270, 34);
             printCurrentEventToolStripMenuItem.Text = "Print Current Event";
             printCurrentEventToolStripMenuItem.Click += this.Dev_PrintCurrentEvent;
             // 
@@ -189,6 +190,13 @@
             this.eventPanel.Size = new Size(1278, 708);
             this.eventPanel.TabIndex = 1;
             this.eventPanel.Visible = false;
+            // 
+            // printLeagueToolStripMenuItem
+            // 
+            printLeagueToolStripMenuItem.Name = "printLeagueToolStripMenuItem";
+            printLeagueToolStripMenuItem.Size = new Size(270, 34);
+            printLeagueToolStripMenuItem.Text = "Print League";
+            printLeagueToolStripMenuItem.Click += this.Dev_PrintLeague;
             // 
             // FormMain
             // 
@@ -227,5 +235,6 @@
         private ToolStripMenuItem addEventToolStripMenuItem;
         private ToolStripMenuItem addPlayersToolStripMenuItem;
         private ToolStripMenuItem printCurrentEventToolStripMenuItem;
+        private ToolStripMenuItem printLeagueToolStripMenuItem;
     }
 }

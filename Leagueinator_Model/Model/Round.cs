@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Utility;
+using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
@@ -7,15 +8,15 @@ namespace Leagueinator.Model {
     public class Round {
         public readonly LeagueSettings Settings;
 
-        [JsonProperty] [Model] public ObservableCollection<Match> Matches => this._matches;
+        [JsonIgnore] [DoSeek] public ObservableCollection<Match> Matches => this._matches;
 
-        [Model]
-        [JsonProperty]  public ObservableCollection<PlayerInfo> IdlePlayers { get; } = new ObservableCollection<PlayerInfo>();
+        [JsonProperty] [DoSeek] public ObservableCollection<PlayerInfo> IdlePlayers { get; } = new ObservableCollection<PlayerInfo>();
 
-        public List<Team> Teams => this.SeekDeep<Team>().Where(t => !t.Players.Values.IsEmpty()).ToList();
+        [JsonIgnore] public List<Team> Teams => this.SeekDeep<Team>().Where(t => !t.Players.Values.IsEmpty()).ToList();
 
-        public List<PlayerInfo> ActivePlayers => this.Matches.SeekDeep<PlayerInfo>().Unique();
+        [JsonIgnore] public List<PlayerInfo> ActivePlayers => this.Matches.SeekDeep<PlayerInfo>().Unique();
 
+        [JsonIgnore]
         public List<PlayerInfo> AllPlayers {
             get {
                 var list = new List<PlayerInfo>();
@@ -25,13 +26,15 @@ namespace Leagueinator.Model {
             }
         }
 
+
+        [JsonConstructor]
         public Round(LeagueSettings settings) {
             if (settings is null) throw new NullReferenceException("Settings");
             this.Settings = settings;
-            for (int i = 0; i < settings.LaneCount; i++) this._matches.Add(new Match(settings));
         }
-
+        
         public Round(List<PlayerInfo> idlePlayers, LeagueSettings settings) : this(settings) {
+            for (int i = 0; i < settings.LaneCount; i++) this._matches.Add(new Match(settings));
             this.Settings = settings;
             this.IdlePlayers = new ObservableCollection<PlayerInfo>(idlePlayers);
         }
@@ -104,6 +107,6 @@ namespace Leagueinator.Model {
             throw new InvalidOperationException("Round does not contain a team with player");
         }
 
-        private readonly ObservableCollection<Match> _matches = new();
+        [JsonProperty] private readonly ObservableCollection<Match> _matches = new();
     }
 }
