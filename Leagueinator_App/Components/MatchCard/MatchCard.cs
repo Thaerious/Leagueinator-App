@@ -1,18 +1,19 @@
 ﻿using Leagueinator.Components;
 using Leagueinator.Model;
-using Leagueinator.Utility;
 using Leagueinator.Utility.ObservableDiscreteCollection;
 using System.Diagnostics;
-using System.Windows.Forms;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchCard : UserControl {
         ObservableDiscreteCollection<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
 
-        public Match Match {
+        public Match? Match {
             get => this._match;
             set {
                 ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");
+
+                Debug.WriteLine(value);
 
                 if (this._match == value) return;
 
@@ -25,11 +26,11 @@ namespace Leagueinator.App.Components.MatchCard {
                 this.ClearLabels();
                 for (int i = 0; i < value.Teams[0].Players.MaxSize; i++) {
                     Label label = this.AddLabel(0, "");
-                    label.Text = value.Teams[0].Players[i]?.Name;
+                    label.Text = value?.Teams[0]?.Players[i]?.Name;
                 }
                 for (int i = 0; i < value.Teams[1].Players.MaxSize; i++) {
                     Label label = this.AddLabel(1, "");
-                    label.Text = value.Teams[1].Players[i]?.Name;
+                    label.Text = value?.Teams[1]?.Players[i]?.Name;
                 }
 
                 this.hnd1 = (src, args) => this.PlayersCollectionChanged(this.flowTeam0, src, args);
@@ -105,7 +106,7 @@ namespace Leagueinator.App.Components.MatchCard {
                 (pi) => { // response to source
                     int index = flowPanel.Controls.IndexOf(label);
                     var response = this.Match.Teams[team].Players[index];
-                    this.Match.Teams[team].Players[index] = pi;                    
+                    this.Match.Teams[team].Players[index] = pi;
                 }
             );
 
@@ -123,5 +124,30 @@ namespace Leagueinator.App.Components.MatchCard {
         }
 
         private Match? _match;
+
+        private void OnScore0Changed(object sender, EventArgs e) {
+            var text = this.txtScore0.Text;
+
+            try {
+                int score = int.Parse(text);
+                if (this.Match != null) this.Match.Teams[0].Bowls = score;
+            }
+            catch {
+                if (this.Match == null) this.txtScore0.Text = "0";
+                else this.txtScore0.Text = this.Match?.Teams[0].Bowls.ToString();
+            }
+        }
+
+        private void OnScore1Changed(object sender, EventArgs e) {
+            var text = this.txtScore0.Text;
+
+            try {
+                int score = int.Parse(text);
+                this.Match.Teams[1].Bowls = score;
+            }
+            catch (Exception ex) {
+                this.txtScore0.Text = this.Match.Teams[1].Bowls.ToString();
+            }
+        }
     }
 }

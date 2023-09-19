@@ -110,7 +110,8 @@
         public Score(Match match, Team team) {
             int against = 0;
 
-            foreach (Team them in match.Teams) {
+            foreach (Team? them in match.Teams.Values) {
+                if (them is null) continue;
                 if (team == them) continue;
                 against += them.Bowls;
             }

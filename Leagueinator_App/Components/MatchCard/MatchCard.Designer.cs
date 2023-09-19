@@ -42,6 +42,7 @@
             txtScore0.TabIndex = 0;
             txtScore0.Text = "0";
             txtScore0.TextAlign = HorizontalAlignment.Center;
+            txtScore0.TextChanged += this.OnScore0Changed;
             // 
             // txtScore1
             // 
@@ -55,6 +56,7 @@
             txtScore1.TabIndex = 1;
             txtScore1.Text = "0";
             txtScore1.TextAlign = HorizontalAlignment.Center;
+            txtScore1.TextChanged += this.OnScore1Changed;
             // 
             // flowTeam0
             // 

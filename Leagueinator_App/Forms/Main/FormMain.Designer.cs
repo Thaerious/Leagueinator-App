@@ -38,11 +38,13 @@
             addPlayersToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             devToolStripMenuItem = new ToolStripMenuItem();
+            printLeagueToolStripMenuItem = new ToolStripMenuItem();
             printCurrentEventToolStripMenuItem = new ToolStripMenuItem();
+            isSavedToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel.EventPanel();
-            printLeagueToolStripMenuItem = new ToolStripMenuItem();
+            roundsCollectionToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -154,10 +156,17 @@
             // 
             // devToolStripMenuItem
             // 
-            devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { printLeagueToolStripMenuItem, printCurrentEventToolStripMenuItem });
+            devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { printLeagueToolStripMenuItem, printCurrentEventToolStripMenuItem, isSavedToolStripMenuItem, roundsCollectionToolStripMenuItem });
             devToolStripMenuItem.Name = "devToolStripMenuItem";
             devToolStripMenuItem.Size = new Size(59, 29);
             devToolStripMenuItem.Text = "Dev";
+            // 
+            // printLeagueToolStripMenuItem
+            // 
+            printLeagueToolStripMenuItem.Name = "printLeagueToolStripMenuItem";
+            printLeagueToolStripMenuItem.Size = new Size(270, 34);
+            printLeagueToolStripMenuItem.Text = "Print League";
+            printLeagueToolStripMenuItem.Click += this.Dev_PrintLeague;
             // 
             // printCurrentEventToolStripMenuItem
             // 
@@ -165,6 +174,13 @@
             printCurrentEventToolStripMenuItem.Size = new Size(270, 34);
             printCurrentEventToolStripMenuItem.Text = "Print Current Event";
             printCurrentEventToolStripMenuItem.Click += this.Dev_PrintCurrentEvent;
+            // 
+            // isSavedToolStripMenuItem
+            // 
+            isSavedToolStripMenuItem.Name = "isSavedToolStripMenuItem";
+            isSavedToolStripMenuItem.Size = new Size(270, 34);
+            isSavedToolStripMenuItem.Text = "Is Saved";
+            isSavedToolStripMenuItem.Click += this.Dev_IsSaved;
             // 
             // helpToolStripMenuItem
             // 
@@ -191,12 +207,12 @@
             this.eventPanel.TabIndex = 1;
             this.eventPanel.Visible = false;
             // 
-            // printLeagueToolStripMenuItem
+            // roundsCollectionToolStripMenuItem
             // 
-            printLeagueToolStripMenuItem.Name = "printLeagueToolStripMenuItem";
-            printLeagueToolStripMenuItem.Size = new Size(270, 34);
-            printLeagueToolStripMenuItem.Text = "Print League";
-            printLeagueToolStripMenuItem.Click += this.Dev_PrintLeague;
+            roundsCollectionToolStripMenuItem.Name = "roundsCollectionToolStripMenuItem";
+            roundsCollectionToolStripMenuItem.Size = new Size(270, 34);
+            roundsCollectionToolStripMenuItem.Text = "Rounds Collection";
+            roundsCollectionToolStripMenuItem.Click += this.Dev_HashCode;
             // 
             // FormMain
             // 
@@ -236,5 +252,7 @@
         private ToolStripMenuItem addPlayersToolStripMenuItem;
         private ToolStripMenuItem printCurrentEventToolStripMenuItem;
         private ToolStripMenuItem printLeagueToolStripMenuItem;
+        private ToolStripMenuItem isSavedToolStripMenuItem;
+        private ToolStripMenuItem roundsCollectionToolStripMenuItem;
     }
 }

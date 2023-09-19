@@ -53,6 +53,7 @@ namespace Leagueinator.App.Components.EventPanel {
                         this.flowRounds.Controls[this._currentRoundIndex].BackColor = Color.LightGreen;
                         this.playerListBox.Round = this?.LeagueEvent?.Rounds[this._currentRoundIndex];
                     }
+
                     this.UpdateMatchCards();
 
                     // Whenever a round is added or removed.
@@ -126,6 +127,7 @@ namespace Leagueinator.App.Components.EventPanel {
         private void UpdateMatchCards() {
             this.flowMatchCards.Controls.Clear();
             if (this.CurrentRoundIndex < 0) return;
+            if (this.CurrentRound == null) return;
 
             int lane = 1;
             foreach (Match match in this.CurrentRound.Matches) {

@@ -15,7 +15,7 @@
 
             for (int i = 0; i < source.Matches.Count; i++) {
                 Match match = source.Matches[i];
-                for (int j = 0; j < match.Teams.Length; j++) {
+                for (int j = 0; j < match.Teams.Count; j++) {
                     Team? team = match.Teams[j];
                     if (team is null) continue;
                     for (int k = 0; k < team.Players.Count; k++) {

@@ -1,18 +1,18 @@
 ﻿using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace Leagueinator.Model {
     [Serializable]
     public class League {
-        [JsonProperty] [DoSeek] public List<LeagueEvent> Events { get; private set; } = new List<LeagueEvent>();
-
+        [JsonProperty] [DoSeek] public ObservableCollection<LeagueEvent> Events { get; private set; } = new ObservableCollection<LeagueEvent>();
 
         [JsonConstructor]
-        public League() {}
-
-        public League(List<LeagueEvent> events) {
-            this.Events = events;
+        public League() {
+            this.Events.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION));
+            };
         }
 
         /// <summary>

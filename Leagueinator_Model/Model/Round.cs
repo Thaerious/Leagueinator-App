@@ -31,8 +31,16 @@ namespace Leagueinator.Model {
         public Round(LeagueSettings settings) {
             if (settings is null) throw new NullReferenceException("Settings");
             this.Settings = settings;
+
+            this._matches.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION));
+            };
+
+            this.IdlePlayers.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION));
+            };
         }
-        
+
         public Round(List<PlayerInfo> idlePlayers, LeagueSettings settings) : this(settings) {
             for (int i = 0; i < settings.LaneCount; i++) this._matches.Add(new Match(settings));
             this.Settings = settings;
@@ -43,7 +51,7 @@ namespace Leagueinator.Model {
             this.IdlePlayers.Clear();
 
             for (int m = 0; m < this.Matches.Count; m++) {
-                for (int t = 0; t < this.Matches[m].Teams.Length; t++) {
+                for (int t = 0; t < this.Matches[m].Teams.Count; t++) {
                     for (int p = 0; p < this.Matches[m].Teams[t].Players.Count; p++) {
                         this.Matches[m].Teams[t].Players[p] = that.Matches[m].Teams[t].Players[p];
                     }

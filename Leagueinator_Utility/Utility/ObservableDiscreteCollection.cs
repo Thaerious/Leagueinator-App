@@ -1,5 +1,7 @@
 ﻿using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Leagueinator.Utility.ObservableDiscreteCollection {
     public enum CollectionChangedAction {
@@ -26,6 +28,11 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
             }
         }
 
+        /// <summary>
+        /// Create a new collection instantiating all objects with the constructor that matches with args.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="args"></param>
         public ObservableDiscreteCollection(int size) {
             this.MaxSize = size;
         }
@@ -33,7 +40,6 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
         public V? this[int k] {
             get => this.inner.ContainsKey(k) ? this.inner[k] : default;
             set {
-
                 if (this.inner.ContainsKey(k)) {
                     if (value == null) this.Remove(k);
                     else this.Replace(k, value);
@@ -44,8 +50,8 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
             }
         }
 
-        private void Set(int key, V? value) {
-            if (key < 0 || key >= this.MaxSize) throw new IndexOutOfRangeException();
+        private void Set(int key, V value) {
+            if (key < 0 || key >= this.MaxSize) throw new IndexOutOfRangeException($"index {key} is out of bounds {0} < {this.MaxSize}");
             var args = new Args(key, value, default, CollectionChangedAction.Add);
             this.inner[key] = value;
             CollectionChanged?.Invoke(this, args);
@@ -85,7 +91,7 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
         }
 
         [Newtonsoft.Json.JsonIgnore] public int Count => this.inner.Count;
-        [DoSeek] [Newtonsoft.Json.JsonIgnore] public List<V?> Values => this.inner.Values.ToList();
+        [DoSeek][Newtonsoft.Json.JsonIgnore] public List<V?> Values => this.inner.Values.ToList();
         [Newtonsoft.Json.JsonIgnore] public List<int> Keys => this.inner.Keys.ToList();
 
         [JsonProperty] private readonly Dictionary<int, V?> inner = new();

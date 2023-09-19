@@ -1,40 +1,43 @@
 ﻿using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
     [Serializable]
     public class LeagueEvent {
-        public readonly string Date;
-        public readonly LeagueSettings Settings;
-        public readonly string Name;
+        [JsonProperty] public readonly string Date;
+        [JsonProperty] public readonly LeagueSettings Settings;
+        [JsonProperty] public readonly string Name;
 
         [DoSeek]
         [JsonProperty]
-        public ObservableCollection<Round> Rounds {
-            get; private set;
-        } = new ObservableCollection<Round>();
+        public readonly ObservableCollection<Round> Rounds = new();
 
         [JsonIgnore] public List<Match> Matches => this.SeekDeep<Match>().ToList();
 
         [JsonIgnore] public List<Team> Teams => this.SeekDeep<Team>().Where(t => !t.Players.Values.IsEmpty()).ToList();
 
         [JsonIgnore] public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
+       
+
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context) {
+            this.Rounds.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION, "Rounds"));
+            };
+        }
 
         [JsonConstructor]
         public LeagueEvent(string date, string name, LeagueSettings settings) {
             this.Date = date;
             this.Name = name;
             this.Settings = settings;
-        }
 
-        public LeagueEvent(LeagueSettings settings) {
-            this.Date = DateTime.Today.ToString("yyyy-MM-dd");
-            this.Name = "Event";
-            this.Settings = settings;
+            this.Rounds.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION, "Rounds"));
+            };
         }
 
         /// <summary>
@@ -43,9 +46,6 @@ namespace Leagueinator.Model {
         /// The round will be populated with empty matches equal to the lane cound.
         /// </summary>
         public Round NewRound() {
-            Debug.WriteLine("New Round");
-            Debug.WriteLine(this.SeekDeep<PlayerInfo>().Unique().Count);
-            Debug.WriteLine(this.SeekDeep<PlayerInfo>().Unique().DelString());
             var round = new Round(this.SeekDeep<PlayerInfo>().Unique(), this.Settings);
             this.Rounds.Add(round);
             return round;

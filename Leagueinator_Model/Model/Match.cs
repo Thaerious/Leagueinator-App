@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Utility;
+using Leagueinator.Utility.ObservableDiscreteCollection;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 
@@ -7,27 +8,31 @@ namespace Leagueinator.Model {
     public class Match {
         public readonly LeagueSettings Settings;               
 
-        [JsonIgnore] [DoSeek] public Team[] Teams => this._teams;
+        [JsonIgnore] [DoSeek] public ObservableDiscreteCollection<Team> Teams => this._teams;
 
         [JsonIgnore] public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
 
         /// <summary>
         /// Count the number of teams that have more than 0 players.
         /// </summary>
-        [JsonIgnore] public int Count => this._teams.Where(t => t != null && t.Players.Values.IsNotEmpty()).Count();
+        [JsonIgnore] public int Count => this._teams.Values.Where(t => t != null && t.Players.Values.IsNotEmpty()).Count();
 
         public int EndsPlayed { get; set; }
 
         public Match(LeagueSettings settings) {
             this.Settings = settings;
             this.EndsPlayed = this.Settings.NumberOfEnds;
-            this._teams = new Team[settings.MatchSize].Populate(() => new Team(settings));
+            this._teams = new ObservableDiscreteCollection<Team>(settings.MatchSize);
+
+            for (int i = 0; i < settings.MatchSize; i++) {
+                this.Teams[i] = new Team(settings);
+            }
         }
 
         public XMLStringBuilder ToXML(int lane) {
             var xsb = new XMLStringBuilder();
             _ = xsb.OpenTag("Match", $"lane='{lane}'", $"hash='{this.GetHashCode():X}'");
-            foreach (Team team in this.Teams) {
+            foreach (Team team in this.Teams.Values.NotNull()) {
                 _ = xsb.AppendXML(team.ToXML());
             }
             _ = xsb.CloseTag();
@@ -39,20 +44,20 @@ namespace Leagueinator.Model {
         }
 
         public void ClearPlayers() {
-            for (int i = 0; i < this.Teams.Length; i++) {
+            for (int i = 0; i < this.Teams.Count; i++) {
                 this.Teams[i].Clear();
             }
         }
 
         public Team? WinningTeam() {
-            foreach (Team team in this.Teams) {
+            foreach (Team team in this.Teams.Values.NotNull()) {
                 if (this.IsWinningTeam(team)) return team;
             }
             return null;
         }
 
         public bool IsWinningTeam(Team team) {
-            foreach (Team against in this.Teams) {
+            foreach (Team against in this.Teams.Values.NotNull()) {
                 if (against == team) continue;
                 if (against.Bowls >= team.Bowls) return false;
             }
@@ -60,14 +65,14 @@ namespace Leagueinator.Model {
         }
 
         public Team? LosingTeam() {
-            foreach (Team team in this.Teams) {
+            foreach (Team team in this.Teams.Values.NotNull()) {
                 if (this.IsLosingTeam(team)) return team;
             }
             return null;
         }
 
         public bool IsLosingTeam(Team team) {
-            foreach (Team against in this.Teams) {
+            foreach (Team against in this.Teams.Values.NotNull()) {
                 if (against == team) continue;
                 if (against.Bowls <= team.Bowls) return false;
             }
@@ -86,6 +91,6 @@ namespace Leagueinator.Model {
             throw new NotImplementedException();
         }
 
-        [JsonProperty] private readonly Team[] _teams;
+        [JsonProperty] private readonly ObservableDiscreteCollection<Team> _teams;
     }
 }

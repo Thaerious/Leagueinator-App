@@ -5,12 +5,9 @@ using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
-League league = new League();
-league.AddEvent("", "", new LeagueSettings());
-league.Events[0].Rounds[0].Matches[0].Teams[0].Players[0] = new PlayerInfo("Adam");
+Match match = new Match(new LeagueSettings());
 
-List<PlayerInfo> list = league.SeekDeep<PlayerInfo>();
+var json = JsonConvert.SerializeObject(match);
+JsonConvert.DeserializeObject<Match>(json);
 
-Debug.WriteLine(league);
-Debug.WriteLine(list.DelString());
-Debug.WriteLine(list.Count);
+Debug.WriteLine(json);

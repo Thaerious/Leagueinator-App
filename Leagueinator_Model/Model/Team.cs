@@ -3,18 +3,37 @@ using Leagueinator.Utility.ObservableDiscreteCollection;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
     [Serializable]
     public class Team {
-        public readonly LeagueSettings Settings;
-        public int Bowls = 0;  // number of bowls for
+        public LeagueSettings Settings;
+        public int Bowls {
+            get => _bowls;
+            set {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.VALUE, "bowls"));
+                this._bowls = value;
+            }
+        }
 
         [JsonIgnore] [DoSeek] public ObservableDiscreteCollection<PlayerInfo> Players => this._players;
+        
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context) {
+            this.Players.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION, "players"));
+            };
+        }
 
+        [JsonConstructor]
         public Team(LeagueSettings settings) {
             this.Settings = settings;
             this._players = new ObservableDiscreteCollection<PlayerInfo>(settings.TeamSize);
+
+            this.Players.CollectionChanged += (src, args) => {
+                LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION, "players"));
+            };
         }
 
         public XMLStringBuilder ToXML() {
@@ -58,7 +77,9 @@ namespace Leagueinator.Model {
             }
         }
 
-        [JsonProperty] private readonly ObservableDiscreteCollection<PlayerInfo> _players;
+        [JsonProperty] public readonly ObservableDiscreteCollection<PlayerInfo> _players;
+
+        [JsonProperty] private int _bowls = 0;
     }
 
     public class TeamBye : Team {
