@@ -3,6 +3,7 @@ using Leagueinator.Model;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 
 namespace Leagueinator.App.Components.PlayerListBox {
     public partial class PlayerListBox : ListBox {
@@ -36,21 +37,27 @@ namespace Leagueinator.App.Components.PlayerListBox {
             this.menuRename.Click += new System.EventHandler(this.HndMenuRename);
 
             _ = new ControlDragHandlers<PlayerInfo>(this,
-                () => { // get data from source
+                () => { // [getData] called when this is the source
                     if (this.Round is null) return null;
                     if (this.SelectedItem == null) return null;
-                    var pInfo = (PlayerInfo)this.SelectedItem;
-                    this.Round.IdlePlayers.Remove(pInfo);
+                    var pInfo = (PlayerInfo)this.SelectedItem;                    
                     return pInfo;
                 },
-                (pi) => { // set data on target
+                (pi, src) => { // [sendData] called when this is the destination, receives value from [getData]
+                    if (src == this) return null; 
                     if (this.Round is null) return null;
                     if (pi is not null) this.Round.IdlePlayers.Add(pi);
                     return null;
                 },
-                (pi) => { // response to source
+                (pi, dest) => { // [hndResponse] called when this is the source, receives value from [sendData]
+                    if (dest == this) return;  // don't drop on source
                     if (this.Round is null) return;
-                    if (pi is not null) this.Round.IdlePlayers.Add(pi);
+                    PlayerInfo? pInfo = (PlayerInfo?)this.SelectedItem;
+                    if (pInfo == null) return;  // do nothing is no item is selected
+                    this.Round.IdlePlayers.Remove(pInfo);
+
+                    if (pi is null) return;  // do nothing if is no item is returned
+                    this.Round.IdlePlayers.Add(pi);
                 }
             );
         }

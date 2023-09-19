@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model;
+using System.Diagnostics;
 
 namespace Leagueinator.App.Components.PlayerListBox {
     
@@ -17,7 +18,7 @@ namespace Leagueinator.App.Components.PlayerListBox {
         public event PlayerListBoxRename OnRename = delegate { };
         public event PlayerListBoxDelete OnDelete = delegate { };
 
-        private void HndMouseDown(object sender, MouseEventArgs e) {
+        private void HndMouseDown(object? sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Right) {
                 if (this.SelectedItem is not PlayerInfo pInfo) return;
                 this.contextMenu.Show(this, new Point(e.X, e.Y));

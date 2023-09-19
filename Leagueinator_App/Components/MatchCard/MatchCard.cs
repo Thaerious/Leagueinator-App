@@ -11,9 +11,9 @@ namespace Leagueinator.App.Components.MatchCard {
         public Match? Match {
             get => this._match;
             set {
-                ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");
-
-                Debug.WriteLine(value);
+                ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");                
+                if (value.Teams[0] is null) throw new NullReferenceException();
+                if (value.Teams[1] is null) throw new NullReferenceException();
 
                 if (this._match == value) return;
 
@@ -32,6 +32,9 @@ namespace Leagueinator.App.Components.MatchCard {
                     Label label = this.AddLabel(1, "");
                     label.Text = value?.Teams[1]?.Players[i]?.Name;
                 }
+
+                this.txtScore0.Text = value.Teams[0].Bowls.ToString();
+                this.txtScore1.Text = value.Teams[1].Bowls.ToString();
 
                 this.hnd1 = (src, args) => this.PlayersCollectionChanged(this.flowTeam0, src, args);
                 this.hnd2 = (src, args) => this.PlayersCollectionChanged(this.flowTeam1, src, args);
@@ -76,8 +79,8 @@ namespace Leagueinator.App.Components.MatchCard {
             this.labelLane.Top = (this.Height / 2) - (this.labelLane.Height / 2);
         }
 
-        public Label AddLabel(int team, String text) {
-            FlowLayoutPanel flowPanel = team == 0 ? this.flowTeam0 : this.flowTeam1;
+        public Label AddLabel(int teamIndex, String text) {
+            FlowLayoutPanel flowPanel = teamIndex == 0 ? this.flowTeam0 : this.flowTeam1;
 
             var label = new Label {
                 BorderStyle = BorderStyle.FixedSingle,
@@ -94,19 +97,28 @@ namespace Leagueinator.App.Components.MatchCard {
 
             _ = new ControlDragHandlers<PlayerInfo>(label,
                 () => { // get data from source
+                    Team? team = this.Match?.Teams[teamIndex];
+                    if (team == null) return null;
+
                     int index = flowPanel.Controls.IndexOf(label);
-                    return this.Match.Teams[team].Players[index];
+                    return team.Players[index];
                 },
-                (pi) => { // set data on target
+                (pi, src) => { // called when this is the destination
+                    Team? team = this.Match?.Teams[teamIndex];
+                    if (team == null) return null;
+
                     int index = flowPanel.Controls.IndexOf(label);
-                    var response = this.Match.Teams[team].Players[index];
-                    this.Match.Teams[team].Players[index] = pi;
+                    var response = team.Players[index];
+                    team.Players[index] = pi;
                     return response;
                 },
-                (pi) => { // response to source
+                (pi, dest) => { // response to source
+                    Team? team = this.Match?.Teams[teamIndex];
+                    if (team == null) return;
+
                     int index = flowPanel.Controls.IndexOf(label);
-                    var response = this.Match.Teams[team].Players[index];
-                    this.Match.Teams[team].Players[index] = pi;
+                    var response = team.Players[index];
+                    team.Players[index] = pi;
                 }
             );
 
@@ -127,6 +139,7 @@ namespace Leagueinator.App.Components.MatchCard {
 
         private void OnScore0Changed(object sender, EventArgs e) {
             var text = this.txtScore0.Text;
+            if (this.Match is null) return;
 
             try {
                 int score = int.Parse(text);
@@ -140,6 +153,7 @@ namespace Leagueinator.App.Components.MatchCard {
 
         private void OnScore1Changed(object sender, EventArgs e) {
             var text = this.txtScore0.Text;
+            if (this.Match is null) return;
 
             try {
                 int score = int.Parse(text);

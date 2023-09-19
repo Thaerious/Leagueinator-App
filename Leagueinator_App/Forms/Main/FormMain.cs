@@ -1,6 +1,7 @@
 ﻿
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
+using Leagueinator.App.Forms.SelectEvent;
 using Leagueinator.Model;
 using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
@@ -23,6 +24,7 @@ namespace Leagueinator.App.Forms.Main {
                     this.eventPanel.Visible = false;
                 }
                 else {
+                    Debug.WriteLine($"setting league {value.Events.Count}");
                     this.saveToolStripMenuItem.Enabled = true;
                     this.saveAsToolStripMenuItem.Enabled = true;
                     this.printToolStripMenuItem.Enabled = true;
@@ -32,6 +34,10 @@ namespace Leagueinator.App.Forms.Main {
 
                     if (value.Events.Count > 0) {
                         this.eventPanel.LeagueEvent = value.Events.Last();
+                    }
+                    else {
+                        this.eventPanel.LeagueEvent = null;
+                        this.eventPanel.Visible = false;
                     }
                 }
             }
@@ -59,7 +65,6 @@ namespace Leagueinator.App.Forms.Main {
             this.eventPanel.PlayerListBox.OnRename += this.PlayerListBox_OnRename;
 
             LeagueSingleton.ModelUpdate += (src, args) => {
-                Debug.WriteLine($"ModelUpdate {src?.GetType().Name} {args.Change}");
                 IsSaved.Value = false;
             };
 
@@ -99,14 +104,11 @@ namespace Leagueinator.App.Forms.Main {
                     this.League = JsonConvert.DeserializeObject<League>(leagueJson) as League;
                 }
                 this.filename = filename;
+                this.Text = filename;
                 IsSaved.Value = true;
             }
             catch (Exception exception) {
                 MessageBox.Show(exception.Message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            foreach(LeagueEvent lEvent in this.League.Events) {
-                Debug.WriteLine($"Rounds colection for league event {lEvent.GetHashCode().ToString("X")} is {lEvent.Rounds.GetHashCode().ToString("X")}");
             }
         }
 
@@ -216,6 +218,29 @@ namespace Leagueinator.App.Forms.Main {
                 foreach (Round round in this.eventPanel.LeagueEvent.Rounds) {
                     var list = round.IdlePlayers;
                     if (!list.Contains(args.PlayerInfo)) list.Add(args.PlayerInfo);
+                }
+            }
+        }
+
+        private void Events_SelectEvent(object sender, EventArgs e) {
+            if (this.League is null) return;
+
+            FormSelectEvent childForm = new FormSelectEvent();
+            childForm.SetEvents(this.League.Events);
+
+            DialogResult result = childForm.ShowDialog();
+            if (result == DialogResult.Cancel) return;
+
+            if (childForm.Action == "Select") {
+                LeagueEvent lEvent = childForm.LeagueEvent;
+                this.eventPanel.LeagueEvent = lEvent;
+                this.eventPanel.Visible = true;
+            }
+            else if (childForm.Action == "Delete") {
+                this.League.Events.Remove(childForm.LeagueEvent);
+                if (this.eventPanel.LeagueEvent == childForm.LeagueEvent) {
+                    this.eventPanel.Visible = false;
+                    this.eventPanel.LeagueEvent = null;
                 }
             }
         }
