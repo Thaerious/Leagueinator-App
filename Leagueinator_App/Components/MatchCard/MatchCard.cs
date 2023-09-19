@@ -2,16 +2,18 @@
 using Leagueinator.Model;
 using Leagueinator.Utility.ObservableDiscreteCollection;
 using System.Diagnostics;
+using static Leagueinator.Model.Team;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchCard : UserControl {
-        ObservableDiscreteCollection<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
+        private ObservableDiscreteCollection<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
+        private TeamUpdateHnd team0UpdateHnd = delegate { }, team1UpdateHnd = delegate { };
 
         public Match? Match {
             get => this._match;
             set {
-                ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");                
+                ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");
                 if (value.Teams[0] is null) throw new NullReferenceException();
                 if (value.Teams[1] is null) throw new NullReferenceException();
 
@@ -19,8 +21,11 @@ namespace Leagueinator.App.Components.MatchCard {
 
                 // if the current match is not null remove the previous handlers
                 if (this._match != null) {
+
                     value.Teams[0].Players.CollectionChanged -= this.hnd1;
                     value.Teams[1].Players.CollectionChanged -= this.hnd2;
+                    value.Teams[0].OnUpdate -= team0UpdateHnd;
+                    value.Teams[1].OnUpdate -= team1UpdateHnd;
                 }
 
                 this.ClearLabels();
@@ -38,12 +43,23 @@ namespace Leagueinator.App.Components.MatchCard {
 
                 this.hnd1 = (src, args) => this.PlayersCollectionChanged(this.flowTeam0, src, args);
                 this.hnd2 = (src, args) => this.PlayersCollectionChanged(this.flowTeam1, src, args);
+                this.team0UpdateHnd = (src, args) => this.BowlsChanged(src, this.txtScore0, args);
+                this.team1UpdateHnd = (src, args) => this.BowlsChanged(src, this.txtScore1, args);
 
                 value.Teams[0].Players.CollectionChanged += this.hnd1;
                 value.Teams[1].Players.CollectionChanged += this.hnd2;
+                value.Teams[0].OnUpdate += this.team0UpdateHnd;
+                value.Teams[1].OnUpdate += this.team1UpdateHnd;
 
                 this._match = value;
                 this.Reposition();
+            }
+        }
+
+        private void BowlsChanged(Team team, TextBox textBox, TeamUpdateArgs args) {
+            Debug.WriteLine($"BowlsChanged {team.GetHashCode().ToString("X")} {args.PrevValue} {args.NewValue}");
+            if (args.NewValue != null && args.NewValue.ToString() != textBox.Text) {
+                textBox.Text = args.NewValue.ToString();
             }
         }
 
@@ -138,30 +154,29 @@ namespace Leagueinator.App.Components.MatchCard {
         private Match? _match;
 
         private void OnScore0Changed(object sender, EventArgs e) {
-            var text = this.txtScore0.Text;
-            if (this.Match is null) return;
-
-            try {
-                int score = int.Parse(text);
-                if (this.Match != null) this.Match.Teams[0].Bowls = score;
-            }
-            catch {
-                if (this.Match == null) this.txtScore0.Text = "0";
-                else this.txtScore0.Text = this.Match?.Teams[0].Bowls.ToString();
-            }
+            Team? team = this.Match?.Teams[0];
+            if (team is null) return;
+            this.OnScoreChanged(team);
         }
 
         private void OnScore1Changed(object sender, EventArgs e) {
-            var text = this.txtScore0.Text;
+            Team? team = this.Match?.Teams[1];
+            if (team is null) return;   
+            this.OnScoreChanged(team);
+        }
+
+        private void OnScoreChanged(Team team) {
+            var text = this.txtScore1.Text;
             if (this.Match is null) return;
 
             try {
                 int score = int.Parse(text);
-                this.Match.Teams[1].Bowls = score;
+                team.Bowls = score;
             }
-            catch (Exception ex) {
-                this.txtScore0.Text = this.Match.Teams[1].Bowls.ToString();
+            catch {
+                this.txtScore0.Text = team.Bowls.ToString();
             }
+
         }
     }
 }

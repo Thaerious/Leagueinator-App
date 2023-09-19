@@ -1,6 +1,7 @@
 ﻿
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
+using Leagueinator.App.Forms.Report;
 using Leagueinator.App.Forms.SelectEvent;
 using Leagueinator.Model;
 using Leagueinator.Utility;
@@ -169,11 +170,11 @@ namespace Leagueinator.App.Forms.Main {
 
         private void File_Print(object sender, EventArgs e) {
             throw new NotImplementedException();
-            //    //var round = this.editEventPanel.CurrentRound;
+            //    //var round = this.eventPanel.CurrentRound;
             //    //if (round == null) return;
             //    ////ScoreCardPrinter.Print(round);
 
-            //    //int _currentRoundIndex = this.editEventPanel.LeagueEvent.Rounds.IndexOf(this.editEventPanel.CurrentRound);
+            //    //int _currentRoundIndex = this.eventPanel.LeagueEvent.Rounds.IndexOf(this.eventPanel.CurrentRound);
             //    //var mcp = new MatchCardPrinter(round, _currentRoundIndex);
 
             //    //if (this.printDialog.ShowDialog() == DialogResult.OK) {
@@ -281,6 +282,82 @@ namespace Leagueinator.App.Forms.Main {
         private void Dev_HashCode(object sender, EventArgs e) {
             Debug.WriteLine("Rounds collection for current event");
             Debug.WriteLine($"Hash Code {this.eventPanel.LeagueEvent.Rounds.GetHashCode().ToString("X")}");
+        }
+
+        private FormReport InitFormReport() {
+            FormReport form = new FormReport();
+
+            form.InitColumns(
+                new string[] {
+                    "Name", "Round", "Rank", "Bowls", "Ends",
+                    "Wins", "Losses", "Ties",
+                    "PointsFor", "PlusFor", "PointsAgainst", "PlusAgainst"
+                },
+                new string[] {
+                    "Name", "Round", "Rank", "Bowls", "Ends",
+                    "W", "L", "T",
+                    "F", "F+", "A", "A+"
+                }
+                ,
+                new int[] {
+                    100, 50, 50, 50, 50,
+                    40, 40, 40,
+                    40, 40, 40, 40
+                }
+            );
+
+            form.StartPosition = FormStartPosition.CenterParent;
+
+            return form;
+        }
+
+        private void View_Summary(object sender, EventArgs e) {
+            var form = this.InitFormReport();
+
+            LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return;
+
+            lEvent.Players.ForEach(p => {
+                form.AddRow(new EventSummary(lEvent, p));
+            });
+
+            foreach (Round round in lEvent.Rounds) {
+                round.ActivePlayers.ForEach(p => {
+                    form.AddRow(new RoundDatum(lEvent, round, p));
+                });
+            };
+
+            form.ShowDialog(this);
+        }
+
+        private void View_RoundSummary(object sender, EventArgs e) {
+            var form = this.InitFormReport();
+
+            LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return;
+
+            Round? round = this.eventPanel.CurrentRound;
+            if (round == null) return;
+
+            round.ActivePlayers.ForEach(player => {
+                form.AddRow(new RoundDatum(lEvent, round, player));
+            });
+
+            form.ShowDialog(this);
+        }
+
+        private void View_EventSummary(object sender, EventArgs e) {
+            var form = this.InitFormReport();
+
+            LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return;
+
+            lEvent.Players.ForEach(p => {
+                form.AddRow(new EventSummary(lEvent, p));
+            });
+
+            form.ShowDialog(this);
+
         }
     }
 }

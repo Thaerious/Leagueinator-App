@@ -34,14 +34,6 @@ namespace Leagueinator.Utility {
             return newList;
         }
 
-        public static T? Last<T>(this List<T> list) {
-            return list.Count == 0 ? default : list[^1];
-        }
-
-        public static T? First<T>(this List<T> list) {
-            return list.Count == 0 ? default : list[0];
-        }
-
         public static T? Prev<T>(this ICollection<T> list, T target) {
             var prev = default(T);
             foreach (T t in list) {

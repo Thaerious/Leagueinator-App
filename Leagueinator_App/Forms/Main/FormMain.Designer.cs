@@ -38,6 +38,7 @@
             addEventToolStripMenuItem = new ToolStripMenuItem();
             addPlayersToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
+            reportToolStripMenuItem = new ToolStripMenuItem();
             devToolStripMenuItem = new ToolStripMenuItem();
             printLeagueToolStripMenuItem = new ToolStripMenuItem();
             printCurrentEventToolStripMenuItem = new ToolStripMenuItem();
@@ -46,6 +47,8 @@
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel.EventPanel();
+            roundReportToolStripMenuItem = new ToolStripMenuItem();
+            eventReportToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -158,9 +161,17 @@
             // 
             // viewToolStripMenuItem
             // 
+            viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { reportToolStripMenuItem, roundReportToolStripMenuItem, eventReportToolStripMenuItem });
             viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             viewToolStripMenuItem.Size = new Size(65, 29);
             viewToolStripMenuItem.Text = "View";
+            // 
+            // reportToolStripMenuItem
+            // 
+            reportToolStripMenuItem.Name = "reportToolStripMenuItem";
+            reportToolStripMenuItem.Size = new Size(270, 34);
+            reportToolStripMenuItem.Text = "Report";
+            reportToolStripMenuItem.Click += this.View_Summary;
             // 
             // devToolStripMenuItem
             // 
@@ -223,6 +234,20 @@
             this.eventPanel.TabIndex = 1;
             this.eventPanel.Visible = false;
             // 
+            // roundReportToolStripMenuItem
+            // 
+            roundReportToolStripMenuItem.Name = "roundReportToolStripMenuItem";
+            roundReportToolStripMenuItem.Size = new Size(270, 34);
+            roundReportToolStripMenuItem.Text = "Round Report";
+            roundReportToolStripMenuItem.Click += this.View_RoundSummary;
+            // 
+            // eventReportToolStripMenuItem
+            // 
+            eventReportToolStripMenuItem.Name = "eventReportToolStripMenuItem";
+            eventReportToolStripMenuItem.Size = new Size(270, 34);
+            eventReportToolStripMenuItem.Text = "Event Report";
+            eventReportToolStripMenuItem.Click += this.View_EventSummary;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
@@ -264,5 +289,8 @@
         private ToolStripMenuItem isSavedToolStripMenuItem;
         private ToolStripMenuItem roundsCollectionToolStripMenuItem;
         private ToolStripMenuItem selectEventToolStripMenuItem;
+        private ToolStripMenuItem reportToolStripMenuItem;
+        private ToolStripMenuItem roundReportToolStripMenuItem;
+        private ToolStripMenuItem eventReportToolStripMenuItem;
     }
 }

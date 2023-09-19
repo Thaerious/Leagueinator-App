@@ -6,13 +6,31 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
+    public class TeamUpdateArgs {
+        public readonly string Field;
+        public readonly object? PrevValue;
+        public readonly object? NewValue;
+
+        public TeamUpdateArgs(string field, object? prevValue, object? newValue) {
+            this.Field = field;
+            this.PrevValue = prevValue;
+            this.NewValue = newValue;
+        }
+    }
+
     [Serializable]
     public class Team {
+        public delegate void TeamUpdateHnd(Team source, TeamUpdateArgs args);
+        public event TeamUpdateHnd OnUpdate = delegate { };
         public LeagueSettings Settings;
+
         public int Bowls {
             get => _bowls;
             set {
+                Debug.WriteLine($"[{this.GetHashCode().ToString("X")}] Team.Bowls.Set {this._bowls} <- {value}");
+                if (this._bowls == value) return;
                 LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.VALUE, "bowls"));
+                OnUpdate.Invoke(this, new TeamUpdateArgs("bowls", _bowls, value));
                 this._bowls = value;
             }
         }
