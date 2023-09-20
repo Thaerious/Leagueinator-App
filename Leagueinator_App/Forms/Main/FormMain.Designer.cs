@@ -36,9 +36,15 @@
             eventsToolStripMenuItem = new ToolStripMenuItem();
             selectEventToolStripMenuItem = new ToolStripMenuItem();
             addEventToolStripMenuItem = new ToolStripMenuItem();
-            addPlayersToolStripMenuItem = new ToolStripMenuItem();
+            playersToolStripMenuItem = new ToolStripMenuItem();
+            clearToolStripMenuItem = new ToolStripMenuItem();
+            resetToolStripMenuItem = new ToolStripMenuItem();
+            copyPreviousRoundToolStripMenuItem = new ToolStripMenuItem();
+            randomizeToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
+            roundReportToolStripMenuItem = new ToolStripMenuItem();
+            eventReportToolStripMenuItem = new ToolStripMenuItem();
             devToolStripMenuItem = new ToolStripMenuItem();
             printLeagueToolStripMenuItem = new ToolStripMenuItem();
             printCurrentEventToolStripMenuItem = new ToolStripMenuItem();
@@ -47,15 +53,14 @@
             helpToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel.EventPanel();
-            roundReportToolStripMenuItem = new ToolStripMenuItem();
-            eventReportToolStripMenuItem = new ToolStripMenuItem();
+            addToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(24, 24);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, eventsToolStripMenuItem, viewToolStripMenuItem, devToolStripMenuItem, helpToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, eventsToolStripMenuItem, playersToolStripMenuItem, viewToolStripMenuItem, devToolStripMenuItem, helpToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(1278, 33);
@@ -132,7 +137,7 @@
             // 
             // eventsToolStripMenuItem
             // 
-            eventsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { selectEventToolStripMenuItem, addEventToolStripMenuItem, addPlayersToolStripMenuItem });
+            eventsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { selectEventToolStripMenuItem, addEventToolStripMenuItem });
             eventsToolStripMenuItem.Enabled = false;
             eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
             eventsToolStripMenuItem.Size = new Size(79, 29);
@@ -152,12 +157,41 @@
             addEventToolStripMenuItem.Text = "Add Event";
             addEventToolStripMenuItem.Click += this.Events_AddEvent;
             // 
-            // addPlayersToolStripMenuItem
+            // playersToolStripMenuItem
             // 
-            addPlayersToolStripMenuItem.Name = "addPlayersToolStripMenuItem";
-            addPlayersToolStripMenuItem.Size = new Size(208, 34);
-            addPlayersToolStripMenuItem.Text = "Add Players";
-            addPlayersToolStripMenuItem.Click += this.Events_AddPlayers;
+            playersToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addToolStripMenuItem, clearToolStripMenuItem, resetToolStripMenuItem, copyPreviousRoundToolStripMenuItem, randomizeToolStripMenuItem });
+            playersToolStripMenuItem.Enabled = false;
+            playersToolStripMenuItem.Name = "playersToolStripMenuItem";
+            playersToolStripMenuItem.Size = new Size(83, 29);
+            playersToolStripMenuItem.Text = "Players";
+            // 
+            // clearToolStripMenuItem
+            // 
+            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            clearToolStripMenuItem.Size = new Size(285, 34);
+            clearToolStripMenuItem.Text = "Clear";
+            clearToolStripMenuItem.Click += this.Players_Clear;
+            // 
+            // resetToolStripMenuItem
+            // 
+            resetToolStripMenuItem.Name = "resetToolStripMenuItem";
+            resetToolStripMenuItem.Size = new Size(285, 34);
+            resetToolStripMenuItem.Text = "Reset";
+            resetToolStripMenuItem.Click += this.Players_Reset;
+            // 
+            // copyPreviousRoundToolStripMenuItem
+            // 
+            copyPreviousRoundToolStripMenuItem.Name = "copyPreviousRoundToolStripMenuItem";
+            copyPreviousRoundToolStripMenuItem.Size = new Size(285, 34);
+            copyPreviousRoundToolStripMenuItem.Text = "Copy Previous Round";
+            copyPreviousRoundToolStripMenuItem.Click += this.Players_Copy;
+            // 
+            // randomizeToolStripMenuItem
+            // 
+            randomizeToolStripMenuItem.Name = "randomizeToolStripMenuItem";
+            randomizeToolStripMenuItem.Size = new Size(285, 34);
+            randomizeToolStripMenuItem.Text = "Randomize";
+            randomizeToolStripMenuItem.Click += this.Players_Randomize;
             // 
             // viewToolStripMenuItem
             // 
@@ -169,9 +203,23 @@
             // reportToolStripMenuItem
             // 
             reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            reportToolStripMenuItem.Size = new Size(270, 34);
+            reportToolStripMenuItem.Size = new Size(224, 34);
             reportToolStripMenuItem.Text = "Report";
             reportToolStripMenuItem.Click += this.View_Summary;
+            // 
+            // roundReportToolStripMenuItem
+            // 
+            roundReportToolStripMenuItem.Name = "roundReportToolStripMenuItem";
+            roundReportToolStripMenuItem.Size = new Size(224, 34);
+            roundReportToolStripMenuItem.Text = "Round Report";
+            roundReportToolStripMenuItem.Click += this.View_RoundSummary;
+            // 
+            // eventReportToolStripMenuItem
+            // 
+            eventReportToolStripMenuItem.Name = "eventReportToolStripMenuItem";
+            eventReportToolStripMenuItem.Size = new Size(224, 34);
+            eventReportToolStripMenuItem.Text = "Event Report";
+            eventReportToolStripMenuItem.Click += this.View_EventSummary;
             // 
             // devToolStripMenuItem
             // 
@@ -234,19 +282,12 @@
             this.eventPanel.TabIndex = 1;
             this.eventPanel.Visible = false;
             // 
-            // roundReportToolStripMenuItem
+            // addToolStripMenuItem
             // 
-            roundReportToolStripMenuItem.Name = "roundReportToolStripMenuItem";
-            roundReportToolStripMenuItem.Size = new Size(270, 34);
-            roundReportToolStripMenuItem.Text = "Round Report";
-            roundReportToolStripMenuItem.Click += this.View_RoundSummary;
-            // 
-            // eventReportToolStripMenuItem
-            // 
-            eventReportToolStripMenuItem.Name = "eventReportToolStripMenuItem";
-            eventReportToolStripMenuItem.Size = new Size(270, 34);
-            eventReportToolStripMenuItem.Text = "Event Report";
-            eventReportToolStripMenuItem.Click += this.View_EventSummary;
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(285, 34);
+            addToolStripMenuItem.Text = "Add";
+            addToolStripMenuItem.Click += this.Players_Add;
             // 
             // FormMain
             // 
@@ -283,7 +324,6 @@
         private ToolStripMenuItem scoreCardToolStripMenuItem;
         private Components.EventPanel.EventPanel eventPanel;
         private ToolStripMenuItem addEventToolStripMenuItem;
-        private ToolStripMenuItem addPlayersToolStripMenuItem;
         private ToolStripMenuItem printCurrentEventToolStripMenuItem;
         private ToolStripMenuItem printLeagueToolStripMenuItem;
         private ToolStripMenuItem isSavedToolStripMenuItem;
@@ -292,5 +332,11 @@
         private ToolStripMenuItem reportToolStripMenuItem;
         private ToolStripMenuItem roundReportToolStripMenuItem;
         private ToolStripMenuItem eventReportToolStripMenuItem;
+        private ToolStripMenuItem playersToolStripMenuItem;
+        private ToolStripMenuItem copyPreviousRoundToolStripMenuItem;
+        private ToolStripMenuItem randomizeToolStripMenuItem;
+        private ToolStripMenuItem clearToolStripMenuItem;
+        private ToolStripMenuItem resetToolStripMenuItem;
+        private ToolStripMenuItem addToolStripMenuItem;
     }
 }

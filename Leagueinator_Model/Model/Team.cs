@@ -74,6 +74,7 @@ namespace Leagueinator.Model {
 
         public void Clear() {
             this._players.Clear();
+            this.Bowls = 0;
         }
 
         public void AddPlayer(PlayerInfo player) {

@@ -22,15 +22,16 @@ namespace Leagueinator.App.Forms.Main {
                     this.printToolStripMenuItem.Enabled = false;
                     this.closeToolStripMenuItem.Enabled = false;
                     this.eventsToolStripMenuItem.Enabled = false;
+                    this.playersToolStripMenuItem.Enabled = false;
                     this.eventPanel.Visible = false;
                 }
                 else {
-                    Debug.WriteLine($"setting league {value.Events.Count}");
                     this.saveToolStripMenuItem.Enabled = true;
                     this.saveAsToolStripMenuItem.Enabled = true;
                     this.printToolStripMenuItem.Enabled = true;
                     this.closeToolStripMenuItem.Enabled = true;
                     this.eventsToolStripMenuItem.Enabled = true;
+                    this.playersToolStripMenuItem.Enabled = true;
                     this.eventPanel.Visible = true;
 
                     if (value.Events.Count > 0) {
@@ -200,7 +201,7 @@ namespace Leagueinator.App.Forms.Main {
             this.eventPanel.LeagueEvent = lEvent;
         }
 
-        private void Events_AddPlayers(object sender, EventArgs e) {
+        private void Players_Add(object sender, EventArgs e) {
             var form = new FormAddPlayer();
             form.OnPlayerAdded += this.Form_OnPlayerAdded;
             form.StartPosition = FormStartPosition.CenterParent;
@@ -358,6 +359,79 @@ namespace Leagueinator.App.Forms.Main {
 
             form.ShowDialog(this);
 
+        }
+
+        private void Players_Copy(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent == null) return;
+            if (this.eventPanel.CurrentRound == null) return;
+            if (this.eventPanel.CurrentRound == this.eventPanel.LeagueEvent.Rounds.First()) return;
+
+            this.Players_Clear(sender, e);
+
+            Round? current = this.eventPanel.CurrentRound;
+            Round previous = this.eventPanel.LeagueEvent.Rounds.Prev(current);
+
+            foreach (PlayerInfo pInfo in previous.IdlePlayers) {
+                current.IdlePlayers.Add(pInfo);
+            }
+
+            for (int m = 0; m < current.Matches.Count; m++) {
+                Match? match = current.Matches[m];
+                if (match is null) continue;
+                for (int t = 0; t < match.Teams.Count; t++) {
+                    Team? team = match.Teams[t];
+                    if (team is null) continue;
+                    for (int p = 0; p < team.Players.MaxSize; p++) {
+                        team.Players[p] = previous.Matches[m]?.Teams[t]?.Players[p];
+                    }
+                }
+            }
+        }
+
+        private void Players_Randomize(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent == null) return;
+            if (this.eventPanel.CurrentRound == null) return;
+
+            Random random = new Random();
+            Round current = this.eventPanel.CurrentRound;
+
+            for (int m = 0; m < current.Matches.Count; m++) {
+                Match? match = current.Matches[m];
+                if (match is null) continue;
+                for (int t = 0; t < match.Teams.Count; t++) {
+                    Team? team = match.Teams[t];
+                    if (team is null) continue;
+                    for (int p = 0; p < team.Players.MaxSize; p++) {                        
+                        if (current.IdlePlayers.Count == 0) return;
+                        if (team.Players[p] is not null) continue;
+                        int r = random.Next(current.IdlePlayers.Count);
+                        team.Players[p] = current.IdlePlayers[r];
+                        current.IdlePlayers.RemoveAt(r);
+                    }
+                }
+            }
+        }
+
+        private void Players_Clear(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent == null) return;
+            if (this.eventPanel.CurrentRound == null) return;
+
+            Round current = this.eventPanel.CurrentRound;
+            current.IdlePlayers.Clear();
+            foreach (Team team in current.Teams) { team.Clear(); }
+        }
+
+        private void Players_Reset(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent == null) return;
+            if (this.eventPanel.CurrentRound == null) return;
+
+            Round current = this.eventPanel.CurrentRound;
+            foreach (Team team in current.Teams) {
+                foreach (PlayerInfo pInfo in team.Players.Values.NotNull()) {
+                    current.IdlePlayers.Add(pInfo);
+                }
+                team.Clear();
+            }
         }
     }
 }

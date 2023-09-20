@@ -79,6 +79,9 @@ namespace Leagueinator.App.Components.PlayerListBox {
                         foreach (var pi in args.OldItems) this.Items.Remove(pi);
                     }
                     break;
+                case NotifyCollectionChangedAction.Reset:
+                    this.Items.Clear();
+                    break;
             }
         }
 

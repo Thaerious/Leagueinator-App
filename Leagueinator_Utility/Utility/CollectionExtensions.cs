@@ -34,14 +34,14 @@ namespace Leagueinator.Utility {
             return newList;
         }
 
-        public static T? Prev<T>(this ICollection<T> list, T target) {
-            var prev = default(T);
-            foreach (T t in list) {
+        public static T Prev<T>(this ICollection<T> collection, T target) {
+            var prev = collection.First();
+            foreach (T t in collection) {
                 if (t == null) continue;
                 if (t.Equals(target)) return prev;
                 prev = t;
             }
-            return default;
+            throw new NoSuchElementException();
         }
 
         public static T? Next<T>(this ICollection<T> list, T target) {
