@@ -401,7 +401,7 @@ namespace Leagueinator.App.Forms.Main {
                 for (int t = 0; t < match.Teams.Count; t++) {
                     Team? team = match.Teams[t];
                     if (team is null) continue;
-                    for (int p = 0; p < team.Players.MaxSize; p++) {                        
+                    for (int p = 0; p < team.Players.MaxSize; p++) {
                         if (current.IdlePlayers.Count == 0) return;
                         if (team.Players[p] is not null) continue;
                         int r = random.Next(current.IdlePlayers.Count);
@@ -432,6 +432,19 @@ namespace Leagueinator.App.Forms.Main {
                 }
                 team.Clear();
             }
+        }
+
+        private void File_Print_Preview(object sender, EventArgs e) {
+            var round = this.eventPanel.CurrentRound;
+            if (round == null) return;
+            //ScoreCardPrinter.Print(round);
+
+            int currentRoundIndex = this.eventPanel.LeagueEvent.Rounds.IndexOf(this.eventPanel.CurrentRound);
+            var mcp = new MatchCardPrinter(round, currentRoundIndex);
+            this.printDocument.PrintPage += mcp.HndPrint;
+
+            //this.printPreview.Document = this.printDocument;
+            //this.printPreview.ShowDialog();
         }
     }
 }
