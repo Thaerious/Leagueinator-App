@@ -1,4 +1,6 @@
 ﻿
+using Leagueinator.App.Algorithms.Solutions;
+using Leagueinator.App.Algorithms;
 using Leagueinator.App.Components.PlayerListBox;
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
@@ -11,6 +13,7 @@ using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection;
+using Leagueinator.Algorithms;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -97,7 +100,7 @@ namespace Leagueinator.App.Forms.Main {
             }
 
             string previous = args.PlayerInfo.Name;
-            foreach(Round round in this.eventPanel.LeagueEvent.Rounds) {
+            foreach (Round round in this.eventPanel.LeagueEvent.Rounds) {
                 if (round.IdlePlayers.Contains(args.PlayerInfo)) {
                     round.IdlePlayers.Remove(args.PlayerInfo);
                     round.IdlePlayers.Add(new PlayerInfo(form.PlayerName));
@@ -535,24 +538,6 @@ namespace Leagueinator.App.Forms.Main {
             }
         }
 
-        private (LeagueEvent? lEvent, Round? source, Round? target) SourceAndTarget() {
-            var lEvent = this.eventPanel.LeagueEvent;
-            var target = this.eventPanel.CurrentRound;
-
-            if (target == null) {
-                MessageBox.Show("Reference round not found");
-                return (null, null, null);
-            };
-
-            var source = lEvent.Rounds.Prev(target);
-            if (source == null) {
-                MessageBox.Show("Reference round not found");
-                return (null, null, null);
-            }
-
-            return (lEvent, source, target);
-        }
-
         private void Players_Scramble(object sender, EventArgs e) {
             if (this.eventPanel.LeagueEvent == null) return;
             if (this.eventPanel.CurrentRound == null) return;
@@ -564,6 +549,31 @@ namespace Leagueinator.App.Forms.Main {
 
             Scramble scramble = new Scramble(first, target);
             scramble.DoScramble(lEvent.Rounds.IndexOf(target));
+        }
+
+        private void Players_AssignLanes(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent == null) return;
+            if (this.eventPanel.CurrentRound == null) return;
+
+            if (this.eventPanel.LeagueEvent.Rounds.Count < 2) {
+                MessageBox.Show("Can not assign lanes with only one round.");
+                return;
+            }
+
+            LeagueEvent lEvent = this.eventPanel.LeagueEvent;
+            Round target = this.eventPanel.CurrentRound;
+
+            var laneSolution = new LaneSolution(lEvent, target);
+            var algo = new GreedyWalk();
+
+            var bestSolution = algo.Run(laneSolution, _s => {
+                LaneSolution? solution = _s as LaneSolution;
+                if (solution is null) return;
+            });
+
+            for (int i = 0; i < bestSolution.Count(); i++) {
+                target.Matches[i].CopyFrom(bestSolution[i]);
+            }
         }
     }
 }

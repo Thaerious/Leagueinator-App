@@ -2,6 +2,7 @@
 using Leagueinator.Utility.ObservableDiscreteCollection;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Leagueinator.Model {
     [Serializable]
@@ -88,7 +89,13 @@ namespace Leagueinator.Model {
         }
 
         public void CopyFrom(Match that) {
-            throw new NotImplementedException();
+            this.ClearPlayers();
+            for (int t = 0; t < this.Teams.Count; t++) {
+                Team? from = that.Teams[t];
+                Team? to = this.Teams[t];
+                if (from == null || to == null) { continue; }
+                to.CopyFrom(from);
+            }
         }
 
         [JsonProperty] private readonly ObservableDiscreteCollection<Team> _teams;

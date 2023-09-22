@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Model;
-using System.Windows.Forms;
 
 namespace Leagueinator.App.Forms.AddPlayer {
     public class PlayerAddedArgs {
@@ -22,9 +21,10 @@ namespace Leagueinator.App.Forms.AddPlayer {
             this.InitializeComponent();
         }
 
-        private void TxtName_KeyDown(object sender, KeyEventArgs e) {
+        private void TxtName_KeyDown(object sender, KeyEventArgs e) {                   
             if (e.KeyCode == Keys.Escape) this.butOK.PerformClick();
             if (e.KeyCode == Keys.Enter) {
+                e.SuppressKeyPress = true;
                 if (this.txtName.Text == "") this.butOK.PerformClick();
                 if (OnPlayerAdded != null && this.txtName.Text != null && this.txtName.Text.Trim() != "") {
                     var args = new PlayerAddedArgs(new PlayerInfo(this.txtName.Text), this.CurrentRoundOnly);

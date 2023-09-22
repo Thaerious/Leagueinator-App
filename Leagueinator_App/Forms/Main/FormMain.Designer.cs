@@ -45,6 +45,7 @@
             copyPreviousRoundToolStripMenuItem = new ToolStripMenuItem();
             randomizeToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator1 = new ToolStripSeparator();
+            assignLanesToolStripMenuItem = new ToolStripMenuItem();
             scrambleToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
@@ -61,7 +62,6 @@
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             printPreviewDialog = new PrintPreviewDialog();
             printDialog = new PrintDialog();
-            assignLanesToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -161,14 +161,14 @@
             // selectEventToolStripMenuItem
             // 
             selectEventToolStripMenuItem.Name = "selectEventToolStripMenuItem";
-            selectEventToolStripMenuItem.Size = new Size(270, 34);
+            selectEventToolStripMenuItem.Size = new Size(208, 34);
             selectEventToolStripMenuItem.Text = "Select Event";
             selectEventToolStripMenuItem.Click += this.Events_SelectEvent;
             // 
             // addEventToolStripMenuItem
             // 
             addEventToolStripMenuItem.Name = "addEventToolStripMenuItem";
-            addEventToolStripMenuItem.Size = new Size(270, 34);
+            addEventToolStripMenuItem.Size = new Size(208, 34);
             addEventToolStripMenuItem.Text = "Add Event";
             addEventToolStripMenuItem.Click += this.Events_AddEvent;
             // 
@@ -219,6 +219,13 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(282, 6);
+            // 
+            // assignLanesToolStripMenuItem
+            // 
+            assignLanesToolStripMenuItem.Name = "assignLanesToolStripMenuItem";
+            assignLanesToolStripMenuItem.Size = new Size(285, 34);
+            assignLanesToolStripMenuItem.Text = "Assign Lanes";
+            assignLanesToolStripMenuItem.Click += this.Players_AssignLanes;
             // 
             // scrambleToolStripMenuItem
             // 
@@ -329,12 +336,6 @@
             // printDialog
             // 
             printDialog.UseEXDialog = true;
-            // 
-            // assignLanesToolStripMenuItem
-            // 
-            assignLanesToolStripMenuItem.Name = "assignLanesToolStripMenuItem";
-            assignLanesToolStripMenuItem.Size = new Size(285, 34);
-            assignLanesToolStripMenuItem.Text = "Assign Lanes";
             // 
             // FormMain
             // 
