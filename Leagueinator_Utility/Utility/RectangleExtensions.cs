@@ -106,6 +106,13 @@ namespace Leagueinator.Utility {
             );
         }
 
+        /// <summary>
+        /// Create a new rectangle below the source rectangle with the specified height.
+        /// The width will the same as the source rectangle.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         public static Rectangle Below(this Rectangle source, int height) {
             return new Rectangle(
                 source.Left,

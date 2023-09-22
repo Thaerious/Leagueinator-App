@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -11,11 +12,15 @@ namespace Leagueinator.App.Forms.Report {
     /// Invoke #AddRow to add a data point.
     /// </summary>
     public partial class FormReport : Form {
+        public delegate List<object> RowGenerator();
+        private RowGenerator RowGeneratorCB;
+
         private List<object> sources = new List<object>();
         private bool inRefresh = false;
 
-        public FormReport() {
+        public FormReport(RowGenerator rowGenerator) {
             this.InitializeComponent();
+            this.RowGeneratorCB = rowGenerator;
         }
 
         private void OnLoad(object sender, EventArgs e) {
@@ -27,6 +32,7 @@ namespace Leagueinator.App.Forms.Report {
         private void DataGridView_CellValueChanged(object? sender, DataGridViewCellEventArgs e) {
             if (this.inRefresh) return;
 
+            // Update the value in the source object (stored in column 0)
             var col = this.dataGridView.Columns[e.ColumnIndex];
             var source = this.dataGridView.Rows[e.RowIndex].Cells[0].Value;
 
@@ -37,25 +43,19 @@ namespace Leagueinator.App.Forms.Report {
             this.RefreshAll();
         }
 
-        private void RefreshAll() {
+        public void RefreshAll() {
             this.inRefresh = true;
-            foreach (DataGridViewRow row in this.dataGridView.Rows) {
-                (row.Cells[0].Value as HasRefresh).Refresh();
-                this.RefreshRow(row);
+            this.dataGridView.Rows.Clear();
+
+            Debug.WriteLine("BuildScore All");
+            foreach(object? o in this.RowGeneratorCB()) {
+                if (o is null) continue;
+                this.AddRow(o);
             }
+
             this.inRefresh = false;
         }
 
-        private void RefreshRow(DataGridViewRow row) {
-            var source = row.Cells[0].Value;
-
-            foreach (DataGridViewColumn col in this.dataGridView.Columns) {
-                PropertyInfo propInfo = source.GetType().GetProperty(col.Name);
-                if (propInfo == null) continue;
-                DataGridViewCell cell = row.Cells[col.Index];
-                cell.Value = propInfo.GetValue(source);
-            }
-        }
 
         /// Summary:
         //     Adds a new row to the form.
@@ -94,7 +94,7 @@ namespace Leagueinator.App.Forms.Report {
 
             return rowIndex;
         }
-
+                
         public void InitColumns(string[] names, string[] labels = null, int[] widths = null) {
             if (labels == null) labels = names;
 

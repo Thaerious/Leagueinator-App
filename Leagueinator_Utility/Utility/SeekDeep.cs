@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.Utility.Seek {
@@ -26,7 +27,7 @@ namespace Leagueinator.Utility.Seek {
                 }
                 return list;
             }
-
+            
             // If target is of type, add target to the result
             if (target.GetType() == typeof(T)) {
                 if (list.Contains(target)) return list;
@@ -35,10 +36,7 @@ namespace Leagueinator.Utility.Seek {
 
             // Recurse over each property marked with the "SeekDeep" annotation.
             foreach (PropertyInfo prop in type.GetProperties()) {
-                if (!prop.CanRead) continue;
-                if (prop.GetIndexParameters().Length > 0) continue;
                 if (prop.GetCustomAttribute<DoSeek>() is null) continue;
-
                 List<T> l = target.SeekDeepHelper<T>(prop);
                 list.AddRange(l);
             }

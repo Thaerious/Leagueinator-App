@@ -8,7 +8,9 @@ using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Numerics;
 using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -285,8 +287,8 @@ namespace Leagueinator.App.Forms.Main {
             Debug.WriteLine($"Hash Code {this.eventPanel.LeagueEvent.Rounds.GetHashCode().ToString("X")}");
         }
 
-        private FormReport InitFormReport() {
-            FormReport form = new FormReport();
+        private FormReport InitFormReport(FormReport.RowGenerator generator) {
+            FormReport form = new FormReport(generator);
 
             form.InitColumns(
                 new string[] {
@@ -312,51 +314,91 @@ namespace Leagueinator.App.Forms.Main {
             return form;
         }
 
-        private void View_Summary(object sender, EventArgs e) {
-            var form = this.InitFormReport();
-
+        private void View_Report(object sender, EventArgs e) {
+            List<object> final = new();
             LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
             if (lEvent == null) return;
 
-            lEvent.Players.ForEach(p => {
-                form.AddRow(new EventSummary(lEvent, p));
+            var form = this.InitFormReport(() => {
+                List<EventDatum> eventData = new();
+
+                lEvent.Players.ForEach(player => {
+                    eventData.Add(new EventDatum(lEvent, player));
+                });
+
+                int rank = 1;
+                eventData.ForEach(datum => (datum as EventDatum).Rank = rank++);
+                eventData.Sort();
+                eventData.Reverse();
+                final.AddRange(eventData);
+
+                foreach (Round round in lEvent.Rounds) {
+                    List<RoundDatum> roundData = new();
+                    foreach (PlayerInfo pInfo in round.ActivePlayers) {
+                        roundData.Add(new RoundDatum(lEvent, round, pInfo));
+                    }
+                    roundData.Sort();
+                    roundData.Reverse();
+                    int roundRank = 1;
+                    roundData.ForEach(datum => datum.Rank = roundRank++);
+                    final.AddRange(roundData);
+                }
+
+                return final;
             });
 
-            foreach (Round round in lEvent.Rounds) {
-                round.ActivePlayers.ForEach(p => {
-                    form.AddRow(new RoundDatum(lEvent, round, p));
-                });
-            };
-
+            form.RefreshAll();
             form.ShowDialog(this);
         }
 
         private void View_RoundSummary(object sender, EventArgs e) {
-            var form = this.InitFormReport();
-
             LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
             if (lEvent == null) return;
 
             Round? round = this.eventPanel.CurrentRound;
             if (round == null) return;
 
-            round.ActivePlayers.ForEach(player => {
-                form.AddRow(new RoundDatum(lEvent, round, player));
+            var form = this.InitFormReport(() => {
+                List<RoundDatum> data = new();
+
+                round.ActivePlayers.ForEach(player => {
+                    data.Add(new RoundDatum(lEvent, round, player));
+                });
+
+                data.Sort();
+                data.Reverse();
+
+                int rank = 1;
+                data.ForEach(datum => (datum as RoundDatum).Rank = rank++);
+
+                return new List<object>(data);
             });
 
+            form.RefreshAll();
             form.ShowDialog(this);
         }
 
         private void View_EventSummary(object sender, EventArgs e) {
-            var form = this.InitFormReport();
-
             LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
             if (lEvent == null) return;
 
-            lEvent.Players.ForEach(p => {
-                form.AddRow(new EventSummary(lEvent, p));
+            var form = this.InitFormReport(() => {
+                List<object> data = new();
+
+                lEvent.Players.ForEach(player => {
+                    data.Add(new EventDatum(lEvent, player));
+                });
+
+                data.Sort();
+                data.Reverse();
+
+                int rank = 1;
+                data.ForEach(datum => (datum as EventDatum).Rank = rank++);
+
+                return data;
             });
 
+            form.RefreshAll();
             form.ShowDialog(this);
 
         }
@@ -435,16 +477,64 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void File_Print_Preview(object sender, EventArgs e) {
+            var lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return;
             var round = this.eventPanel.CurrentRound;
             if (round == null) return;
-            //ScoreCardPrinter.Print(round);
 
-            int currentRoundIndex = this.eventPanel.LeagueEvent.Rounds.IndexOf(this.eventPanel.CurrentRound);
-            var mcp = new MatchCardPrinter(round, currentRoundIndex);
+            int currentRoundIndex = lEvent.Rounds.IndexOf(round);
+            var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
             this.printDocument.PrintPage += mcp.HndPrint;
 
-            //this.printPreview.Document = this.printDocument;
-            //this.printPreview.ShowDialog();
+            this.printPreviewDialog.Document = this.printDocument;
+            this.printPreviewDialog.ShowDialog();
+        }
+
+        private void File_Print_Card(object sender, EventArgs e) {
+            var lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return;
+            var round = this.eventPanel.CurrentRound;
+            if (round == null) return;
+
+
+            int currentRoundIndex = lEvent.Rounds.IndexOf(round);
+            var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
+
+            if (this.printDialog.ShowDialog() == DialogResult.OK) {
+                this.printDocument.PrintPage += mcp.HndPrint;
+                this.printDocument.Print();
+            }
+        }
+
+        private (LeagueEvent? lEvent, Round? source, Round? target) SourceAndTarget() {
+            var lEvent = this.eventPanel.LeagueEvent;
+            var target = this.eventPanel.CurrentRound;
+
+            if (target == null) {
+                MessageBox.Show("Reference round not found");
+                return (null, null, null);
+            };
+
+            var source = lEvent.Rounds.Prev(target);
+            if (source == null) {
+                MessageBox.Show("Reference round not found");
+                return (null, null, null);
+            }
+
+            return (lEvent, source, target);
+        }
+
+        private void Players_Scramble(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent == null) return;
+            if (this.eventPanel.CurrentRound == null) return;
+            if (this.eventPanel.CurrentRound == this.eventPanel.LeagueEvent.Rounds.First()) return;
+
+            LeagueEvent lEvent = this.eventPanel.LeagueEvent;
+            Round target = this.eventPanel.CurrentRound;
+            Round first = lEvent.Rounds.First();
+
+            Scramble scramble = new Scramble(first, target);
+            scramble.DoScramble(lEvent.Rounds.IndexOf(target));
         }
     }
 }

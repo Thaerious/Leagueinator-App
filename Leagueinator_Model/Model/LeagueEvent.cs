@@ -13,7 +13,7 @@ namespace Leagueinator.Model {
 
         [DoSeek]
         [JsonProperty]
-        public readonly ObservableCollection<Round> Rounds = new();
+        public ObservableCollection<Round> Rounds { get; } = new();
 
         [JsonIgnore] public List<Match> Matches => this.SeekDeep<Match>().ToList();
 

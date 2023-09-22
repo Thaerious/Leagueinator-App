@@ -27,7 +27,6 @@ namespace Leagueinator.Model {
         public int Bowls {
             get => _bowls;
             set {
-                Debug.WriteLine($"[{this.GetHashCode().ToString("X")}] Team.Bowls.Set {this._bowls} <- {value}");
                 if (this._bowls == value) return;
                 LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.VALUE, "bowls"));
                 OnUpdate.Invoke(this, new TeamUpdateArgs("bowls", _bowls, value));
@@ -78,7 +77,7 @@ namespace Leagueinator.Model {
         }
 
         public void AddPlayer(PlayerInfo player) {
-            this.Players[^1] = player;
+            this.Players[this.Players.Count] = player;
         }
 
         /// <summary>

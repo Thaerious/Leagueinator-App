@@ -23,6 +23,7 @@
         ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
@@ -31,6 +32,7 @@
             saveAsToolStripMenuItem = new ToolStripMenuItem();
             printToolStripMenuItem = new ToolStripMenuItem();
             scoreCardToolStripMenuItem = new ToolStripMenuItem();
+            printScoreCardToolStripMenuItem = new ToolStripMenuItem();
             closeToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             eventsToolStripMenuItem = new ToolStripMenuItem();
@@ -42,6 +44,8 @@
             resetToolStripMenuItem = new ToolStripMenuItem();
             copyPreviousRoundToolStripMenuItem = new ToolStripMenuItem();
             randomizeToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
+            scrambleToolStripMenuItem = new ToolStripMenuItem();
             viewToolStripMenuItem = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
             roundReportToolStripMenuItem = new ToolStripMenuItem();
@@ -55,6 +59,9 @@
             aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel.EventPanel();
             this.printDocument = new System.Drawing.Printing.PrintDocument();
+            printPreviewDialog = new PrintPreviewDialog();
+            printDialog = new PrintDialog();
+            assignLanesToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -78,14 +85,14 @@
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(270, 34);
+            newToolStripMenuItem.Size = new Size(212, 34);
             newToolStripMenuItem.Text = "New";
             newToolStripMenuItem.Click += this.File_New;
             // 
             // loadToolStripMenuItem
             // 
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            loadToolStripMenuItem.Size = new Size(270, 34);
+            loadToolStripMenuItem.Size = new Size(212, 34);
             loadToolStripMenuItem.Text = "Load";
             loadToolStripMenuItem.Click += this.File_Load;
             // 
@@ -94,7 +101,7 @@
             saveToolStripMenuItem.Enabled = false;
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            saveToolStripMenuItem.Size = new Size(270, 34);
+            saveToolStripMenuItem.Size = new Size(212, 34);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += this.File_Save;
             // 
@@ -102,38 +109,44 @@
             // 
             saveAsToolStripMenuItem.Enabled = false;
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(270, 34);
+            saveAsToolStripMenuItem.Size = new Size(212, 34);
             saveAsToolStripMenuItem.Text = "Save As";
             saveAsToolStripMenuItem.Click += this.File_SaveAs;
             // 
             // printToolStripMenuItem
             // 
-            printToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { scoreCardToolStripMenuItem });
+            printToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { scoreCardToolStripMenuItem, printScoreCardToolStripMenuItem });
             printToolStripMenuItem.Enabled = false;
             printToolStripMenuItem.Name = "printToolStripMenuItem";
-            printToolStripMenuItem.Size = new Size(270, 34);
+            printToolStripMenuItem.Size = new Size(212, 34);
             printToolStripMenuItem.Text = "Print";
-            printToolStripMenuItem.Click += this.File_Print;
             // 
             // scoreCardToolStripMenuItem
             // 
             scoreCardToolStripMenuItem.Name = "scoreCardToolStripMenuItem";
-            scoreCardToolStripMenuItem.Size = new Size(270, 34);
+            scoreCardToolStripMenuItem.Size = new Size(265, 34);
             scoreCardToolStripMenuItem.Text = "Preview Score Card";
             scoreCardToolStripMenuItem.Click += this.File_Print_Preview;
+            // 
+            // printScoreCardToolStripMenuItem
+            // 
+            printScoreCardToolStripMenuItem.Name = "printScoreCardToolStripMenuItem";
+            printScoreCardToolStripMenuItem.Size = new Size(265, 34);
+            printScoreCardToolStripMenuItem.Text = "Print Score Card";
+            printScoreCardToolStripMenuItem.Click += this.File_Print_Card;
             // 
             // closeToolStripMenuItem
             // 
             closeToolStripMenuItem.Enabled = false;
             closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            closeToolStripMenuItem.Size = new Size(270, 34);
+            closeToolStripMenuItem.Size = new Size(212, 34);
             closeToolStripMenuItem.Text = "Close";
             closeToolStripMenuItem.Click += this.File_Close;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(270, 34);
+            exitToolStripMenuItem.Size = new Size(212, 34);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += this.File_Exit;
             // 
@@ -161,7 +174,7 @@
             // 
             // playersToolStripMenuItem
             // 
-            playersToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addToolStripMenuItem, clearToolStripMenuItem, resetToolStripMenuItem, copyPreviousRoundToolStripMenuItem, randomizeToolStripMenuItem });
+            playersToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addToolStripMenuItem, clearToolStripMenuItem, resetToolStripMenuItem, copyPreviousRoundToolStripMenuItem, randomizeToolStripMenuItem, toolStripSeparator1, assignLanesToolStripMenuItem, scrambleToolStripMenuItem });
             playersToolStripMenuItem.Enabled = false;
             playersToolStripMenuItem.Name = "playersToolStripMenuItem";
             playersToolStripMenuItem.Size = new Size(83, 29);
@@ -202,6 +215,18 @@
             randomizeToolStripMenuItem.Text = "Randomize";
             randomizeToolStripMenuItem.Click += this.Players_Randomize;
             // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(282, 6);
+            // 
+            // scrambleToolStripMenuItem
+            // 
+            scrambleToolStripMenuItem.Name = "scrambleToolStripMenuItem";
+            scrambleToolStripMenuItem.Size = new Size(285, 34);
+            scrambleToolStripMenuItem.Text = "Scramble";
+            scrambleToolStripMenuItem.Click += this.Players_Scramble;
+            // 
             // viewToolStripMenuItem
             // 
             viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { reportToolStripMenuItem, roundReportToolStripMenuItem, eventReportToolStripMenuItem });
@@ -212,21 +237,21 @@
             // reportToolStripMenuItem
             // 
             reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            reportToolStripMenuItem.Size = new Size(270, 34);
+            reportToolStripMenuItem.Size = new Size(224, 34);
             reportToolStripMenuItem.Text = "Report";
-            reportToolStripMenuItem.Click += this.View_Summary;
+            reportToolStripMenuItem.Click += this.View_Report;
             // 
             // roundReportToolStripMenuItem
             // 
             roundReportToolStripMenuItem.Name = "roundReportToolStripMenuItem";
-            roundReportToolStripMenuItem.Size = new Size(270, 34);
+            roundReportToolStripMenuItem.Size = new Size(224, 34);
             roundReportToolStripMenuItem.Text = "Round Report";
             roundReportToolStripMenuItem.Click += this.View_RoundSummary;
             // 
             // eventReportToolStripMenuItem
             // 
             eventReportToolStripMenuItem.Name = "eventReportToolStripMenuItem";
-            eventReportToolStripMenuItem.Size = new Size(270, 34);
+            eventReportToolStripMenuItem.Size = new Size(224, 34);
             eventReportToolStripMenuItem.Text = "Event Report";
             eventReportToolStripMenuItem.Click += this.View_EventSummary;
             // 
@@ -240,28 +265,28 @@
             // printLeagueToolStripMenuItem
             // 
             printLeagueToolStripMenuItem.Name = "printLeagueToolStripMenuItem";
-            printLeagueToolStripMenuItem.Size = new Size(270, 34);
+            printLeagueToolStripMenuItem.Size = new Size(261, 34);
             printLeagueToolStripMenuItem.Text = "Print League";
             printLeagueToolStripMenuItem.Click += this.Dev_PrintLeague;
             // 
             // printCurrentEventToolStripMenuItem
             // 
             printCurrentEventToolStripMenuItem.Name = "printCurrentEventToolStripMenuItem";
-            printCurrentEventToolStripMenuItem.Size = new Size(270, 34);
+            printCurrentEventToolStripMenuItem.Size = new Size(261, 34);
             printCurrentEventToolStripMenuItem.Text = "Print Current Event";
             printCurrentEventToolStripMenuItem.Click += this.Dev_PrintCurrentEvent;
             // 
             // isSavedToolStripMenuItem
             // 
             isSavedToolStripMenuItem.Name = "isSavedToolStripMenuItem";
-            isSavedToolStripMenuItem.Size = new Size(270, 34);
+            isSavedToolStripMenuItem.Size = new Size(261, 34);
             isSavedToolStripMenuItem.Text = "Is Saved";
             isSavedToolStripMenuItem.Click += this.Dev_IsSaved;
             // 
             // roundsCollectionToolStripMenuItem
             // 
             roundsCollectionToolStripMenuItem.Name = "roundsCollectionToolStripMenuItem";
-            roundsCollectionToolStripMenuItem.Size = new Size(270, 34);
+            roundsCollectionToolStripMenuItem.Size = new Size(261, 34);
             roundsCollectionToolStripMenuItem.Text = "Rounds Collection";
             roundsCollectionToolStripMenuItem.Click += this.Dev_HashCode;
             // 
@@ -275,7 +300,7 @@
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(270, 34);
+            aboutToolStripMenuItem.Size = new Size(164, 34);
             aboutToolStripMenuItem.Text = "About";
             aboutToolStripMenuItem.Click += this.Help_About;
             // 
@@ -290,6 +315,26 @@
             this.eventPanel.Size = new Size(1278, 708);
             this.eventPanel.TabIndex = 1;
             this.eventPanel.Visible = false;
+            // 
+            // printPreviewDialog
+            // 
+            printPreviewDialog.AutoScrollMargin = new Size(0, 0);
+            printPreviewDialog.AutoScrollMinSize = new Size(0, 0);
+            printPreviewDialog.ClientSize = new Size(400, 300);
+            printPreviewDialog.Enabled = true;
+            printPreviewDialog.Icon = (Icon)resources.GetObject("printPreviewDialog.Icon");
+            printPreviewDialog.Name = "printPreviewDialog";
+            printPreviewDialog.Visible = false;
+            // 
+            // printDialog
+            // 
+            printDialog.UseEXDialog = true;
+            // 
+            // assignLanesToolStripMenuItem
+            // 
+            assignLanesToolStripMenuItem.Name = "assignLanesToolStripMenuItem";
+            assignLanesToolStripMenuItem.Size = new Size(285, 34);
+            assignLanesToolStripMenuItem.Text = "Assign Lanes";
             // 
             // FormMain
             // 
@@ -341,5 +386,11 @@
         private ToolStripMenuItem resetToolStripMenuItem;
         private ToolStripMenuItem addToolStripMenuItem;
         private System.Drawing.Printing.PrintDocument printDocument;
+        private PrintPreviewDialog printPreviewDialog;
+        private PrintDialog printDialog;
+        private ToolStripMenuItem printScoreCardToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator1;
+        private ToolStripMenuItem scrambleToolStripMenuItem;
+        private ToolStripMenuItem assignLanesToolStripMenuItem;
     }
 }
