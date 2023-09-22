@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace Leagueinator.Utility.ObservableDiscreteCollection {
@@ -84,6 +85,19 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
                 return item.Value != null && item.Value.Equals(value);
             });
             this.Remove(keyValuePair.Key);
+        }
+
+        public void ReplaceValue(V replace, V with) {
+            int key = ReverseLookup(replace);
+            this[key] = with;
+        }
+
+        public int ReverseLookup(V value) {
+            foreach(var kv in this.inner) {
+                if (kv.Value is null) continue;
+                if (kv.Value.Equals(value)) return kv.Key;
+            }
+            return -1;
         }
 
         public bool Contains(V value) {

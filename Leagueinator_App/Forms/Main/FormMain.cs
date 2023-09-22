@@ -1,6 +1,8 @@
 ﻿
+using Leagueinator.App.Components.PlayerListBox;
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
+using Leagueinator.App.Forms.RenamePlayer;
 using Leagueinator.App.Forms.Report;
 using Leagueinator.App.Forms.SelectEvent;
 using Leagueinator.Model;
@@ -8,9 +10,7 @@ using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.Numerics;
 using System.Reflection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -79,11 +79,40 @@ namespace Leagueinator.App.Forms.Main {
         }
 
 
-        private void PlayerListBox_OnRename(Components.PlayerListBox.PlayerListBox source, Components.PlayerListBox.PlayerListBoxArgs args) {
-            throw new NotImplementedException();
+        private void PlayerListBox_OnRename(PlayerListBox source, PlayerListBoxArgs args) {
+            if (this.League is null) return;
+            if (this.eventPanel.LeagueEvent is null) return;
+
+            var form = new FormRenamePlayer();
+            form.StartPosition = FormStartPosition.CenterParent;
+            var result = form.ShowDialog();
+            if (result == DialogResult.Cancel) return;
+
+            foreach (var player in this.League.SeekDeep<PlayerInfo>()) {
+                if (player.Name == form.PlayerName) {
+                    string msg = "Name already in use";
+                    MessageBox.Show(msg, "Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            string previous = args.PlayerInfo.Name;
+            foreach(Round round in this.eventPanel.LeagueEvent.Rounds) {
+                if (round.IdlePlayers.Contains(args.PlayerInfo)) {
+                    round.IdlePlayers.Remove(args.PlayerInfo);
+                    round.IdlePlayers.Add(new PlayerInfo(form.PlayerName));
+                }
+                foreach (Team team in round.Teams) {
+                    if (team.Players.Contains(args.PlayerInfo)) {
+                        team.Players.ReplaceValue(args.PlayerInfo, new PlayerInfo(form.PlayerName));
+                    }
+                }
+            }
         }
 
-        private void PlayerListBox_OnDelete(Components.PlayerListBox.PlayerListBox source, Components.PlayerListBox.PlayerListBoxArgs args) {
+        private void PlayerListBox_OnDelete(PlayerListBox source, PlayerListBoxArgs args) {
+            if (this.eventPanel.CurrentRound is null) return;
+
             Round round = this.eventPanel.CurrentRound;
             foreach (Team team in round.SeekDeep<Team>()) {
                 if (team.Players.Contains(args.PlayerInfo)) {

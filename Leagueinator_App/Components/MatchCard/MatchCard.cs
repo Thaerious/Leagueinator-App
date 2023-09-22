@@ -4,7 +4,6 @@ using Leagueinator.Utility.ObservableDiscreteCollection;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using static Leagueinator.Model.Team;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchCard : UserControl {
