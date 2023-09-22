@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Components;
 using Leagueinator.Model;
 using Leagueinator.Utility.ObservableDiscreteCollection;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using static Leagueinator.Model.Team;
 using static System.Formats.Asn1.AsnWriter;
@@ -154,27 +155,25 @@ namespace Leagueinator.App.Components.MatchCard {
         private Match? _match;
 
         private void OnScore0Changed(object sender, EventArgs e) {
-            Team? team = this.Match?.Teams[0];
-            if (team is null) return;
-            this.OnScoreChanged(team);
+            this.OnScoreChanged((TextBox)sender, this.Match?.Teams[0]);
         }
 
         private void OnScore1Changed(object sender, EventArgs e) {
-            Team? team = this.Match?.Teams[1];
-            if (team is null) return;   
-            this.OnScoreChanged(team);
+            this.OnScoreChanged((TextBox)sender, this.Match?.Teams[1]);
         }
 
-        private void OnScoreChanged(Team team) {
-            var text = this.txtScore1.Text;
+        private void OnScoreChanged(TextBox textBox, Team? team) {
+
             if (this.Match is null) return;
+            if (team is null) return;
+            var text = textBox.Text;            
 
             try {
                 int score = int.Parse(text);
                 team.Bowls = score;
             }
             catch {
-                this.txtScore0.Text = team.Bowls.ToString();
+                textBox.Text = team.Bowls.ToString();
             }
 
         }
