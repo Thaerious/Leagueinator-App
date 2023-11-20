@@ -65,7 +65,7 @@
             butAddRound.Name = "butAddRound";
             butAddRound.Size = new Size(236, 54);
             butAddRound.TabIndex = 0;
-            butAddRound.Text = "Add";
+            butAddRound.Text = "AddChild";
             butAddRound.UseVisualStyleBackColor = true;
             butAddRound.Click += this.HndAddRound;
             // 

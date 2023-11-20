@@ -45,7 +45,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(152, 29);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Player Name";
+            this.label3.Text = "_player Name";
             // 
             // butOK
             // 

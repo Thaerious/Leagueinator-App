@@ -10,7 +10,7 @@ namespace Leagueinator.Algorithms {
         }
 
         /// <summary>
-        /// Generate a new (cloned) solution and apply the algorithm to it.
+        /// ByPlayer a new (cloned) solution and apply the algorithm to it.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="member"></param>

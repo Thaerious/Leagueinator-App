@@ -145,7 +145,7 @@ namespace Leagueinator.App.Forms.Main {
             int countCardsPrinted = 0;
             var offset = new Point(50, 50); // location of next card
 
-            //Draw each card on the current page.
+            //OnDraw each card on the current page.
             while (this.match != null) {
                 var area = this.DrawCard(g, offset, this.match, this.matchIndex, this.roundIndex);
                 this.match = this.AdvanceMatch();

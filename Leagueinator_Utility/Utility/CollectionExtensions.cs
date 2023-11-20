@@ -34,8 +34,8 @@ namespace Leagueinator.Utility {
             return newList;
         }
 
-        public static T Prev<T>(this ICollection<T> collection, T target) {
-            var prev = collection.First();
+        public static T? Prev<T>(this ICollection<T> collection, T target) {
+            var prev = default(T);
             foreach (T t in collection) {
                 if (t == null) continue;
                 if (t.Equals(target)) return prev;

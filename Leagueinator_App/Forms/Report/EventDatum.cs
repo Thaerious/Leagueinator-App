@@ -5,20 +5,21 @@ namespace Leagueinator.Model {
     /// <summary>
     /// Object for displaying a row in the FormReport class for a single round.
     /// </summary>
-    internal class EventDatum : IComparable<EventDatum>{
-        public readonly LeagueEvent lEvent;
-        public readonly PlayerInfo Player;
-
+    public class EventDatum : IComparable<EventDatum>, IHasPlayer {
+        private readonly LeagueEvent lEvent;
+        private readonly PlayerInfo _player;
         private List<Match> matches;
         private List<Team> teams;
         private Score score;
 
+        public PlayerInfo Player => this._player;
+
         public EventDatum(LeagueEvent lEvent, PlayerInfo player) {
             if (lEvent == null) throw new NullReferenceException("lEvent");
-            if (player == null) throw new NullReferenceException("Player");
+            if (player == null) throw new NullReferenceException("_player");
 
             this.lEvent = lEvent;
-            this.Player = player;
+            this._player = player;
 
             this.matches = this.lEvent.Matches.Where(m => m.Players.Contains(player)).ToList();
             this.teams = this.lEvent.SeekDeep<Team>().Where(t => t.Players.Contains(player)).ToList();
@@ -27,7 +28,7 @@ namespace Leagueinator.Model {
         }
 
         public string Name {
-            get => this.Player.Name;
+            get => this._player.Name;
         }
 
         public int Bowls {
@@ -35,8 +36,7 @@ namespace Leagueinator.Model {
         }
 
         public int Ends { get => this.matches.Select(m => m.EndsPlayed).Sum(); }
-
-        public int Rank { get; set; } = -1;
+        [Editable(false)] public int Rank { get; set; } = -1;
         public int Wins { get => this.score.Wins; }
         public int Ties { get => this.score.Ties; }
         public int Losses { get => this.score.Losses; }
@@ -50,7 +50,7 @@ namespace Leagueinator.Model {
             Score score = new Score();
 
             foreach (Match match in this.matches) {
-                Team team = match.Teams.Values.NotNull().Where(t => t.Players.Contains(this.Player)).ToList().First();
+                Team team = match.Teams.Values.NotNull().Where(t => t.Players.Contains(this._player)).ToList().First();
                 score += new Score(match, team);
             }
 

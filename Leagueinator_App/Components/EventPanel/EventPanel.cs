@@ -83,7 +83,7 @@ namespace Leagueinator.App.Components.EventPanel {
         }
 
         /// <summary>
-        /// Add a round to this panel.<br>
+        /// AddChild a round to this panel.<br>
         /// </summary>
         /// <param Name="round"></param>
         private void AddRoundButton(Round round) {

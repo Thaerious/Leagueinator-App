@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection;
 using Leagueinator.Algorithms;
+using Leagueinator_App.Forms;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -52,7 +53,6 @@ namespace Leagueinator.App.Forms.Main {
 
         private string filename = "";
 
-
         public FormMain() {
             InitializeComponent();
             this.eventPanel.OnAddRound += (s) => {
@@ -80,7 +80,6 @@ namespace Leagueinator.App.Forms.Main {
                 else this.Text = this.filename;
             };
         }
-
 
         private void PlayerListBox_OnRename(PlayerListBox source, PlayerListBoxArgs args) {
             if (this.League is null) return;
@@ -210,10 +209,10 @@ namespace Leagueinator.App.Forms.Main {
             //    ////ScoreCardPrinter.Print(round);
 
             //    //int _currentRoundIndex = this.eventPanel.LeagueEvent.Rounds.IndexOf(this.eventPanel.CurrentRound);
-            //    //var mcp = new MatchCardPrinter(round, _currentRoundIndex);
+            //    //var standingsPrinter = new MatchCardPrinter(round, _currentRoundIndex);
 
             //    //if (this.printDialog.ShowDialog() == DialogResult.OK) {
-            //    //    this.printDocument.PrintPage += mcp.HndPrint;
+            //    //    this.printDocument.PrintPage += standingsPrinter.HndPrint;
             //    //    this.printDocument.Print();
             //    //}
         }
@@ -346,94 +345,95 @@ namespace Leagueinator.App.Forms.Main {
             return form;
         }
 
+        private static void SortFinal(List<object> final) {
+            if (final.Count <= 1) return;
+
+            final.Sort((obj1, obj2) => {
+                var name1 = (obj1 as IHasPlayer)!.Player.Name;
+                var name2 = (obj2 as IHasPlayer)!.Player.Name;
+                var nameCompare = string.Compare(name1, name2);
+                if (nameCompare != 0) return nameCompare;
+
+                if (obj1 is EventDatum) return -1;
+                if (obj2 is EventDatum) return 1;
+
+                return (obj1 as RoundDatum)!.Round - (obj2 as RoundDatum)!.Round;
+            });
+        }
+
         private void View_Report(object sender, EventArgs e) {
-            List<object> final = new();
             LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
             if (lEvent == null) return;
 
             var form = this.InitFormReport(() => {
-                List<EventDatum> eventData = new();
-
-                lEvent.Players.ForEach(player => {
-                    eventData.Add(new EventDatum(lEvent, player));
-                });
-
-                int rank = 1;
-                eventData.ForEach(datum => (datum as EventDatum).Rank = rank++);
-                eventData.Sort();
-                eventData.Reverse();
-                final.AddRange(eventData);
+                var lEvent = this.eventPanel.LeagueEvent;
+                List<object> final = new(GenerateEventData.ByPlayer(lEvent));
 
                 foreach (Round round in lEvent.Rounds) {
-                    List<RoundDatum> roundData = new();
-                    foreach (PlayerInfo pInfo in round.ActivePlayers) {
-                        roundData.Add(new RoundDatum(lEvent, round, pInfo));
-                    }
-                    roundData.Sort();
-                    roundData.Reverse();
-                    int roundRank = 1;
-                    roundData.ForEach(datum => datum.Rank = roundRank++);
-                    final.AddRange(roundData);
+                    final.AddRange(this.GenerateRoundData(round));
                 }
 
+                SortFinal(final);
                 return final;
             });
 
+            form.Text = "View Report";
             form.RefreshAll();
             form.ShowDialog(this);
         }
 
         private void View_RoundSummary(object sender, EventArgs e) {
-            LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
-            if (lEvent == null) return;
-
-            Round? round = this.eventPanel.CurrentRound;
-            if (round == null) return;
+            if (eventPanel.CurrentRound == null) return;
 
             var form = this.InitFormReport(() => {
-                List<RoundDatum> data = new();
-
-                round.ActivePlayers.ForEach(player => {
-                    data.Add(new RoundDatum(lEvent, round, player));
-                });
-
-                data.Sort();
-                data.Reverse();
-
-                int rank = 1;
-                data.ForEach(datum => (datum as RoundDatum).Rank = rank++);
-
-                return new List<object>(data);
+                List<object> final = new(this.GenerateRoundData(eventPanel.CurrentRound));
+                SortFinal(final);
+                return final;
             });
 
+            form.Text = "Round Report";
             form.RefreshAll();
             form.ShowDialog(this);
         }
-
         private void View_EventSummary(object sender, EventArgs e) {
-            LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
-            if (lEvent == null) return;
-
             var form = this.InitFormReport(() => {
-                List<object> data = new();
-
-                lEvent.Players.ForEach(player => {
-                    data.Add(new EventDatum(lEvent, player));
-                });
-
-                data.Sort();
-                data.Reverse();
-
-                int rank = 1;
-                data.ForEach(datum => (datum as EventDatum).Rank = rank++);
-
-                return data;
+                List<object> final = new(GenerateEventData.ByPlayer(eventPanel.LeagueEvent));
+                SortFinal(final);
+                return final;
             });
 
+            form.Text = "Event Report";
             form.RefreshAll();
             form.ShowDialog(this);
-
         }
+
+        private List<RoundDatum> GenerateRoundData(Round round) {
+            Debug.WriteLine("GenerateRoundData");
+            List<RoundDatum> roundData = new();
+
+            var lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return roundData;
+
+            lEvent.Players.ForEach(player => {
+                roundData.Add(new RoundDatum(lEvent, round, player));
+            });
+
+            roundData.Sort();
+            roundData.Reverse();
+
+            int rank = 1;
+            roundData.ForEach(datum => {
+                var prev = roundData.Prev(datum);
+
+                if (prev == null || datum.Score == prev.Score) {
+                    datum.Rank = rank;
+                }
+                else {
+                    datum.Rank = ++rank;
+                }
+            });
+            return roundData;
+        }             
 
         private void Players_Copy(object sender, EventArgs e) {
             if (this.eventPanel.LeagueEvent == null) return;
@@ -443,7 +443,8 @@ namespace Leagueinator.App.Forms.Main {
             this.Players_Clear(sender, e);
 
             Round? current = this.eventPanel.CurrentRound;
-            Round previous = this.eventPanel.LeagueEvent.Rounds.Prev(current);
+            Round? previous = this.eventPanel.LeagueEvent.Rounds.Prev(current);
+            if (previous == null) return;
 
             foreach (PlayerInfo pInfo in previous.IdlePlayers) {
                 current.IdlePlayers.Add(pInfo);
@@ -574,6 +575,18 @@ namespace Leagueinator.App.Forms.Main {
             for (int i = 0; i < bestSolution.Count(); i++) {
                 target.Matches[i].CopyFrom(bestSolution[i]);
             }
+        }
+
+        private void File_Print_Standings(object sender, EventArgs e) {
+            var lEvent = this.eventPanel.LeagueEvent;
+            if (lEvent == null) return;
+
+            var printer = new StandingsPrinter(lEvent);
+
+            this.printDocument.DefaultPageSettings.Landscape = true;
+            this.printDocument.PrintPage += printer.HndPrint;
+            this.printPreviewDialog.Document = this.printDocument;
+            this.printPreviewDialog.ShowDialog();
         }
     }
 }

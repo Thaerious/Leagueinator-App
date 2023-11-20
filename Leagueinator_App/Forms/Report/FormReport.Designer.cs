@@ -37,16 +37,17 @@ namespace Leagueinator.App.Forms.Report {
             dataGridView.Location = new Point(0, 0);
             dataGridView.Name = "dataGridView";
             dataGridView.RowHeadersWidth = 62;
+            dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dataGridView.Size = new Size(973, 802);
             dataGridView.TabIndex = 0;
             // 
-            // Form1
+            // FormReport
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(973, 802);
             this.Controls.Add(dataGridView);
-            this.Name = "Form1";
+            this.Name = "FormReport";
             this.Text = "Form1";
             this.Load += this.OnLoad;
             ((System.ComponentModel.ISupportInitialize)dataGridView).EndInit();
