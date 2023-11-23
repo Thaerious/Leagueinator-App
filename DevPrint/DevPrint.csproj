@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="assets\layout.xml" />
+    <None Remove="assets\style.ss" />
+    <None Remove="assets\template.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="assets\layout.xml" />
+    <EmbeddedResource Include="assets\style.ss" />
+    <EmbeddedResource Include="assets\template.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Printer\Printer.csproj" />
+  </ItemGroup>
+
+</Project>

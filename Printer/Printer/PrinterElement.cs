@@ -59,7 +59,7 @@ namespace Leagueinator.Printer {
     }
 
     public class PrinterElement {
-        public delegate void DrawDelegate(Graphics g);
+        public delegate void DrawDelegate(Graphics g, PrinterElement ele);
         public event DrawDelegate OnDraw = delegate { };
 
     public string Name = "";
@@ -140,7 +140,7 @@ namespace Leagueinator.Printer {
 
         public virtual void Draw(Graphics g) {
             this.Style.DoDraw(this, g);
-            this.OnDraw.Invoke(g);
+            this.OnDraw.Invoke(g, this);
             this.Children.ForEach(child => child.Draw(g));
         }
 

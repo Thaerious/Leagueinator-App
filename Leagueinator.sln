@@ -12,19 +12,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_Utility", "Lea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_App", "Leagueinator_App\Leagueinator_App.csproj", "{553E6015-35F0-42B9-8666-59B46C924D39}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelJSON", "ModelJSON\ModelJSON.csproj", "{47479896-3CAA-419A-9D44-035A9F2F5E58}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Printer", "Printer\Printer.csproj", "{80487A98-7BA7-4F7A-99FC-B17F3D41330F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterTestForm", "PrinterTestForm\PrinterTestForm.csproj", "{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}"
 	ProjectSection(ProjectDependencies) = postProject
-		{4A8ACC41-CB34-43FF-9851-80B2E3C73554} = {4A8ACC41-CB34-43FF-9851-80B2E3C73554}
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F} = {80487A98-7BA7-4F7A-99FC-B17F3D41330F}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSSParser", "CSSParser\CSSParser.csproj", "{4A8ACC41-CB34-43FF-9851-80B2E3C73554}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevPrint", "DevPrint\DevPrint.csproj", "{B23BD638-6FEA-4E5B-A7DD-D30442BB21A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +41,6 @@ Global
 		{553E6015-35F0-42B9-8666-59B46C924D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{553E6015-35F0-42B9-8666-59B46C924D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{553E6015-35F0-42B9-8666-59B46C924D39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47479896-3CAA-419A-9D44-035A9F2F5E58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47479896-3CAA-419A-9D44-035A9F2F5E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47479896-3CAA-419A-9D44-035A9F2F5E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47479896-3CAA-419A-9D44-035A9F2F5E58}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -60,10 +53,10 @@ Global
 		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A8ACC41-CB34-43FF-9851-80B2E3C73554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A8ACC41-CB34-43FF-9851-80B2E3C73554}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A8ACC41-CB34-43FF-9851-80B2E3C73554}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A8ACC41-CB34-43FF-9851-80B2E3C73554}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23BD638-6FEA-4E5B-A7DD-D30442BB21A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23BD638-6FEA-4E5B-A7DD-D30442BB21A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23BD638-6FEA-4E5B-A7DD-D30442BB21A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23BD638-6FEA-4E5B-A7DD-D30442BB21A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

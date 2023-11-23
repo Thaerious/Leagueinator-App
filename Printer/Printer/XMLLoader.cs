@@ -5,7 +5,7 @@ using System.Xml.Linq;
 namespace Leagueinator.Printer {
     public class XMLLoader {
         Dictionary<string, Style> loadedStyles = new();
-        PrinterElement? rootElement;
+        PrinterElement rootElement = new();
 
         public Dictionary<string, Style> Styles {
             get => loadedStyles;
@@ -21,14 +21,17 @@ namespace Leagueinator.Printer {
             this.ApplyStyles();
         }
 
+        /// <summary>
+        /// Merge current styles with loaded styles.
+        /// Typically the current styles are empty.
+        /// </summary>
         public void ApplyStyles() {
-            if (rootElement == null) throw new NullReferenceException(nameof(rootElement));
             this.ApplyStylesTo(this.rootElement);
         }
 
         void ApplyStylesTo(PrinterElement current) {
             if (loadedStyles.ContainsKey(current.Name)) {
-                current.Style.MergeWith( loadedStyles[current.Name]);
+                current.Style.MergeWith(loadedStyles[current.Name]);
             }
 
             foreach (var className in current.ClassList) {
