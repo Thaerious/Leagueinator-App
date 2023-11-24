@@ -1,16 +1,16 @@
-﻿using Leagueinator.Printer;
+﻿using Leagueinator.Model;
+using Leagueinator.Printer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevPrint {
     internal class CanvasPane : Panel {
-        private PrinterElement? document;
-
+        public LeagueEvent LeagueEvent { get; set; }
+        private PrinterElement document = new();
+        private PrinterElement template = new();
+        
         public CanvasPane() {
             this.SetupPrintElements();
         }
@@ -18,14 +18,9 @@ namespace DevPrint {
         public void SetupPrintElements() {
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            string[] resourceNames = assembly.GetManifestResourceNames();
             string xmlResource = "DevPrint.assets.layout.xml";
             string ssResource = "DevPrint.assets.style.ss";
-            string template = "DevPrint.assets.template.xml";
-
-            if (xmlResource is null) throw new NullReferenceException(xmlResource);
-            if (ssResource is null) throw new NullReferenceException(ssResource);
-            if (template is null) throw new NullReferenceException(template);
+            string templResource = "DevPrint.assets.template.xml";            
 
             using Stream? xmlStream = assembly.GetManifestResourceStream(xmlResource) ?? throw new NullReferenceException();
             using StreamReader xmlReader = new StreamReader(xmlStream);
@@ -33,13 +28,16 @@ namespace DevPrint {
             using Stream? ssStream = assembly.GetManifestResourceStream(ssResource) ?? throw new NullReferenceException();
             using StreamReader ssReader = new StreamReader(ssStream);
 
+            using Stream? templStream = assembly.GetManifestResourceStream(templResource) ?? throw new NullReferenceException();
+            using StreamReader templReader = new StreamReader(templStream);
+
             string xmlString = xmlReader.ReadToEnd();
             string ssString = ssReader.ReadToEnd();
+            string templString = templReader.ReadToEnd();
 
-            XMLLoader xmlLoader;
             try {
-                xmlLoader = new(xmlString, ssString);
-                this.document = xmlLoader.Root;
+                this.document = XMLLoader.Load(xmlString, ssString);
+                this.template = XMLLoader.Load(templString, ssString);
             }
             catch (Exception ex) {
                 Debug.Write(ex.ToString());
@@ -49,6 +47,9 @@ namespace DevPrint {
         protected override void OnPaint(PaintEventArgs e) {
             Debug.WriteLine($"OnPaint {this.Width} {this.Height}");
             base.OnPaint(e);
+
+            this.document.Update();
+            this.document.Draw(e.Graphics);
         }
     }
 }

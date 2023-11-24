@@ -9,7 +9,7 @@ namespace Leagueinator.Model {
     public class Match {
         public readonly LeagueSettings Settings;               
 
-        [JsonIgnore] [DoSeek] public ObservableDiscreteCollection<Team> Teams => this._teams;
+        [JsonIgnore] [DoSeek] public DiscreteList<Team> Teams => this._teams;
 
         [JsonIgnore] public List<PlayerInfo> Players => this.SeekDeep<PlayerInfo>().Unique();
 
@@ -23,7 +23,7 @@ namespace Leagueinator.Model {
         public Match(LeagueSettings settings) {
             this.Settings = settings;
             this.EndsPlayed = this.Settings.NumberOfEnds;
-            this._teams = new ObservableDiscreteCollection<Team>(settings.MatchSize);
+            this._teams = new DiscreteList<Team>(settings.MatchSize, settings);
 
             for (int i = 0; i < settings.MatchSize; i++) {
                 this.Teams[i] = new Team(settings);
@@ -98,6 +98,6 @@ namespace Leagueinator.Model {
             }
         }
 
-        [JsonProperty] private readonly ObservableDiscreteCollection<Team> _teams;
+        [JsonProperty] private readonly DiscreteList<Team> _teams;
     }
 }

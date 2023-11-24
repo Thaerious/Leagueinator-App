@@ -1,7 +1,5 @@
 
 .canvas {
-    Width : 1100;
-    Height : 2200;
     BackgroundColor : AliceBlue;
 }
 
@@ -9,8 +7,6 @@
     Flex_Direction : Row;
     BackgroundColor : WhiteSmoke;
     Display : Flex;
-    Width : 600;
-    Height : 600;
     Padding : 5;
     BorderColor : Black;
     BorderSize: 1;
@@ -40,4 +36,8 @@ div {
     BackgroundColor : Blue;
     Width : 25;
     Height : 25;
+}
+
+.template_outer {
+    
 }

@@ -10,8 +10,8 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
     }
 
     [Serializable]
-    public class ObservableDiscreteCollection<V> {
-        public delegate void CollectionChangedHnd(ObservableDiscreteCollection<V> source, Args args);
+    public class NullableDiscreteList<V> {
+        public delegate void CollectionChangedHnd(NullableDiscreteList<V> source, Args args);
         public event CollectionChangedHnd CollectionChanged = delegate { };
         [JsonProperty] public readonly int MaxSize;
 
@@ -29,12 +29,7 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
             }
         }
 
-        /// <summary>
-        /// Create a new collection instantiating all objects with the constructor that matches with args.
-        /// </summary>
-        /// <param name="size"></param>
-        /// <param name="args"></param>
-        public ObservableDiscreteCollection(int size) {
+        public NullableDiscreteList(int size) {
             this.MaxSize = size;
         }
 
@@ -103,6 +98,17 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
         public bool Contains(V value) {
             return this.Values.Contains(value);
         }
+
+        /// <summary>
+        /// Return true if the vavlue at index is not null.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public bool Has(int index) {
+            return this.inner.ContainsKey(index);
+        }
+
+        public V?[] toArray() => this.inner.Values.ToArray();
 
         [Newtonsoft.Json.JsonIgnore] public int Count => this.inner.Count;
         [DoSeek][Newtonsoft.Json.JsonIgnore] public List<V?> Values => this.inner.Values.ToList();

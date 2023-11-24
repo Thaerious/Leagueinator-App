@@ -26,10 +26,8 @@ namespace Leagueinator.Model {
             }
         }
 
-
         [JsonConstructor]
         public Round(LeagueSettings settings) {
-            if (settings is null) throw new NullReferenceException("Settings");
             this.Settings = settings;
             for (int i = 0; i < settings.LaneCount; i++) this._matches.Add(new Match(settings));
 

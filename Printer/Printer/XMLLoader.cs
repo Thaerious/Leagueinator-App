@@ -7,6 +7,12 @@ namespace Leagueinator.Printer {
         Dictionary<string, Style> loadedStyles = new();
         PrinterElement rootElement = new();
 
+        public static PrinterElement Load(string xmlString, string ssString) {
+            var xmlLoader = new XMLLoader(xmlString, ssString);
+            if (xmlLoader.Root == null) throw new NullReferenceException();
+            return xmlLoader.Root;
+        }
+
         public Dictionary<string, Style> Styles {
             get => loadedStyles;
         }

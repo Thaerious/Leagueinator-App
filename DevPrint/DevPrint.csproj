@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Leagueinator_Model\Leagueinator_Model.csproj" />
     <ProjectReference Include="..\Printer\Printer.csproj" />
   </ItemGroup>
 

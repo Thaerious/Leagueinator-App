@@ -1,9 +1,9 @@
 ﻿using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
+using Leagueinator_Model.Model.Tables;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 
@@ -45,9 +45,10 @@ namespace Leagueinator.Model {
 
         /// <summary>
         /// Add a new empty round to this event.
-        /// The new round will contain all players (idle) found in this event.
-        /// The round will be populated with empty matches equal to the lane cound.
+        /// The new round will contain all players in this event as idle players.
+        /// The new round contains empty matches equal to the lane count.
         /// </summary>
+        /// <returns>The new round.</returns>
         public Round NewRound() {
             var round = new Round(this.SeekDeep<PlayerInfo>().Unique(), this.Settings);
             this.Rounds.Add(round);
@@ -124,174 +125,29 @@ namespace Leagueinator.Model {
 
         public DataSet ToDataSet() {
             DataSet dataSet = new();
-            
-            var pTable = MakeEventTable();
-            var playerTable = MakePlayersTable();
-            PopulateEventTable(pTable, playerTable);            
-            dataSet.Tables.Add(pTable);
-            dataSet.Tables.Add(playerTable);
 
-            var sumTable = MakeSummaryTable();
-            PopulateSummaryTable(sumTable);
-            dataSet.Tables.Add(sumTable);                       
+            var eventTable = EventTable.MakeEventTable();
+            var teamTable = TeamTable.MakeTeamTable();
+
+            PopulateEventTable(new EventTable(eventTable), new TeamTable(teamTable));
+            dataSet.Tables.Add(eventTable);
+            dataSet.Tables.Add(teamTable);
 
             return dataSet;
         }
 
-        private void PopulateEventTable(DataTable eventTable, DataTable playersTable) {
+        private void PopulateEventTable(EventTable eventTable, TeamTable teamTable) {
             for (int round = 0; round < this.Rounds.Count; round++) {
                 for (int lane = 0; lane < this.Rounds[round].Matches.Count; lane++) {
                     var match = this.Rounds[round].Matches[lane];
                     if (match.Players.Count == 0) continue;
 
                     foreach (Team team in match.Teams.Values.NotNull()) {
-                        var names = team.Players.Values.NotNull().Select(p => p.Name).ToList();
-                        names.Sort();
-                        var key =  String.Join(",", names);
-
-                        var eRow = eventTable.NewRow();
-                        eRow["round"] = round;
-                        eRow["lane"] = lane;
-                        eRow["team"] = key;
-                        eRow["bowls"] = team.Bowls;
-                        eRow["ends"] = match.EndsPlayed;
-                        eventTable.Rows.Add(eRow);
-
-                        foreach(PlayerInfo player in match.Players) {
-                            var pRow = playersTable.NewRow();
-                            pRow["event.uid"] = eRow["uid"];
-                            pRow["name"] = player.Name;
-                            playersTable.Rows.Add(pRow);
-                        }
+                        int teamId = teamTable.TryAddTeam(team.Players.toArray().Select(p => p.Name).ToArray());
+                        eventTable.AddRow(round, lane, teamId, team.Bowls, match.EndsPlayed);
                     }
                 }
             }
-        }
-
-        private void PopulateSummaryTable(DataTable table) {
-            for (int round = 0; round < this.Rounds.Count; round++) {
-                for (int lane = 0; lane < this.Rounds[round].Matches.Count; lane++) {
-                    var match = this.Rounds[round].Matches[lane];
-                    if (match.Players.Count == 0) continue;
-
-                    foreach (Team team in match.Teams.Values.NotNull()) {
-                        var names = team.Players.Values.NotNull().Select(p => p.Name).ToList();
-                        names.Sort();
-                        var key = String.Join(",", names);
-                        var rows = table.Select($"team = '{key}'");
-
-                        if (rows.Length == 0) {
-                            var newRow = table.NewRow();
-                            newRow["team"] = key;
-                            newRow["bowls"] = 0;
-                            newRow["ends"] = 0;
-                            table.Rows.Add(newRow);
-                        }
-
-                        var row = table.Select($"team = '{key}'")[0];
-                        row["bowls"] = team.Bowls + (int)row["bowls"];
-                        row["ends"] = match.EndsPlayed + (int)row["ends"];
-                    }
-                }
-            }
-        }
-
-        public static DataTable MakePlayersTable() {
-            DataTable table = new DataTable("players");
-            DataColumn column;
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "event.uid"
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = typeof(string),
-                ColumnName = "name"
-            };
-            table.Columns.Add(column);
-
-            return table;
-        }
-
-        public static DataTable MakeEventTable() {
-            DataTable table = new DataTable("event");
-            DataColumn column;
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "uid",
-                Unique = true,
-                AutoIncrement = true
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "round"
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "lane"
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = typeof(string),
-                ColumnName = "team"
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "bowls"
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "ends"
-            };
-            table.Columns.Add(column);
-
-            return table;
-        }
-
-        public static DataTable MakeSummaryTable() {
-            DataTable table = new DataTable("summary");
-            DataColumn column;
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "uid",
-                Unique = true,
-                AutoIncrement = true
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = typeof(string),
-                ColumnName = "team",
-                Unique = true
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "bowls"
-            };
-            table.Columns.Add(column);
-
-            column = new DataColumn {
-                DataType = System.Type.GetType("System.Int32"),
-                ColumnName = "ends"
-            };
-            table.Columns.Add(column);
-
-            return table;
         }
     }
 

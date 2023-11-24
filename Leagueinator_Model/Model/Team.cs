@@ -34,7 +34,7 @@ namespace Leagueinator.Model {
             }
         }
 
-        [JsonIgnore] [DoSeek] public ObservableDiscreteCollection<PlayerInfo> Players => this._players;
+        [JsonIgnore] [DoSeek] public NullableDiscreteList<PlayerInfo> Players => this._players;
         
         [OnDeserialized]
         internal void OnDeserializedMethod(StreamingContext context) {
@@ -46,7 +46,7 @@ namespace Leagueinator.Model {
         [JsonConstructor]
         public Team(LeagueSettings settings) {
             this.Settings = settings;
-            this._players = new ObservableDiscreteCollection<PlayerInfo>(settings.TeamSize);
+            this._players = new NullableDiscreteList<PlayerInfo>(settings.TeamSize);
 
             this.Players.CollectionChanged += (src, args) => {
                 LeagueSingleton.Invoke(this, new ModelUpdateEventHandlerArgs(Change.COMPOSITION, "players"));
@@ -95,7 +95,7 @@ namespace Leagueinator.Model {
             }
         }
 
-        [JsonProperty] public readonly ObservableDiscreteCollection<PlayerInfo> _players;
+        [JsonProperty] public readonly NullableDiscreteList<PlayerInfo> _players;
 
         [JsonProperty] private int _bowls = 0;
     }

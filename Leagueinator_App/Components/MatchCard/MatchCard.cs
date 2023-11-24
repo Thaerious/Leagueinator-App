@@ -7,7 +7,7 @@ using static Leagueinator.Model.Team;
 
 namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchCard : UserControl {
-        private ObservableDiscreteCollection<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
+        private DiscreteList<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
         private TeamUpdateHnd team0UpdateHnd = delegate { }, team1UpdateHnd = delegate { };
 
         public Match? Match {
@@ -63,7 +63,7 @@ namespace Leagueinator.App.Components.MatchCard {
             }
         }
 
-        private void PlayersCollectionChanged(FlowLayoutPanel flow, ObservableDiscreteCollection<PlayerInfo> source, ObservableDiscreteCollection<PlayerInfo>.Args args) {
+        private void PlayersCollectionChanged(FlowLayoutPanel flow, DiscreteList<PlayerInfo> source, DiscreteList<PlayerInfo>.Args args) {
             Label label = (Label)flow.Controls[args.Key];
 
             switch (args.Action) {
