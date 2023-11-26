@@ -23,8 +23,6 @@ namespace DevPrint {
             round.Matches[1].Teams[0].AddPlayer(new("Betty"));
             round.Matches[1].Teams[1].AddPlayer(new("Charles"));
             round.Matches[1].Teams[1].AddPlayer(new("Dianne"));
-
-            Debug.WriteLine(this.ToXML());
         }
     }
 }

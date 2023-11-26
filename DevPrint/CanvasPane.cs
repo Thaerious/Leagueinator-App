@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Printer;
+using Leagueinator_Model.Model.Tables;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,16 @@ using System.Reflection;
 
 namespace DevPrint {
     internal class CanvasPane : Panel {
-        public LeagueEvent LeagueEvent { get; set; }
+
+        private LeagueEvent _leagueEvent;
+        public LeagueEvent LeagueEvent { 
+            get => _leagueEvent;
+            set {
+                this._leagueEvent = value;
+                this.ApplyEvent();
+            }
+        }
+
         private PrinterElement document = new();
         private PrinterElement template = new();
         
@@ -41,6 +51,26 @@ namespace DevPrint {
             }
             catch (Exception ex) {
                 Debug.Write(ex.ToString());
+            }
+        }
+
+        private void ApplyEvent() {
+            var container = this.document.Children[".container"][0];
+            var leagueData = this.LeagueEvent.ToDataSet();
+
+            container.Children.Clear();
+
+            var eventTable = new EventTable(leagueData.Tables["event"] ?? throw new NullReferenceException());
+            var teamTable = new TeamTable(leagueData.Tables["team"] ?? throw new NullReferenceException());
+
+            foreach (int id in teamTable.AllIDs()) {
+                var template = this.template.Clone();
+                container.AddChild(template);
+
+                foreach (string name in teamTable.GetNames(id)) {
+                    var nameElement = new TextElement(name);
+                    template.Children.QuerySelector(".players").AddChild(nameElement);
+                }
             }
         }
 

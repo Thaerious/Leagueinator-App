@@ -92,5 +92,19 @@ namespace Leagueinator_Model.Model.Tables {
 
             return -1;
         }
+
+        /// <summary>
+        /// Retrieve an array containing all unique ids.
+        /// Will only retrieve each id once.
+        /// </summary>
+        /// <returns>Array of ids</returns>
+        public int[] AllIDs() {
+            SortedSet<int> ids = new();
+            foreach (DataRow row in this.source.AsEnumerable()) {
+                int id = (row.Field<int>("id"));
+                if (!ids.Contains(id)) ids.Add(id);
+            }
+            return ids.ToArray();
+        }
     }
 }

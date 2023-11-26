@@ -6,7 +6,7 @@
 }
 
 .container {
-    Flex_Direction : Row;
+    Flex_Direction : Column;
     BackgroundColor : WhiteSmoke;
     Display : Flex;
     Width : 600;
@@ -40,4 +40,18 @@ div {
     BackgroundColor : Blue;
     Width : 25;
     Height : 25;
+}
+
+.template{
+    Display : Flex;
+    BorderColor : Red;
+    BorderSize : 2;
+}
+
+.players{
+    Display : Flex;
+    Flex_Direction : Column;    
+    Padding: 10;
+    BorderColor : Black;
+    BorderSize : 1;
 }

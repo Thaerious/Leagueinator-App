@@ -1,4 +1,6 @@
 ﻿using Leagueinator.CSSParser;
+using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Text;
@@ -12,18 +14,23 @@ namespace Leagueinator.Printer {
     public enum Position { Static, Relative, Fixed }
 
     public class Style {
-        [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Row;
-        [CSS] public Justify_Content Justify_Content = Justify_Content.Flex_start;
-        [CSS] public Align_Items Align_Items = Align_Items.Flex_start;
         [CSS] public Display Display = Display.Flex;
         [CSS] public Position Position = Position.Static;
-        [CSS] public Cardinal<float> Padding = new(0f);
+
         [CSS] public PointF Location = new();
         [CSS] public float? Width = null;
         [CSS] public float? Height = null;
         [CSS] public Color? BackgroundColor = null;
+
+        [CSS] public Cardinal<float> Margin = new(0f);
+        [CSS] public Cardinal<float> Padding = new(0f);
         [CSS] public Cardinal<Color> BorderColor = new();
         [CSS] public Cardinal<float> BorderSize = new();
+
+        [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Row;
+        [CSS] public Justify_Content Justify_Content = Justify_Content.Flex_start;
+        [CSS] public Align_Items Align_Items = Align_Items.Flex_start;
+
         [CSS] public Font Font = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Point);
         [CSS] public Brush Brush = new SolidBrush(Color.Black);
         [CSS] public Pen Pen = new(Color.Black);
@@ -31,6 +38,25 @@ namespace Leagueinator.Printer {
             Alignment = StringAlignment.Near,
             LineAlignment = StringAlignment.Near
         };
+
+        public string Selector { get; init; }
+
+        public Style() : this("") { }
+
+        public Style(string Selector) {
+            this.Selector = Selector;
+        }
+
+        public Style(Style that) {
+            this.Selector = that.Selector;
+
+            foreach (FieldInfo field in typeof(Style).GetFields()) {
+                CSS? css = field.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                var value = field.GetValue(that);
+                field.SetValue(this, value);
+            }
+        }
 
         public virtual void DoSize(PrinterElement element) { }
         public virtual void DoLayout(PrinterElement element) { }
@@ -103,6 +129,17 @@ namespace Leagueinator.Printer {
             return sb.ToString();
         }
 
+        public static Dictionary<string, FieldInfo> Fields { get; }  = new();
+
+        static Style() {
+            foreach (FieldInfo field in typeof(Style).GetFields()) {
+                CSS? css = field.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                var key = css.Key?.ToLower() ?? field.Name.ToPlainCase();
+                Fields[key] = field;
+                Debug.WriteLine($"{key} = {field}");
+            }
+        }
         private Font? _font = null;
         private Brush? _brush = null;
         private Pen? _pen = null;

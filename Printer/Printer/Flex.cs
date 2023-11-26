@@ -1,10 +1,15 @@
-﻿using Leagueinator.Utility;
-using Printer.Printer;
-using System.Diagnostics;
+﻿using Printer.Printer;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
+
+        public Flex() : base("") { }
+
+        public Flex(string Selector) : base(Selector){
+            this.Selector = Selector;
+        }
+
         public override void DoSize(PrinterElement element) {
             float maxWidth = 0f;
             float maxHeight = 0f;
@@ -50,35 +55,52 @@ namespace Leagueinator.Printer {
 
         public override void DoDraw(PrinterElement element, Graphics g) {
             if (this.BackgroundColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.OuterRect);
+                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.InnerRect);
             }
 
+            var left = Margin.Left + BorderSize.Left / 2;
+            var right = -Margin.Right - BorderSize.Right / 2;
+            var top = Margin.Top + BorderSize.Top / 2;
+            var bottom = -Margin.Bottom - BorderSize.Top / 2;
+
             if (this.BorderColor.Left != default) {
+                var p1 = new PointF(left, Margin.Top);
+                var p2 = new PointF(left, -Margin.Bottom);
+
                 g.DrawLine(
                     new Pen(BorderColor.Left, BorderSize.Left),
-                    element.OuterRect.TopLeft().Translate(new PointF(BorderSize.Left / 2, 0)),
-                    element.OuterRect.BottomLeft().Translate(new PointF(BorderSize.Left / 2, 0))
+                    element.OuterRect.TopLeft().Translate(p1),
+                    element.OuterRect.BottomLeft().Translate(p2)
                 );
             }
             if (this.BorderColor.Right != default) {
+                var p1 = new PointF(right, Margin.Top);
+                var p2 = new PointF(right, -Margin.Bottom);
+
                 g.DrawLine(
                     new Pen(BorderColor.Right, BorderSize.Right),
-                    element.OuterRect.TopRight().Translate(new PointF(-BorderSize.Right / 2, 0)),
-                    element.OuterRect.BottomRight().Translate(new PointF(-BorderSize.Right / 2, 0))
+                    element.OuterRect.TopRight().Translate(p1),
+                    element.OuterRect.BottomRight().Translate(p2)
                 );
             }
             if (this.BorderColor.Top != default) {
+                var p1 = new PointF(Margin.Left, top);
+                var p2 = new PointF(-Margin.Right, top);
+
                 g.DrawLine(
                     new Pen(BorderColor.Top, BorderSize.Top),
-                    element.OuterRect.TopLeft().Translate(new PointF(0, BorderSize.Top / 2)),
-                    element.OuterRect.TopRight().Translate(new PointF(0, BorderSize.Top / 2))
+                    element.OuterRect.TopLeft().Translate(p1),
+                    element.OuterRect.TopRight().Translate(p2)
                 );
             }
             if (this.BorderColor.Bottom != default) {
+                var p1 = new PointF(Margin.Left, bottom);
+                var p2 = new PointF(-Margin.Right, bottom);
+
                 g.DrawLine(
                     new Pen(BorderColor.Bottom, BorderSize.Bottom),
-                    element.OuterRect.BottomLeft().Translate(new PointF(0, -BorderSize.Bottom / 2)),
-                    element.OuterRect.BottomRight().Translate(new PointF(0, -BorderSize.Bottom / 2))
+                    element.OuterRect.BottomLeft().Translate(p1),
+                    element.OuterRect.BottomRight().Translate(p2)
                 );
             }
 

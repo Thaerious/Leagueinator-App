@@ -24,5 +24,14 @@
             ArgumentNullException.ThrowIfNull(obj, nameof(obj));
             return obj.GetHashCode().ToString(format);
         }
+
+        /// <summary>
+        /// Creates a copy of the string in all lower case with spliters (-, _).
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string ToPlainCase(this string source) {
+            return source.ToLower().Split('_', '-').DelString("");
+        }
     }
 }

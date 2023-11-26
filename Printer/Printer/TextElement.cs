@@ -4,6 +4,20 @@ namespace Leagueinator.Printer {
     public class TextElement : PrinterElement {
         public string text = "";
 
+        public override PrinterElement Clone() {
+            TextElement clone = new(this.text) {
+                Style = this.Style,
+                Name = this.Name
+            };
+
+            clone.ClassList.AddRange(this.ClassList);
+
+            foreach (PrinterElement child in this.Children) {
+                clone.AddChild(child.Clone());
+            }
+            return clone;
+        }
+
         public override SizeF InnerSize {
             get {
                 using var bitmap = new Bitmap(1, 1);

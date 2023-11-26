@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
@@ -62,7 +63,7 @@ namespace Leagueinator.Printer {
         public delegate void DrawDelegate(Graphics g, PrinterElement ele);
         public event DrawDelegate OnDraw = delegate { };
 
-    public string Name = "";
+        public string Name = "";
         public Style Style = new Flex();
         public PrinterElementList Children => new(this._children);
         public List<string> ClassList = new();
@@ -133,6 +134,28 @@ namespace Leagueinator.Printer {
             this.Name = this.GetHashCode().ToString("X");
         }
 
+        public PrinterElement(string name, params string[] classes) {
+            this.Style = new Flex();
+            this.Name = name;
+            foreach (string className in classes) {
+                this.ClassList.Add(className);
+            }
+        }
+
+        public virtual PrinterElement Clone() {
+            PrinterElement clone = new() {
+                Style = this.Style,
+                Name = this.Name
+            };
+
+            clone.ClassList.AddRange(this.ClassList);
+
+            foreach (PrinterElement child in this.Children) {
+                clone.AddChild(child.Clone());
+            }
+            return clone;
+        }
+
         public void Update() {
             this.Style.DoSize(this);
             this.Style.DoLayout(this);
@@ -142,6 +165,13 @@ namespace Leagueinator.Printer {
             this.Style.DoDraw(this, g);
             this.OnDraw.Invoke(g, this);
             this.Children.ForEach(child => child.Draw(g));
+        }
+
+        public PrinterElementList AddChildren(PrinterElementList children) {
+            foreach (var child in children) {
+                this.AddChild(child);
+            }
+            return children;
         }
 
         public PrinterElement AddChild(PrinterElement that) {
@@ -171,7 +201,7 @@ namespace Leagueinator.Printer {
         }
 
         public override string ToString() {
-            return $"[\"{this.Name}\", {this.ClassList.DelString(".")}, {this.OuterRect}, {this.Children.Count}]";
+            return $"[\"{this.Name}\", {{{this.ClassList.DelString(".")}}}, {this.OuterRect}, {this.Children.Count}]";
         }
 
         private readonly PrinterElementList _children = new();

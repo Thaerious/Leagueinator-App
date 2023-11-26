@@ -1,5 +1,5 @@
 ﻿namespace PrinterTestForm {
-    partial class CustomCanvas {
+    partial class PrinterCanvas {
         /// <summary> 
         /// Required designer variable.
         /// </summary>

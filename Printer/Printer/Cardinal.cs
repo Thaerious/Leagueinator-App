@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using Leagueinator.CSSParser;
 
 namespace Leagueinator.Printer {
@@ -30,18 +31,20 @@ namespace Leagueinator.Printer {
             target = new();
 
             string[] split = source.Split();
-            object?[] values = new object[split.Length];
+            List<object> values = new();
 
             for (int i = 0; i < split.Length; i++) {
-                MultiParse.TryParse(split[i], typeof(T), out values[i]);
+                bool parsed = MultiParse.TryParse(split[i], typeof(T), out object? obj);
+                if (parsed && obj != null) values.Add(obj);
             }
 
             if (split.Length == 0) throw new Exception("No cardinal values found");
+            if (values.Count == 0) throw new Exception("No cardinal values found");
 
             target.Top = (T?)values[0];
-            target.Right = values.Length > 1 ? (T?)values[1] : (T?)values[0];
-            target.Bottom = values.Length > 2 ? (T?)values[2] : (T?)values[0];
-            target.Left = values.Length > 3 ? (T?)values[3] : (T?)values[0];
+            target.Right = values.Count > 1 ? (T?)values[1] : (T?)values[0];
+            target.Bottom = values.Count > 2 ? (T?)values[2] : (T?)values[0];
+            target.Left = values.Count > 3 ? (T?)values[3] : (T?)values[0];
 
             return true;
         }

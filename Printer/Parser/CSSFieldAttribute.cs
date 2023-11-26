@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Leagueinator.CSSParser {
 
-namespace Leagueinator.CSSParser {
-
-    [System.AttributeUsage(System.AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field)]
     public class CSS : Attribute{
-        public readonly string Key;
+        public readonly string? Key;
 
-        public CSS() { 
-            this.Key = "";
+        public CSS() {
+            this.Key = default;
         }
 
         public CSS(string key) {

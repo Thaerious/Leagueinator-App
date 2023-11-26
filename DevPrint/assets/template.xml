@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<root>
-  I am a template
-</root>
+<div class="template">
+  <names class="players">
+  </names>
+</div>

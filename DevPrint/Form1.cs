@@ -8,18 +8,22 @@ namespace DevPrint {
             InitializeComponent();
 
             var mockEvent = new MockEvent();
-            var dataSet = mockEvent.ToDataSet();
+            //var dataSet = mockEvent.ToDataSet();
 
-            foreach (DataTable table in dataSet.Tables) Debug.WriteLine(table.TableName);
+            Debug.WriteLine("<Form1>");
+            this.canvasPane1.LeagueEvent = mockEvent;
+            Debug.WriteLine("</Form1>");
 
-            foreach (DataRow row in dataSet.Tables["team"]!.Rows) {
-                StringBuilder sb = new StringBuilder();
-                foreach (DataColumn column in row.Table.Columns) {
-                    sb.Append(column.ColumnName + ": " + row[column] + "; ");
-                }
-                Debug.WriteLine(sb.ToString());
-            }
-            Debug.WriteLine(dataSet.Tables["team"]!.Rows.Count + " rows");
+            //foreach (DataTable table in dataSet.Tables) Debug.WriteLine(table.TableName);
+
+            //foreach (DataRow row in dataSet.Tables["team"]!.Rows) {
+            //    StringBuilder sb = new StringBuilder();
+            //    foreach (DataColumn column in row.Table.Columns) {
+            //        sb.Append(column.ColumnName + ": " + row[column] + "; ");
+            //    }
+            //    Debug.WriteLine(sb.ToString());
+            //}
+            //Debug.WriteLine(dataSet.Tables["team"]!.Rows.Count + " rows");
         }
     }
 }

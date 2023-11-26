@@ -11,7 +11,7 @@ namespace Leagueinator.Printer {
             var xmlLoader = new XMLLoader(xmlString, ssString);
             if (xmlLoader.Root == null) throw new NullReferenceException();
             return xmlLoader.Root;
-        }
+        }                
 
         public Dictionary<string, Style> Styles {
             get => loadedStyles;
@@ -22,9 +22,15 @@ namespace Leagueinator.Printer {
         }
 
         public XMLLoader(string xmlString, string ssString) {
+            var sw = Stopwatch.StartNew();
+
             this.LoadXML(xmlString);
-            this.LoadStyle(ssString);
+            this.loadedStyles = StyleLoader.Load(ssString);
             this.ApplyStyles();
+
+            sw.Stop();
+
+            Debug.WriteLine($"XMLLoader elapsed time {sw.Elapsed.TotalMilliseconds} ms");
         }
 
         /// <summary>
@@ -36,8 +42,12 @@ namespace Leagueinator.Printer {
         }
 
         void ApplyStylesTo(PrinterElement current) {
-            if (loadedStyles.ContainsKey(current.Name)) {
-                current.Style.MergeWith(loadedStyles[current.Name]);
+            if (this.loadedStyles.ContainsKey("*")) {
+                current.Style.MergeWith(loadedStyles["*"]);
+            }
+
+            if (this.loadedStyles.TryGetValue(current.Name, out Style? value)) {
+                current.Style.MergeWith(value);
             }
 
             foreach (var className in current.ClassList) {
@@ -48,18 +58,6 @@ namespace Leagueinator.Printer {
 
             foreach (PrinterElement child in current.Children) {
                 ApplyStylesTo(child);
-            }
-        }
-
-        public void LoadStyle(string ssString) {
-            var styleSheet = StyleLoader.Load(ssString);
-            if (styleSheet == null) throw new NullReferenceException(nameof(styleSheet));
-
-            foreach (string key in styleSheet.Keys) {
-                StyleDeclaration styleDeclaration = styleSheet[key];
-                var flex = new Flex();
-                styleDeclaration.ApplyTo(flex);
-                loadedStyles[key] = flex;
             }
         }
 
