@@ -1,4 +1,5 @@
 ﻿using Printer.Printer;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Leagueinator.Printer {

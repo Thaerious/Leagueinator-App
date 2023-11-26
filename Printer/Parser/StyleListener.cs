@@ -4,8 +4,6 @@ using Antlr4.Runtime.Tree;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
 using System.Diagnostics;
-using System.Reflection;
-using System.Text;
 
 namespace Leagueinator.CSSParser {
 
@@ -15,8 +13,8 @@ namespace Leagueinator.CSSParser {
 
         public override void EnterStyle([NotNull] StyleParser.StyleContext context) {
             var selector = context.selector().GetText();
-            if (!Styles.ContainsKey(selector)) Styles[selector] = new(selector);
-            style = new Flex(selector);
+            if (!Styles.ContainsKey(selector)) Styles[selector] = new Flex(selector);
+            style = Styles[selector];
         }
 
         public override void EnterProperty([NotNull] StyleParser.PropertyContext context) {
@@ -25,6 +23,7 @@ namespace Leagueinator.CSSParser {
             var field = Style.Fields[key];
 
             MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
+            Debug.WriteLine(newObject);
             field.SetValue(this.style, newObject);
         }
     }
