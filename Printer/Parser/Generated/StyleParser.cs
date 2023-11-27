@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from StyleParser.g4 by ANTLR 4.13.1
+// Generated from ./StyleParser.g4 by ANTLR 4.13.1
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -36,8 +36,8 @@ public partial class StyleParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		OPAR=1, DOT=2, HASH=3, STRING=4, WS=5, KEY=6, COLON=7, CPAR=8, MM_WS=9, 
-		SEMI=10, VALUE=11, VM_WS=12;
+		OPAR=1, DOT=2, HASH=3, STAR=4, STRING=5, WS=6, KEY=7, COLON=8, CPAR=9, 
+		MM_WS=10, SEMI=11, VALUE=12, VM_WS=13;
 	public const int
 		RULE_styles = 0, RULE_style = 1, RULE_selector = 2, RULE_property = 3;
 	public static readonly string[] ruleNames = {
@@ -45,11 +45,12 @@ public partial class StyleParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'{'", "'.'", "'#'", null, null, null, "':'", "'}'", null, "';'"
+		null, "'{'", "'.'", "'#'", "'*'", null, null, null, "':'", "'}'", null, 
+		"';'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "OPAR", "DOT", "HASH", "STRING", "WS", "KEY", "COLON", "CPAR", "MM_WS", 
-		"SEMI", "VALUE", "VM_WS"
+		null, "OPAR", "DOT", "HASH", "STAR", "STRING", "WS", "KEY", "COLON", "CPAR", 
+		"MM_WS", "SEMI", "VALUE", "VM_WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -119,7 +120,7 @@ public partial class StyleParser : Parser {
 			State = 11;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 28L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 60L) != 0)) {
 				{
 				{
 				State = 8;
@@ -219,6 +220,7 @@ public partial class StyleParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(StyleParser.STRING, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DOT() { return GetToken(StyleParser.DOT, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HASH() { return GetToken(StyleParser.HASH, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STAR() { return GetToken(StyleParser.STAR, 0); }
 		public SelectorContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -241,7 +243,7 @@ public partial class StyleParser : Parser {
 		SelectorContext _localctx = new SelectorContext(Context, State);
 		EnterRule(_localctx, 4, RULE_selector);
 		try {
-			State = 31;
+			State = 32;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case STRING:
@@ -267,6 +269,13 @@ public partial class StyleParser : Parser {
 				Match(HASH);
 				State = 30;
 				Match(STRING);
+				}
+				break;
+			case STAR:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 31;
+				Match(STAR);
 				}
 				break;
 			default:
@@ -313,13 +322,13 @@ public partial class StyleParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 33;
-			Match(KEY);
 			State = 34;
-			Match(COLON);
+			Match(KEY);
 			State = 35;
-			Match(VALUE);
+			Match(COLON);
 			State = 36;
+			Match(VALUE);
+			State = 37;
 			Match(SEMI);
 			}
 		}
@@ -335,17 +344,17 @@ public partial class StyleParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,12,39,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,5,0,10,8,0,10,0,12,0,13,
+		4,1,13,40,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,5,0,10,8,0,10,0,12,0,13,
 		9,0,1,0,1,0,1,1,1,1,1,1,5,1,20,8,1,10,1,12,1,23,9,1,1,1,1,1,1,2,1,2,1,
-		2,1,2,1,2,3,2,32,8,2,1,3,1,3,1,3,1,3,1,3,1,3,0,0,4,0,2,4,6,0,0,38,0,11,
-		1,0,0,0,2,16,1,0,0,0,4,31,1,0,0,0,6,33,1,0,0,0,8,10,3,2,1,0,9,8,1,0,0,
-		0,10,13,1,0,0,0,11,9,1,0,0,0,11,12,1,0,0,0,12,14,1,0,0,0,13,11,1,0,0,0,
-		14,15,5,0,0,1,15,1,1,0,0,0,16,17,3,4,2,0,17,21,5,1,0,0,18,20,3,6,3,0,19,
-		18,1,0,0,0,20,23,1,0,0,0,21,19,1,0,0,0,21,22,1,0,0,0,22,24,1,0,0,0,23,
-		21,1,0,0,0,24,25,5,8,0,0,25,3,1,0,0,0,26,32,5,4,0,0,27,28,5,2,0,0,28,32,
-		5,4,0,0,29,30,5,3,0,0,30,32,5,4,0,0,31,26,1,0,0,0,31,27,1,0,0,0,31,29,
-		1,0,0,0,32,5,1,0,0,0,33,34,5,6,0,0,34,35,5,7,0,0,35,36,5,11,0,0,36,37,
-		5,10,0,0,37,7,1,0,0,0,3,11,21,31
+		2,1,2,1,2,1,2,3,2,33,8,2,1,3,1,3,1,3,1,3,1,3,1,3,0,0,4,0,2,4,6,0,0,40,
+		0,11,1,0,0,0,2,16,1,0,0,0,4,32,1,0,0,0,6,34,1,0,0,0,8,10,3,2,1,0,9,8,1,
+		0,0,0,10,13,1,0,0,0,11,9,1,0,0,0,11,12,1,0,0,0,12,14,1,0,0,0,13,11,1,0,
+		0,0,14,15,5,0,0,1,15,1,1,0,0,0,16,17,3,4,2,0,17,21,5,1,0,0,18,20,3,6,3,
+		0,19,18,1,0,0,0,20,23,1,0,0,0,21,19,1,0,0,0,21,22,1,0,0,0,22,24,1,0,0,
+		0,23,21,1,0,0,0,24,25,5,9,0,0,25,3,1,0,0,0,26,33,5,5,0,0,27,28,5,2,0,0,
+		28,33,5,5,0,0,29,30,5,3,0,0,30,33,5,5,0,0,31,33,5,4,0,0,32,26,1,0,0,0,
+		32,27,1,0,0,0,32,29,1,0,0,0,32,31,1,0,0,0,33,5,1,0,0,0,34,35,5,7,0,0,35,
+		36,5,8,0,0,36,37,5,12,0,0,37,38,5,11,0,0,38,7,1,0,0,0,3,11,21,32
 	};
 
 	public static readonly ATN _ATN =

@@ -58,5 +58,9 @@ namespace PrinterTestForm {
                 Debug.WriteLine(ex);
             }
         }
+
+        private void ToolPrintXML_Click(object sender, EventArgs e) {
+            Debug.WriteLine(this.printerCanvas.RootElement.ToXML());
+        }
     }
 }
