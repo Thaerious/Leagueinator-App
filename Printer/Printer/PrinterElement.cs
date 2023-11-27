@@ -88,34 +88,18 @@ namespace Leagueinator.Printer {
         /// </summary>
         public virtual SizeF ContentSize { get; set; } = new();
 
-        public virtual SizeF BorderSize { get {
-                var width =
-                    ContentSize.Width +
-                    this.Style.Padding.Left +
-                    this.Style.Padding.Right +
-                    this.Style.BorderSize.Left +
-                    this.Style.BorderSize.Right;
+        public virtual SizeF BorderSize { get; set; } = new();
 
-                var height =
-                    ContentSize.Width +
-                    this.Style.Padding.Top +
-                    this.Style.Padding.Bottom +
-                    this.Style.BorderSize.Top +
-                    this.Style.BorderSize.Bottom;
-
-                return new SizeF(width, height);
-            }
-        }
 
         /// <summary>
         /// Set the occupied area of the element (incl border & padding).
         /// </summary>
         public virtual SizeF OuterSize {
             get {
-                var width = 
-                    ContentSize.Width + 
-                    this.Style.Padding.Left + 
-                    this.Style.Padding.Right + 
+                var width =
+                    ContentSize.Width +
+                    this.Style.Padding.Left +
+                    this.Style.Padding.Right +
                     this.Style.BorderSize.Left +
                     this.Style.BorderSize.Right +
                     this.Style.Margin.Left +
@@ -129,7 +113,7 @@ namespace Leagueinator.Printer {
                     this.Style.BorderSize.Bottom +
                     this.Style.Margin.Top +
                     this.Style.Margin.Bottom;
-               
+
                 return new SizeF(width, height);
             }
         }
@@ -169,10 +153,10 @@ namespace Leagueinator.Printer {
         public RectangleF BorderRect {
             get {
                 return new RectangleF(
-                    this.Location.X + this.Style.BorderSize.Left,
-                    this.Location.Y - this.Style.BorderSize.Top,
-                    this.OuterSize.Width,
-                    this.OuterSize.Height
+                    this.Location.X + this.Style.Margin.Left,
+                    this.Location.Y + this.Style.Margin.Top,
+                    this.BorderSize.Width + this.Style.Padding.Left + this.Style.Padding.Right,
+                    this.BorderSize.Height + this.Style.Padding.Top + this.Style.Padding.Bottom
                 );
             }
         }
@@ -293,9 +277,9 @@ namespace Leagueinator.Printer {
         }
 
         public XMLStringBuilder ToXML() {
-            XMLStringBuilder xml = new ();
+            XMLStringBuilder xml = new();
 
-            xml.OpenTag(this.Name, $"outer='{this.OuterRect}'", $"content='{this.ContentRect}'");
+            xml.OpenTag(this.Name, $"outer='{this.OuterRect}'", $"border='{this.BorderRect}'", $"content='{this.ContentRect}'");
             foreach (var child in this.Children) {
                 xml.AppendXML(child.ToXML());
             }

@@ -6,8 +6,18 @@ namespace Leagueinator.Printer {
 
         public Flex() : base("") { }
 
-        public Flex(string Selector) : base(Selector){
+        public Flex(string Selector) : base(Selector) {
             this.Selector = Selector;
+        }
+
+        private float? ContentWidth() {
+            if (this.Width == default) return default;
+            return this.Width - BorderSize.Left - BorderSize.Right;
+        }
+
+        private float? ContentHeight() {
+            if (this.Height == default) return default;
+            return this.Height - BorderSize.Top - BorderSize.Bottom;
         }
 
         public override void DoSize(PrinterElement element) {
@@ -25,17 +35,23 @@ namespace Leagueinator.Printer {
             }
 
             float contentWidth = 0f, contentHeight = 0f;
+            float borderWidth = 0f, borderHeight = 0f;
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    contentWidth = (float)(this.Width ?? sumWidth);
-                    contentHeight = (float)(this.Height ?? maxHeight);
+                    contentWidth = (float)(this.ContentWidth() ?? sumWidth);
+                    contentHeight = (float)(this.ContentHeight() ?? maxHeight);
+                    borderWidth = (float)(this.Width ?? sumWidth);
+                    borderHeight = (float)(this.Height ?? maxHeight);
                     break;
                 case Flex_Direction.Column:
-                    contentWidth = (float)(this.Width ?? maxWidth);
-                    contentHeight = (float)(this.Height ?? sumHeight);
+                    contentWidth = (float)(this.ContentWidth() ?? maxWidth);
+                    contentHeight = (float)(this.ContentHeight() ?? sumHeight);
+                    borderWidth = (float)(this.Width ?? maxWidth);
+                    borderHeight = (float)(this.Height ?? sumHeight);
                     break;
             }
-
+            
+            element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
         }
 
@@ -65,52 +81,35 @@ namespace Leagueinator.Printer {
 
         public override void DoDraw(PrinterElement element, Graphics g) {
             if (this.BackgroundColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.ContentRect);
+                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }
 
-            var left = Margin.Left + BorderSize.Left / 2;
-            var right = -Margin.Right - BorderSize.Right / 2;
-            var top = Margin.Top + BorderSize.Top / 2;
-            var bottom = -Margin.Bottom - BorderSize.Top / 2;
-
-            if (this.BorderColor.Left != default) {
-                var p1 = new PointF(left, Margin.Top);
-                var p2 = new PointF(left, -Margin.Bottom);
-
+            if (this.BorderColor.Top != default) {
                 g.DrawLine(
-                    new Pen(BorderColor.Left, BorderSize.Left),
-                    element.OuterRect.TopLeft().Translate(p1),
-                    element.OuterRect.BottomLeft().Translate(p2)
+                    new Pen(BorderColor.Top, BorderSize.Top),
+                    element.BorderRect.TopLeft().Translate(0, BorderSize.Top / 2),
+                    element.BorderRect.TopRight().Translate(0, BorderSize.Top / 2)
                 );
             }
             if (this.BorderColor.Right != default) {
-                var p1 = new PointF(right, Margin.Top);
-                var p2 = new PointF(right, -Margin.Bottom);
-
                 g.DrawLine(
                     new Pen(BorderColor.Right, BorderSize.Right),
-                    element.OuterRect.TopRight().Translate(p1),
-                    element.OuterRect.BottomRight().Translate(p2)
-                );
-            }
-            if (this.BorderColor.Top != default) {
-                var p1 = new PointF(Margin.Left, top);
-                var p2 = new PointF(-Margin.Right, top);
-
-                g.DrawLine(
-                    new Pen(BorderColor.Top, BorderSize.Top),
-                    element.OuterRect.TopLeft().Translate(p1),
-                    element.OuterRect.TopRight().Translate(p2)
+                    element.BorderRect.TopRight().Translate(-BorderSize.Right / 2, 0),
+                    element.BorderRect.BottomRight().Translate(-BorderSize.Right / 2, 0)
                 );
             }
             if (this.BorderColor.Bottom != default) {
-                var p1 = new PointF(Margin.Left, bottom);
-                var p2 = new PointF(-Margin.Right, bottom);
-
                 g.DrawLine(
                     new Pen(BorderColor.Bottom, BorderSize.Bottom),
-                    element.OuterRect.BottomLeft().Translate(p1),
-                    element.OuterRect.BottomRight().Translate(p2)
+                    element.BorderRect.BottomRight().Translate(0, -BorderSize.Bottom / 2),
+                    element.BorderRect.BottomLeft().Translate(0, -BorderSize.Bottom / 2)
+                );
+            }
+            if (this.BorderColor.Left != default) {
+                g.DrawLine(
+                    new Pen(BorderColor.Left, BorderSize.Left),
+                    element.BorderRect.BottomLeft().Translate(BorderSize.Left / 2, 0),
+                    element.BorderRect.TopLeft().Translate(BorderSize.Left / 2, 0)
                 );
             }
 
