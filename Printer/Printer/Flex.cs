@@ -1,6 +1,7 @@
 ﻿using Printer.Printer;
 using System.Diagnostics;
 using System.Drawing;
+using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
@@ -37,10 +38,20 @@ namespace Leagueinator.Printer {
                     break;
             }
 
+            SetElementBounds(element, width, height);
+        }
+
+        /// <summary>
+        /// Set the inner and outer rectangles of the specified element.
+        /// </summary>
+        /// <param name="element">Target element</param>
+        /// <param name="width">Outer width</param>
+        /// <param name="height">Outer height</param>
+        private void SetElementBounds(PrinterElement element, float width, float height) {
             element.OuterSize = new SizeF(width, height);
-            width -= this.Padding.Left + this.Padding.Right + this.BorderSize.Left + this.BorderSize.Right;
-            height -= this.Padding.Top + this.Padding.Bottom +  this.BorderSize.Top + this.BorderSize.Bottom;
-            element.InnerSize = new SizeF(width, height);    
+            width -= this.Margin.Left + this.Margin.Right + this.Padding.Left + this.Padding.Right + this.BorderSize.Left + this.BorderSize.Right;
+            height -= this.Margin.Top + this.Margin.Bottom + this.Padding.Top + this.Padding.Bottom + this.BorderSize.Top + this.BorderSize.Bottom;
+            element.InnerSize = new SizeF(width, height);
         }
 
         public override void DoLayout(PrinterElement element) {
@@ -147,8 +158,14 @@ namespace Leagueinator.Printer {
             }
         }
 
+        /// <summary>
+        /// Layout all child nodes without taking into account alignment.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="children"></param>
         private void JustifyContent(PrinterElement element, List<PrinterElement> children) {
             float widthRemaining = element.InnerSize.Width;
+
             foreach (PrinterElement child in children) {
                 widthRemaining -= child.OuterSize.Width;
             }

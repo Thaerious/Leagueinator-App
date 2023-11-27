@@ -66,7 +66,7 @@ namespace Leagueinator.Printer {
         public string Name = "";
         public Style Style = new Flex();
         public PrinterElementList Children => new(this._children);
-        public List<string> ClassList = new();
+        public readonly List<string> ClassList = new();
 
         /// <summary>
         /// Set parent element and fallback style.
@@ -100,8 +100,8 @@ namespace Leagueinator.Printer {
         public RectangleF InnerRect {
             get {
                 return new RectangleF(
-                    this.Location.X + this.Style.BorderSize.Left + this.Style.Padding.Left,
-                    this.Location.Y + this.Style.BorderSize.Top + this.Style.Padding.Top,
+                    this.Location.X + this.Style.Margin.Left + this.Style.BorderSize.Left + this.Style.Padding.Left,
+                    this.Location.Y + this.Style.Margin.Top + this.Style.BorderSize.Top + this.Style.Padding.Top,
                     this.InnerSize.Width,
                     this.InnerSize.Height
                 );
