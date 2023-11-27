@@ -37,7 +37,7 @@ namespace Leagueinator_App.Forms {
             if (eventTable == null) throw new NullReferenceException(nameof(eventTable));
 
             foreach (String team in this.GetTeams(eventTable)) {
-                var child = root.AddChild();
+                var child = root.AddChild(new PrinterElement("div"));
                 child.AddChild(new TextElement(team));
             }
 

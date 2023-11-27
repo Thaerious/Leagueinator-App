@@ -129,11 +129,19 @@ namespace Leagueinator.Printer {
                     ? this.Translation
                     : new PointF(this.Parent.InnerRect.X + this.Translation.X, this.Parent.InnerRect.Y + this.Translation.Y);
 
+        /// <summary>
+        /// Create a new printer element with a default name and classlist.
+        /// </summary>
         public PrinterElement() {
             this.Style = new Flex();
             this.Name = this.GetHashCode().ToString("X");
         }
 
+        /// <summary>
+        /// Create a new printer element with the specified name and classlist.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="classes"></param>
         public PrinterElement(string name, params string[] classes) {
             this.Style = new Flex();
             this.Name = name;
@@ -142,6 +150,10 @@ namespace Leagueinator.Printer {
             }
         }
 
+        /// <summary>
+        /// Create a new element with the name and styles of this element.
+        /// </summary>
+        /// <returns></returns>
         public virtual PrinterElement Clone() {
             PrinterElement clone = new() {
                 Style = this.Style,
@@ -156,38 +168,59 @@ namespace Leagueinator.Printer {
             return clone;
         }
 
+        /// <summary>
+        /// Perform all size and layout opertions for this element's style.
+        /// </summary>
         public void Update() {
             this.Style.DoSize(this);
             this.Style.DoLayout(this);
         }
 
+        /// <summary>
+        /// Dray this element in the graphsics object.
+        /// Draws occur in the following order:
+        /// 1) Call the style DoDraw method
+        /// 2) Invoke all OnDraw event listeners
+        /// 3) Call the Draw method for all child elements
+        /// </summary>
+        /// <param name="g"></param>
         public virtual void Draw(Graphics g) {
             this.Style.DoDraw(this, g);
             this.OnDraw.Invoke(g, this);
             this.Children.ForEach(child => child.Draw(g));
         }
 
+        /// <summary>
+        /// Add multiple children this this element.
+        /// If the children already have a parent element, the parent element will
+        /// be updated to this element.
+        /// </summary>
+        /// <param name="children"></param>
+        /// <returns></returns>
         public PrinterElementList AddChildren(PrinterElementList children) {
             foreach (var child in children) {
                 this.AddChild(child);
             }
             return children;
         }
-
+        /// <summary>
+        /// Add a single child element to this.
+        /// If the children already have a parent element, the parent element will
+        /// be updated to this element.
+        /// </summary>
+        /// <param name="that"></param>
+        /// <returns></returns>
         public PrinterElement AddChild(PrinterElement that) {
             this._children.Add(that);
             that.Parent = this;
             return that;
         }
 
-        public PrinterElement AddChild(string name = "div") {
-            var child = new PrinterElement {
-                Name = name,
-            };
-            this.AddChild(child);
-            return child;
-        }
-
+        /// <summary>
+        /// Remove a child element from this.
+        /// </summary>
+        /// <param name="child"></param>
+        /// <exception cref="Exception">If the child does not belong to this parent.</exception>
         public void RemoveChild(PrinterElement child) {
             if (child.Parent != this) throw new Exception("Attempt to remove child from non-parent");
             this._children.Remove(child);
