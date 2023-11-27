@@ -28,6 +28,10 @@ namespace Printer.Printer {
             return new(left.X + right.X, left.Y + right.Y);
         }
 
+        public static PointF Translate(this PointF left, float x, float y) {
+            return left.Translate(new PointF(x, y));
+        }
+
         public static PointF Scale(this PointF left, float amount) {
             return new(left.X * amount, left.Y * amount);
         }
