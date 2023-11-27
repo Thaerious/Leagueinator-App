@@ -1,7 +1,5 @@
 ﻿using Printer.Printer;
-using System.Diagnostics;
 using System.Drawing;
-using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
@@ -20,39 +18,39 @@ namespace Leagueinator.Printer {
 
             foreach (PrinterElement child in element.Children) {
                 child.Style.DoSize(child);
-                maxWidth = child.InnerSize.Width > maxWidth ? maxWidth = child.InnerSize.Width : maxWidth;
-                maxHeight = child.InnerSize.Height > maxHeight ? maxHeight = child.InnerSize.Height : maxHeight;
-                sumWidth += child.InnerSize.Width;
-                sumHeight += child.InnerSize.Height;
+                maxWidth = child.ContentSize.Width > maxWidth ? maxWidth = child.ContentSize.Width : maxWidth;
+                maxHeight = child.ContentSize.Height > maxHeight ? maxHeight = child.ContentSize.Height : maxHeight;
+                sumWidth += child.ContentSize.Width;
+                sumHeight += child.ContentSize.Height;
             }
 
-            float width = 0f, height = 0f;
+            float contentWidth = 0f, contentHeight = 0f;
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    width = (float)(this.Width ?? sumWidth);
-                    height = (float)(this.Height ?? maxHeight);
+                    contentWidth = (float)(this.Width ?? sumWidth);
+                    contentHeight = (float)(this.Height ?? maxHeight);
                     break;
                 case Flex_Direction.Column:
-                    width = (float)(this.Width ?? maxWidth);
-                    height = (float)(this.Height ?? sumHeight);
+                    contentWidth = (float)(this.Width ?? maxWidth);
+                    contentHeight = (float)(this.Height ?? sumHeight);
                     break;
             }
 
-            SetElementBounds(element, width, height);
+            element.ContentSize = new SizeF(contentWidth, contentHeight);
         }
 
         /// <summary>
         /// Set the inner and outer rectangles of the specified element.
         /// </summary>
         /// <param name="element">Target element</param>
-        /// <param name="width">Outer width</param>
-        /// <param name="height">Outer height</param>
-        private void SetElementBounds(PrinterElement element, float width, float height) {
-            element.OuterSize = new SizeF(width, height);
-            width -= this.Margin.Left + this.Margin.Right + this.Padding.Left + this.Padding.Right + this.BorderSize.Left + this.BorderSize.Right;
-            height -= this.Margin.Top + this.Margin.Bottom + this.Padding.Top + this.Padding.Bottom + this.BorderSize.Top + this.BorderSize.Bottom;
-            element.InnerSize = new SizeF(width, height);
-        }
+        /// <param name="w">Outer contentWidth</param>
+        /// <param name="h">Outer contentHeight</param>
+        //private void SetElementBounds(PrinterElement element, float w, float h) {
+            ////element.OuterSize = new SizeF(w, h);
+            //var innerWidth = w - (this.Margin.Left + this.Margin.Right + this.Padding.Left + this.Padding.Right + this.BorderSize.Left + this.BorderSize.Right);
+            //var innerHeight = h - (this.Margin.Top + this.Margin.Bottom + this.Padding.Top + this.Padding.Bottom + this.BorderSize.Top + this.BorderSize.Bottom);
+            //element.ContentSize = new SizeF(innerWidth, innerHeight);
+        //}
 
         public override void DoLayout(PrinterElement element) {
             var children = this.CollectChildren(element);
@@ -67,7 +65,7 @@ namespace Leagueinator.Printer {
 
         public override void DoDraw(PrinterElement element, Graphics g) {
             if (this.BackgroundColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.InnerRect);
+                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.ContentRect);
             }
 
             var left = Margin.Left + BorderSize.Left / 2;
@@ -164,13 +162,13 @@ namespace Leagueinator.Printer {
         /// <param name="element"></param>
         /// <param name="children"></param>
         private void JustifyContent(PrinterElement element, List<PrinterElement> children) {
-            float widthRemaining = element.InnerSize.Width;
+            float widthRemaining = element.ContentSize.Width;
 
             foreach (PrinterElement child in children) {
                 widthRemaining -= child.OuterSize.Width;
             }
 
-            float heightRemaining = element.InnerSize.Height;
+            float heightRemaining = element.ContentSize.Height;
             foreach (PrinterElement child in children) {
                 heightRemaining -= child.OuterSize.Height;
             }
@@ -301,10 +299,10 @@ namespace Leagueinator.Printer {
                         case Align_Items.Flex_start:
                             break;
                         case Align_Items.Flex_end:
-                            children.ForEach(c => c.Translate(0, element.InnerRect.Height - c.OuterSize.Height));
+                            children.ForEach(c => c.Translate(0, element.ContentRect.Height - c.OuterSize.Height));
                             break;
                         case Align_Items.Center:
-                            children.ForEach(c => c.Translate(0, (element.InnerRect.Height / 2) - (c.OuterSize.Height / 2)));
+                            children.ForEach(c => c.Translate(0, (element.ContentRect.Height / 2) - (c.OuterSize.Height / 2)));
                             break;
                     }
                     break;
@@ -313,10 +311,10 @@ namespace Leagueinator.Printer {
                         case Align_Items.Flex_start:
                             break;
                         case Align_Items.Flex_end:
-                            children.ForEach(c => c.Translate(element.InnerRect.Width - c.OuterSize.Width, 0));
+                            children.ForEach(c => c.Translate(element.ContentRect.Width - c.OuterSize.Width, 0));
                             break;
                         case Align_Items.Center:
-                            children.ForEach(c => c.Translate((element.InnerRect.Width / 2) - (c.OuterSize.Width / 2), 0));
+                            children.ForEach(c => c.Translate((element.ContentRect.Width / 2) - (c.OuterSize.Width / 2), 0));
                             break;
                     }
                     break;

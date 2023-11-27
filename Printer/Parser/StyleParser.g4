@@ -10,6 +10,7 @@ style      : selector OPAR property* CPAR
 selector   : STRING 
            | DOT STRING
            | HASH STRING
+           | STAR
            ;
 
 property   : KEY COLON VALUE SEMI

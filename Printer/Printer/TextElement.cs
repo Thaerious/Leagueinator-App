@@ -18,12 +18,11 @@ namespace Leagueinator.Printer {
             return clone;
         }
 
-        public override SizeF InnerSize {
+        public override SizeF ContentSize {
             get {
                 using var bitmap = new Bitmap(1, 1);
                 using var graphics = Graphics.FromImage(bitmap);
-                SizeF size = graphics.MeasureString(text, this.Style.Font);
-                return size;
+                return graphics.MeasureString(text, this.Style.Font);
             }
             set { }
         }
@@ -35,7 +34,6 @@ namespace Leagueinator.Printer {
                 SizeF size = graphics.MeasureString(text, this.Style.Font);
                 return size;
             }
-            set { }
         }
 
         public TextElement(string text) : base() {
@@ -44,7 +42,7 @@ namespace Leagueinator.Printer {
         }
 
         public override void Draw(Graphics g) {
-            g.DrawString(this.text, this.Style.Font, this.Style.Brush, this.InnerRect, this.Style.StringFormat);
+            g.DrawString(this.text, this.Style.Font, this.Style.Brush, this.ContentRect, this.Style.StringFormat);
         }
     }
 }

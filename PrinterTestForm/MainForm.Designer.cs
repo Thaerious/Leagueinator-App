@@ -33,6 +33,7 @@
             this.txtXML = new TextBox();
             this.tabStyle = new TabPage();
             this.txtStyle = new TextBox();
+            this.toolPrintXML = new ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -74,7 +75,7 @@
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new Size(24, 24);
-            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh });
+            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolPrintXML });
             this.toolStrip1.Location = new Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new Size(843, 34);
@@ -145,6 +146,16 @@
             this.txtStyle.Size = new Size(872, 853);
             this.txtStyle.TabIndex = 1;
             // 
+            // toolPrintXML
+            // 
+            this.toolPrintXML.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            this.toolPrintXML.Image = (Image)resources.GetObject("toolPrintXML.Image");
+            this.toolPrintXML.ImageTransparentColor = Color.Magenta;
+            this.toolPrintXML.Name = "toolPrintXML";
+            this.toolPrintXML.Size = new Size(92, 29);
+            this.toolPrintXML.Text = "Print XML";
+            this.toolPrintXML.Click += this.ToolPrintXML_Click;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
@@ -179,5 +190,6 @@
         private PrinterCanvas printerCanvas;
         private TextBox txtXML;
         private TextBox txtStyle;
+        public ToolStripButton toolPrintXML;
     }
 }

@@ -86,24 +86,65 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// Set the drawable area of the element (excl border & padding).
         /// </summary>
-        public virtual SizeF InnerSize { get; set; } = new();
+        public virtual SizeF ContentSize { get; set; } = new();
+
+        public virtual SizeF BorderSize { get {
+                var width =
+                    ContentSize.Width +
+                    this.Style.Padding.Left +
+                    this.Style.Padding.Right +
+                    this.Style.BorderSize.Left +
+                    this.Style.BorderSize.Right;
+
+                var height =
+                    ContentSize.Width +
+                    this.Style.Padding.Top +
+                    this.Style.Padding.Bottom +
+                    this.Style.BorderSize.Top +
+                    this.Style.BorderSize.Bottom;
+
+                return new SizeF(width, height);
+            }
+        }
 
         /// <summary>
         /// Set the occupied area of the element (incl border & padding).
         /// </summary>
-        public virtual SizeF OuterSize { get; set; } = new();
+        public virtual SizeF OuterSize {
+            get {
+                var width = 
+                    ContentSize.Width + 
+                    this.Style.Padding.Left + 
+                    this.Style.Padding.Right + 
+                    this.Style.BorderSize.Left +
+                    this.Style.BorderSize.Right +
+                    this.Style.Margin.Left +
+                    this.Style.Margin.Right;
+
+                var height =
+                    ContentSize.Width +
+                    this.Style.Padding.Top +
+                    this.Style.Padding.Bottom +
+                    this.Style.BorderSize.Top +
+                    this.Style.BorderSize.Bottom +
+                    this.Style.Margin.Top +
+                    this.Style.Margin.Bottom;
+               
+                return new SizeF(width, height);
+            }
+        }
 
         /// <summary>
         /// Area to determine relative location of child elements.
         /// Takes padding and border into consideration.
         /// </summary>
-        public RectangleF InnerRect {
+        public RectangleF ContentRect {
             get {
                 return new RectangleF(
                     this.Location.X + this.Style.Margin.Left + this.Style.BorderSize.Left + this.Style.Padding.Left,
                     this.Location.Y + this.Style.Margin.Top + this.Style.BorderSize.Top + this.Style.Padding.Top,
-                    this.InnerSize.Width,
-                    this.InnerSize.Height
+                    this.ContentSize.Width,
+                    this.ContentSize.Height
                 );
             }
         }
@@ -123,11 +164,25 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
+        /// The entire occupied space of this element, including padding and border.
+        /// </summary>
+        public RectangleF BorderRect {
+            get {
+                return new RectangleF(
+                    this.Location.X + this.Style.BorderSize.Left,
+                    this.Location.Y - this.Style.BorderSize.Top,
+                    this.OuterSize.Width,
+                    this.OuterSize.Height
+                );
+            }
+        }
+
+        /// <summary>
         /// The screen location of this element.
         /// </summary>
         public PointF Location => this.Parent == null
                     ? this.Translation
-                    : new PointF(this.Parent.InnerRect.X + this.Translation.X, this.Parent.InnerRect.Y + this.Translation.Y);
+                    : new PointF(this.Parent.ContentRect.X + this.Translation.X, this.Parent.ContentRect.Y + this.Translation.Y);
 
         /// <summary>
         /// Create a new printer element with a default name and classlist.
@@ -235,6 +290,18 @@ namespace Leagueinator.Printer {
 
         public override string ToString() {
             return $"[\"{this.Name}\", {{{this.ClassList.DelString(".")}}}, {this.OuterRect}, {this.Children.Count}]";
+        }
+
+        public XMLStringBuilder ToXML() {
+            XMLStringBuilder xml = new ();
+
+            xml.OpenTag(this.Name, $"outer='{this.OuterRect}'", $"content='{this.ContentRect}'");
+            foreach (var child in this.Children) {
+                xml.AppendXML(child.ToXML());
+            }
+            xml.CloseTag();
+
+            return xml;
         }
 
         private readonly PrinterElementList _children = new();
