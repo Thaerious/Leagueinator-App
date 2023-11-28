@@ -25,14 +25,17 @@ namespace Leagueinator.Printer {
             }
 
             float contentWidth = 0f, contentHeight = 0f;
+            float? width = this.Width(element.Parent.ContentRect.Width);
+            float? height = this.Height(element.Parent.ContentRect.Height);
+
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    contentWidth = (float)(this.Width ?? sumWidth);
-                    contentHeight = (float)(this.Height ?? maxHeight);
+                    contentWidth = (float)( width ?? sumWidth);
+                    contentHeight = (float)(height ?? maxHeight);
                     break;
                 case Flex_Direction.Column:
-                    contentWidth = (float)(this.Width ?? maxWidth);
-                    contentHeight = (float)(this.Height ?? sumHeight);
+                    contentWidth = (float)(width ?? maxWidth);
+                    contentHeight = (float)(height ?? sumHeight);
                     break;
             }
 
