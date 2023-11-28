@@ -24,24 +24,20 @@ namespace Leagueinator.Printer {
                 sumHeight += child.ContentSize.Height;
             }
 
-            float contentWidth = element.Parent.ContentSize.Width, contentHeight = 0f;
-            float borderWidth = element.Parent.ContentSize.Width, borderHeight = 0f;
-
+            float contentWidth = 0f, contentHeight = 0f;
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    contentWidth = (float)(this.ContentWidth() ?? element.Parent.ContentRect.Width);
-                    contentHeight = (float)(this.ContentHeight() ?? maxHeight);
-                    borderWidth = (float)(this.Width ?? element.Parent.ContentRect.Width);
-                    borderHeight = (float)(this.Height ?? maxHeight);
+                    contentWidth = (float)(this.Width ?? sumWidth);
+                    contentHeight = (float)(this.Height ?? maxHeight);
                     break;
                 case Flex_Direction.Column:
-                    contentWidth = (float)(this.ContentWidth() ?? maxWidth);
-                    contentHeight = (float)(this.ContentHeight() ?? sumHeight);
-                    borderWidth = (float)(this.Width ?? maxWidth);
-                    borderHeight = (float)(this.Height ?? sumHeight);
+                    contentWidth = (float)(this.Width ?? maxWidth);
+                    contentHeight = (float)(this.Height ?? sumHeight);
                     break;
             }
 
+            var borderWidth = (float)(contentWidth + this.BorderSize.Left + this.BorderSize.Right);
+            var borderHeight = (float)(contentHeight + this.BorderSize.Top + this.BorderSize.Bottom);
             element.OuterSize = new SizeF(borderWidth, borderHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
