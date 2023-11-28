@@ -18,8 +18,8 @@ namespace Leagueinator.Printer {
         [CSS] public Position Position = Position.Static;
 
         [CSS] public PointF Location = new();
-        [CSS] public float? Width = null;
-        [CSS] public float? Height = null;
+        [CSS] public Func<float, float?> Width = f => null;
+        [CSS] public Func<float, float?> Height = f => null;
         [CSS] public Color? BackgroundColor = null;
 
         [CSS] public Cardinal<float> Margin = new(0f);

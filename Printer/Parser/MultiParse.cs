@@ -94,5 +94,24 @@ namespace Leagueinator.CSSParser {
             color = default;
             return false;
         }
+
+        public static bool Parse(string source, out Func<float, float?> func) {
+            if (source.EndsWith("px")){
+                var substring = source.Substring(0, source.Length - 2);
+                var parsed = float.Parse(substring);
+                func = f => parsed;
+                return true;
+            }
+            else if (source.EndsWith("%")){
+                var substring = source.Substring(0, source.Length - 1);
+                var parsed = float.Parse(substring);
+                func = f => f * (parsed / 100);
+                return true;
+            }
+            else {
+                func = f => null;
+                return false;
+            }
+        }
     }
 }
