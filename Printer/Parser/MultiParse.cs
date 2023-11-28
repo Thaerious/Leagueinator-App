@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using static Leagueinator.Printer.Style;
 
 namespace Leagueinator.CSSParser {
     public static class MultiParse {

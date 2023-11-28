@@ -68,7 +68,6 @@
             this.printerCanvas.Location = new Point(0, 34);
             this.printerCanvas.Margin = new Padding(0);
             this.printerCanvas.Name = "printerCanvas";
-            this.printerCanvas.RootElement = null;
             this.printerCanvas.Size = new Size(843, 863);
             this.printerCanvas.TabIndex = 1;
             // 
