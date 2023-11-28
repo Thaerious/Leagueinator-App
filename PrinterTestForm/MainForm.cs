@@ -47,7 +47,8 @@ namespace PrinterTestForm {
                 var xmlString = this.txtXML.Text;
                 var styleString = this.txtStyle.Text;
                 var root = XMLLoader.Load(xmlString, styleString);
-                this.printerCanvas.RootElement = root;
+                this.printerCanvas.DocElement.ClearChildren();
+                this.printerCanvas.DocElement.AddChild(root);
                 this.printerCanvas.Invalidate();
 
                 File.WriteAllText(this.xmlPath, xmlString);
@@ -60,7 +61,7 @@ namespace PrinterTestForm {
         }
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.RootElement.ToXML());
+            Debug.WriteLine(this.printerCanvas.DocElement.ToXML());
         }
     }
 }

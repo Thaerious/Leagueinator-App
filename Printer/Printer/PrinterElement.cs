@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
@@ -83,40 +82,12 @@ namespace Leagueinator.Printer {
             get; set;
         } = new();
 
-        /// <summary>
-        /// Set the drawable area of the element (excl border & padding).
-        /// </summary>
+
         public virtual SizeF ContentSize { get; set; } = new();
 
         public virtual SizeF BorderSize { get; set; } = new();
 
-
-        /// <summary>
-        /// Set the occupied area of the element (incl border & padding).
-        /// </summary>
-        public virtual SizeF OuterSize {
-            get {
-                var width =
-                    ContentSize.Width +
-                    this.Style.Padding.Left +
-                    this.Style.Padding.Right +
-                    this.Style.BorderSize.Left +
-                    this.Style.BorderSize.Right +
-                    this.Style.Margin.Left +
-                    this.Style.Margin.Right;
-
-                var height =
-                    ContentSize.Width +
-                    this.Style.Padding.Top +
-                    this.Style.Padding.Bottom +
-                    this.Style.BorderSize.Top +
-                    this.Style.BorderSize.Bottom +
-                    this.Style.Margin.Top +
-                    this.Style.Margin.Bottom;
-
-                return new SizeF(width, height);
-            }
-        }
+        public virtual SizeF OuterSize { get; set; } = new();
 
         /// <summary>
         /// Area to determine relative location of child elements.
@@ -164,7 +135,7 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// The screen location of this element.
         /// </summary>
-        public PointF Location => this.Parent == null
+        public virtual PointF Location => this.Parent == null
                     ? this.Translation
                     : new PointF(this.Parent.ContentRect.X + this.Translation.X, this.Parent.ContentRect.Y + this.Translation.Y);
 
@@ -256,6 +227,15 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
+        /// Remove all child nodes from this element.
+        /// </summary>
+        public void ClearChildren() {
+            foreach (var child in this.Children) {
+                this.RemoveChild(child);
+            }
+        }
+
+        /// <summary>
         /// Remove a child element from this.
         /// </summary>
         /// <param name="child"></param>
@@ -276,7 +256,7 @@ namespace Leagueinator.Printer {
             return $"[\"{this.Name}\", {{{this.ClassList.DelString(".")}}}, {this.OuterRect}, {this.Children.Count}]";
         }
 
-        public XMLStringBuilder ToXML() {
+        public virtual XMLStringBuilder ToXML() {
             XMLStringBuilder xml = new();
 
             xml.OpenTag(this.Name, $"outer='{this.OuterRect}'", $"border='{this.BorderRect}'", $"content='{this.ContentRect}'");

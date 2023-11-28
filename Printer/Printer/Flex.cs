@@ -10,37 +10,28 @@ namespace Leagueinator.Printer {
             this.Selector = Selector;
         }
 
-        private float? ContentWidth() {
-            if (this.Width == default) return default;
-            return this.Width - BorderSize.Left - BorderSize.Right;
-        }
-
-        private float? ContentHeight() {
-            if (this.Height == default) return default;
-            return this.Height - BorderSize.Top - BorderSize.Bottom;
-        }
-
         public override void DoSize(PrinterElement element) {
-            float maxWidth = 0f;
+            float maxWidth  = 0f;
             float maxHeight = 0f;
-            float sumWidth = 0f;
+            float sumWidth  = 0f;
             float sumHeight = 0f;
 
             foreach (PrinterElement child in element.Children) {
                 child.Style.DoSize(child);
-                maxWidth = child.ContentSize.Width > maxWidth ? maxWidth = child.ContentSize.Width : maxWidth;
+                maxWidth  = child.ContentSize.Width > maxWidth ? maxWidth = child.ContentSize.Width : maxWidth;
                 maxHeight = child.ContentSize.Height > maxHeight ? maxHeight = child.ContentSize.Height : maxHeight;
-                sumWidth += child.ContentSize.Width;
+                sumWidth  += child.ContentSize.Width;
                 sumHeight += child.ContentSize.Height;
             }
 
-            float contentWidth = 0f, contentHeight = 0f;
-            float borderWidth = 0f, borderHeight = 0f;
+            float contentWidth = element.Parent.ContentSize.Width, contentHeight = 0f;
+            float borderWidth = element.Parent.ContentSize.Width, borderHeight = 0f;
+
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    contentWidth = (float)(this.ContentWidth() ?? sumWidth);
+                    contentWidth = (float)(this.ContentWidth() ?? element.Parent.ContentRect.Width);
                     contentHeight = (float)(this.ContentHeight() ?? maxHeight);
-                    borderWidth = (float)(this.Width ?? sumWidth);
+                    borderWidth = (float)(this.Width ?? element.Parent.ContentRect.Width);
                     borderHeight = (float)(this.Height ?? maxHeight);
                     break;
                 case Flex_Direction.Column:
@@ -50,23 +41,11 @@ namespace Leagueinator.Printer {
                     borderHeight = (float)(this.Height ?? sumHeight);
                     break;
             }
-            
+
+            element.OuterSize = new SizeF(borderWidth, borderHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
         }
-
-        /// <summary>
-        /// Set the inner and outer rectangles of the specified element.
-        /// </summary>
-        /// <param name="element">Target element</param>
-        /// <param name="w">Outer contentWidth</param>
-        /// <param name="h">Outer contentHeight</param>
-        //private void SetElementBounds(PrinterElement element, float w, float h) {
-            ////element.OuterSize = new SizeF(w, h);
-            //var innerWidth = w - (this.Margin.Left + this.Margin.Right + this.Padding.Left + this.Padding.Right + this.BorderSize.Left + this.BorderSize.Right);
-            //var innerHeight = h - (this.Margin.Top + this.Margin.Bottom + this.Padding.Top + this.Padding.Bottom + this.BorderSize.Top + this.BorderSize.Bottom);
-            //element.ContentSize = new SizeF(innerWidth, innerHeight);
-        //}
 
         public override void DoLayout(PrinterElement element) {
             var children = this.CollectChildren(element);
