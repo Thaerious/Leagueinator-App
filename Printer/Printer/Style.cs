@@ -1,5 +1,6 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Utility;
+using Printer.Printer;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -25,7 +26,7 @@ namespace Leagueinator.Printer {
         [CSS] public Cardinal<float> Margin = new(0f);
         [CSS] public Cardinal<float> Padding = new(0f);
         [CSS] public Cardinal<Color> BorderColor = new();
-        [CSS] public Cardinal<float> BorderSize = new();
+        [CSS] public Cardinal<float> BorderSize = new(0f);
 
         [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Row;
         [CSS] public Justify_Content Justify_Content = Justify_Content.Flex_start;
@@ -137,7 +138,6 @@ namespace Leagueinator.Printer {
                 if (css == null) continue;
                 var key = css.Key?.ToLower() ?? field.Name.ToPlainCase();
                 Fields[key] = field;
-                Debug.WriteLine($"{key} = {field}");
             }
         }
         private Font? _font = null;

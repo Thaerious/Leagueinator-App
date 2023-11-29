@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Utility;
+using Printer.Printer;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
