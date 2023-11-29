@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Printer;
 using System.Diagnostics;
 using System.Reflection;
-using static Leagueinator.Printer.PrinterElement;
+using static Printer.Printer.PrinterElement;
 
 namespace PrinterTestForm {
     public partial class PrinterCanvas : UserControl {

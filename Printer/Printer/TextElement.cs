@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Printer.Printer;
+using System.Drawing;
 
 namespace Leagueinator.Printer {
     public class TextElement : PrinterElement {

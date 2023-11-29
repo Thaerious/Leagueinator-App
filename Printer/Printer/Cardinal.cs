@@ -4,14 +4,7 @@ using Leagueinator.CSSParser;
 
 namespace Leagueinator.Printer {
     public struct Cardinal<T> {
-        public T? Left, Right, Top, Bottom;
-
-        public Cardinal() {
-            Left = default;
-            Right = default;
-            Top = default;
-            Bottom = default;
-        }
+        public T Left, Right, Top, Bottom;
 
         public Cardinal(T value) {
             Left = value;
@@ -28,7 +21,7 @@ namespace Leagueinator.Printer {
         }
 
         public static bool TryParse(string source, out Cardinal<T> target) {
-            target = new();
+            Debug.WriteLine($"Cardinal.TryParse({source}, {typeof(T)})");                       
 
             string[] split = source.Split();
             List<object> values = new();
@@ -41,10 +34,12 @@ namespace Leagueinator.Printer {
             if (split.Length == 0) throw new Exception("No cardinal values found");
             if (values.Count == 0) throw new Exception("No cardinal values found");
 
-            target.Top = (T?)values[0];
-            target.Right = values.Count > 1 ? (T?)values[1] : (T?)values[0];
-            target.Bottom = values.Count > 2 ? (T?)values[2] : (T?)values[0];
-            target.Left = values.Count > 3 ? (T?)values[3] : (T?)values[0];
+            target = new(
+                (T)values[0],
+                values.Count > 1 ? (T)values[1] : (T)values[0],
+                values.Count > 2 ? (T)values[2] : (T)values[0],
+                values.Count > 3 ? (T)values[3] : (T)values[0]
+            ) ;
 
             return true;
         }

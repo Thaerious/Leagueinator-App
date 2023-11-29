@@ -1,15 +1,12 @@
-﻿using Leagueinator.Utility;
+﻿using Leagueinator.Printer;
+using Leagueinator.Utility;
 using System.Drawing;
 
-namespace Leagueinator.Printer {
+namespace Printer.Printer {
 
     public class PrinterElementList : List<PrinterElement> {
 
-        public PrinterElementList this[string id] {
-            get {
-                return this.QuerySelectorAll(id);
-            }
-        }
+        public PrinterElementList this[string id] => this.QuerySelectorAll(id);
 
         public PrinterElementList() { }
 
@@ -20,7 +17,7 @@ namespace Leagueinator.Printer {
 
             if (query.StartsWith(".")) {
                 foreach (PrinterElement element in this) {
-                    var x = element.ClassList.Count > 0 ? element.ClassList[0] : "NULL";
+                    _ = element.ClassList.Count > 0 ? element.ClassList[0] : "NULL";
                     if (element.ClassList.Contains(query[1..])) result.Add(element);
                 }
             }
@@ -31,7 +28,7 @@ namespace Leagueinator.Printer {
             }
 
             foreach (PrinterElement element in this) {
-                element.Children.QuerySelectorAll(query, result);
+                _ = element.Children.QuerySelectorAll(query, result);
             }
 
             return result;
@@ -50,7 +47,7 @@ namespace Leagueinator.Printer {
             }
 
             foreach (PrinterElement element in this) {
-                var intermediate = element.Children.QuerySelector(query);
+                PrinterElement? intermediate = element.Children.QuerySelector(query);
                 if (intermediate != null) return intermediate;
             }
 
@@ -70,10 +67,7 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// Set parent element and fallback style.
         /// </summary>
-        public PrinterElement? Parent {
-            get => _parent;
-            private set => this._parent = value;
-        }
+        public PrinterElement? Parent { get; private set; }
 
         /// <summary>
         /// The (x,y) translation of this element relative to it's TargetElement.
@@ -81,7 +75,6 @@ namespace Leagueinator.Printer {
         public PointF Translation {
             get; set;
         } = new();
-
 
         public virtual SizeF ContentSize { get; set; } = new();
 
@@ -95,9 +88,11 @@ namespace Leagueinator.Printer {
         /// </summary>
         public RectangleF ContentRect {
             get {
+                Cardinal<float> margin = this.Style.Margin;
+
                 return new RectangleF(
-                    this.Location.X + this.Style.Margin.Left + this.Style.BorderSize.Left + this.Style.Padding.Left,
-                    this.Location.Y + this.Style.Margin.Top + this.Style.BorderSize.Top + this.Style.Padding.Top,
+                    this.Location.X + margin.Left + this.Style.BorderSize.Left + this.Style.Padding.Left,
+                    this.Location.Y + margin.Top + this.Style.BorderSize.Top + this.Style.Padding.Top,
                     this.ContentSize.Width,
                     this.ContentSize.Height
                 );
@@ -107,25 +102,23 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
-        public RectangleF OuterRect {
-            get {
-                return new RectangleF(
+        public RectangleF OuterRect => new(
                     this.Location.X,
                     this.Location.Y,
                     this.OuterSize.Width,
                     this.OuterSize.Height
                 );
-            }
-        }
 
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
         public RectangleF BorderRect {
             get {
+                Cardinal<float> margin = new();
+
                 return new RectangleF(
-                    this.Location.X + this.Style.Margin.Left,
-                    this.Location.Y + this.Style.Margin.Top,
+                    this.Location.X + margin.Left,
+                    this.Location.Y + margin.Top,
                     this.BorderSize.Width + this.Style.Padding.Left + this.Style.Padding.Right,
                     this.BorderSize.Height + this.Style.Padding.Top + this.Style.Padding.Bottom
                 );
@@ -173,7 +166,7 @@ namespace Leagueinator.Printer {
             clone.ClassList.AddRange(this.ClassList);
 
             foreach (PrinterElement child in this.Children) {
-                clone.AddChild(child.Clone());
+                _ = clone.AddChild(child.Clone());
             }
             return clone;
         }
@@ -208,8 +201,8 @@ namespace Leagueinator.Printer {
         /// <param name="children"></param>
         /// <returns></returns>
         public PrinterElementList AddChildren(PrinterElementList children) {
-            foreach (var child in children) {
-                this.AddChild(child);
+            foreach (PrinterElement child in children) {
+                _ = this.AddChild(child);
             }
             return children;
         }
@@ -230,7 +223,7 @@ namespace Leagueinator.Printer {
         /// Remove all child nodes from this element.
         /// </summary>
         public void ClearChildren() {
-            foreach (var child in this.Children) {
+            foreach (PrinterElement child in this.Children) {
                 this.RemoveChild(child);
             }
         }
@@ -242,11 +235,13 @@ namespace Leagueinator.Printer {
         /// <exception cref="Exception">If the child does not belong to this parent.</exception>
         public void RemoveChild(PrinterElement child) {
             if (child.Parent != this) throw new Exception("Attempt to remove child from non-parent");
-            this._children.Remove(child);
+            _ = this._children.Remove(child);
             child.Parent = null;
         }
 
-        public void Translate(float x, float y) => this.Translate(new PointF(x, y));
+        public void Translate(float x, float y) {
+            this.Translate(new PointF(x, y));
+        }
 
         public void Translate(PointF p) {
             this.Translation = new PointF(this.Translation.X + p.X, this.Translation.Y + p.Y);
@@ -259,16 +254,15 @@ namespace Leagueinator.Printer {
         public virtual XMLStringBuilder ToXML() {
             XMLStringBuilder xml = new();
 
-            xml.OpenTag(this.Name, $"outer='{this.OuterRect}'", $"border='{this.BorderRect}'", $"content='{this.ContentRect}'");
-            foreach (var child in this.Children) {
-                xml.AppendXML(child.ToXML());
+            _ = xml.OpenTag(this.Name);
+            foreach (PrinterElement child in this.Children) {
+                _ = xml.AppendXML(child.ToXML());
             }
-            xml.CloseTag();
+            _ = xml.CloseTag();
 
             return xml;
         }
 
         private readonly PrinterElementList _children = new();
-        private PrinterElement? _parent;
     }
 }

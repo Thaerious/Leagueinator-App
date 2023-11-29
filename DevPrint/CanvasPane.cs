@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Printer;
 using Leagueinator_Model.Model.Tables;
+using Printer.Printer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -75,9 +76,7 @@ namespace DevPrint {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
-            Debug.WriteLine($"OnPaint {this.Width} {this.Height}");
             base.OnPaint(e);
-
             this.document.Update();
             this.document.Draw(e.Graphics);
         }

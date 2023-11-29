@@ -23,7 +23,6 @@ namespace Leagueinator.CSSParser {
             var field = Style.Fields[key];
 
             MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
-            Debug.WriteLine(newObject);
             field.SetValue(this.style, newObject);
         }
     }

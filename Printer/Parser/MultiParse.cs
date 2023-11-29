@@ -1,4 +1,5 @@
-﻿using Leagueinator.Utility;
+﻿using Leagueinator.Printer;
+using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
@@ -22,21 +23,24 @@ namespace Leagueinator.CSSParser {
             Type? underlyingType = Nullable.GetUnderlyingType(type);
             Type targetType = underlyingType ?? type;
 
+            // If the target it is a string
+            if (targetType == typeof(string)) {
+                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as string");
+                target = source;
+                return true;
+            }
+
             // if the target has static TryParse(string, out type)
+            Debug.WriteLine($"Seeking method '{typeof(string)}', '{targetType.MakeByRefType()}'");
             var method = targetType.GetMethod(
                 "TryParse",
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy,
                 new Type[] { typeof(string), targetType.MakeByRefType() }
             );
 
-            // If the target it is a string
-            if (targetType == typeof(string)) {
-                target = source;
-                return true;
-            }
-
             // If the target has a "TryParse" method, applies to primitives.
             if (method != null) {
+                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as method");
                 object?[] args = new object?[] { source, target };
                 bool result = (bool)method.Invoke(null, args)!;
                 if (result) target = args[1];
@@ -45,6 +49,7 @@ namespace Leagueinator.CSSParser {
 
             // If the target is an Enum
             if (targetType.IsEnum) {
+                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as enum");
                 if (!Enum.IsDefined(targetType, source)) {
                     return false;
                 }
@@ -57,6 +62,7 @@ namespace Leagueinator.CSSParser {
             // Search the style's public static properties
             var prop = targetType.GetProperty(source);
             if (prop != null && prop.CanRead && prop.PropertyType == targetType) {
+                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as static property");
                 target = prop.GetValue(null);
                 return true;
             }
@@ -68,12 +74,14 @@ namespace Leagueinator.CSSParser {
             );
 
             if (specialCase != null) {
+                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as special case");
                 object?[] args = new object?[] { source, target };
                 bool result = (bool)specialCase.Invoke(null, args)!;
                 if (result) target = args[1];
                 return result;
             }
 
+            Debug.WriteLine($"MultiParse.TryParse({source}, {type}) did not parse");
             return false;
         }
     }
@@ -96,13 +104,13 @@ namespace Leagueinator.CSSParser {
         }
 
         public static bool Parse(string source, out Func<float, float?> func) {
-            if (source.EndsWith("px")){
+            if (source.EndsWith("px")) {
                 var substring = source.Substring(0, source.Length - 2);
                 var parsed = float.Parse(substring);
                 func = f => parsed;
                 return true;
             }
-            else if (source.EndsWith("%")){
+            else if (source.EndsWith("%")) {
                 var substring = source.Substring(0, source.Length - 1);
                 var parsed = float.Parse(substring);
                 func = f => f * (parsed / 100);
