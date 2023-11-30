@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Printer;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Printer.Printer {
@@ -28,7 +29,7 @@ namespace Printer.Printer {
             }
 
             foreach (PrinterElement element in this) {
-                _ = element.Children.QuerySelectorAll(query, result);
+                element.Children.QuerySelectorAll(query, result);
             }
 
             return result;
@@ -88,11 +89,13 @@ namespace Printer.Printer {
         /// </summary>
         public RectangleF ContentRect {
             get {
-                Cardinal<float> margin = this.Style.Margin;
+                Cardinal<UnitFloat> margin = this.Style.Margin;
+                Cardinal<UnitFloat> border = this.Style.BorderSize;
+                Cardinal<UnitFloat> padding = this.Style.Padding;
 
                 return new RectangleF(
-                    this.Location.X + margin.Left + this.Style.BorderSize.Left + this.Style.Padding.Left,
-                    this.Location.Y + margin.Top + this.Style.BorderSize.Top + this.Style.Padding.Top,
+                    this.Location.X + margin.Left + border.Left + padding.Left,
+                    this.Location.Y + margin.Top + border.Top + padding.Top,
                     this.ContentSize.Width,
                     this.ContentSize.Height
                 );
@@ -166,7 +169,7 @@ namespace Printer.Printer {
             clone.ClassList.AddRange(this.ClassList);
 
             foreach (PrinterElement child in this.Children) {
-                _ = clone.AddChild(child.Clone());
+                clone.AddChild(child.Clone());
             }
             return clone;
         }
@@ -202,7 +205,7 @@ namespace Printer.Printer {
         /// <returns></returns>
         public PrinterElementList AddChildren(PrinterElementList children) {
             foreach (PrinterElement child in children) {
-                _ = this.AddChild(child);
+                this.AddChild(child);
             }
             return children;
         }
@@ -235,7 +238,7 @@ namespace Printer.Printer {
         /// <exception cref="Exception">If the child does not belong to this parent.</exception>
         public void RemoveChild(PrinterElement child) {
             if (child.Parent != this) throw new Exception("Attempt to remove child from non-parent");
-            _ = this._children.Remove(child);
+            this._children.Remove(child);
             child.Parent = null;
         }
 
@@ -254,11 +257,12 @@ namespace Printer.Printer {
         public virtual XMLStringBuilder ToXML() {
             XMLStringBuilder xml = new();
 
-            _ = xml.OpenTag(this.Name);
+            xml.OpenTag(this.Name);
+            if (this.ClassList.Count > 0) xml.Attribute("class", this.ClassList.DelString(" "));
             foreach (PrinterElement child in this.Children) {
-                _ = xml.AppendXML(child.ToXML());
+                xml.AppendXML(child.ToXML());
             }
-            _ = xml.CloseTag();
+            xml.CloseTag();
 
             return xml;
         }

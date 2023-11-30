@@ -2,13 +2,25 @@
 using Leagueinator.Printer;
 using System.Diagnostics;
 
-string source = "45px 30% 15px 0px";
+Console.WriteLine(" ----- START -----");
+var foobar = new FooBar();
+var method = foobar.GetType().GetMethod("Report");
 
-bool r1 = MultiParse.TryParse("45px", typeof(Func<float, float?>), out object? isFloat);
-Debug.WriteLine($"{r1} {isFloat != null}");
+try {
+    method.Invoke(foobar, null);
+}
+catch (Exception ex) {
+    Console.WriteLine("CAUGHT: " + ex.ToString());
+}
+Console.WriteLine(" -----  END  -----");
+Console.ReadKey();
 
-bool r2 = MultiParse.TryParse(source, typeof(Cardinal<Func<float, float?>>), out object? result);
-var asCardinal = (Cardinal<Func<float, float?>>)result;
+class FooBar {
+    public void Report() {
+        Console.WriteLine("Before Exception");
+        throw new Exception("Weeeeee I'm an exception!");
+        Console.WriteLine("After Exception");
+    }
+}
 
-Debug.WriteLine($"{r2} {result != null}");
-Debug.WriteLine($"{asCardinal.Top(100)} {asCardinal.Right(100)} {asCardinal.Bottom(100)} {asCardinal.Left(100)}");
+

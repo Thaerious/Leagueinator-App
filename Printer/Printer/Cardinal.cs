@@ -1,28 +1,35 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
 using Leagueinator.CSSParser;
 
 namespace Leagueinator.Printer {
+    public class CardinalParseException : Exception {
+        public string SourceString { get; }
+        public Type Type { get; }
+
+        public CardinalParseException(string sourceString, Type type, string message) : base(message){
+            this.SourceString = sourceString;
+            this.Type = type;
+        }        
+    }
+
     public struct Cardinal<T> {
         public T Left, Right, Top, Bottom;
 
         public Cardinal(T value) {
-            Left = value;
-            Right = value;
-            Top = value;
-            Bottom = value;
+            this.Top = value;
+            this.Right = value;
+            this.Bottom = value;
+            this.Left = value;
         }
 
-        public Cardinal(T top, T right, T bottom, T left) {
-            this.Left = left;
-            this.Right = right;
+        public Cardinal(T top, T right, T bottom, T left) {                        
             this.Top = top;
+            this.Right = right;
             this.Bottom = bottom;
+            this.Left = left;
         }
 
         public static bool TryParse(string source, out Cardinal<T> target) {
-            Debug.WriteLine($"Cardinal.TryParse({source}, {typeof(T)})");                       
-
             string[] split = source.Split();
             List<object> values = new();
 
@@ -31,8 +38,13 @@ namespace Leagueinator.Printer {
                 if (parsed && obj != null) values.Add(obj);
             }
 
-            if (split.Length == 0) throw new Exception("No cardinal values found");
-            if (values.Count == 0) throw new Exception("No cardinal values found");
+            if (split.Length == 0) {
+                throw new CardinalParseException(source, typeof(T), "No parsable strings");
+            }
+
+            if (values.Count == 0) {
+                throw new CardinalParseException(source, typeof(T), "No converted objects");
+            }
 
             target = new(
                 (T)values[0],

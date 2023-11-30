@@ -23,33 +23,28 @@ namespace Leagueinator.CSSParser {
             Type? underlyingType = Nullable.GetUnderlyingType(type);
             Type targetType = underlyingType ?? type;
 
-            // If the target it is a string
+            // Target is a string
             if (targetType == typeof(string)) {
-                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as string");
                 target = source;
                 return true;
             }
 
-            // if the target has static TryParse(string, out type)
-            Debug.WriteLine($"Seeking method '{typeof(string)}', '{targetType.MakeByRefType()}'");
+            // Target has "TryParse" method (this applies to primitives).
             var method = targetType.GetMethod(
                 "TryParse",
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy,
                 new Type[] { typeof(string), targetType.MakeByRefType() }
             );
-
-            // If the target has a "TryParse" method, applies to primitives.
+            
             if (method != null) {
-                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as method");
                 object?[] args = new object?[] { source, target };
                 bool result = (bool)method.Invoke(null, args)!;
                 if (result) target = args[1];
                 return result;
             }
 
-            // If the target is an Enum
+            // Target is Enum
             if (targetType.IsEnum) {
-                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as enum");
                 if (!Enum.IsDefined(targetType, source)) {
                     return false;
                 }
@@ -62,7 +57,6 @@ namespace Leagueinator.CSSParser {
             // Search the style's public static properties
             var prop = targetType.GetProperty(source);
             if (prop != null && prop.CanRead && prop.PropertyType == targetType) {
-                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as static property");
                 target = prop.GetValue(null);
                 return true;
             }
@@ -74,14 +68,12 @@ namespace Leagueinator.CSSParser {
             );
 
             if (specialCase != null) {
-                Debug.WriteLine($"MultiParse.TryParse({source}, {type}) as special case");
                 object?[] args = new object?[] { source, target };
                 bool result = (bool)specialCase.Invoke(null, args)!;
                 if (result) target = args[1];
                 return result;
             }
 
-            Debug.WriteLine($"MultiParse.TryParse({source}, {type}) did not parse");
             return false;
         }
     }
