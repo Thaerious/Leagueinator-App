@@ -4,6 +4,7 @@ using Antlr4.Runtime.Tree;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Leagueinator.CSSParser {
 
@@ -22,8 +23,26 @@ namespace Leagueinator.CSSParser {
             var val = context.children[2].GetText();
             var field = Style.Fields[key];
 
-            MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
-            field.SetValue(this.style, newObject);
+            try {
+                MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
+                field.SetValue(this.style, newObject);
+            }
+            catch (TargetInvocationException ex) {
+                CardinalParseException? inner = ex.InnerException as CardinalParseException;
+                if (inner == null) throw;
+
+                string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
+                msg += $"{inner.Message}\n";
+                msg += $"Type: {inner.Type.Name}\n";
+                msg += $"Source: {inner.SourceString}\n";
+
+                throw new Exception(msg);
+            }
+            catch (Exception ex) {
+                string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
+                msg += ex.Message;
+                throw new Exception(msg);
+            }            
         }
     }
 

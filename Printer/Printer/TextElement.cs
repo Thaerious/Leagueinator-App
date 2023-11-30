@@ -1,4 +1,5 @@
-﻿using Printer.Printer;
+﻿using Leagueinator.Utility;
+using Printer.Printer;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
@@ -40,6 +41,16 @@ namespace Leagueinator.Printer {
         public TextElement(string text) : base() {
             this.text = text.Trim();
             this.Name = "@text";
+        }
+
+        public override XMLStringBuilder ToXML() {
+            XMLStringBuilder xml = new();
+
+            xml.OpenTag(this.Name);
+            xml.AppendLine(this.text);
+            xml.CloseTag();
+
+            return xml;
         }
 
         public override void Draw(Graphics g) {

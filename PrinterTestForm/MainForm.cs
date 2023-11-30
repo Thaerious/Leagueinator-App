@@ -1,31 +1,27 @@
 ﻿using Leagueinator.Printer;
-using Leagueinator_Utility.Utility;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using System.Xml;
 
-namespace PrinterTestForm {
-    public partial class MainForm : Form {
-        private static string AppPath = "PrinterTestForm";
-        private string xmlPath;
-        private string stylePath;
+namespace PrinterTestForm
+{
+    public partial class MainForm : Form
+    {
+        private static readonly string AppPath = "PrinterTestForm";
+        private readonly string xmlPath;
+        private readonly string stylePath;
 
         public MainForm() {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            var menuItem = new ToolStripMenuItem {
+                ShortcutKeys = Keys.Control | Keys.S // Set your desired shortcut key
+            };
+            menuItem.Click += new EventHandler(this.ToolRefresh_Click); // Link to button's event handler
+            menuItem.Visible = false; // Hide the menu item if not needed in a menu
+            this.toolStrip1.Items.Add(menuItem);
+
             string roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             this.xmlPath = Path.Combine(roamingPath, AppPath, "layout.xml");
             this.stylePath = Path.Combine(roamingPath, AppPath, "style.ss");
-
-            Debug.WriteLine("***" + this.xmlPath);
 
             if (!Directory.Exists(Path.Combine(roamingPath, AppPath))) {
                 Directory.CreateDirectory(Path.Combine(roamingPath, AppPath));
@@ -44,9 +40,10 @@ namespace PrinterTestForm {
 
         private void ToolRefresh_Click(object _, EventArgs __) {
             try {
-                var xmlString = this.txtXML.Text;
-                var styleString = this.txtStyle.Text;
-                var root = XMLLoader.Load(xmlString, styleString);
+                string xmlString = this.txtXML.Text;
+                string styleString = this.txtStyle.Text;
+
+                Printer.Printer.PrinterElement root = XMLLoader.Load(xmlString, styleString);
                 this.printerCanvas.DocElement.ClearChildren();
                 this.printerCanvas.DocElement.AddChild(root);
                 this.printerCanvas.Invalidate();

@@ -19,23 +19,23 @@ namespace Leagueinator.Printer {
         [CSS] public Position Position = Position.Static;
 
         [CSS] public PointF Location = new();
-        [CSS] public Func<float, float?> Width = f => null;
-        [CSS] public Func<float, float?> Height = f => null;
+        [CSS] public UnitFloat Width = new();
+        [CSS] public UnitFloat Height = new();
         [CSS] public Color? BackgroundColor = null;
 
-        [CSS] public Cardinal<float> Margin = new(0f);
-        [CSS] public Cardinal<float> Padding = new(0f);
+        [CSS] public Cardinal<UnitFloat> Margin = new(new UnitFloat());
+        [CSS] public Cardinal<UnitFloat> Padding = new(new UnitFloat());
         [CSS] public Cardinal<Color> BorderColor = new();
-        [CSS] public Cardinal<float> BorderSize = new(0f);
+        [CSS] public Cardinal<UnitFloat> BorderSize = new(new UnitFloat());
 
         [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Row;
         [CSS] public Justify_Content Justify_Content = Justify_Content.Flex_start;
         [CSS] public Align_Items Align_Items = Align_Items.Flex_start;
 
-        [CSS] public Font Font = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Point);
-        [CSS] public Brush Brush = new SolidBrush(Color.Black);
-        [CSS] public Pen Pen = new(Color.Black);
-        [CSS] public StringFormat StringFormat = new StringFormat {
+        public Font Font = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Point);
+        public Brush Brush = new SolidBrush(Color.Black);
+        public Pen Pen = new(Color.Black);
+        public StringFormat StringFormat = new StringFormat {
             Alignment = StringAlignment.Near,
             LineAlignment = StringAlignment.Near
         };

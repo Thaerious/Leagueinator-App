@@ -1,15 +1,14 @@
 ﻿using Leagueinator.Printer;
-using System.Diagnostics;
-using System.Reflection;
-using static Printer.Printer.PrinterElement;
 
-namespace PrinterTestForm {
-    public partial class PrinterCanvas : UserControl {
+namespace PrinterTestForm
+{
+    public partial class PrinterCanvas : UserControl
+    {
         public RootElement DocElement { get; }
 
         public PrinterCanvas() {
-            InitializeComponent();
-            DocElement = new RootElement(() => new SizeF(this.Width, this.Height));
+            this.InitializeComponent();
+            this.DocElement = new RootElement(() => new SizeF(this.Width, this.Height));
         }
 
         protected override void OnPaint(PaintEventArgs e) {
@@ -29,6 +28,5 @@ namespace PrinterTestForm {
                 e.Graphics.DrawLine(pen, p1, p2);
             }
         }
-
     }
 }
