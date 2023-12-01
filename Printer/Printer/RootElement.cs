@@ -32,7 +32,9 @@ namespace Leagueinator.Printer {
         public override XMLStringBuilder ToXML() {
             XMLStringBuilder xml = new();
 
-            xml.OpenTag(this.Name, $"width='{this.RootSource().Width}'", $"height='{this.RootSource().Height}'"); 
+            xml.OpenTag(this.Name);
+            xml.Attribute("width", this.RootSource().Width);
+            xml.Attribute("height", this.RootSource().Height);
             foreach (var child in this.Children) {
                 xml.AppendXML(child.ToXML());
             }

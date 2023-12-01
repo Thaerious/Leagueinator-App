@@ -2,6 +2,7 @@
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Printing;
 
 namespace Printer.Printer {
 
@@ -18,7 +19,6 @@ namespace Printer.Printer {
 
             if (query.StartsWith(".")) {
                 foreach (PrinterElement element in this) {
-                    _ = element.ClassList.Count > 0 ? element.ClassList[0] : "NULL";
                     if (element.ClassList.Contains(query[1..])) result.Add(element);
                 }
             }
@@ -77,10 +77,20 @@ namespace Printer.Printer {
             get; set;
         } = new();
 
+        /// <summary>
+        /// The rectangle print actions will take place in.
+        /// This is defined by style width and height.
+        /// </summary>
         public virtual SizeF ContentSize { get; set; } = new();
 
+        /// <summary>
+        /// The rectable the border will be printed in.
+        /// </summary>
         public virtual SizeF BorderSize { get; set; } = new();
 
+        /// <summary>
+        /// The rectangle parent elements will use for element size.
+        /// </summary>
         public virtual SizeF OuterSize { get; set; } = new();
 
         /// <summary>
@@ -105,25 +115,28 @@ namespace Printer.Printer {
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
-        public RectangleF OuterRect => new(
+        public RectangleF OuterRect {
+            get {
+                return new RectangleF(
                     this.Location.X,
                     this.Location.Y,
                     this.OuterSize.Width,
                     this.OuterSize.Height
                 );
-
+            }
+        }
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
         public RectangleF BorderRect {
             get {
-                Cardinal<float> margin = new();
+                Cardinal<UnitFloat> margin = this.Style.Margin;
 
                 return new RectangleF(
                     this.Location.X + margin.Left,
                     this.Location.Y + margin.Top,
-                    this.BorderSize.Width + this.Style.Padding.Left + this.Style.Padding.Right,
-                    this.BorderSize.Height + this.Style.Padding.Top + this.Style.Padding.Bottom
+                    this.BorderSize.Width,
+                    this.BorderSize.Height
                 );
             }
         }
@@ -140,7 +153,7 @@ namespace Printer.Printer {
         /// </summary>
         public PrinterElement() {
             this.Style = new Flex();
-            this.Name = this.GetHashCode().ToString("X");
+            this.Name = $"@element-{this.GetHashCode():X}";
         }
 
         /// <summary>

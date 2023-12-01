@@ -6,11 +6,22 @@ using System.Xml.Linq;
 namespace Leagueinator.Utility {
 
     internal class InlineTag : OpenTag{
+        public string Text = "";
+
         public InlineTag(string name) : base(name) {}
 
         public override string ToString() {
-            if (attributes.Count > 0) return $"<{this.Name} {attributes.DelString(" ")}/>";
-            return $"<{this.Name}/>";
+            if (Text == "") {
+                if (attributes.Count > 0) return $"<{this.Name} {attributes.DelString(" ")}/>";
+                return $"<{this.Name}/>";
+            }
+            else {
+                var s = "";
+                if (attributes.Count > 0) s += $"<{this.Name} {attributes.DelString(" ")}>";
+                s += Text;
+                s += $"</{this.Name}>";
+                return s;
+            }
         }
     }
 
@@ -58,14 +69,6 @@ namespace Leagueinator.Utility {
             this.lines.Add(new IndentedObject(obj, indent));
         }
 
-        public XMLStringBuilder OpenTag(string name, params string[] attributes) {
-            var openTag = new OpenTag(name);
-            openTag.AddAttributes(attributes);
-            this.AddLine(openTag, 1);
-            this.CurrentTag.Push(openTag);
-            return this;
-        }
-
         public XMLStringBuilder OpenTag(string tagname) {
             var openTag = new OpenTag(tagname);
             this.AddLine(openTag, 1);
@@ -76,6 +79,16 @@ namespace Leagueinator.Utility {
         public XMLStringBuilder Attribute(string key, object value) {
             var openTag = this.CurrentTag.Peek();
             openTag.AddAttribute(key, value.ToString() ?? "true");
+            return this;
+        }
+
+        public XMLStringBuilder InnerText(string text) {
+            if (this.CurrentTag.Peek() is InlineTag) {
+                (this.CurrentTag.Peek() as InlineTag).Text = text;
+            }
+            else {
+                this.AppendLine(text);
+            }
             return this;
         }
 

@@ -36,7 +36,7 @@ namespace Leagueinator.App.Components.PlayerListBox {
             this.menuDelete.Click += new System.EventHandler(this.HndMenuDelete);
             this.menuRename.Click += new System.EventHandler(this.HndMenuRename);
 
-            _ = new ControlDragHandlers<PlayerInfo>(this,
+            new ControlDragHandlers<PlayerInfo>(this,
                 () => { // [getData] called when this is the source
                     if (this.Round is null) return null;
                     if (this.SelectedItem == null) return null;

@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Leagueinator_Utility\Leagueinator_Utility.csproj" />
+    <ProjectReference Include="..\PrinterComponents\PrinterComponents.csproj" />
     <ProjectReference Include="..\Printer\Printer.csproj" />
   </ItemGroup>
 

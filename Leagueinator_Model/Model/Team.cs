@@ -55,14 +55,16 @@ namespace Leagueinator.Model {
 
         public XMLStringBuilder ToXML() {
             var xsb = new XMLStringBuilder();
-            _ = xsb.OpenTag("Team", $"bowls='{this.Bowls}' hash='{this.GetHashCode():X}'");
+            xsb.OpenTag("Team");
+            xsb.Attribute("hash", this.GetHashCode("X"));
+            xsb.Attribute("bowls", this.Bowls);
 
             foreach (PlayerInfo? player in this.Players.Values) {
                 if (player is null) continue;
-                _ = xsb.AppendXML(player.ToXML());
+                xsb.AppendXML(player.ToXML());
             }
 
-            _ = xsb.CloseTag();
+            xsb.CloseTag();
 
             return xsb;
         }

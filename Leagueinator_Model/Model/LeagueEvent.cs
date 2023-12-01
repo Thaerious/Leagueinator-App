@@ -86,12 +86,16 @@ namespace Leagueinator.Model {
         public XMLStringBuilder ToXML() {
             var xsb = new XMLStringBuilder();
 
-            _ = xsb.OpenTag("Event", $"name='{this.Name}' hash='{this.GetHashCode():X}'");
-            _ = xsb.InlineTag("Players", this.SeekDeep<PlayerInfo>().DelString());
+            xsb.OpenTag("Event");
+            xsb.Attribute("name", this.Name);
+            xsb.Attribute("hash", this.GetHashCode("X"));
+            xsb.InlineTag("Players");
+            xsb.InnerText(this.SeekDeep<PlayerInfo>().DelString());
+
             foreach (Round round in this.Rounds) {
-                _ = xsb.AppendXML(round.ToXML());
+                xsb.AppendXML(round.ToXML());
             }
-            _ = xsb.CloseTag();
+            xsb.CloseTag();
 
             return xsb;
         }
@@ -120,7 +124,7 @@ namespace Leagueinator.Model {
         }
 
         internal void RemoveRound(Round round) {
-            _ = this.Rounds.Remove(round);
+            this.Rounds.Remove(round);
         }
 
         public DataSet ToDataSet() {

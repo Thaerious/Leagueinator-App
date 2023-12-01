@@ -17,7 +17,7 @@ namespace Leagueinator.Utility {
         public static T RemoveRandom<T>(this Collection<T> collection) {
             int r = rng.Next(collection.Count);
             T t = collection[r];
-            _ = collection.Remove(t);
+            collection.Remove(t);
             return t;
         }
 

@@ -21,7 +21,7 @@
                     for (int k = 0; k < team.Players.Count; k++) {
                         PlayerInfo? player = team.Players[k];
                         if (player != null) {
-                            _ = target.IdlePlayers.Remove(player);
+                            target.IdlePlayers.Remove(player);
                             target.Matches[i].Teams[j].Players[k] = player;
                         }
                     }

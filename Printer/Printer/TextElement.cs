@@ -47,6 +47,8 @@ namespace Leagueinator.Printer {
             XMLStringBuilder xml = new();
 
             xml.OpenTag(this.Name);
+            xml.Attribute("width", this.ContentRect.Width);
+            xml.Attribute("height", this.ContentRect.Height);
             xml.AppendLine(this.text);
             xml.CloseTag();
 

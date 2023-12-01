@@ -111,7 +111,7 @@ namespace Leagueinator.App.Components.MatchCard {
 
             flowPanel.Controls.Add(label);
 
-            _ = new ControlDragHandlers<PlayerInfo>(label,
+            new ControlDragHandlers<PlayerInfo>(label,
                 () => { // get data from source
                     Team? team = this.Match?.Teams[teamIndex];
                     if (team == null) return null;
