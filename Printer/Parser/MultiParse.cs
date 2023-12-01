@@ -6,8 +6,16 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using static Leagueinator.Printer.Style;
 
-namespace Leagueinator.CSSParser {
-    public static class MultiParse {
+namespace Leagueinator.CSSParser
+{
+    public static class MultiParse
+    {
+
+        public static bool TryParse<T>(string source, out T? target) {
+            var r = TryParse(source, typeof(T), out object? _target);
+            target = (T?)_target;
+            return r;
+        }
 
         /// <summary>
         /// Assign a value of 'type' to 'target' based on the 'source' string.
@@ -35,7 +43,7 @@ namespace Leagueinator.CSSParser {
                 BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy,
                 new Type[] { typeof(string), targetType.MakeByRefType() }
             );
-            
+
             if (method != null) {
                 object?[] args = new object?[] { source, target };
                 bool result = (bool)method.Invoke(null, args)!;
@@ -78,7 +86,8 @@ namespace Leagueinator.CSSParser {
         }
     }
 
-    public static class SpecialCases {
+    public static class SpecialCases
+    {
         private static string rgbPattern = @"rgb\([ ]*(\d\d?\d?)[ ]*,[ ]*(\d\d?\d?)[ ]*,[ ]*(\d\d?\d?)[ ]*\)";
         private static Regex rgbRegex = new Regex(rgbPattern);
 

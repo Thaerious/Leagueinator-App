@@ -49,7 +49,8 @@ namespace Leagueinator.Model {
 
         public XMLStringBuilder ToXML() {
             var xsb = new XMLStringBuilder();
-            _ = xsb.InlineTag("Player", this.Name, $"hash='{this.GetHashCode():X}'");
+            xsb.OpenTag("Player");
+            xsb.Attribute("hash", this.GetHashCode("X"));
             return xsb;
         }
     }

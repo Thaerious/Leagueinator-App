@@ -56,7 +56,7 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
         private void Remove(int key) {
             if (key < 0 || key >= this.MaxSize) throw new IndexOutOfRangeException();
             var args = new Args(key, default, this.inner[key], CollectionChangedAction.Remove);
-            _ = this.inner.Remove(key);
+            this.inner.Remove(key);
             CollectionChanged?.Invoke(this, args);
         }
 

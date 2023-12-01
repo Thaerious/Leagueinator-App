@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Text;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Runtime.Intrinsics.X86;
 
 namespace Leagueinator.Printer {
     public enum Flex_Direction { Row, Row_reverse, Column, Column_reverse };
@@ -25,8 +28,11 @@ namespace Leagueinator.Printer {
 
         [CSS] public Cardinal<UnitFloat> Margin = new(new UnitFloat());
         [CSS] public Cardinal<UnitFloat> Padding = new(new UnitFloat());
+
         [CSS] public Cardinal<Color> BorderColor = new();
         [CSS] public Cardinal<UnitFloat> BorderSize = new(new UnitFloat());
+        [CSS] public Cardinal<DashStyle> BorderStyle = new();
+        [CSS] public string Border { set => this.SetBorder(value); }
 
         [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Row;
         [CSS] public Justify_Content Justify_Content = Justify_Content.Flex_start;
@@ -110,6 +116,26 @@ namespace Leagueinator.Printer {
             }
         }
 
+        private void SetBorder(string source) {
+            foreach (string s in source.Split(' ')) {
+                if (MultiParse.TryParse(s, out Color? color)) {
+                    if (color != null) {
+                        this.BorderColor = new Cardinal<Color>((Color)color);
+                    }
+                }
+                else if (MultiParse.TryParse(s, out DashStyle? style)) {
+                    if (style != null) {
+                        this.BorderStyle = new Cardinal<DashStyle>((DashStyle)style);
+                    }
+                }
+                else if (MultiParse.TryParse(s, out UnitFloat? width)) {
+                    if (width != null) {
+                        this.BorderSize = new Cardinal<UnitFloat>((UnitFloat)width);
+                    }
+                }
+            }
+        }
+
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
             PropertyInfo[] properties = this.GetType().GetProperties();
@@ -131,6 +157,7 @@ namespace Leagueinator.Printer {
         }
 
         public static Dictionary<string, FieldInfo> Fields { get; }  = new();
+        public static Dictionary<string, PropertyInfo> Properties { get; } = new();
 
         static Style() {
             foreach (FieldInfo field in typeof(Style).GetFields()) {
@@ -139,10 +166,17 @@ namespace Leagueinator.Printer {
                 var key = css.Key?.ToLower() ?? field.Name.ToPlainCase();
                 Fields[key] = field;
             }
+
+            foreach (PropertyInfo prop in typeof(Style).GetProperties()) {
+                CSS? css = prop.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                var key = css.Key?.ToLower() ?? prop.Name.ToPlainCase();
+                Properties[key] = prop;
+            }
         }
         private Font? _font = null;
         private Brush? _brush = null;
         private Pen? _pen = null;
         private StringFormat? _stringFormat = null;
-    }
+    }   
 }

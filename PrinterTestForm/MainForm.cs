@@ -43,13 +43,13 @@ namespace PrinterTestForm
                 string xmlString = this.txtXML.Text;
                 string styleString = this.txtStyle.Text;
 
+                File.WriteAllText(this.xmlPath, xmlString);
+                File.WriteAllText(this.stylePath, styleString);
+
                 Printer.Printer.PrinterElement root = XMLLoader.Load(xmlString, styleString);
                 this.printerCanvas.DocElement.ClearChildren();
                 this.printerCanvas.DocElement.AddChild(root);
                 this.printerCanvas.Invalidate();
-
-                File.WriteAllText(this.xmlPath, xmlString);
-                File.WriteAllText(this.stylePath, styleString);
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -59,6 +59,20 @@ namespace PrinterTestForm
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {
             Debug.WriteLine(this.printerCanvas.DocElement.ToXML());
+        }
+
+        private void TXT_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == '\t') {
+                int tabSize = 4; // Set your desired tab size
+                e.Handled = true; // Prevent the default tab behavior
+
+                TextBox? textBox = sender as TextBox;
+                if (textBox != null) {
+                    int selectionStart = textBox.SelectionStart;
+                    textBox.Text = textBox.Text.Insert(selectionStart, new string(' ', tabSize));
+                    textBox.SelectionStart = selectionStart + tabSize;
+                }
+            }
         }
     }
 }

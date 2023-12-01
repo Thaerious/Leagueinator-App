@@ -1,4 +1,6 @@
-﻿namespace PrinterTestForm {
+﻿using Leagueinator.PrinterComponents;
+
+namespace PrinterTestForm {
     partial class MainForm {
         /// <summary>
         /// Required designer variable.
@@ -28,12 +30,12 @@
             this.printerCanvas = new PrinterCanvas();
             this.toolStrip1 = new ToolStrip();
             this.toolRefresh = new ToolStripButton();
+            this.toolPrintXML = new ToolStripButton();
             this.tabSource = new TabControl();
             this.tabXML = new TabPage();
             this.txtXML = new TextBox();
             this.tabStyle = new TabPage();
             this.txtStyle = new TextBox();
-            this.toolPrintXML = new ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -65,10 +67,12 @@
             // printerCanvas
             // 
             this.printerCanvas.Dock = DockStyle.Fill;
+            this.printerCanvas.GridSize = 100;
             this.printerCanvas.Location = new Point(0, 34);
             this.printerCanvas.Margin = new Padding(0);
             this.printerCanvas.Name = "printerCanvas";
             this.printerCanvas.Size = new Size(843, 863);
+            this.printerCanvas.SubGridSize = 25;
             this.printerCanvas.TabIndex = 1;
             // 
             // toolStrip1
@@ -90,6 +94,16 @@
             this.toolRefresh.Size = new Size(74, 29);
             this.toolRefresh.Text = "Refresh";
             this.toolRefresh.Click += this.ToolRefresh_Click;
+            // 
+            // toolPrintXML
+            // 
+            this.toolPrintXML.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            this.toolPrintXML.Image = (Image)resources.GetObject("toolPrintXML.Image");
+            this.toolPrintXML.ImageTransparentColor = Color.Magenta;
+            this.toolPrintXML.Name = "toolPrintXML";
+            this.toolPrintXML.Size = new Size(92, 29);
+            this.toolPrintXML.Text = "Print XML";
+            this.toolPrintXML.Click += this.ToolPrintXML_Click;
             // 
             // tabSource
             // 
@@ -115,14 +129,16 @@
             // 
             // txtXML
             // 
+            this.txtXML.AcceptsTab = true;
             this.txtXML.Dock = DockStyle.Fill;
-            this.txtXML.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            this.txtXML.Font = new Font("Consolas", 12F);
             this.txtXML.Location = new Point(3, 3);
             this.txtXML.Multiline = true;
             this.txtXML.Name = "txtXML";
             this.txtXML.Size = new Size(872, 853);
             this.txtXML.TabIndex = 0;
             this.txtXML.Text = "<document></document>";
+            this.txtXML.KeyPress += this.TXT_KeyPress;
             // 
             // tabStyle
             // 
@@ -137,23 +153,15 @@
             // 
             // txtStyle
             // 
+            this.txtStyle.AcceptsTab = true;
             this.txtStyle.Dock = DockStyle.Fill;
-            this.txtStyle.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point);
+            this.txtStyle.Font = new Font("Consolas", 12F);
             this.txtStyle.Location = new Point(3, 3);
             this.txtStyle.Multiline = true;
             this.txtStyle.Name = "txtStyle";
             this.txtStyle.Size = new Size(872, 853);
             this.txtStyle.TabIndex = 1;
-            // 
-            // toolPrintXML
-            // 
-            this.toolPrintXML.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            this.toolPrintXML.Image = (Image)resources.GetObject("toolPrintXML.Image");
-            this.toolPrintXML.ImageTransparentColor = Color.Magenta;
-            this.toolPrintXML.Name = "toolPrintXML";
-            this.toolPrintXML.Size = new Size(92, 29);
-            this.toolPrintXML.Text = "Print XML";
-            this.toolPrintXML.Click += this.ToolPrintXML_Click;
+            this.txtStyle.KeyPress += this.TXT_KeyPress;
             // 
             // MainForm
             // 

@@ -1,5 +1,7 @@
-﻿namespace PrinterTestForm {
-    partial class PrinterCanvas {
+﻿namespace Leagueinator.PrinterComponents
+{
+    partial class PrinterCanvas
+    {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -24,7 +26,6 @@
         /// </summary>
         private void InitializeComponent() {
             components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         }
 
         #endregion

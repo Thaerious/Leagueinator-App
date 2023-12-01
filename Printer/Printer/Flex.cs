@@ -1,4 +1,5 @@
 ﻿using Printer.Printer;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
@@ -18,10 +19,10 @@ namespace Leagueinator.Printer {
 
             foreach (PrinterElement child in element.Children) {
                 child.Style.DoSize(child);
-                maxWidth  = child.ContentSize.Width > maxWidth ? maxWidth = child.ContentSize.Width : maxWidth;
-                maxHeight = child.ContentSize.Height > maxHeight ? maxHeight = child.ContentSize.Height : maxHeight;
-                sumWidth  += child.ContentSize.Width;
-                sumHeight += child.ContentSize.Height;
+                maxWidth  = child.OuterSize.Width > maxWidth ? maxWidth = child.OuterSize.Width : maxWidth;
+                maxHeight = child.OuterSize.Height > maxHeight ? maxHeight = child.OuterSize.Height : maxHeight;
+                sumWidth  += child.OuterSize.Width;
+                sumHeight += child.OuterSize.Height;
             }
 
             float contentWidth = 0f, contentHeight = 0f;
@@ -30,18 +31,27 @@ namespace Leagueinator.Printer {
 
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    contentWidth = (float)(this.Width ?? sumWidth);
-                    contentHeight = (float)(this.Height ?? maxHeight);
+                    Debug.WriteLine($"Row {this.Width.HasValue} {this.Height.HasValue}");
+                    contentWidth = this.Width.HasValue ? this.Width : sumWidth;
+                    contentHeight = this.Height.HasValue ? this.Height : maxHeight;
                     break;
                 case Flex_Direction.Column:
-                    contentWidth = (float)(this.Width ?? maxWidth);
-                    contentHeight = (float)(this.Height ?? sumHeight);
+                    Debug.WriteLine($"Col {this.Width.HasValue} {this.Height.HasValue}");
+                    contentWidth = this.Width.HasValue ? this.Width : maxWidth;
+                    contentHeight = this.Height.HasValue ? this.Height : sumHeight;
                     break;
             }
 
-            var borderWidth = (float)(contentWidth + this.BorderSize.Left + this.BorderSize.Right);
-            var borderHeight = (float)(contentHeight + this.BorderSize.Top + this.BorderSize.Bottom);
-            element.OuterSize = new SizeF(borderWidth, borderHeight);
+            var paddingWidth = contentWidth + this.Padding.Left + this.Padding.Right;
+            var paddingHeight = contentHeight + this.Padding.Top + this.Padding.Bottom;
+
+            var borderWidth = paddingWidth + this.BorderSize.Left + this.BorderSize.Right;
+            var borderHeight = paddingHeight + this.BorderSize.Top + this.BorderSize.Bottom;
+
+            var outerWidth = borderWidth + this.Margin.Left + this.Margin.Right;
+            var outerHeight = borderHeight + this.Margin.Top + this.Margin.Bottom;
+
+            element.OuterSize = new SizeF(outerWidth, outerHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
         }
@@ -58,34 +68,55 @@ namespace Leagueinator.Printer {
         }
 
         public override void DoDraw(PrinterElement element, Graphics g) {
+            Debug.WriteLine($"{element}");
+            Debug.WriteLine($"Outer   {element.OuterRect}");
+            Debug.WriteLine($"Border  {element.BorderRect}");
+            Debug.WriteLine($"Content {element.ContentRect}");
+
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }
 
             if (this.BorderColor.Top != default) {
+                using Pen pen = new Pen(BorderColor.Top);
+                pen.Width = BorderSize.Top;
+                pen.DashStyle = BorderStyle.Top;
+
                 g.DrawLine(
-                    new Pen(BorderColor.Top, BorderSize.Top),
+                    pen,
                     element.BorderRect.TopLeft().Translate(0, BorderSize.Top / 2),
                     element.BorderRect.TopRight().Translate(0, BorderSize.Top / 2)
                 );
             }
             if (this.BorderColor.Right != default) {
+                using Pen pen = new Pen(BorderColor.Right);
+                pen.Width = BorderSize.Right;
+                pen.DashStyle = BorderStyle.Right;
+
                 g.DrawLine(
-                    new Pen(BorderColor.Right, BorderSize.Right),
+                    pen,
                     element.BorderRect.TopRight().Translate(-BorderSize.Right / 2, 0),
                     element.BorderRect.BottomRight().Translate(-BorderSize.Right / 2, 0)
                 );
             }
             if (this.BorderColor.Bottom != default) {
+                using Pen pen = new Pen(BorderColor.Bottom);
+                pen.Width = BorderSize.Bottom;
+                pen.DashStyle = BorderStyle.Bottom;
+
                 g.DrawLine(
-                    new Pen(BorderColor.Bottom, BorderSize.Bottom),
+                    pen,
                     element.BorderRect.BottomRight().Translate(0, -BorderSize.Bottom / 2),
                     element.BorderRect.BottomLeft().Translate(0, -BorderSize.Bottom / 2)
                 );
             }
             if (this.BorderColor.Left != default) {
+                using Pen pen = new Pen(BorderColor.Left);
+                pen.Width = BorderSize.Left;
+                pen.DashStyle = BorderStyle.Left;
+
                 g.DrawLine(
-                    new Pen(BorderColor.Left, BorderSize.Left),
+                    pen,
                     element.BorderRect.BottomLeft().Translate(BorderSize.Left / 2, 0),
                     element.BorderRect.TopLeft().Translate(BorderSize.Left / 2, 0)
                 );

@@ -36,12 +36,15 @@ namespace Leagueinator.Model {
         /// <returns></returns>
         public XMLStringBuilder ToXML() {
             var xsb = new XMLStringBuilder();
-            _ = xsb.OpenTag("League", $"hash='{this.GetHashCode():X}'");
-            _ = xsb.InlineTag("Players", this.SeekDeep<PlayerInfo>().DelString());
+            xsb.OpenTag("League");
+            xsb.Attribute("hash", this.GetHashCode("X"));
+            xsb.InlineTag("Players");
+            xsb.InnerText(this.SeekDeep<PlayerInfo>().DelString());
+
             foreach (LeagueEvent lEvent in this.Events) {
-                _ = xsb.AppendXML(lEvent.ToXML());
+                xsb.AppendXML(lEvent.ToXML());
             }
-            _ = xsb.CloseTag();
+            xsb.CloseTag();
             return xsb;
         }
 

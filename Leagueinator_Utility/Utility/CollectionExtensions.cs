@@ -10,13 +10,13 @@ namespace Leagueinator.Utility {
         }
 
         public static List<T> AddUnique<T>(this List<T> list, ICollection<T> that) {
-            foreach (T t in that) _ = list.AddUnique(t);
+            foreach (T t in that) list.AddUnique(t);
             return list;
         }
 
         public static List<T> Unique<T>(this List<T> list) {
             var newList = new List<T>();
-            foreach (T t in list) _ = newList.AddUnique(t);
+            foreach (T t in list) newList.AddUnique(t);
             list.Clear();
             list.AddRange(newList);
             return list;

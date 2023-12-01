@@ -1,6 +1,6 @@
 ﻿namespace Leagueinator.CSSParser {
 
-    [AttributeUsage(AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class CSS : Attribute{
         public readonly string? Key;
 

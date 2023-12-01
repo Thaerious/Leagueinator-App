@@ -21,11 +21,18 @@ namespace Leagueinator.CSSParser {
         public override void EnterProperty([NotNull] StyleParser.PropertyContext context) {
             var key = context.children[0].GetText().ToPlainCase();
             var val = context.children[2].GetText();
-            var field = Style.Fields[key];
 
-            try {
-                MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
-                field.SetValue(this.style, newObject);
+            try {                
+                if (Style.Fields.ContainsKey(key)) {
+                    var field = Style.Fields[key];
+                    MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
+                    field.SetValue(this.style, newObject);
+                }
+                else if (Style.Properties.ContainsKey(key)) {
+                    var prop = Style.Properties[key];
+                    MultiParse.TryParse(val.Trim(), prop.PropertyType, out object? newObject);
+                    prop.SetValue(this.style, newObject);                    
+                }
             }
             catch (TargetInvocationException ex) {
                 CardinalParseException? inner = ex.InnerException as CardinalParseException;
@@ -41,6 +48,7 @@ namespace Leagueinator.CSSParser {
             catch (Exception ex) {
                 string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
                 msg += ex.Message;
+                Debug.WriteLine(ex);
                 throw new Exception(msg);
             }            
         }

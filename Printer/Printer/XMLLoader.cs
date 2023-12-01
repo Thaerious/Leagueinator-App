@@ -1,4 +1,5 @@
 ﻿using Leagueinator.CSSParser;
+using Leagueinator.Utility;
 using Printer.Printer;
 using System.Diagnostics;
 using System.Xml.Linq;
@@ -7,6 +8,7 @@ namespace Leagueinator.Printer {
     public class XMLLoader {
         Dictionary<string, Style> loadedStyles = new();
         PrinterElement rootElement = new();
+        public float LoadTime { get; private set; } = -1f;
 
         public static PrinterElement Load(string xmlString, string ssString) {
             var xmlLoader = new XMLLoader(xmlString, ssString);
@@ -31,7 +33,7 @@ namespace Leagueinator.Printer {
 
             sw.Stop();
 
-            Debug.WriteLine($"XMLLoader elapsed time {sw.Elapsed.TotalMilliseconds} ms");
+            this.LoadTime = sw.ElapsedMilliseconds;
         }
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace Leagueinator.Printer {
             PrinterElement printRoot = new() {
                 Name = xmlRoot.Name.ToString()
             };
-
+ 
             Stack<XElement> xmlStack = new Stack<XElement>();
             Stack<PrinterElement> printStack = new Stack<PrinterElement>();
             xmlStack.Push(xmlRoot);
@@ -85,21 +87,22 @@ namespace Leagueinator.Printer {
                 foreach (var xmlChild in xmlCurrent.Nodes().ToList()) {
                     if (xmlChild is null) continue;
 
-                    if (xmlChild is XElement) {
+                    if (xmlChild is XElement element) {
                         var printChild = printCurrent.AddChild(new PrinterElement() {
-                            Name = ((XElement)xmlChild).Name.ToString()
+                            Name = element.Name.ToString()
                         });
-                        xmlStack.Push((XElement)xmlChild);
+                        xmlStack.Push(element);
                         printStack.Push(printChild);
-                        SeekClasses((XElement)xmlChild, printChild);
+                        SeekClasses(element, printChild);
                     }
-                    else if (xmlChild is XText) {
-                        printCurrent.AddChild(new TextElement(((XText)xmlChild).Value));
+                    else if (xmlChild is XText text) {
+                        printCurrent.AddChild(new TextElement(text.Value));
                     }
                 }
             }
 
             this.rootElement = printRoot;
+
             return printRoot;
         }
 

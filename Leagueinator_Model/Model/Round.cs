@@ -20,8 +20,8 @@ namespace Leagueinator.Model {
         public List<PlayerInfo> AllPlayers {
             get {
                 var list = new List<PlayerInfo>();
-                _ = list.AddUnique(this.IdlePlayers);
-                _ = list.AddUnique(this.ActivePlayers);
+                list.AddUnique(this.IdlePlayers);
+                list.AddUnique(this.ActivePlayers);
                 return list;
             }
         }
@@ -66,15 +66,19 @@ namespace Leagueinator.Model {
 
         public XMLStringBuilder ToXML() {
             var xsb = new XMLStringBuilder();
-            _ = xsb.OpenTag("Round", $"hash='{this.GetHashCode():X}'");
-            _ = xsb.InlineTag("Players", this.AllPlayers.DelString());
-            _ = xsb.InlineTag("Idle", this.IdlePlayers.DelString());
+
+            xsb.OpenTag("Round");
+            xsb.Attribute("hash", this.GetHashCode("X"));
+            xsb.InlineTag("Players");
+            xsb.InnerText(this.AllPlayers.DelString());
+            xsb.InlineTag("Idle");
+            xsb.InnerText(this.IdlePlayers.DelString());
 
             for (int i = 0; i < this._matches.Count; i++) {
-                _ = xsb.AppendXML(this._matches[i].ToXML(i));
+                xsb.AppendXML(this._matches[i].ToXML(i));
             }
 
-            _ = xsb.CloseTag();
+            xsb.CloseTag();
             return xsb;
         }
 
