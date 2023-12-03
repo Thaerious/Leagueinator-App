@@ -46,7 +46,7 @@ namespace PrinterTestForm
                 File.WriteAllText(this.xmlPath, xmlString);
                 File.WriteAllText(this.stylePath, styleString);
 
-                Printer.Printer.PrinterElement root = XMLLoader.Load(xmlString, styleString);
+                PrinterElement root = XMLLoader.Load(xmlString, styleString);
                 this.printerCanvas.DocElement.ClearChildren();
                 this.printerCanvas.DocElement.AddChild(root);
                 this.printerCanvas.Invalidate();

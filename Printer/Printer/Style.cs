@@ -1,13 +1,10 @@
 ﻿using Leagueinator.CSSParser;
-using Leagueinator.Utility;
-using Printer.Printer;
-using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Text;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.Intrinsics.X86;
+using Printer;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer {
     public enum Flex_Direction { Row, Row_reverse, Column, Column_reverse };
@@ -18,6 +15,12 @@ namespace Leagueinator.Printer {
     public enum Position { Static, Relative, Fixed }
 
     public class Style {
+        public static Style DefaultStyle = new (){
+            FontFamily = "Ariel",
+            FontSize = new (12, "px"),
+            FontStyle = FontStyle.Regular
+        };
+
         [CSS] public Display Display = Display.Flex;
         [CSS] public Position Position = Position.Static;
 
@@ -38,10 +41,17 @@ namespace Leagueinator.Printer {
         [CSS] public Justify_Content Justify_Content = Justify_Content.Flex_start;
         [CSS] public Align_Items Align_Items = Align_Items.Flex_start;
 
-        public Font Font = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Point);
-        public Brush Brush = new SolidBrush(Color.Black);
-        public Pen Pen = new(Color.Black);
-        public StringFormat StringFormat = new StringFormat {
+        [CSS(true)] public string FontFamily;
+        [CSS(true)] public UnitFloat FontSize;
+        [CSS(true)] public FontStyle FontStyle;
+
+        public Font Font {
+            get {
+                return new(this.FontFamily, this.FontSize, this.FontStyle, GraphicsUnit.Point);
+            }
+        }
+
+        public StringFormat StringFormat = new() {
             Alignment = StringAlignment.Near,
             LineAlignment = StringAlignment.Near
         };
@@ -54,9 +64,7 @@ namespace Leagueinator.Printer {
             this.Selector = Selector;
         }
 
-        public Style(Style that) {
-            this.Selector = that.Selector;
-
+        public Style(Style that) : this(that.Selector) {
             foreach (FieldInfo field in typeof(Style).GetFields()) {
                 CSS? css = field.GetCustomAttribute<CSS>();
                 if (css == null) continue;
@@ -69,26 +77,69 @@ namespace Leagueinator.Printer {
         public virtual void DoLayout(PrinterElement element) { }
         public virtual void DoDraw(PrinterElement element, Graphics g) { }
 
+
         /// <summary>
-        /// Copy all non-null public properties from that to this.
+        /// Copy from that to this.
+        /// Copy all non-null fields and properties marked with CSS and
+        /// inherited is flagged as true.
         /// </summary>
         /// <param name="that"></param>
-        public Style MergeWith(Style that) {
+        public Style MergeInheritedWith(Style that) {
             PropertyInfo[] properties = this.GetType().GetProperties();
             FieldInfo[] fields = this.GetType().GetFields();
 
             foreach (var property in properties) {
-                if (property.CanWrite && property.CanRead && property.Name != "FallBack") {
+                CSS? css = property.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                if (css.Inherited == false) continue;
+
+                if (property.CanWrite && property.CanRead) {
+                    var value = property.GetValue(that);
+                    if (value == null) continue;
+                    property.SetValue(this, value);
+                    Debug.WriteLine($"{property.Name} {value.ToString()}");
+                }
+            }
+
+            foreach (var field in fields) {
+                CSS? css = field.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                if (css.Inherited == false) continue;
+
+                var value = field.GetValue(that);
+                if (value == null) continue;
+                field.SetValue(this, value);
+                Debug.WriteLine($"{field.Name} {value.ToString()}");
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Copy from that to this.
+        /// Copy all non-null public properties from that to this.
+        /// </summary>
+        /// <param name="that"></param>
+        public Style MergeWith(Style that) {            
+            PropertyInfo[] properties = this.GetType().GetProperties();
+            FieldInfo[] fields = this.GetType().GetFields();
+
+            foreach (var property in properties) {
+                if (property.GetCustomAttribute<CSS>() == null) continue;
+                if (property.CanWrite && property.CanRead) {
                     var value = property.GetValue(that);
                     if (value == null) continue;
                     property.SetValue(this, value);
                 }
-                foreach (var field in fields) {
-                    var value = field.GetValue(that);
-                    if (value == null) continue;
-                    field.SetValue(this, value);
-                }
             }
+
+            foreach (var field in fields) {
+                if (field.GetCustomAttribute<CSS>() == null) continue;
+                var value = field.GetValue(that);
+                if (value == null) continue;
+                field.SetValue(this, value);
+            }
+
             return this;
         }
 
@@ -156,27 +207,12 @@ namespace Leagueinator.Printer {
             return sb.ToString();
         }
 
-        public static Dictionary<string, FieldInfo> Fields { get; }  = new();
-        public static Dictionary<string, PropertyInfo> Properties { get; } = new();
+        public static LCDictionary<FieldInfo> Fields { get; } = new();
+        public static LCDictionary<PropertyInfo> Properties { get; } = new();
 
         static Style() {
-            foreach (FieldInfo field in typeof(Style).GetFields()) {
-                CSS? css = field.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                var key = css.Key?.ToLower() ?? field.Name.ToPlainCase();
-                Fields[key] = field;
-            }
-
-            foreach (PropertyInfo prop in typeof(Style).GetProperties()) {
-                CSS? css = prop.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                var key = css.Key?.ToLower() ?? prop.Name.ToPlainCase();
-                Properties[key] = prop;
-            }
+            Fields = typeof(Style).GetFields().LCDictionary();
+            Properties = typeof(Style).GetProperties().LCDictionary();
         }
-        private Font? _font = null;
-        private Brush? _brush = null;
-        private Pen? _pen = null;
-        private StringFormat? _stringFormat = null;
-    }   
+    }
 }

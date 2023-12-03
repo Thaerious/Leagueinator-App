@@ -1,6 +1,4 @@
 ﻿using Leagueinator.CSSParser;
-using Leagueinator.Utility;
-using Printer.Printer;
 using System.Diagnostics;
 using System.Xml.Linq;
 
@@ -14,7 +12,7 @@ namespace Leagueinator.Printer {
             var xmlLoader = new XMLLoader(xmlString, ssString);
             if (xmlLoader.Root == null) throw new NullReferenceException();
             return xmlLoader.Root;
-        }                
+        }
 
         public Dictionary<string, Style> Styles {
             get => loadedStyles;
@@ -25,14 +23,13 @@ namespace Leagueinator.Printer {
         }
 
         public XMLLoader(string xmlString, string ssString) {
-            var sw = Stopwatch.StartNew();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
             this.LoadXML(xmlString);
             this.loadedStyles = StyleLoader.Load(ssString);
             this.ApplyStyles();
 
             sw.Stop();
-
             this.LoadTime = sw.ElapsedMilliseconds;
         }
 
@@ -41,6 +38,7 @@ namespace Leagueinator.Printer {
         /// Typically the current styles are empty.
         /// </summary>
         public void ApplyStyles() {
+            this.rootElement.Style.MergeWith(Style.DefaultStyle);
             this.ApplyStylesTo(this.rootElement);
         }
 
@@ -53,14 +51,24 @@ namespace Leagueinator.Printer {
                 current.Style.MergeWith(value);
             }
 
-            foreach (var className in current.ClassList) {
-                if (loadedStyles.ContainsKey("." + className)) {
-                    current.Style.MergeWith(loadedStyles["." + className]);
+            if (current.Attributes.ContainsKey("id")){
+                var selector = "#" + current.Attributes["id"];
+                if (loadedStyles.ContainsKey(selector)) {
+                    current.Style.MergeWith(loadedStyles[selector]);
                 }
             }
 
+            foreach (var className in current.ClassList) {
+                if (loadedStyles.ContainsKey("." + className)) {
+                    current.Style.MergeWith(loadedStyles["." + className]);
+                }                
+            }
+
             foreach (PrinterElement child in current.Children) {
+                Debug.WriteLine($"MERGE '{child.Name}' <--<< '{current.Name}'");
+                child.Style.MergeInheritedWith(current.Style);                
                 ApplyStylesTo(child);
+                Debug.WriteLine(child.Style);
             }
         }
 
@@ -70,7 +78,7 @@ namespace Leagueinator.Printer {
             if (xml.Root == null) throw new NullReferenceException();
             XElement xmlRoot = xml.Root;
 
-            PrinterElement printRoot = new() {
+            PrinterElement printRoot = new(xmlRoot.Attributes()) {
                 Name = xmlRoot.Name.ToString()
             };
  
@@ -88,7 +96,7 @@ namespace Leagueinator.Printer {
                     if (xmlChild is null) continue;
 
                     if (xmlChild is XElement element) {
-                        var printChild = printCurrent.AddChild(new PrinterElement() {
+                        var printChild = printCurrent.AddChild(new PrinterElement(element.Attributes()) {
                             Name = element.Name.ToString()
                         });
                         xmlStack.Push(element);
@@ -103,6 +111,7 @@ namespace Leagueinator.Printer {
 
             this.rootElement = printRoot;
 
+            Debug.WriteLine(this.Root);
             return printRoot;
         }
 

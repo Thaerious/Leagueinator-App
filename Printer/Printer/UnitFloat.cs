@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Leagueinator.Printer {
     public class UnitFloat {
-        public float Value { get; private set; } = 0f;
-        public string Unit { get; private set; } = "";
+        public float Value { get; set; } = 0f;
+        public string Unit { get; set; } = "";
         public bool HasValue { get; private set; } = false;
 
         public float Factor { get; set; } = 0f; // used when getting the value in a % case
@@ -41,6 +41,9 @@ namespace Leagueinator.Printer {
                 target = new UnitFloat();
                 return false;
             }
+        }
+        public override String ToString() {
+            return $"{this.Value}{this.Unit}";
         }
     }
 }

@@ -31,12 +31,13 @@
             // canvas
             // 
             this.canvas.Dock = DockStyle.Fill;
-            this.canvas.GridSize = 25;
+            this.canvas.GridSize = 100;
             this.canvas.Location = new Point(0, 0);
             this.canvas.Name = "canvas";
             this.canvas.Size = new Size(1430, 834);
-            this.canvas.SubGridSize = 5;
+            this.canvas.SubGridSize = 20;
             this.canvas.TabIndex = 0;
+            this.canvas.ToBack = true;
             // 
             // Form1
             // 
