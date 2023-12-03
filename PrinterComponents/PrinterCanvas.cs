@@ -12,6 +12,11 @@ namespace Leagueinator.PrinterComponents
         [Category("Grid")]
         public int SubGridSize { get; set; } = 0;
 
+
+        [Category("Grid")]
+        public bool ToBack { get; set; } = false;
+
+
         public PrinterCanvas() {
             this.InitializeComponent();
             this.DocElement = new RootElement(() => new SizeF(this.Width, this.Height));
@@ -20,16 +25,20 @@ namespace Leagueinator.PrinterComponents
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             this.DocElement.Update();
+            if (this.ToBack) this.DrawGrids(e.Graphics);
             this.DocElement.Draw(e.Graphics);
+            if (!this.ToBack) this.DrawGrids(e.Graphics);
+        }
 
+        private void DrawGrids(Graphics g) {
             if (this.SubGridSize > 0f) {
                 Pen pen = new Pen(Color.LightGray, 1) {
                     DashStyle = System.Drawing.Drawing2D.DashStyle.Dot
                 };
-                this.DrawGrid(e.Graphics, pen, this.SubGridSize);
+                this.DrawGrid(g, pen, this.SubGridSize);
             }
             if (this.GridSize > 0f) {
-                this.DrawGrid(e.Graphics, new Pen(Color.Gray, 1), this.GridSize);
+                this.DrawGrid(g, new Pen(Color.Gray, 1), this.GridSize);
             }
         }
 

@@ -127,6 +127,15 @@ namespace Leagueinator.Model {
             this.Rounds.Remove(round);
         }
 
+        /// <summary>
+        /// Create a dataset that has two tables: event, and team.
+        /// Event has the columns: 'uid', 'round', 'lane', 'team', 'bowls', and 'ends'.
+        /// Team has the columns: 'id', and 'name'.
+        /// 
+        /// event.team >>-foreign-key-> team.id
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public DataSet ToDataSet() {
             DataSet dataSet = new();
 

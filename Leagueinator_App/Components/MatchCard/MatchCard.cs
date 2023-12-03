@@ -57,7 +57,6 @@ namespace Leagueinator.App.Components.MatchCard {
         }
 
         private void BowlsChanged(Team team, TextBox textBox, TeamUpdateArgs args) {
-            Debug.WriteLine($"BowlsChanged {team.GetHashCode().ToString("X")} {args.PrevValue} {args.NewValue}");
             if (args.NewValue != null && args.NewValue.ToString() != textBox.Text) {
                 textBox.Text = args.NewValue.ToString();
             }

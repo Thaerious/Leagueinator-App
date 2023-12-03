@@ -22,16 +22,16 @@ namespace Leagueinator.CSSParser {
             var key = context.children[0].GetText().ToPlainCase();
             var val = context.children[2].GetText();
 
-            try {                
+            try {
                 if (Style.Fields.ContainsKey(key)) {
                     var field = Style.Fields[key];
-                    MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
+                    var r = MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
                     field.SetValue(this.style, newObject);
                 }
                 else if (Style.Properties.ContainsKey(key)) {
                     var prop = Style.Properties[key];
                     MultiParse.TryParse(val.Trim(), prop.PropertyType, out object? newObject);
-                    prop.SetValue(this.style, newObject);                    
+                    prop.SetValue(this.style, newObject);
                 }
             }
             catch (TargetInvocationException ex) {
@@ -43,6 +43,7 @@ namespace Leagueinator.CSSParser {
                 msg += $"Type: {inner.Type.Name}\n";
                 msg += $"Source: {inner.SourceString}\n";
 
+                Debug.WriteLine(ex);
                 throw new Exception(msg);
             }
             catch (Exception ex) {

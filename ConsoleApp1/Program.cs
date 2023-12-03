@@ -1,26 +1,30 @@
-﻿using Leagueinator.CSSParser;
+﻿using DevPrint;
+using Leagueinator.CSSParser;
 using Leagueinator.Printer;
+using Leagueinator.Utility;
 using System.Diagnostics;
 
-Console.WriteLine(" ----- START -----");
-var foobar = new FooBar();
-var method = foobar.GetType().GetMethod("Report");
+var mockEvent = new MockEvent();
+mockEvent.ToDataSet();
 
-try {
-    method.Invoke(foobar, null);
-}
-catch (Exception ex) {
-    Console.WriteLine("CAUGHT: " + ex.ToString());
-}
-Console.WriteLine(" -----  END  -----");
+var input = @"
+<div class='root' id='du_root'>
+    <div id='uid'/>
+    <div id='round'/>
+    <div id='lane'/>
+    <div id='team'/>
+    <div id='bowls'/>
+    <div id='ends'/>
+</div>
+";
+
+var eventTable = mockEvent.ToDataSet().Tables["event"];
+
+var root = XMLLoader.Load(input, "");
+Console.WriteLine(root.ToXML());
+Console.WriteLine(eventTable.Rows[0].ItemArray.DelString());
+root.ApplyRowAsText(eventTable.Rows[0]);
+Console.WriteLine(root.ToXML());
 Console.ReadKey();
-
-class FooBar {
-    public void Report() {
-        Console.WriteLine("Before Exception");
-        throw new Exception("Weeeeee I'm an exception!");
-        Console.WriteLine("After Exception");
-    }
-}
 
 

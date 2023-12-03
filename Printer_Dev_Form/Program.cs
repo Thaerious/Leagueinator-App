@@ -6,7 +6,7 @@ using System.Reflection;
 Assembly assembly = Assembly.GetExecutingAssembly();
 
 string xmlResource = "Printer_Dev_Form.assets.layout.xml";
-string ssResource = "Printer_Dev_Form.assets.style.ss";
+string ssResource = "Printer_Dev_Form.assets.style.css";
 string templResource = "Printer_Dev_Form.assets.template.xml";
 
 using Stream? xmlStream = assembly.GetManifestResourceStream(xmlResource) ?? throw new NullReferenceException();
@@ -28,7 +28,11 @@ var template = XMLLoader.Load(templString, ssString);
 ApplicationConfiguration.Initialize();
 var form = new Form1();
 
+var mockEvent = new MockEvent();
+document.AddChild(template);
+
 form.canvas.DocElement.AddChild(document);
-Debug.WriteLine(form.canvas.DocElement.ToXML());
 
 Application.Run(form);
+
+

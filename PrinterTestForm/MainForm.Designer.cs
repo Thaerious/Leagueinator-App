@@ -135,6 +135,7 @@ namespace PrinterTestForm {
             this.txtXML.Location = new Point(3, 3);
             this.txtXML.Multiline = true;
             this.txtXML.Name = "txtXML";
+            this.txtXML.ScrollBars = ScrollBars.Both;
             this.txtXML.Size = new Size(872, 853);
             this.txtXML.TabIndex = 0;
             this.txtXML.Text = "<document></document>";
@@ -159,6 +160,7 @@ namespace PrinterTestForm {
             this.txtStyle.Location = new Point(3, 3);
             this.txtStyle.Multiline = true;
             this.txtStyle.Name = "txtStyle";
+            this.txtStyle.ScrollBars = ScrollBars.Both;
             this.txtStyle.Size = new Size(872, 853);
             this.txtStyle.TabIndex = 1;
             this.txtStyle.KeyPress += this.TXT_KeyPress;

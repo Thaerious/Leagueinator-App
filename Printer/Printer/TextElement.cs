@@ -2,8 +2,10 @@
 using Printer.Printer;
 using System.Drawing;
 
-namespace Leagueinator.Printer {
-    public class TextElement : PrinterElement {
+namespace Leagueinator.Printer
+{
+    public class TextElement : PrinterElement
+    {
         public string text = "";
 
         public override PrinterElement Clone() {
@@ -56,7 +58,8 @@ namespace Leagueinator.Printer {
         }
 
         public override void Draw(Graphics g) {
-            g.DrawString(this.text, this.Style.Font, this.Style.Brush, this.ContentRect, this.Style.StringFormat);
+            using Brush brush = new SolidBrush(Color.Black);
+            g.DrawString(this.text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }
     }
 }

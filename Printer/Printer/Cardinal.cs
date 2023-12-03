@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Leagueinator.CSSParser;
+﻿using Leagueinator.CSSParser;
 
 namespace Leagueinator.Printer {
     public class CardinalParseException : Exception {

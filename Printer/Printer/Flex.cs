@@ -1,5 +1,4 @@
 ﻿using Printer.Printer;
-using System.Diagnostics;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
@@ -12,6 +11,10 @@ namespace Leagueinator.Printer {
         }
 
         public override void DoSize(PrinterElement element) {
+            this.Width.Factor = element.Parent.ContentSize.Width;
+            this.Height.Factor = element.Parent.ContentSize.Height;
+            element.ContentSize = new SizeF(this.Width, this.Height);
+
             float maxWidth  = 0f;
             float maxHeight = 0f;
             float sumWidth  = 0f;
@@ -31,12 +34,10 @@ namespace Leagueinator.Printer {
 
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
-                    Debug.WriteLine($"Row {this.Width.HasValue} {this.Height.HasValue}");
                     contentWidth = this.Width.HasValue ? this.Width : sumWidth;
                     contentHeight = this.Height.HasValue ? this.Height : maxHeight;
                     break;
                 case Flex_Direction.Column:
-                    Debug.WriteLine($"Col {this.Width.HasValue} {this.Height.HasValue}");
                     contentWidth = this.Width.HasValue ? this.Width : maxWidth;
                     contentHeight = this.Height.HasValue ? this.Height : sumHeight;
                     break;
@@ -68,11 +69,6 @@ namespace Leagueinator.Printer {
         }
 
         public override void DoDraw(PrinterElement element, Graphics g) {
-            Debug.WriteLine($"{element}");
-            Debug.WriteLine($"Outer   {element.OuterRect}");
-            Debug.WriteLine($"Border  {element.BorderRect}");
-            Debug.WriteLine($"Content {element.ContentRect}");
-
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }

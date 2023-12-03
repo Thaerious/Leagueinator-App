@@ -1,12 +1,13 @@
-﻿using Leagueinator.Printer;
-using Leagueinator.Utility;
-using System.Diagnostics;
+﻿using Leagueinator.Utility;
 using System.Drawing;
-using System.Drawing.Printing;
+using System.Text;
+using System.Xml.Linq;
 
-namespace Printer.Printer {
+namespace Leagueinator.Printer
+{
 
-    public class PrinterElementList : List<PrinterElement> {
+    public class PrinterElementList : List<PrinterElement>
+    {
 
         public PrinterElementList this[string id] => this.QuerySelectorAll(id);
 
@@ -14,49 +15,75 @@ namespace Printer.Printer {
 
         public PrinterElementList(IEnumerable<PrinterElement> collection) : base(collection) { }
 
-        public PrinterElementList QuerySelectorAll(string query, PrinterElementList? result = null) {
-            result ??= new();
+        public PrinterElementList QuerySelectorAll(string query) {
+            PrinterElementList result = new();
+            Queue<PrinterElementList> queue = new();
+            queue.Enqueue(this);
 
-            if (query.StartsWith(".")) {
-                foreach (PrinterElement element in this) {
-                    if (element.ClassList.Contains(query[1..])) result.Add(element);
+            while (queue.Count > 0) {
+                PrinterElementList current = queue.Dequeue();
+
+                if (query.StartsWith(".")) {
+                    foreach (PrinterElement element in current) {
+                        if (element.ClassList.Contains(query[1..])) result.Add(element);
+                    }
+                }
+                if (query.StartsWith("#")) {
+                    foreach (PrinterElement element in current) {
+                        if (element.Attributes.ContainsKey("id")) {
+                            if (element.Attributes["id"].Equals(query[1..])) result.Add(element);
+                        }
+                    }
+                }
+                else {
+                    foreach (PrinterElement element in current) {
+                        if (element.Name == query) result.Add(element);
+                    }
+                }
+
+                foreach (PrinterElement child in current) {
+                    queue.Enqueue(child.Children);
                 }
             }
-            else {
-                foreach (PrinterElement element in this) {
-                    if (element.Name == query) result.Add(element);
-                }
-            }
-
-            foreach (PrinterElement element in this) {
-                element.Children.QuerySelectorAll(query, result);
-            }
-
             return result;
         }
 
         public PrinterElement? QuerySelector(string query) {
-            if (query.StartsWith(".")) {
-                foreach (PrinterElement element in this) {
-                    if (element.ClassList.Contains(query[1..])) return element;
-                }
-            }
-            else {
-                foreach (PrinterElement element in this) {
-                    if (element.Name == query) return element;
-                }
-            }
+            Queue<PrinterElementList> queue = new();
+            queue.Enqueue(this);
 
-            foreach (PrinterElement element in this) {
-                PrinterElement? intermediate = element.Children.QuerySelector(query);
-                if (intermediate != null) return intermediate;
+            while (queue.Count > 0) {
+                PrinterElementList current = queue.Dequeue();
+
+                if (query.StartsWith(".")) {
+                    foreach (PrinterElement element in current) {
+                        if (element.ClassList.Contains(query[1..])) return element;
+                    }
+                }
+                if (query.StartsWith("#")) {
+                    foreach (PrinterElement element in current) {
+                        if (element.Attributes.ContainsKey("id")) {
+                            if (element.Attributes["id"].Equals(query[1..])) return element;
+                        }
+                    }
+                }
+                else {
+                    foreach (PrinterElement element in current) {
+                        if (element.Name == query) return element;
+                    }
+                }
+
+                foreach (PrinterElement child in current) {
+                    queue.Enqueue(child.Children);
+                }
             }
 
             return null;
         }
     }
 
-    public class PrinterElement {
+    public class PrinterElement
+    {
         public delegate void DrawDelegate(Graphics g, PrinterElement ele);
         public event DrawDelegate OnDraw = delegate { };
 
@@ -65,13 +92,43 @@ namespace Printer.Printer {
         public PrinterElementList Children => new(this._children);
         public readonly List<string> ClassList = new();
 
+        public Dictionary<string, string> Attributes { get; } = new();
+
+        public string? InnerText {
+            get {
+                if (this.Children.Count == 0) return null;
+                Queue<PrinterElement> queue = new();
+                queue.Enqueue(this);
+
+                StringBuilder sb = new();
+                while (queue.Count > 0) {
+                    PrinterElement current = queue.Dequeue();
+                    foreach (var child in current.Children) {
+                        if (child is TextElement textElement) {
+                            sb.Append(textElement.text);
+                        }
+                        if (child is PrinterElement element) {
+                            queue.Enqueue(element);
+                        }
+                    }
+                }
+
+                return sb.ToString();
+            }
+            set {
+                this.ClearChildren();
+                if (value == null) return;
+                this.AddChild(new TextElement(value));
+            }
+        }
+
         /// <summary>
-        /// Set parent element and fallback style.
+        /// Set parent child and fallback style.
         /// </summary>
         public PrinterElement? Parent { get; private set; }
 
         /// <summary>
-        /// The (x,y) translation of this element relative to it's TargetElement.
+        /// The (x,y) translation of this child relative to it's TargetElement.
         /// </summary>
         public PointF Translation {
             get; set;
@@ -89,7 +146,7 @@ namespace Printer.Printer {
         public virtual SizeF BorderSize { get; set; } = new();
 
         /// <summary>
-        /// The rectangle parent elements will use for element size.
+        /// The rectangle parent elements will use for child size.
         /// </summary>
         public virtual SizeF OuterSize { get; set; } = new();
 
@@ -113,7 +170,7 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// The entire occupied space of this element, including padding and border.
+        /// The entire occupied space of this child, including padding and border.
         /// </summary>
         public RectangleF OuterRect {
             get {
@@ -126,7 +183,7 @@ namespace Printer.Printer {
             }
         }
         /// <summary>
-        /// The entire occupied space of this element, including padding and border.
+        /// The entire occupied space of this child, including padding and border.
         /// </summary>
         public RectangleF BorderRect {
             get {
@@ -142,22 +199,31 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// The screen location of this element.
+        /// The screen location of this child.
         /// </summary>
         public virtual PointF Location => this.Parent == null
                     ? this.Translation
                     : new PointF(this.Parent.ContentRect.X + this.Translation.X, this.Parent.ContentRect.Y + this.Translation.Y);
 
         /// <summary>
-        /// Create a new printer element with a default name and classlist.
+        /// Create a new printer child with a default name and classlist.
         /// </summary>
         public PrinterElement() {
             this.Style = new Flex();
-            this.Name = $"@element-{this.GetHashCode():X}";
+            this.Name = $"@child-{this.GetHashCode():X}";
         }
 
         /// <summary>
-        /// Create a new printer element with the specified name and classlist.
+        /// Create a new printer child with a default name and classlist.
+        /// </summary>
+        public PrinterElement(IEnumerable<XAttribute> attributes) : base() {
+            foreach (XAttribute xattr in attributes) {
+                this.Attributes[xattr.Name.ToString()] = xattr.Value;
+            }
+        }
+
+        /// <summary>
+        /// Create a new printer child with the specified name and classlist.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="classes"></param>
@@ -170,7 +236,7 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// Create a new element with the name and styles of this element.
+        /// Create a new child with the name and styles of this child.
         /// </summary>
         /// <returns></returns>
         public virtual PrinterElement Clone() {
@@ -188,7 +254,7 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// Perform all size and layout opertions for this element's style.
+        /// Perform all size and layout opertions for this child's style.
         /// </summary>
         public void Update() {
             this.Style.DoSize(this);
@@ -196,7 +262,7 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// Dray this element in the graphsics object.
+        /// Dray this child in the graphsics object.
         /// Draws occur in the following order:
         /// 1) Call the style DoDraw method
         /// 2) Invoke all OnDraw event listeners
@@ -210,9 +276,9 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// Add multiple children this this element.
-        /// If the children already have a parent element, the parent element will
-        /// be updated to this element.
+        /// Add multiple children this this child.
+        /// If the children already have a parent child, the parent child will
+        /// be updated to this child.
         /// </summary>
         /// <param name="children"></param>
         /// <returns></returns>
@@ -223,9 +289,9 @@ namespace Printer.Printer {
             return children;
         }
         /// <summary>
-        /// Add a single child element to this.
-        /// If the children already have a parent element, the parent element will
-        /// be updated to this element.
+        /// Add a single child child to this.
+        /// If the children already have a parent child, the parent child will
+        /// be updated to this child.
         /// </summary>
         /// <param name="that"></param>
         /// <returns></returns>
@@ -236,7 +302,7 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// Remove all child nodes from this element.
+        /// Remove all child nodes from this child.
         /// </summary>
         public void ClearChildren() {
             foreach (PrinterElement child in this.Children) {
@@ -245,7 +311,7 @@ namespace Printer.Printer {
         }
 
         /// <summary>
-        /// Remove a child element from this.
+        /// Remove a child child from this.
         /// </summary>
         /// <param name="child"></param>
         /// <exception cref="Exception">If the child does not belong to this parent.</exception>
@@ -271,7 +337,11 @@ namespace Printer.Printer {
             XMLStringBuilder xml = new();
 
             xml.OpenTag(this.Name);
-            if (this.ClassList.Count > 0) xml.Attribute("class", this.ClassList.DelString(" "));
+
+            foreach (string attr in this.Attributes.Keys) {
+                xml.Attribute(attr, this.Attributes[attr]);
+            }
+
             foreach (PrinterElement child in this.Children) {
                 xml.AppendXML(child.ToXML());
             }

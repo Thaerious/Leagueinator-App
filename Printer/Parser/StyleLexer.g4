@@ -5,7 +5,7 @@ DOT   : '.'                             ;
 HASH  : '#'                             ;
 STAR  : '*'                             ;
 
-STRING     : [a-zA-Z]+                  ;
+STRING     : [a-zA-Z_-]+                ;
 WS         : [ \t\r\n]+ -> skip         ;
  
 mode KEY_MODE;

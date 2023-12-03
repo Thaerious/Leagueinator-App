@@ -1,0 +1,39 @@
+
+.container {
+	border: 1px Solid Black;
+	flex-direction: Column;
+	background-color: Pink;
+	width: 80%;
+    font-size: 20px;
+    font-style: Bold;
+}
+
+entry {
+	border: 1px Solid Black;
+	flex-direction: Row;
+}
+
+names {
+	flex-direction: Column;
+	border: 1px Solid Black;
+	justify-content: Center;
+	align-content: Center;
+}
+
+name {
+	justify-content: Center;
+	align-content: Center;
+}
+
+scores {
+	flex-direction: Column;
+}
+
+.score_item {
+	border: 1px Solid Gray;
+	width: 50px;
+	height: 30px;
+	justify-content: Center;
+	align-content: Center;
+}
+
