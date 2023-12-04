@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static string ToPlainCase(this string source) {
+        public static string ToFlatCase(this string source) {
             return source.ToLower().Split('_', '-').DelString("");
         }
     }

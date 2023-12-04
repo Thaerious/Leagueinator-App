@@ -1,9 +1,5 @@
 ﻿using Leagueinator.Model;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using Leagueinator.App.Components.MatchCard;
-using Newtonsoft.Json.Linq;
-using System;
 
 namespace Leagueinator.App.Components.EventPanel {
 

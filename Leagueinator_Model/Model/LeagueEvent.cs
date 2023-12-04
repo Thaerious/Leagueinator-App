@@ -4,7 +4,6 @@ using Leagueinator_Model.Model.Tables;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
