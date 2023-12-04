@@ -1,5 +1,4 @@
 ﻿using Leagueinator.CSSParser;
-using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
@@ -65,10 +64,8 @@ namespace Leagueinator.Printer {
             }
 
             foreach (PrinterElement child in current.Children) {
-                Debug.WriteLine($"MERGE '{child.Name}' <--<< '{current.Name}'");
                 child.Style.MergeInheritedWith(current.Style);                
                 ApplyStylesTo(child);
-                Debug.WriteLine(child.Style);
             }
         }
 
@@ -111,7 +108,6 @@ namespace Leagueinator.Printer {
 
             this.rootElement = printRoot;
 
-            Debug.WriteLine(this.Root);
             return printRoot;
         }
 

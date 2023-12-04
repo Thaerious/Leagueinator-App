@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Drawing.Drawing2D;
-using Printer;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer {
     public enum Flex_Direction { Row, Row_reverse, Column, Column_reverse };
@@ -97,7 +95,6 @@ namespace Leagueinator.Printer {
                     var value = property.GetValue(that);
                     if (value == null) continue;
                     property.SetValue(this, value);
-                    Debug.WriteLine($"{property.Name} {value.ToString()}");
                 }
             }
 
@@ -109,7 +106,6 @@ namespace Leagueinator.Printer {
                 var value = field.GetValue(that);
                 if (value == null) continue;
                 field.SetValue(this, value);
-                Debug.WriteLine($"{field.Name} {value.ToString()}");
             }
 
             return this;
@@ -207,12 +203,12 @@ namespace Leagueinator.Printer {
             return sb.ToString();
         }
 
-        public static LCDictionary<FieldInfo> Fields { get; } = new();
-        public static LCDictionary<PropertyInfo> Properties { get; } = new();
+        public static IReadOnlyDictionary<string, FieldInfo> Fields { get; private set; }
+        public static IReadOnlyDictionary<string, PropertyInfo> Properties { get; private set; }
 
         static Style() {
-            Fields = typeof(Style).GetFields().LCDictionary();
-            Properties = typeof(Style).GetProperties().LCDictionary();
+            Fields = typeof(Style).GetFields().ToDictionary();
+            Properties = typeof(Style).GetProperties().ToDictionary();
         }
     }
 }

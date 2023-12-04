@@ -1,39 +1,34 @@
 
-.container {
-	border: 1px Solid Black;
-	flex-direction: Column;
-	background-color: Pink;
-	width: 80%;
-    font-size: 20px;
-    font-style: Bold;
-}
-
 entry {
-	border: 1px Solid Black;
-	flex-direction: Row;
+    flex-direction: Row;
+    border: 3px Solid Black;
+    justify-content: Space_evenly;
+    width: 90%;
+    padding: 20px 0px 20px 0px;
 }
 
 names {
-	flex-direction: Column;
-	border: 1px Solid Black;
-	justify-content: Center;
-	align-content: Center;
+    border: 1px Solid Black;
+    flex-direction: Column;
+    justify-content: Center;
+    align-items: Center;
+    width: 20%;
 }
 
 name {
-	justify-content: Center;
-	align-content: Center;
+    font-style: Bold;
+    font-size: 16px;
 }
 
 scores {
-	flex-direction: Column;
+    border: 1px Solid Black;
+    flex-direction: Column;
+    width: 70%;
 }
 
 .score_item {
-	border: 1px Solid Gray;
-	width: 50px;
-	height: 30px;
-	justify-content: Center;
-	align-content: Center;
+    border: 1px Solid Black;
+    width: 75px;
+    justify-content: Center;
+    align-items: Center;
 }
-

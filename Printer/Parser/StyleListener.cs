@@ -3,7 +3,6 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.CSSParser {
@@ -19,7 +18,7 @@ namespace Leagueinator.CSSParser {
         }
 
         public override void EnterProperty([NotNull] StyleParser.PropertyContext context) {
-            var key = context.children[0].GetText().ToPlainCase();
+            var key = context.children[0].GetText().ToFlatCase();
             var val = context.children[2].GetText();
 
             try {
@@ -43,13 +42,11 @@ namespace Leagueinator.CSSParser {
                 msg += $"Type: {inner.Type.Name}\n";
                 msg += $"Source: {inner.SourceString}\n";
 
-                Debug.WriteLine(ex);
                 throw new Exception(msg);
             }
             catch (Exception ex) {
                 string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
                 msg += ex.Message;
-                Debug.WriteLine(ex);
                 throw new Exception(msg);
             }            
         }

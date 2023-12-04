@@ -26,6 +26,7 @@ namespace Leagueinator.Printer
             get {
                 using var bitmap = new Bitmap(1, 1);
                 using var graphics = Graphics.FromImage(bitmap);
+                this.Style.FontSize.Factor = 12f;
                 return graphics.MeasureString(text, this.Style.Font);
             }
             set { }
@@ -35,6 +36,7 @@ namespace Leagueinator.Printer
             get {
                 using var bitmap = new Bitmap(1, 1);
                 using var graphics = Graphics.FromImage(bitmap);
+                this.Style.FontSize.Factor = 12f;
                 SizeF size = graphics.MeasureString(text, this.Style.Font);
                 return size;
             }

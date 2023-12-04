@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Model;
-using System.Diagnostics;
 
 namespace DevPrint {
     internal class MockEvent : LeagueEvent {

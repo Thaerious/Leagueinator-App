@@ -1,12 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<entry>
+﻿<entry>
   <names>
-    <name>Adam</name>
-    <name>Beth</name>
-    <name>Chuck</name>
   </names>
   <scores>
-    <score class="score_row">
+    <titles class="score_row">
       <game class="score_item">Game</game>
       <lane class="score_item">Lane</lane>
       <rank class="score_item">Rank</rank>
@@ -17,39 +13,6 @@
       <bowls_against class="score_item">A</bowls_against>
       <plus_against class="score_item">=</plus_against>
       <score_against class="score_item">+</score_against>
-    </score>
-    <score class="score_row">
-      <game class="score_item">1</game>
-      <rank class="score_item">1</rank>
-      <ends class="score_item">20</ends>
-      <bowls_for class="score_item">20</bowls_for>
-      <score_for class="score_item">20</score_for>
-      <plus_for class="score_item">20</plus_for>
-      <bowls_against class="score_item">20</bowls_against>
-      <score_against class="score_item">20</score_against>
-      <plus_against class="score_item">20</plus_against>
-    </score>
-    <score class="score_row">
-      <game class="score_item">2</game>
-      <rank class="score_item">1</rank>
-      <ends class="score_item">20</ends>
-      <bowls_for class="score_item">20</bowls_for>
-      <score_for class="score_item">20</score_for>
-      <plus_for class="score_item">20</plus_for>
-      <bowls_against class="score_item">20</bowls_against>
-      <score_against class="score_item">20</score_against>
-      <plus_against class="score_item">20</plus_against>
-    </score>
-    <score class="score_row">
-      <game class="score_item">Σ</game>
-      <rank class="score_item">1</rank>
-      <ends class="score_item">20</ends>
-      <bowls_for class="score_item">20</bowls_for>
-      <score_for class="score_item">20</score_for>
-      <plus_for class="score_item">20</plus_for>
-      <bowls_against class="score_item">20</bowls_against>
-      <score_against class="score_item">20</score_against>
-      <plus_against class="score_item">20</plus_against>
-    </score>
+    </titles>
   </scores>
 </entry>

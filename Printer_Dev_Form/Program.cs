@@ -1,4 +1,4 @@
-using Leagueinator.Printer;
+﻿using Leagueinator.Printer;
 using Printer_Dev_Form;
 using System.Diagnostics;
 using System.Reflection;

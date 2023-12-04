@@ -4,16 +4,10 @@ using System.Drawing;
 namespace Leagueinator.Printer {
     public class Flex : Style {
 
-        public Flex() : base("") { }
-
-        public Flex(string Selector) : base(Selector) {
-            this.Selector = Selector;
-        }
+        public Flex(string Selector = "") : base(Selector) { }
 
         public override void DoSize(PrinterElement element) {
-            this.Width.Factor = element.Parent.ContentSize.Width;
-            this.Height.Factor = element.Parent.ContentSize.Height;
-            element.ContentSize = new SizeF(this.Width, this.Height);
+            this.SetDefaultSize(element);
 
             float maxWidth  = 0f;
             float maxHeight = 0f;
@@ -29,8 +23,6 @@ namespace Leagueinator.Printer {
             }
 
             float contentWidth = 0f, contentHeight = 0f;
-            this.Width.Factor = element.Parent.ContentRect.Width;
-            this.Height.Factor = element.Parent.ContentRect.Height;
 
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
@@ -54,18 +46,26 @@ namespace Leagueinator.Printer {
 
             element.OuterSize = new SizeF(outerWidth, outerHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
-            element.ContentSize = new SizeF(contentWidth, contentHeight);
+            element.ContentSize = new SizeF(contentWidth, contentHeight);               
+        }
+
+        void SetDefaultSize(PrinterElement element) {
+            this.Width.Factor = element.Parent?.ContentSize.Width ?? 0f;
+            this.Height.Factor = element.Parent?.ContentSize.Height ?? 0f;
+            element.ContentSize = new SizeF(this.Width, this.Height);
         }
 
         public override void DoLayout(PrinterElement element) {
             var children = this.CollectChildren(element);
-
             if (children.Count == 0) return;
+
             this.ResetTranslates(children);
             this.JustifyContent(element, children);
             this.AlignItems(element, children);
 
-            foreach (PrinterElement child in element.Children) child.Style.DoLayout(child);
+            foreach (PrinterElement child in element.Children) {
+                child.Style.DoLayout(child);
+            }
         }
 
         public override void DoDraw(PrinterElement element, Graphics g) {

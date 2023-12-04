@@ -1,6 +1,5 @@
 ﻿
 using Leagueinator.App.Algorithms.Solutions;
-using Leagueinator.App.Algorithms;
 using Leagueinator.App.Components.PlayerListBox;
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;

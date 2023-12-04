@@ -26,8 +26,8 @@ namespace Leagueinator_App.Forms {
             var root = new PrinterElement() {
                 Name = "root",
                 Style = new Flex() {
-                    Width = 1100f,
-                    Height = 800f
+                    //Width = 1100f,
+                    //Height = 800f
                 }
             };
             
@@ -40,8 +40,6 @@ namespace Leagueinator_App.Forms {
                 var child = root.AddChild(new PrinterElement("div"));
                 child.AddChild(new TextElement(team));
             }
-
-            Debug.WriteLine(root);
 
             styleSheet.ApplyTo(root);
             root.Draw(graphics);

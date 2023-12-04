@@ -2,7 +2,6 @@
 using Leagueinator.Utility.ObservableDiscreteCollection;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
