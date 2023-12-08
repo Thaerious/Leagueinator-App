@@ -4,7 +4,7 @@ options { tokenVocab=StyleLexer; }
 styles     : style* EOF
            ;
 
-style      : selectors OPAR property* CPAR           
+style      : selectors OPAR line* CPAR           
            ;
 
 selectors  : selector
@@ -15,6 +15,13 @@ selector   : STRING
            | DOT STRING
            | HASH STRING
            | STAR
+           ;
+
+line       : property
+           | comment
+           ;
+
+comment    : COMMENT COMMENT_VALUE NEWLINE
            ;
 
 property   : KEY COLON VALUE SEMI

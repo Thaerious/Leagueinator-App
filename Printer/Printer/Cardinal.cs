@@ -11,7 +11,7 @@ namespace Leagueinator.Printer {
         }        
     }
 
-    public class Cardinal<T> : IHasDefault<Cardinal<T>> {        
+    public class Cardinal<T> {        
         public readonly T Left, Right, Top, Bottom;
 
         public Cardinal(T value) {

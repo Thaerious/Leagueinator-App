@@ -20,7 +20,7 @@ namespace Leagueinator.Printer {
     }
 
     public class XMLLoader {
-        Dictionary<string, Style> loadedStyles = new();
+        Dictionary<string, NullableStyle> loadedStyles = new();
         PrinterElement rootElement = new();
         public float LoadTime { get; private set; } = -1f;
 
@@ -45,10 +45,6 @@ namespace Leagueinator.Printer {
             return xmlLoader.Root;
         }
 
-        public Dictionary<string, Style> Styles {
-            get => loadedStyles;
-        }
-
         public PrinterElement? Root {
             get => rootElement;
         }
@@ -65,7 +61,7 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Merge current currentStyles with loaded currentStyles.
+        /// MergeCSS current currentStyles with loaded currentStyles.
         /// Typically the current currentStyles are empty.
         /// </summary>
         public void ApplyStyles(PrinterElement root) {
@@ -74,11 +70,15 @@ namespace Leagueinator.Printer {
 
             while (queue.Count > 0) {
                 PrinterElement current = queue.Dequeue();
-                this.ApplyClassStyles(this.rootElement);
-                this.ApplyIDStyles(this.rootElement);
-                this.ApplyNameStyles(this.rootElement);
-                this.ApplyWildcardStyles(this.rootElement);
-                this.rootElement.Style.MergeWith(new Style());
+
+                var nullableStyle = new NullableStyle();
+
+                this.ApplyNameStyles(this.rootElement, nullableStyle);
+                this.ApplyClassStyles(this.rootElement, nullableStyle);
+                this.ApplyIDStyles(this.rootElement, nullableStyle);                
+                this.ApplyWildcardStyles(this.rootElement, nullableStyle);
+
+                current.Style = nullableStyle.ToStyle<Flex>();
 
                 foreach (PrinterElement child in current.Children) {
                     queue.Enqueue(child);
@@ -86,32 +86,32 @@ namespace Leagueinator.Printer {
             }
         }
 
-        internal void ApplyClassStyles(PrinterElement current) {
+        internal void ApplyClassStyles(PrinterElement current, NullableStyle nStyle) {
             foreach (var className in current.ClassList) {
                 if (loadedStyles.ContainsKey("." + className)) {
-                    current.Style.MergeWith(loadedStyles["." + className]);
+                    NullableStyle.MergeCSS(nStyle, loadedStyles["." + className]);
                 }
             }
         }
 
-        internal void ApplyIDStyles(PrinterElement current) {
+        internal void ApplyIDStyles(PrinterElement current, NullableStyle nStyle) {
             if (current.Attributes.ContainsKey("id")) {
                 var selector = "#" + current.Attributes["id"];
                 if (loadedStyles.ContainsKey(selector)) {
-                    current.Style.MergeWith(loadedStyles[selector]);
+                    NullableStyle.MergeCSS(nStyle, loadedStyles[selector]);
                 }
             }
         }
 
-        internal void ApplyNameStyles(PrinterElement current) {
+        internal void ApplyNameStyles(PrinterElement current, NullableStyle nStyle) {
             if (this.loadedStyles.ContainsKey(current.Name)) {
-                current.Style.MergeWith(loadedStyles[current.Name]);
+                NullableStyle.MergeCSS(nStyle, loadedStyles[current.Name]);
             }
         }
 
-        internal void ApplyWildcardStyles(PrinterElement current) {
+        internal void ApplyWildcardStyles(PrinterElement current, NullableStyle nStyle) {
             if (this.loadedStyles.ContainsKey("*")) {
-                current.Style.MergeWith(loadedStyles["*"]);
+                NullableStyle.MergeCSS(nStyle, loadedStyles["*"]);
             }
         }               
 

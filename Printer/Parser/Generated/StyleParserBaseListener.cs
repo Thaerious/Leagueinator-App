@@ -84,6 +84,30 @@ public partial class StyleParserBaseListener : IStyleParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSelector([NotNull] StyleParser.SelectorContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="StyleParser.line"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLine([NotNull] StyleParser.LineContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="StyleParser.line"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLine([NotNull] StyleParser.LineContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="StyleParser.comment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterComment([NotNull] StyleParser.CommentContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="StyleParser.comment"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitComment([NotNull] StyleParser.CommentContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="StyleParser.property"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
