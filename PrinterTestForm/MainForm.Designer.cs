@@ -36,6 +36,7 @@ namespace PrinterTestForm {
             this.txtXML = new TextBox();
             this.tabStyle = new TabPage();
             this.txtStyle = new TextBox();
+            this.toolStripButton1 = new ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -74,11 +75,12 @@ namespace PrinterTestForm {
             this.printerCanvas.Size = new Size(843, 863);
             this.printerCanvas.SubGridSize = 25;
             this.printerCanvas.TabIndex = 1;
+            this.printerCanvas.ToBack = false;
             // 
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new Size(24, 24);
-            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolPrintXML });
+            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolPrintXML, this.toolStripButton1 });
             this.toolStrip1.Location = new Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new Size(843, 34);
@@ -165,6 +167,16 @@ namespace PrinterTestForm {
             this.txtStyle.TabIndex = 1;
             this.txtStyle.KeyPress += this.TXT_KeyPress;
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            this.toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
+            this.toolStripButton1.ImageTransparentColor = Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new Size(88, 29);
+            this.toolStripButton1.Text = "Print CSS";
+            this.toolStripButton1.Click += this.ToolPrintCSS_Click;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
@@ -200,5 +212,6 @@ namespace PrinterTestForm {
         private TextBox txtXML;
         private TextBox txtStyle;
         public ToolStripButton toolPrintXML;
+        private ToolStripButton toolStripButton1;
     }
 }

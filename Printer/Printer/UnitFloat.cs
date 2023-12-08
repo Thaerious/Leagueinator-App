@@ -1,6 +1,6 @@
 ﻿
 namespace Leagueinator.Printer {
-    public class UnitFloat : IHasValue, IHasDefault<UnitFloat>{
+    public class UnitFloat : IHasValue{
         public static readonly UnitFloat Default = new();
 
         public float Value { get; set; } = 0f;

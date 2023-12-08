@@ -3,8 +3,7 @@ using System.Diagnostics;
 
 namespace PrinterTestForm
 {
-    public partial class MainForm : Form
-    {
+    public partial class MainForm : Form {
         private static readonly string AppPath = "PrinterTestForm";
         private readonly string xmlPath;
         private readonly string stylePath;
@@ -73,6 +72,11 @@ namespace PrinterTestForm
                     textBox.SelectionStart = selectionStart + tabSize;
                 }
             }
+        }
+
+        private void ToolPrintCSS_Click(object sender, EventArgs e) {
+            Debug.WriteLine(this.printerCanvas.DocElement.Children[0]);
+            Debug.WriteLine(this.printerCanvas.DocElement.Children[0].Style);
         }
     }
 }

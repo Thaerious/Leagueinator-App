@@ -9,14 +9,14 @@ using System.Reflection;
 namespace Leagueinator.CSSParser {
 
     internal class StyleListener : StyleParserBaseListener {
-        public readonly Dictionary<string, Style> Styles = new();
-        private readonly List<Style> currentStyles = new();
+        public readonly Dictionary<string, NullableStyle> Styles = new();
+        private readonly List<NullableStyle> currentStyles = new();
 
         public override void EnterStyle([NotNull] StyleParser.StyleContext context) {
             var selectors = context.selectors().GetText();
 
             foreach (var selector in selectors.Split(",")) {
-                if (!Styles.ContainsKey(selector)) Styles[selector] = new Flex(selector);
+                if (!Styles.ContainsKey(selector)) Styles[selector] = new NullableStyle(selector);
                 var style = Styles[selector];
                 currentStyles.Add(style);
             }
@@ -44,12 +44,12 @@ namespace Leagueinator.CSSParser {
 
             try {
                 if (Style.Fields.ContainsKey(key)) {
-                    var field = Style.Fields[key];
+                    var field = NullableStyle.Fields[key];
                     var r = MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
                     SetStyleField(field, newObject);
                 }
                 else if (Style.Properties.ContainsKey(key)) {
-                    var prop = Style.Properties[key];
+                    var prop = NullableStyle.Properties[key];
                     MultiParse.TryParse(val.Trim(), prop.PropertyType, out object? newObject);
                     SetStyleProperty(prop, newObject);
                 }
@@ -78,7 +78,7 @@ namespace Leagueinator.CSSParser {
 
     public static class StyleLoader {
 
-        public static Dictionary<string, Style> Load(string text) {
+        internal static Dictionary<string, NullableStyle> Load(string text) {
             var inputStream = new AntlrInputStream(text);
             var lexer = new StyleLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);

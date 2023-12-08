@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 namespace Leagueinator.Printer {
     public class Flex : Style {
 
-        public Flex(string Selector = "") : base(Selector) { }
+        public Flex() { }
 
         public override void DoSize(PrinterElement element) {
             this.SetDefaultSize(element);
@@ -142,7 +142,7 @@ namespace Leagueinator.Printer {
                     child.Translation = new PointF(0, 0);
                 }
                 else {
-                    child.Translation = child.Style.Location ?? new();
+                    child.Translation = child.Style.Location;
                 }
             }
         }
