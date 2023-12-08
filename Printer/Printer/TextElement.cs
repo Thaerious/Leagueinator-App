@@ -39,7 +39,7 @@ namespace Leagueinator.Printer
 
         public TextElement(string text) : base() {
             this.Text = text.Trim();
-            this.Name = "@Text";
+            this.Name = "@text";
         }
 
         public override XMLStringBuilder ToXML() {

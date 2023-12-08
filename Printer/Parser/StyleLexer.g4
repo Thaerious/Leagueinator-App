@@ -5,6 +5,7 @@ DOT   : '.'                             ;
 HASH  : '#'                             ;
 STAR  : '*'                             ;
 COMMA : ','                             ;
+AT    : '@'                             ;
 
 STRING     : [a-zA-Z_-]+                ;
 WS         : [ \t\r\n]+ -> skip         ;

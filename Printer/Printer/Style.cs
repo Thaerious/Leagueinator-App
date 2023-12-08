@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Drawing.Drawing2D;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer {
     public enum Flex_Direction { Default, Row, Row_reverse, Column, Column_reverse };
@@ -12,23 +13,6 @@ namespace Leagueinator.Printer {
     public enum Direction { Forward, Reverse }
     public enum Position { Static, Relative, Fixed }
 
-    public class BorderSize : Cardinal<UnitFloat> {
-        public static readonly BorderSize Default = new(new(1f, "px"));
-
-        public BorderSize(UnitFloat value) : base(value) { }
-        public BorderSize(UnitFloat top, UnitFloat right, UnitFloat bottom, UnitFloat left) : base(top, right, bottom, left) { }
-
-        public static bool TryParse(string source, out BorderSize target) {
-            if (TryParse(source, out Cardinal<UnitFloat> tc)) {
-                target = new(tc.Top, tc.Right, tc.Bottom, tc.Left);
-                return true;
-            }
-
-            target = Default;
-            return false;
-        }
-    }
-
     public class BorderColor : Cardinal<Color> {
         public static readonly BorderColor Default = new(Color.Black);
 
@@ -37,23 +21,6 @@ namespace Leagueinator.Printer {
 
         public static bool TryParse(string source, out BorderColor target) {
             if (TryParse(source, out Cardinal<Color> tc)) {
-                target = new(tc.Top, tc.Right, tc.Bottom, tc.Left);
-                return true;
-            }
-
-            target = Default;
-            return false;
-        }
-    }
-
-    public class BorderStyle : Cardinal<DashStyle> {
-        public static readonly BorderStyle Default = new(DashStyle.Solid);
-
-        public BorderStyle(DashStyle value) : base(value) { }
-        public BorderStyle(DashStyle top, DashStyle right, DashStyle bottom, DashStyle left) : base(top, right, bottom, left) { }
-
-        public static bool TryParse(string source, out BorderStyle target) {
-            if (TryParse(source, out Cardinal<DashStyle> tc)) {
                 target = new(tc.Top, tc.Right, tc.Bottom, tc.Left);
                 return true;
             }
@@ -92,9 +59,9 @@ namespace Leagueinator.Printer {
         [CSS] public Box? Margin = null;
         [CSS] public Box? Padding = null;
 
-        [CSS] public BorderColor? BorderColor = null;
-        [CSS] public BorderSize? BorderSize = null;
-        [CSS] public BorderStyle? BorderStyle = null;
+        [CSS] public Cardinal<Color>? BorderColor = null;
+        [CSS] public Cardinal<UnitFloat>? BorderSize = null;
+        [CSS] public Cardinal<DashStyle>? BorderStyle = null;
         [CSS] public string Border { set => this.SetBorder(value); }
 
         [CSS] public Flex_Direction? Flex_Direction = null;
@@ -113,7 +80,7 @@ namespace Leagueinator.Printer {
 
         /// <summary>
         /// Copy all CSS sourceProperties and sourceFields from source to target.
-        /// Will only overwrite sourceFields on target that are null.
+        /// Will only overwrite sourceFields on target source are null.
         /// </summary>
         /// <param name="source"></param>
         internal static void MergeCSS(object target, object source) {
@@ -164,7 +131,7 @@ namespace Leagueinator.Printer {
                 var sourceValue = sourceField.GetValue(this);
                 if (sourceValue == null) continue;
                 targetField.SetValue(target, sourceValue);
-            }
+            }                     
 
             return target;
         }
@@ -200,6 +167,28 @@ namespace Leagueinator.Printer {
             Fields = typeof(NullableStyle).GetFields().ToDictionary();
             Properties = typeof(NullableStyle).GetProperties().ToDictionary();
         }
+
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+            PropertyInfo[] properties = this.GetType().GetProperties();
+            FieldInfo[] fields = this.GetType().GetFields();
+
+            sb.AppendLine($"Class : {this.GetType()}");
+
+            foreach (var property in properties) {
+                CSS? css = property.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                if (property.CanRead == false) continue;
+                sb.AppendLine($"{property.Name} : {property.GetValue(this)}");
+            }
+
+            foreach (var field in fields) {
+                CSS? css = field.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                sb.AppendLine($"{field.Name} : {field.GetValue(this)}");
+            }
+            return sb.ToString();
+        }
     }
 
     public class Style {
@@ -214,9 +203,9 @@ namespace Leagueinator.Printer {
         [CSS] public Box Margin = Box.Default;
         [CSS] public Box Padding = Box.Default;
 
-        [CSS] public BorderColor BorderColor = BorderColor.Default;
-        [CSS] public BorderSize BorderSize = BorderSize.Default;
-        [CSS] public BorderStyle BorderStyle = BorderStyle.Default;
+        [CSS] public Cardinal<Color>? BorderColor = null;
+        [CSS] public Cardinal<UnitFloat> BorderSize = new(new(0, "px"));
+        [CSS] public Cardinal<DashStyle> BorderStyle = new(DashStyle.Solid);
         [CSS] public string Border { set => this.SetBorder(value); }
 
         [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Default;
@@ -248,8 +237,8 @@ namespace Leagueinator.Printer {
         /// Copy all non-null sourceFields and sourceProperties marked with CSS and
         /// inherited is flagged as true.
         /// </summary>
-        /// <param name="that"></param>
-        public Style MergeInheritedWith(Style that) {
+        /// <param name="source"></param>
+        public Style MergeInheritedWith(Style source) {
             PropertyInfo[] properties = this.GetType().GetProperties();
             FieldInfo[] fields = this.GetType().GetFields();
 
@@ -259,9 +248,10 @@ namespace Leagueinator.Printer {
                 if (css.Inherited == false) continue;
 
                 if (property.CanWrite && property.CanRead) {
-                    var value = property.GetValue(that);
-                    if (value == null) continue;
-                    property.SetValue(this, value);
+                    var sourceValue = property.GetValue(source);
+                    if (sourceValue is null) continue;
+                    if (property.GetValue(this) is not null) continue;
+                    property.SetValue(this, sourceValue);
                 }
             }
 
@@ -270,9 +260,10 @@ namespace Leagueinator.Printer {
                 if (css == null) continue;
                 if (css.Inherited == false) continue;
 
-                var value = field.GetValue(that);
-                if (value == null) continue;
-                field.SetValue(this, value);
+                var sourceValue = field.GetValue(source);
+                if (sourceValue == null) continue;
+                if (field.GetValue(this) is not null) continue;
+                field.SetValue(this, sourceValue);
             }
 
             return this;

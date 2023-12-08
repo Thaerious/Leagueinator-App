@@ -1,4 +1,5 @@
 ﻿using Printer.Printer;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -73,7 +74,6 @@ namespace Leagueinator.Printer {
         public override void DoDraw(PrinterElement element, Graphics g) {
             this.DoDrawBackground(element, g);
             this.DoDrawBorders(element, g);
-            this.DoDrawChildren(element, g);
         }
 
         public void DoDrawBackground(PrinterElement element, Graphics g) {
@@ -83,13 +83,12 @@ namespace Leagueinator.Printer {
         }
 
         public void DoDrawBorders(PrinterElement element, Graphics g) {
-            Cardinal<Color> borderColor = this.BorderColor ?? new(Color.Black);
-            Cardinal<DashStyle> borderStyle = this.BorderStyle ?? new(DashStyle.Solid);
+            if (this.BorderColor is null) return;
 
-            if (borderColor.Top != default) {
-                using Pen pen = new Pen(borderColor.Top);
+            if (this.BorderColor.Top != default) {
+                using Pen pen = new Pen(this.BorderColor.Top);
                 pen.Width = this.BorderSize.Top;
-                pen.DashStyle = borderStyle.Top;
+                pen.DashStyle = this.BorderStyle.Top;
 
                 g.DrawLine(
                     pen,
@@ -97,10 +96,10 @@ namespace Leagueinator.Printer {
                     element.BorderRect.TopRight().Translate(0, this.BorderSize.Top / 2)
                 );
             }
-            if (borderColor.Right != default) {
-                using Pen pen = new Pen(borderColor.Right);
+            if (this.BorderColor.Right != default) {
+                using Pen pen = new Pen(this.BorderColor.Right);
                 pen.Width = this.BorderSize.Right;
-                pen.DashStyle = borderStyle.Right;
+                pen.DashStyle = this.BorderStyle.Right;
 
                 g.DrawLine(
                     pen,
@@ -108,10 +107,10 @@ namespace Leagueinator.Printer {
                     element.BorderRect.BottomRight().Translate(-this.BorderSize.Right / 2, 0)
                 );
             }
-            if (borderColor.Bottom != default) {
-                using Pen pen = new Pen(borderColor.Bottom);
+            if (this.BorderColor.Bottom != default) {
+                using Pen pen = new Pen(this.BorderColor.Bottom);
                 pen.Width = this.BorderSize.Bottom;
-                pen.DashStyle = borderStyle.Bottom;
+                pen.DashStyle = this.BorderStyle.Bottom;
 
                 g.DrawLine(
                     pen,
@@ -119,10 +118,10 @@ namespace Leagueinator.Printer {
                     element.BorderRect.BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
                 );
             }
-            if (borderColor.Left != default) {
-                using Pen pen = new Pen(borderColor.Left);
+            if (this.BorderColor.Left != default) {
+                using Pen pen = new Pen(this.BorderColor.Left);
                 pen.Width = this.BorderSize.Left;
-                pen.DashStyle = borderStyle.Left;
+                pen.DashStyle = this.BorderStyle.Left;
 
                 g.DrawLine(
                     pen,
@@ -130,10 +129,6 @@ namespace Leagueinator.Printer {
                     element.BorderRect.TopLeft().Translate(this.BorderSize.Left / 2, 0)
                 );
             }
-        }
-
-        private void DoDrawChildren(PrinterElement element, Graphics g) {
-            foreach (PrinterElement child in element.Children) child.Style.DoDraw(child, g);
         }
 
         private void ResetTranslates(List<PrinterElement> children) {
@@ -186,6 +181,7 @@ namespace Leagueinator.Printer {
             foreach (PrinterElement child in children) {
                 widthRemaining -= child.OuterSize.Width;
             }
+
 
             float heightRemaining = element.ContentSize.Height;
             foreach (PrinterElement child in children) {
@@ -261,7 +257,7 @@ namespace Leagueinator.Printer {
 
                             foreach (var child in children) {
                                 child.Translation = new(child.Translation.X, dy);
-                                dy = dy + spaceBetween + child.OuterRect.Width;
+                                dy = dy + spaceBetween + child.OuterRect.Height;
                             }
                         }
                         break;
@@ -283,7 +279,7 @@ namespace Leagueinator.Printer {
 
                             foreach (var child in children) {
                                 child.Translation = new(child.Translation.X, dy);
-                                dy = dy + spaceBetween + child.OuterRect.Width;
+                                dy = dy + spaceBetween + child.OuterRect.Height;
                             }
                         }
                         break;
@@ -305,7 +301,7 @@ namespace Leagueinator.Printer {
 
                             foreach (var child in children) {
                                 child.Translation = new(child.Translation.X, dy);
-                                dy = dy + (2 * spaceAround) + child.OuterRect.Width;
+                                dy = dy + (2 * spaceAround) + child.OuterRect.Height;
                             }
                         }
                         break;

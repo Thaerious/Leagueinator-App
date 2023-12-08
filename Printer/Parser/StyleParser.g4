@@ -14,6 +14,7 @@ selectors  : selector
 selector   : STRING 
            | DOT STRING
            | HASH STRING
+           | AT STRING
            | STAR
            ;
 

@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Printer;
+using Leagueinator.Utility;
 using System.Diagnostics;
 
 namespace PrinterTestForm
@@ -45,7 +46,8 @@ namespace PrinterTestForm
                 File.WriteAllText(this.xmlPath, xmlString);
                 File.WriteAllText(this.stylePath, styleString);
 
-                PrinterElement root = XMLLoader.Load(xmlString, styleString);
+                PrinterElement root = XMLLoader.LoadFromString(xmlString, styleString);
+
                 this.printerCanvas.DocElement.ClearChildren();
                 this.printerCanvas.DocElement.AddChild(root);
                 this.printerCanvas.Invalidate();
