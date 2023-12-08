@@ -3,18 +3,39 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.CSSParser {
 
     internal class StyleListener : StyleParserBaseListener {
         public readonly Dictionary<string, Style> Styles = new();
-        private Style style = new();
+        private readonly List<Style> currentStyles = new();
 
         public override void EnterStyle([NotNull] StyleParser.StyleContext context) {
-            var selector = context.selector().GetText();
-            if (!Styles.ContainsKey(selector)) Styles[selector] = new Flex(selector);
-            style = Styles[selector];
+            var selectors = context.selectors().GetText();
+
+            foreach (var selector in selectors.Split(",")) {
+                if (!Styles.ContainsKey(selector)) Styles[selector] = new Flex(selector);
+                var style = Styles[selector];
+                currentStyles.Add(style);
+            }
+        }
+
+        public override void ExitStyle([NotNull] StyleParser.StyleContext context) {
+            currentStyles.Clear();
+        }
+
+        private void SetStyleField(FieldInfo field, object? newObject) {
+            foreach (var style in currentStyles) {
+                field.SetValue(style, newObject);
+            }
+        }
+
+        private void SetStyleProperty(PropertyInfo prop, object? newObject) {
+            foreach (var style in currentStyles) {
+                prop.SetValue(style, newObject);
+            }
         }
 
         public override void EnterProperty([NotNull] StyleParser.PropertyContext context) {
@@ -25,12 +46,12 @@ namespace Leagueinator.CSSParser {
                 if (Style.Fields.ContainsKey(key)) {
                     var field = Style.Fields[key];
                     var r = MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
-                    field.SetValue(this.style, newObject);
+                    SetStyleField(field, newObject);
                 }
                 else if (Style.Properties.ContainsKey(key)) {
                     var prop = Style.Properties[key];
                     MultiParse.TryParse(val.Trim(), prop.PropertyType, out object? newObject);
-                    prop.SetValue(this.style, newObject);
+                    SetStyleProperty(prop, newObject);
                 }
             }
             catch (TargetInvocationException ex) {
@@ -47,6 +68,9 @@ namespace Leagueinator.CSSParser {
             catch (Exception ex) {
                 string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
                 msg += ex.Message;
+                Debug.WriteLine("\n");
+                Debug.WriteLine(ex);
+                Debug.WriteLine("\n");
                 throw new Exception(msg);
             }            
         }

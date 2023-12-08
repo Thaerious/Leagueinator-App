@@ -1,5 +1,6 @@
 ﻿using Printer.Printer;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
@@ -9,22 +10,23 @@ namespace Leagueinator.Printer {
         public override void DoSize(PrinterElement element) {
             this.SetDefaultSize(element);
 
-            float maxWidth  = 0f;
+            float maxWidth = 0f;
             float maxHeight = 0f;
-            float sumWidth  = 0f;
+            float sumWidth = 0f;
             float sumHeight = 0f;
 
             foreach (PrinterElement child in element.Children) {
                 child.Style.DoSize(child);
-                maxWidth  = child.OuterSize.Width > maxWidth ? maxWidth = child.OuterSize.Width : maxWidth;
+                maxWidth = child.OuterSize.Width > maxWidth ? maxWidth = child.OuterSize.Width : maxWidth;
                 maxHeight = child.OuterSize.Height > maxHeight ? maxHeight = child.OuterSize.Height : maxHeight;
-                sumWidth  += child.OuterSize.Width;
+                sumWidth += child.OuterSize.Width;
                 sumHeight += child.OuterSize.Height;
             }
 
             float contentWidth = 0f, contentHeight = 0f;
 
             switch (this.Flex_Major) {
+                case Flex_Direction.Default:
                 case Flex_Direction.Row:
                     contentWidth = this.Width.HasValue ? this.Width : sumWidth;
                     contentHeight = this.Height.HasValue ? this.Height : maxHeight;
@@ -46,7 +48,7 @@ namespace Leagueinator.Printer {
 
             element.OuterSize = new SizeF(outerWidth, outerHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
-            element.ContentSize = new SizeF(contentWidth, contentHeight);               
+            element.ContentSize = new SizeF(contentWidth, contentHeight);
         }
 
         void SetDefaultSize(PrinterElement element) {
@@ -69,55 +71,68 @@ namespace Leagueinator.Printer {
         }
 
         public override void DoDraw(PrinterElement element, Graphics g) {
+            this.DoDrawBackground(element, g);
+            this.DoDrawBorders(element, g);
+            this.DoDrawChildren(element, g);
+        }
+
+        public void DoDrawBackground(PrinterElement element, Graphics g) {
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }
+        }
 
-            if (this.BorderColor.Top != default) {
-                using Pen pen = new Pen(BorderColor.Top);
-                pen.Width = BorderSize.Top;
-                pen.DashStyle = BorderStyle.Top;
+        public void DoDrawBorders(PrinterElement element, Graphics g) {
+            Cardinal<Color> borderColor = this.BorderColor ?? new(Color.Black);
+            Cardinal<DashStyle> borderStyle = this.BorderStyle ?? new(DashStyle.Solid);
 
-                g.DrawLine(
-                    pen,
-                    element.BorderRect.TopLeft().Translate(0, BorderSize.Top / 2),
-                    element.BorderRect.TopRight().Translate(0, BorderSize.Top / 2)
-                );
-            }
-            if (this.BorderColor.Right != default) {
-                using Pen pen = new Pen(BorderColor.Right);
-                pen.Width = BorderSize.Right;
-                pen.DashStyle = BorderStyle.Right;
+            if (borderColor.Top != default) {
+                using Pen pen = new Pen(borderColor.Top);
+                pen.Width = this.BorderSize.Top;
+                pen.DashStyle = borderStyle.Top;
 
                 g.DrawLine(
                     pen,
-                    element.BorderRect.TopRight().Translate(-BorderSize.Right / 2, 0),
-                    element.BorderRect.BottomRight().Translate(-BorderSize.Right / 2, 0)
+                    element.BorderRect.TopLeft().Translate(0, this.BorderSize.Top / 2),
+                    element.BorderRect.TopRight().Translate(0, this.BorderSize.Top / 2)
                 );
             }
-            if (this.BorderColor.Bottom != default) {
-                using Pen pen = new Pen(BorderColor.Bottom);
-                pen.Width = BorderSize.Bottom;
-                pen.DashStyle = BorderStyle.Bottom;
+            if (borderColor.Right != default) {
+                using Pen pen = new Pen(borderColor.Right);
+                pen.Width = this.BorderSize.Right;
+                pen.DashStyle = borderStyle.Right;
 
                 g.DrawLine(
                     pen,
-                    element.BorderRect.BottomRight().Translate(0, -BorderSize.Bottom / 2),
-                    element.BorderRect.BottomLeft().Translate(0, -BorderSize.Bottom / 2)
+                    element.BorderRect.TopRight().Translate(-this.BorderSize.Right / 2, 0),
+                    element.BorderRect.BottomRight().Translate(-this.BorderSize.Right / 2, 0)
                 );
             }
-            if (this.BorderColor.Left != default) {
-                using Pen pen = new Pen(BorderColor.Left);
-                pen.Width = BorderSize.Left;
-                pen.DashStyle = BorderStyle.Left;
+            if (borderColor.Bottom != default) {
+                using Pen pen = new Pen(borderColor.Bottom);
+                pen.Width = this.BorderSize.Bottom;
+                pen.DashStyle = borderStyle.Bottom;
 
                 g.DrawLine(
                     pen,
-                    element.BorderRect.BottomLeft().Translate(BorderSize.Left / 2, 0),
-                    element.BorderRect.TopLeft().Translate(BorderSize.Left / 2, 0)
+                    element.BorderRect.BottomRight().Translate(0, -this.BorderSize.Bottom / 2),
+                    element.BorderRect.BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
                 );
             }
+            if (borderColor.Left != default) {
+                using Pen pen = new Pen(borderColor.Left);
+                pen.Width = this.BorderSize.Left;
+                pen.DashStyle = borderStyle.Left;
 
+                g.DrawLine(
+                    pen,
+                    element.BorderRect.BottomLeft().Translate(this.BorderSize.Left / 2, 0),
+                    element.BorderRect.TopLeft().Translate(this.BorderSize.Left / 2, 0)
+                );
+            }
+        }
+
+        private void DoDrawChildren(PrinterElement element, Graphics g) {
             foreach (PrinterElement child in element.Children) child.Style.DoDraw(child, g);
         }
 
@@ -127,7 +142,7 @@ namespace Leagueinator.Printer {
                     child.Translation = new PointF(0, 0);
                 }
                 else {
-                    child.Translation = child.Style.Location;
+                    child.Translation = child.Style.Location ?? new();
                 }
             }
         }
@@ -139,7 +154,7 @@ namespace Leagueinator.Printer {
         /// <returns></returns>
         private List<PrinterElement> CollectChildren(PrinterElement element) {
             var children = element.Children.Where(c => c.Style.Position != Position.Fixed).ToList();
-            if (this.Flex_Major_Direction == Direction.Reverse) children.Reverse();            
+            if (this.Flex_Major_Direction == Direction.Reverse) children.Reverse();
             return children;
         }
 
@@ -181,6 +196,7 @@ namespace Leagueinator.Printer {
             int count = children.Count;
 
             switch (this.Justify_Content) {
+                case Justify_Content.Default:
                 case Justify_Content.Flex_start: {
                         PointF from;
 
@@ -300,6 +316,7 @@ namespace Leagueinator.Printer {
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
                     switch (this.Align_Items) {
+                        case Align_Items.Default:
                         case Align_Items.Flex_start:
                             break;
                         case Align_Items.Flex_end:
@@ -312,6 +329,7 @@ namespace Leagueinator.Printer {
                     break;
                 case Flex_Direction.Column:
                     switch (this.Align_Items) {
+                        case Align_Items.Default:
                         case Align_Items.Flex_start:
                             break;
                         case Align_Items.Flex_end:

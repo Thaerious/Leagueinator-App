@@ -1,34 +1,42 @@
-
-entry {
-    flex-direction: Row;
-    border: 3px Solid Black;
-    justify-content: Space_evenly;
-    width: 90%;
-    padding: 20px 0px 20px 0px;
+* {
+    font-style: bold;
+    font-size: 24px;
 }
 
-names {
-    border: 1px Solid Black;
-    flex-direction: Column;
+.bold-border {
+    border: 3px solid black;
+}
+
+team {
+    flex-direction: row;
+}
+
+players {
+    flex-direction: column;
+    margin: 10px;
     justify-content: Center;
     align-items: Center;
-    width: 20%;
 }
 
-name {
-    font-style: Bold;
-    font-size: 16px;
+rounds {
+    flex-direction: column;
+    padding: 10px;
+    justify-content: Center;
+    align-items: Center;
 }
 
-scores {
+player {
+    justify-content: Center;
+    align-items: Center;
+    font-style: bold;
+    font-size: 12px;
+    background-color: pink;
+}
+
+category, entry {
     border: 1px Solid Black;
-    flex-direction: Column;
-    width: 70%;
-}
-
-.score_item {
-    border: 1px Solid Black;
-    width: 75px;
+    width: 85px;
+    height: 35px;
     justify-content: Center;
     align-items: Center;
 }

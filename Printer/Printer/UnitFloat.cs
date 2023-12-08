@@ -1,12 +1,8 @@
-﻿using Leagueinator.Printer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Leagueinator.Printer {
-    public class UnitFloat {
+    public class UnitFloat : IHasValue, IHasDefault<UnitFloat>{
+        public static readonly UnitFloat Default = new();
+
         public float Value { get; set; } = 0f;
         public string Unit { get; set; } = "px";
         public bool HasValue { get; private set; } = false;

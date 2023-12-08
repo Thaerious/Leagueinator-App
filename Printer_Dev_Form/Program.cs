@@ -1,38 +1,47 @@
-﻿using Leagueinator.Printer;
+﻿using Leagueinator.Model;
+using Leagueinator.Printer;
+using Leagueinator_Model.Model.Tables;
 using Printer_Dev_Form;
 using System.Diagnostics;
 using System.Reflection;
 
 Assembly assembly = Assembly.GetExecutingAssembly();
 
-string xmlResource = "Printer_Dev_Form.assets.layout.xml";
-string ssResource = "Printer_Dev_Form.assets.style.css";
-string templResource = "Printer_Dev_Form.assets.template.xml";
-
-using Stream? xmlStream = assembly.GetManifestResourceStream(xmlResource) ?? throw new NullReferenceException();
-using StreamReader xmlReader = new StreamReader(xmlStream);
-
-using Stream? ssStream = assembly.GetManifestResourceStream(ssResource) ?? throw new NullReferenceException();
-using StreamReader ssReader = new StreamReader(ssStream);
-
-using Stream? templStream = assembly.GetManifestResourceStream(templResource) ?? throw new NullReferenceException();
-using StreamReader templReader = new StreamReader(templStream);
-
-string xmlString = xmlReader.ReadToEnd();
-string ssString = ssReader.ReadToEnd();
-string templString = templReader.ReadToEnd();
-
-var document = XMLLoader.Load(xmlString, ssString);
-var template = XMLLoader.Load(templString, ssString);
+var documentXML = assembly.LoadResource(
+    "Printer_Dev_Form.assets.document.xml", 
+    "Printer_Dev_Form.assets.style.css"
+);
+var teamXML = assembly.LoadResource(
+    "Printer_Dev_Form.assets.team.xml", 
+    "Printer_Dev_Form.assets.style.css"
+);
+var roundXML = assembly.LoadResource(
+    "Printer_Dev_Form.assets.round.xml",
+    "Printer_Dev_Form.assets.style.css"
+);
 
 ApplicationConfiguration.Initialize();
 var form = new Form1();
+form.canvas.DocElement.AddChild(documentXML);
+ApplyData(documentXML, new MockEvent());
 
-var mockEvent = new MockEvent();
-document.AddChild(template);
-
-form.canvas.DocElement.AddChild(document);
+Debug.WriteLine(form.canvas.DocElement.ToXML());
 
 Application.Run(form);
 
+void ApplyData(PrinterElement docroot, LeagueEvent lEvent) {
+    var teamElement = docroot.AddChild(teamXML.Clone());
+    var roundElement = teamXML["rounds"][0].AddChild(roundXML.Clone());
 
+    var eventData = lEvent.ToDataSet();
+    var teamTable = new TeamTable(eventData);
+
+    foreach (int id in teamTable.AllIDs()) {
+        foreach (var name in teamTable.GetNames(id)) {
+            var player = new PrinterElement("player") {
+                InnerText = name
+            };
+            teamElement["players"][0].AddChild(player);
+        }
+    }
+}

@@ -1,29 +1,34 @@
-﻿using Leagueinator.Model;
-using Leagueinator.Utility;
+﻿using Leagueinator.Utility;
 using System.Data;
-using System.Numerics;
 
 namespace Leagueinator_Model.Model.Tables {
     public class TeamTable {
+        private static readonly string TABLE_NAME = "team";
+        private static readonly string ID_COL = "id";
+        private static readonly string NAME_COL = "name";
         private DataTable source;
 
         public TeamTable(DataTable source) {
             this.source = source;
         }
 
+        public TeamTable(DataSet source) {
+            this.source = source.Tables[TABLE_NAME] ?? throw new NullReferenceException($"table '{TABLE_NAME}' not found");
+        }
+
         public static DataTable MakeTeamTable() {
-            DataTable table = new DataTable("team");
+            DataTable table = new DataTable(TABLE_NAME);
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "id",
+                ColumnName = ID_COL,
                 Unique = false,
                 AutoIncrement = false
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(string),
-                ColumnName = "name",
+                ColumnName = NAME_COL,
                 Unique = false,
                 AutoIncrement = false
             });
@@ -40,14 +45,14 @@ namespace Leagueinator_Model.Model.Tables {
             int prevId = this.GetID(names);
             if (prevId != -1) return prevId;
 
-            object result = this.source.Compute("MAX(id)", string.Empty);
+            object result = this.source.Compute($"MAX({ID_COL})", string.Empty);
             int maxValue = (result != DBNull.Value) ? Convert.ToInt32(result) : 0;
             int nextID = maxValue + 1;
 
             foreach (string name in names) {
                 var row = source.NewRow();
-                row["id"] = nextID;
-                row["name"] = name;
+                row[ID_COL] = nextID;
+                row[NAME_COL] = name;
                 this.source.Rows.Add(row);
             }
 
@@ -61,7 +66,7 @@ namespace Leagueinator_Model.Model.Tables {
         /// <returns>An array of names, an empty array if id is not found</returns>
         public string[] GetNames(int id) {
             DataRow[] rows = this.source.Select($"id = {id} ");
-            return rows.Select(idRow => idRow.Field<string>("name")).NotNull().ToArray();
+            return rows.Select(idRow => idRow.Field<string>(NAME_COL)).NotNull().ToArray();
         }
 
         /// <summary>
@@ -77,7 +82,7 @@ namespace Leagueinator_Model.Model.Tables {
             if (names.Length == 0) return -1;
             DataRow[] firstNameRows = this.source.Select($"name = '{names[0].ToLower()}' ");
             foreach (DataRow row in firstNameRows) {
-                idList.Add(row.Field<int>("id"));
+                idList.Add(row.Field<int>(ID_COL));
             }
 
             foreach (int id in idList.ToArray()) {
@@ -85,7 +90,7 @@ namespace Leagueinator_Model.Model.Tables {
                 // only consider matches that have the same number of players as the list of names
                 if (idRows.Length != names.Length) continue;
 
-                string[] found = idRows.Select(idRow => idRow.Field<string>("name")).NotNull().ToArray();
+                string[] found = idRows.Select(idRow => idRow.Field<string>(NAME_COL)).NotNull().ToArray();
                 Array.Sort(found);
                 if (found.SequenceEqual(names)) return id;
             }
@@ -101,7 +106,7 @@ namespace Leagueinator_Model.Model.Tables {
         public int[] AllIDs() {
             SortedSet<int> ids = new();
             foreach (DataRow row in this.source.AsEnumerable()) {
-                int id = (row.Field<int>("id"));
+                int id = (row.Field<int>(ID_COL));
                 if (!ids.Contains(id)) ids.Add(id);
             }
             return ids.ToArray();

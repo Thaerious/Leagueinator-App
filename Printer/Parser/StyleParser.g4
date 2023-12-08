@@ -4,7 +4,11 @@ options { tokenVocab=StyleLexer; }
 styles     : style* EOF
            ;
 
-style      : selector OPAR property* CPAR           
+style      : selectors OPAR property* CPAR           
+           ;
+
+selectors  : selector
+           | selector COMMA selector
            ;
 
 selector   : STRING 

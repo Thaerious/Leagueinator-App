@@ -60,6 +60,18 @@ public partial class StyleParserBaseListener : IStyleParserListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStyle([NotNull] StyleParser.StyleContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="StyleParser.selectors"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSelectors([NotNull] StyleParser.SelectorsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="StyleParser.selectors"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSelectors([NotNull] StyleParser.SelectorsContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="StyleParser.selector"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
