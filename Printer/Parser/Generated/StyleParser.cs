@@ -19,6 +19,11 @@
 // Ambiguous reference in cref attribute
 #pragma warning disable 419
 
+using System;
+using System.IO;
+using System.Text;
+using System.Diagnostics;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Misc;
@@ -31,21 +36,22 @@ public partial class StyleParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		OPAR=1, DOT=2, HASH=3, STAR=4, STRING=5, WS=6, KEY=7, COLON=8, CPAR=9, 
-		MM_WS=10, SEMI=11, VALUE=12, VM_WS=13;
+		OPAR=1, DOT=2, HASH=3, STAR=4, COMMA=5, STRING=6, WS=7, KEY=8, COLON=9, 
+		CPAR=10, MM_WS=11, SEMI=12, VALUE=13, VM_WS=14;
 	public const int
-		RULE_styles = 0, RULE_style = 1, RULE_selector = 2, RULE_property = 3;
+		RULE_styles = 0, RULE_style = 1, RULE_selectors = 2, RULE_selector = 3, 
+		RULE_property = 4;
 	public static readonly string[] ruleNames = {
-		"styles", "style", "selector", "property"
+		"currentStyles", "style", "selectors", "selector", "property"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'{'", "'.'", "'#'", "'*'", null, null, null, "':'", "'}'", null, 
-		"';'"
+		null, "'{'", "'.'", "'#'", "'*'", "','", null, null, null, "':'", "'}'", 
+		null, "';'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "OPAR", "DOT", "HASH", "STAR", "STRING", "WS", "KEY", "COLON", "CPAR", 
-		"MM_WS", "SEMI", "VALUE", "VM_WS"
+		null, "OPAR", "DOT", "HASH", "STAR", "COMMA", "STRING", "WS", "KEY", "COLON", 
+		"CPAR", "MM_WS", "SEMI", "VALUE", "VM_WS"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -112,21 +118,21 @@ public partial class StyleParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 11;
+			State = 13;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 60L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 92L) != 0)) {
 				{
 				{
-				State = 8;
+				State = 10;
 				style();
 				}
 				}
-				State = 13;
+				State = 15;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 14;
+			State = 16;
 			Match(Eof);
 			}
 		}
@@ -142,8 +148,8 @@ public partial class StyleParser : Parser {
 	}
 
 	public partial class StyleContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public SelectorContext selector() {
-			return GetRuleContext<SelectorContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public SelectorsContext selectors() {
+			return GetRuleContext<SelectorsContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPAR() { return GetToken(StyleParser.OPAR, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CPAR() { return GetToken(StyleParser.CPAR, 0); }
@@ -178,26 +184,90 @@ public partial class StyleParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 16;
-			selector();
-			State = 17;
+			State = 18;
+			selectors();
+			State = 19;
 			Match(OPAR);
-			State = 21;
+			State = 23;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==KEY) {
 				{
 				{
-				State = 18;
+				State = 20;
 				property();
 				}
 				}
-				State = 23;
+				State = 25;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 24;
+			State = 26;
 			Match(CPAR);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class SelectorsContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public SelectorContext[] selector() {
+			return GetRuleContexts<SelectorContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public SelectorContext selector(int i) {
+			return GetRuleContext<SelectorContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA() { return GetToken(StyleParser.COMMA, 0); }
+		public SelectorsContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_selectors; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IStyleParserListener typedListener = listener as IStyleParserListener;
+			if (typedListener != null) typedListener.EnterSelectors(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IStyleParserListener typedListener = listener as IStyleParserListener;
+			if (typedListener != null) typedListener.ExitSelectors(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public SelectorsContext selectors() {
+		SelectorsContext _localctx = new SelectorsContext(Context, State);
+		EnterRule(_localctx, 4, RULE_selectors);
+		try {
+			State = 33;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 28;
+				selector();
+				}
+				break;
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 29;
+				selector();
+				State = 30;
+				Match(COMMA);
+				State = 31;
+				selector();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -236,40 +306,40 @@ public partial class StyleParser : Parser {
 	[RuleVersion(0)]
 	public SelectorContext selector() {
 		SelectorContext _localctx = new SelectorContext(Context, State);
-		EnterRule(_localctx, 4, RULE_selector);
+		EnterRule(_localctx, 6, RULE_selector);
 		try {
-			State = 32;
+			State = 41;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case STRING:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 26;
+				State = 35;
 				Match(STRING);
 				}
 				break;
 			case DOT:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 27;
+				State = 36;
 				Match(DOT);
-				State = 28;
+				State = 37;
 				Match(STRING);
 				}
 				break;
 			case HASH:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 29;
+				State = 38;
 				Match(HASH);
-				State = 30;
+				State = 39;
 				Match(STRING);
 				}
 				break;
 			case STAR:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 31;
+				State = 40;
 				Match(STAR);
 				}
 				break;
@@ -313,17 +383,17 @@ public partial class StyleParser : Parser {
 	[RuleVersion(0)]
 	public PropertyContext property() {
 		PropertyContext _localctx = new PropertyContext(Context, State);
-		EnterRule(_localctx, 6, RULE_property);
+		EnterRule(_localctx, 8, RULE_property);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 34;
+			State = 43;
 			Match(KEY);
-			State = 35;
+			State = 44;
 			Match(COLON);
-			State = 36;
+			State = 45;
 			Match(VALUE);
-			State = 37;
+			State = 46;
 			Match(SEMI);
 			}
 		}
@@ -339,17 +409,20 @@ public partial class StyleParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,13,40,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,1,0,5,0,10,8,0,10,0,12,0,13,
-		9,0,1,0,1,0,1,1,1,1,1,1,5,1,20,8,1,10,1,12,1,23,9,1,1,1,1,1,1,2,1,2,1,
-		2,1,2,1,2,1,2,3,2,33,8,2,1,3,1,3,1,3,1,3,1,3,1,3,0,0,4,0,2,4,6,0,0,40,
-		0,11,1,0,0,0,2,16,1,0,0,0,4,32,1,0,0,0,6,34,1,0,0,0,8,10,3,2,1,0,9,8,1,
-		0,0,0,10,13,1,0,0,0,11,9,1,0,0,0,11,12,1,0,0,0,12,14,1,0,0,0,13,11,1,0,
-		0,0,14,15,5,0,0,1,15,1,1,0,0,0,16,17,3,4,2,0,17,21,5,1,0,0,18,20,3,6,3,
-		0,19,18,1,0,0,0,20,23,1,0,0,0,21,19,1,0,0,0,21,22,1,0,0,0,22,24,1,0,0,
-		0,23,21,1,0,0,0,24,25,5,9,0,0,25,3,1,0,0,0,26,33,5,5,0,0,27,28,5,2,0,0,
-		28,33,5,5,0,0,29,30,5,3,0,0,30,33,5,5,0,0,31,33,5,4,0,0,32,26,1,0,0,0,
-		32,27,1,0,0,0,32,29,1,0,0,0,32,31,1,0,0,0,33,5,1,0,0,0,34,35,5,7,0,0,35,
-		36,5,8,0,0,36,37,5,12,0,0,37,38,5,11,0,0,38,7,1,0,0,0,3,11,21,32
+		4,1,14,49,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,1,0,5,0,12,8,0,10,0,
+		12,0,15,9,0,1,0,1,0,1,1,1,1,1,1,5,1,22,8,1,10,1,12,1,25,9,1,1,1,1,1,1,
+		2,1,2,1,2,1,2,1,2,3,2,34,8,2,1,3,1,3,1,3,1,3,1,3,1,3,3,3,42,8,3,1,4,1,
+		4,1,4,1,4,1,4,1,4,0,0,5,0,2,4,6,8,0,0,49,0,13,1,0,0,0,2,18,1,0,0,0,4,33,
+		1,0,0,0,6,41,1,0,0,0,8,43,1,0,0,0,10,12,3,2,1,0,11,10,1,0,0,0,12,15,1,
+		0,0,0,13,11,1,0,0,0,13,14,1,0,0,0,14,16,1,0,0,0,15,13,1,0,0,0,16,17,5,
+		0,0,1,17,1,1,0,0,0,18,19,3,4,2,0,19,23,5,1,0,0,20,22,3,8,4,0,21,20,1,0,
+		0,0,22,25,1,0,0,0,23,21,1,0,0,0,23,24,1,0,0,0,24,26,1,0,0,0,25,23,1,0,
+		0,0,26,27,5,10,0,0,27,3,1,0,0,0,28,34,3,6,3,0,29,30,3,6,3,0,30,31,5,5,
+		0,0,31,32,3,6,3,0,32,34,1,0,0,0,33,28,1,0,0,0,33,29,1,0,0,0,34,5,1,0,0,
+		0,35,42,5,6,0,0,36,37,5,2,0,0,37,42,5,6,0,0,38,39,5,3,0,0,39,42,5,6,0,
+		0,40,42,5,4,0,0,41,35,1,0,0,0,41,36,1,0,0,0,41,38,1,0,0,0,41,40,1,0,0,
+		0,42,7,1,0,0,0,43,44,5,8,0,0,44,45,5,9,0,0,45,46,5,13,0,0,46,47,5,12,0,
+		0,47,9,1,0,0,0,4,13,23,33,41
 	};
 
 	public static readonly ATN _ATN =

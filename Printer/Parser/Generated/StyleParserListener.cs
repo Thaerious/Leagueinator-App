@@ -51,6 +51,16 @@ public interface IStyleParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStyle([NotNull] StyleParser.StyleContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="StyleParser.selectors"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSelectors([NotNull] StyleParser.SelectorsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="StyleParser.selectors"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSelectors([NotNull] StyleParser.SelectorsContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="StyleParser.selector"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

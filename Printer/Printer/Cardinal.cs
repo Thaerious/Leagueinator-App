@@ -11,8 +11,8 @@ namespace Leagueinator.Printer {
         }        
     }
 
-    public struct Cardinal<T> {
-        public T Left, Right, Top, Bottom;
+    public class Cardinal<T> : IHasDefault<Cardinal<T>> {        
+        public readonly T Left, Right, Top, Bottom;
 
         public Cardinal(T value) {
             this.Top = value;

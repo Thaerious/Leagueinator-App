@@ -4,6 +4,7 @@ OPAR  : '{' -> pushMode(KEY_MODE)       ;
 DOT   : '.'                             ;
 HASH  : '#'                             ;
 STAR  : '*'                             ;
+COMMA : ','                             ;
 
 STRING     : [a-zA-Z_-]+                ;
 WS         : [ \t\r\n]+ -> skip         ;

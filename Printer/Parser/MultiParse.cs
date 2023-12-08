@@ -83,7 +83,7 @@ namespace Leagueinator.CSSParser {
             return false;
         }
 
-        private static bool ParseEnum(string source, Type type, ref object? target) {
+        public static bool ParseEnum(string source, Type type, ref object? target) {
             if (!type.IsEnum) return false;
 
             string[] names = Enum.GetNames(type);

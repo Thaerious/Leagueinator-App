@@ -14,7 +14,7 @@ namespace Leagueinator.Printer
 
         /// <summary>
         /// For each column in the specified row, find the element with a matching
-        /// id attribute and set it's text to the column value;
+        /// id attribute and set it's Text to the column value;
         /// </summary>
         /// <param name="element"></param>
         /// <param name="row"></param>

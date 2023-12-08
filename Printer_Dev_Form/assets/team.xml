@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<team class="bold-border">
+  <players class="bold-border">
+  </players>
+  <rounds>
+    <row class="bold-border">
+      <category >Game</category>
+      <category >Rank</category>
+      <category >Lane</category>
+      <category >Ends</category>
+      <category >For</category>
+      <category >+</category>
+      <category >=</category>
+      <category >Against</category>
+      <category >+</category>
+      <category >=</category>
+    </row>
+  </rounds>
+</team>

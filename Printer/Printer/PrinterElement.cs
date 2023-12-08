@@ -3,11 +3,9 @@ using System.Drawing;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Leagueinator.Printer
-{
+namespace Leagueinator.Printer {
 
-    public class PrinterElementList : List<PrinterElement>
-    {
+    public class PrinterElementList : List<PrinterElement> {
 
         public PrinterElementList this[string id] => this.QuerySelectorAll(id);
 
@@ -82,10 +80,10 @@ namespace Leagueinator.Printer
         }
     }
 
-    public class PrinterElement
-    {
+    public class PrinterElement {
         public delegate void DrawDelegate(Graphics g, PrinterElement ele);
         public event DrawDelegate OnDraw = delegate { };
+        internal XMLLoader? xmlLoader = null;
 
         public string Name = "";
         public Style Style = new Flex();
@@ -93,6 +91,12 @@ namespace Leagueinator.Printer
         public readonly List<string> ClassList = new();
 
         public Dictionary<string, string> Attributes { get; } = new();
+
+        public PrinterElementList this[string query] {
+            get {
+                return this.Children.QuerySelectorAll(query);
+            }
+        }
 
         public string? InnerText {
             get {
@@ -105,7 +109,7 @@ namespace Leagueinator.Printer
                     PrinterElement current = queue.Dequeue();
                     foreach (var child in current.Children) {
                         if (child is TextElement textElement) {
-                            sb.Append(textElement.text);
+                            sb.Append(textElement.Text);
                         }
                         if (child is PrinterElement element) {
                             queue.Enqueue(element);
@@ -236,7 +240,7 @@ namespace Leagueinator.Printer
         }
 
         /// <summary>
-        /// Create a new child with the name and styles of this child.
+        /// Create a new child with the name and currentStyles of this child.
         /// </summary>
         /// <returns></returns>
         public virtual PrinterElement Clone() {
@@ -282,9 +286,9 @@ namespace Leagueinator.Printer
         /// </summary>
         /// <param name="children"></param>
         /// <returns></returns>
-        public PrinterElementList AddChildren(PrinterElementList children) {
+        public PrinterElementList AddChildren(PrinterElementList children, bool applyStyle = true) {
             foreach (PrinterElement child in children) {
-                this.AddChild(child);
+                this.AddChild(child, applyStyle);
             }
             return children;
         }
@@ -295,9 +299,10 @@ namespace Leagueinator.Printer
         /// </summary>
         /// <param name="that"></param>
         /// <returns></returns>
-        public PrinterElement AddChild(PrinterElement that) {
+        public PrinterElement AddChild(PrinterElement that, bool applyStyle = true) {
             this._children.Add(that);
             that.Parent = this;
+            if (applyStyle) this.xmlLoader?.ApplyStyles(that);
             return that;
         }
 
