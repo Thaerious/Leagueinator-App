@@ -21,12 +21,15 @@ namespace Leagueinator.Printer {
             while (queue.Count > 0) {
                 PrinterElementList current = queue.Dequeue();
 
-                if (query.StartsWith(".")) {
+                if (query == "*") {
+                    result.AddRange(current);
+                }
+                else if (query.StartsWith(".")) {
                     foreach (PrinterElement element in current) {
                         if (element.ClassList.Contains(query[1..])) result.Add(element);
                     }
                 }
-                if (query.StartsWith("#")) {
+                else if (query.StartsWith("#")) {
                     foreach (PrinterElement element in current) {
                         if (element.Attributes.ContainsKey("id")) {
                             if (element.Attributes["id"].Equals(query[1..])) result.Add(element);
@@ -88,7 +91,21 @@ namespace Leagueinator.Printer {
         public string Name = "";
         public Style Style = new Flex();
         public PrinterElementList Children => new(this._children);
-        public readonly List<string> ClassList = new();
+
+        private List<string>? _classList = null;
+        public List<string> ClassList {
+            get {
+                if (_classList == null) BuildClassList();
+                return _classList!;
+            }
+        }
+
+        private void BuildClassList() {
+            _classList = new();
+            if (this.Attributes.TryGetValue("class", out string? value)) {
+                this._classList.AddRange(value.Split(" "));
+            }
+        }
 
         public Dictionary<string, string> Attributes { get; } = new();
 

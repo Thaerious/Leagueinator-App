@@ -36,7 +36,7 @@ enum DaysOfWeek {
 
 //var eventTable = mockEvent.ToDataSet().Tables["event"];
 
-//var root = XMLLoader.Load(input, "");
+//var root = XMLLoader.LoadFromString(input, "");
 //Console.WriteLine(root.ToXML());
 //Console.WriteLine(eventTable.Rows[0].ItemArray.DelString());
 //root.ApplyRowAsText(eventTable.Rows[0]);
