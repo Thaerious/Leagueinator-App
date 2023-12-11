@@ -46,7 +46,9 @@ namespace PrinterTestForm
                 File.WriteAllText(this.xmlPath, xmlString);
                 File.WriteAllText(this.stylePath, styleString);
 
-                PrinterElement root = XMLLoader.LoadFromString(xmlString, styleString);
+                var xmlLoader = new XMLLoader();
+                xmlLoader.LoadStyle(styleString);
+                PrinterElement root = xmlLoader.LoadXML(xmlString);
 
                 this.printerCanvas.DocElement.ClearChildren();
                 this.printerCanvas.DocElement.AddChild(root);
@@ -77,8 +79,13 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintCSS_Click(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.DocElement.Children[0]);
-            Debug.WriteLine(this.printerCanvas.DocElement.Children[0].Style);
+            var target = this.printerCanvas.DocElement["inner"][0];
+            Debug.WriteLine(target);
+            Debug.WriteLine(target.Style);
+
+            var text = target["@text"][0];
+            Debug.WriteLine(text);
+            Debug.WriteLine(text.Style);
         }
     }
 }

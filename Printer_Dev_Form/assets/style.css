@@ -1,10 +1,11 @@
-* {
-    font-style: bold;
-    font-size: 24px;
-}
+
 
 .bold-border {
     border: 3px solid black;
+}
+
+.container {
+    flex-direction: column;
 }
 
 team {
@@ -18,19 +19,25 @@ players {
     align-items: Center;
 }
 
+player {
+    justify-content: Center;
+    align-items: Center;
+    font-style: bold;
+    font-size: 18px;
+    height: 30px;
+}
+
+
 rounds {
     flex-direction: column;
+    margin: 10px;
     padding: 10px;
     justify-content: Center;
     align-items: Center;
 }
 
-player {
-    justify-content: Center;
-    align-items: Center;
+category {
     font-style: bold;
-    font-size: 12px;
-    background-color: pink;
 }
 
 category, entry {

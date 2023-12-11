@@ -18,12 +18,7 @@ internal class MockEvent : LeagueEvent
         round.Matches[0].Teams[1].AddPlayer(new("Charles"));
         round.Matches[0].Teams[1].AddPlayer(new("Dianne"));
 
-        round.Matches[1].Teams[0].AddPlayer(new("Adam"));
-        round.Matches[1].Teams[0].AddPlayer(new("Betty"));
-        round.Matches[1].Teams[1].AddPlayer(new("Charles"));
-        round.Matches[1].Teams[1].AddPlayer(new("Dianne"));
-
-        round.Matches[0].Teams[0].Bowls = 5;
+        round.Matches[0].Teams[0].Bowls = 20;
         round.Matches[0].Teams[1].Bowls = 7;
     }
 }

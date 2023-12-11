@@ -156,10 +156,19 @@ namespace Leagueinator.Model {
 
                     foreach (Team team in match.Teams.Values.NotNull()) {
                         int teamId = teamTable.TryAddTeam(team.Players.toArray().Select(p => p.Name).ToArray());
-                        eventTable.AddRow(round, lane, teamId, team.Bowls, match.EndsPlayed);
+                        eventTable.AddRow(
+                            round: round + 1,
+                            lane: lane + 1,
+                            teamID: teamId,
+                            bowls: team.Bowls,
+                            ends: match.EndsPlayed,
+                            against: match.SumBowls() - team.Bowls
+                        );
                     }
                 }
             }
+
+            eventTable.AssignRanks();
         }
     }
 

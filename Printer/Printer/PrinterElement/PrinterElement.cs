@@ -1,4 +1,6 @@
 ﻿using Leagueinator.Utility;
+using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Xml.Linq;
@@ -83,10 +85,9 @@ namespace Leagueinator.Printer {
         }
     }
 
-    public class PrinterElement {
+    public class PrinterElement : IPrinterElement {
         public delegate void DrawDelegate(Graphics g, PrinterElement ele);
         public event DrawDelegate OnDraw = delegate { };
-        internal XMLLoader? xmlLoader = null;
 
         public string Name = "";
         public Style Style = new Flex();
@@ -107,7 +108,7 @@ namespace Leagueinator.Printer {
             }
         }
 
-        public Dictionary<string, string> Attributes { get; } = new();
+        public Dictionary<string, string> Attributes { get; init; } = new();
 
         public PrinterElementList this[string query] {
             get {
@@ -263,7 +264,8 @@ namespace Leagueinator.Printer {
         public virtual PrinterElement Clone() {
             PrinterElement clone = new() {
                 Style = this.Style,
-                Name = this.Name
+                Name = this.Name,
+                Attributes = new(this.Attributes)
             };
 
             clone.ClassList.AddRange(this.ClassList);
@@ -314,13 +316,12 @@ namespace Leagueinator.Printer {
         /// If the children already have a parent child, the parent child will
         /// be updated to this child.
         /// </summary>
-        /// <param name="that"></param>
+        /// <param name="child"></param>
         /// <returns></returns>
-        public PrinterElement AddChild(PrinterElement that, bool applyStyle = true) {
-            this._children.Add(that);
-            that.Parent = this;
-            if (applyStyle) this.xmlLoader?.ApplyStyles(that);
-            return that;
+        public PrinterElement AddChild(PrinterElement child, bool applyStyle = true) {
+            this._children.Add(child);
+            child.Parent = this;
+            return child;
         }
 
         /// <summary>

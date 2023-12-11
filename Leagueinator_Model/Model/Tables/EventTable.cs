@@ -1,72 +1,124 @@
-﻿using Leagueinator.Model;
-using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Leagueinator_Model.Model.Tables {
-    public class EventTable {
-        private DataTable source;
+    public class EventTable : ATable {
+        public static readonly string TABLE_NAME = "event";
 
         public EventTable(DataTable source) {
-            this.source = source;
+            this.Table = source;
+        }
+
+        public EventTable(DataSet source) {
+            this.Table = source.Tables[TABLE_NAME] ?? throw new NullReferenceException($"table '{TABLE_NAME}' not found");
         }
 
         public static DataTable MakeEventTable() {
-            DataTable table = new DataTable("event");
+            DataTable table = new DataTable(TABLE_NAME);
             DataColumn column;
 
-            column = new DataColumn {
+            table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = "uid",
                 Unique = true,
                 AutoIncrement = true
-            };
-            table.Columns.Add(column);
+            });
 
-            column = new DataColumn {
+            table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = "round"
-            };
-            table.Columns.Add(column);
+            });
 
-            column = new DataColumn {
+            table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = "lane"
-            };
-            table.Columns.Add(column);
+            });
 
-            column = new DataColumn {
+
+            table.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = "rank"
+            });
+
+            table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = "team"
-            };
-            table.Columns.Add(column);
+            });
 
-            column = new DataColumn {
+            table.Columns.Add(new DataColumn() {
                 DataType = typeof(int),
                 ColumnName = "bowls"
-            };
-            table.Columns.Add(column);
+            });
 
-            column = new DataColumn {
+            table.Columns.Add(new DataColumn() {
+                DataType = typeof(int),
+                ColumnName = "bowls="
+            });
+
+            table.Columns.Add(new DataColumn() {
+                DataType = typeof(int),
+                ColumnName = "bowls+"
+            });
+
+            table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = "ends"
-            };
-            table.Columns.Add(column);
+            });
+
+            table.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = "against"
+            });
+
+            table.Columns.Add(new DataColumn() {
+                DataType = typeof(int),
+                ColumnName = "against="
+            });
+
+            table.Columns.Add(new DataColumn() {
+                DataType = typeof(int),
+                ColumnName = "against+"
+            });
 
             return table;
         }
 
-        internal void AddRow(int round, int lane, int teamId, int bowls, int endsPlayed) {
-            var eRow = this.source.NewRow();
+        internal void AddRow(int round, int lane, int teamID, int bowls, int ends, int against) {
+            var eRow = this.Table.NewRow();
             eRow["round"] = round;
             eRow["lane"] = lane;
-            eRow["team"] = teamId;
+            eRow["team"] = teamID;
             eRow["bowls"] = bowls;
-            eRow["ends"] = endsPlayed;
-            this.source.Rows.Add(eRow);
+            eRow["bowls="] = Math.Min(bowls, ends * 1.5);
+            eRow["bowls+"] = bowls - Math.Min(bowls, ends * 1.5);
+            eRow["ends"] = ends;
+            eRow["against"] = against;
+            eRow["against="] = Math.Min(against, ends * 1.5);
+            eRow["against+"] = against - Math.Min(against, ends * 1.5);
+            this.Table.Rows.Add(eRow);
+        }
+
+        public void AssignRanks() {
+            var sortedRows = Table.AsEnumerable()
+                .OrderBy(row => row.Field<int>("bowls=")) 
+                .ThenBy(row => row.Field<int>("bowls+"))
+                .ThenBy(row => row.Field<int>("against="))
+                .ThenBy(row => row.Field<int>("against+"));
+
+            int rank = 1;
+            foreach (var row in sortedRows.Reverse()) {
+                this.Table.Select($"uid = '{row["uid"]}'")[0]["rank"] = rank++;
+            }
+        }
+
+        public DataRow[] GetRowsById(int uid) {
+            return this.Table.Select($"uid = '{uid}'");
+        }
+
+        public DataRow[] GetRowsByTeam(int teamUID) {
+            return this.Table.Select($"team = '{teamUID}'");
         }
     }
 }
