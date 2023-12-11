@@ -1,7 +1,5 @@
 ﻿using Printer.Printer;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {

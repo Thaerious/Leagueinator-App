@@ -90,6 +90,12 @@ namespace Leagueinator.Model {
             this._teams[this.Count] = team;
         }
 
+        public int SumBowls() {
+            int sum = 0;
+            foreach (var team in this.Teams) sum += team.Bowls;
+            return sum;
+        }
+
         public void CopyFrom(Match that) {
             this.ClearPlayers();
             for (int t = 0; t < this.Teams.Count; t++) {

@@ -2,18 +2,18 @@
 <team class="bold-border">
   <players class="bold-border">
   </players>
-  <rounds>
-    <row class="bold-border">
+  <rounds class="bold-border">
+    <row>
       <category >Game</category>
       <category >Rank</category>
       <category >Lane</category>
       <category >Ends</category>
       <category >For</category>
-      <category >+</category>
       <category >=</category>
+      <category >+</category>
       <category >Against</category>
-      <category >+</category>
       <category >=</category>
+      <category >+</category>
     </row>
   </rounds>
 </team>
