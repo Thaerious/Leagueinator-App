@@ -29,7 +29,7 @@ var eventTable = new EventTable(eventData);
 Debug.WriteLine(eventTable);
 Debug.WriteLine(teamTable);
 ApplyData();
-Debug.WriteLine(documentXML.ToXML());
+//Debug.WriteLine(documentXML.ToXML());
 
 Application.Run(form);
 

@@ -136,14 +136,14 @@ namespace Leagueinator.Model {
         /// </summary>
         /// <returns></returns>
         public DataSet ToDataSet() {
+            var eventTable = new EventTable();
+            var teamTable = new TeamTable();
+
+            PopulateEventTable(eventTable, teamTable);
+
             DataSet dataSet = new();
-
-            var eventTable = EventTable.MakeEventTable();
-            var teamTable = TeamTable.MakeTeamTable();
-
-            PopulateEventTable(new EventTable(eventTable), new TeamTable(teamTable));
-            dataSet.Tables.Add(eventTable);
-            dataSet.Tables.Add(teamTable);
+            dataSet.Tables.Add(eventTable.Table);
+            dataSet.Tables.Add(teamTable.Table);
 
             return dataSet;
         }

@@ -11,14 +11,24 @@ internal class MockEvent : LeagueEvent
     };
 
     public MockEvent() : base("2023-11-23", "mock", MockEvent.settings) {
-        var round = this.NewRound();
+        var round1 = this.NewRound();
 
-        round.Matches[0].Teams[0].AddPlayer(new("Adam"));
-        round.Matches[0].Teams[0].AddPlayer(new("Betty"));
-        round.Matches[0].Teams[1].AddPlayer(new("Charles"));
-        round.Matches[0].Teams[1].AddPlayer(new("Dianne"));
+        round1.Matches[0].Teams[0].AddPlayer(new("Adam"));
+        round1.Matches[0].Teams[0].AddPlayer(new("Betty"));
+        round1.Matches[0].Teams[1].AddPlayer(new("Charles"));
+        round1.Matches[0].Teams[1].AddPlayer(new("Dianne"));
 
-        round.Matches[0].Teams[0].Bowls = 20;
-        round.Matches[0].Teams[1].Bowls = 7;
+        round1.Matches[0].Teams[0].Bowls = 20;
+        round1.Matches[0].Teams[1].Bowls = 7;
+
+        var round2 = this.NewRound();
+
+        round2.Matches[0].Teams[0].AddPlayer(new("Adam"));
+        round2.Matches[0].Teams[0].AddPlayer(new("Betty"));
+        round2.Matches[0].Teams[1].AddPlayer(new("Charles"));
+        round2.Matches[0].Teams[1].AddPlayer(new("Dianne"));
+
+        round2.Matches[0].Teams[0].Bowls = 3;
+        round2.Matches[0].Teams[1].Bowls = 7;
     }
 }

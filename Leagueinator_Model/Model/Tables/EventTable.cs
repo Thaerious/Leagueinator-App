@@ -7,6 +7,8 @@ namespace Leagueinator_Model.Model.Tables {
     public class EventTable : ATable {
         public static readonly string TABLE_NAME = "event";
 
+        public EventTable() : this(MakeEventTable()) { }
+
         public EventTable(DataTable source) {
             this.Table = source;
         }
@@ -100,16 +102,28 @@ namespace Leagueinator_Model.Model.Tables {
             this.Table.Rows.Add(eRow);
         }
 
-        public void AssignRanks() {
-            var sortedRows = Table.AsEnumerable()
-                .OrderBy(row => row.Field<int>("bowls=")) 
-                .ThenBy(row => row.Field<int>("bowls+"))
-                .ThenBy(row => row.Field<int>("against="))
-                .ThenBy(row => row.Field<int>("against+"));
+        private List<int> RoundList() {
+            SortedSet<int> ids = new();
+            foreach (DataRow row in this.Table.AsEnumerable()) {
+                int id = (row.Field<int>("round"));
+                if (!ids.Contains(id)) ids.Add(id);
+            }
+            return ids.ToList();
+        }
 
-            int rank = 1;
-            foreach (var row in sortedRows.Reverse()) {
-                this.Table.Select($"uid = '{row["uid"]}'")[0]["rank"] = rank++;
+        public void AssignRanks() {
+            foreach (int round in RoundList()) {
+                var sortedRows = Table.AsEnumerable()
+                    .Where(row => row.Field<int>("round") == round)
+                    .OrderBy(row => row.Field<int>("bowls="))
+                    .ThenBy(row => row.Field<int>("bowls+"))
+                    .ThenBy(row => row.Field<int>("against="))
+                    .ThenBy(row => row.Field<int>("against+"));
+
+                int rank = 1;
+                foreach (var row in sortedRows.Reverse()) {
+                    this.Table.Select($"uid = '{row["uid"]}'")[0]["rank"] = rank++;
+                }
             }
         }
 
@@ -118,7 +132,7 @@ namespace Leagueinator_Model.Model.Tables {
         }
 
         public DataRow[] GetRowsByTeam(int teamUID) {
-            return this.Table.Select($"team = '{teamUID}'");
+            return this.Table.Select($"round = '{teamUID}'");
         }
     }
 }

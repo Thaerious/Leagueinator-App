@@ -8,6 +8,8 @@ namespace Leagueinator_Model.Model.Tables {
         private static readonly string ID_COL = "uid";
         private static readonly string NAME_COL = "name";
 
+        public TeamTable() : this(MakeTeamTable()) { }
+
         public TeamTable(DataTable source) {
             this.Table = source;
         }
