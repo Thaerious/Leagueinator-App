@@ -1,42 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-    public class EventTable : ATable {
-        public static readonly string TABLE_NAME = "event";
+    public class SummaryTable : ATable {
+        public static readonly string TABLE_NAME = "summary";
 
-        public EventTable() : this(MakeEventTable()) { }
+        public SummaryTable() : this(MakeSummaryTable()) { }
 
-        public EventTable(DataTable source) {
+        public SummaryTable(DataTable source) {
             this.Table = source;
         }
 
-        public EventTable(DataSet source) {
+        public SummaryTable(DataSet source) {
             this.Table = source.Tables[TABLE_NAME] ?? throw new NullReferenceException($"table '{TABLE_NAME}' not found");
         }
 
-        public static DataTable MakeEventTable() {
+        public static DataTable MakeSummaryTable() {
             DataTable table = new DataTable(TABLE_NAME);
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = "uid",
-                Unique = true,
-                AutoIncrement = true
-            });
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = "round"
-            });
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = "lane"
-            });
-
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
@@ -46,16 +25,6 @@ namespace Leagueinator.Model.Tables {
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = "team"
-            });
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = "tie"
-            });
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = "win"
             });
 
             table.Columns.Add(new DataColumn() {
@@ -71,6 +40,11 @@ namespace Leagueinator.Model.Tables {
             table.Columns.Add(new DataColumn() {
                 DataType = typeof(int),
                 ColumnName = "bowls+"
+            });
+
+            table.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = "win"
             });
 
             table.Columns.Add(new DataColumn {
@@ -93,43 +67,59 @@ namespace Leagueinator.Model.Tables {
                 ColumnName = "against+"
             });
 
+            table.PrimaryKey = new DataColumn[] { table.Columns["team"]! };
+
             return table;
         }
 
-        internal DataRow AddRow(int round, int lane, int teamID, int bowls, int ends, int against, int tiebreaker) {
+        public void AddRound(int teamID, int bowls, int ends, int against, int win) {
+            var row = this.Table.Rows.Find(teamID);
+            var bowlsEq = Math.Min(bowls, ends * 1.5);
+            var bowlsPlus = bowls - Math.Min(bowls, ends * 1.5);
+            var againstEq = Math.Min(against, ends * 1.5);
+            var againstPlus = against - Math.Min(against, ends * 1.5);
+
+            if (row == null) {
+                AddRow(teamID, bowls, ends, against, win);
+            }
+            else {
+                row["ends"] = (int)row["ends"] + ends;
+                row["win"] = (int)row["win"] + win;
+                row["bowls"] = (int)row["bowls"] + bowls;
+                row["bowls+"] = (int)row["bowls+"] + bowlsPlus;
+                row["bowls="] = (int)row["bowls="] + bowlsEq;
+                row["against"] = (int)row["against"] + against;
+                row["against="] = (int)row["against="] + againstEq;
+                row["against+"] = (int)row["against+"] + againstPlus;
+            }
+        }
+
+        internal void AddRow(int teamID, int bowls, int ends, int against, int win) {
             var eRow = this.Table.NewRow();
-            eRow["round"] = round;
-            eRow["lane"] = lane;
             eRow["team"] = teamID;
-            eRow["tie"] = tiebreaker;
             eRow["bowls"] = bowls;
+            eRow["win"] = win;
             eRow["bowls="] = Math.Min(bowls, ends * 1.5);
             eRow["bowls+"] = bowls - Math.Min(bowls, ends * 1.5);
             eRow["ends"] = ends;
             eRow["against"] = against;
             eRow["against="] = Math.Min(against, ends * 1.5);
             eRow["against+"] = against - Math.Min(against, ends * 1.5);
-
-            if (bowls == against) eRow["win"] = tiebreaker;
-            else eRow["win"] = bowls > against ? 1 : 0;
-
             this.Table.Rows.Add(eRow);
-            return eRow;
         }
 
-        private List<int> RoundList() {
+        private List<int> TeamList() {
             SortedSet<int> ids = new();
             foreach (DataRow row in this.Table.AsEnumerable()) {
-                int id = (row.Field<int>("round"));
+                int id = (row.Field<int>("team"));
                 if (!ids.Contains(id)) ids.Add(id);
             }
             return ids.ToList();
         }
 
         public void AssignRanks() {
-            foreach (int round in RoundList()) {
+            foreach (int round in TeamList()) {
                 var sortedRows = Table.AsEnumerable()
-                    .Where(row => row.Field<int>("round") == round)
                     .OrderBy(row => row.Field<int>("win"))
                     .ThenBy(row => row.Field<int>("bowls="))
                     .ThenBy(row => row.Field<int>("bowls+"))
@@ -138,9 +128,13 @@ namespace Leagueinator.Model.Tables {
 
                 int rank = 1;
                 foreach (var row in sortedRows.Reverse()) {
-                    this.Table.Select($"uid = '{row["uid"]}'")[0]["rank"] = rank++;
+                    row["rank"] = rank++;
                 }
             }
+        }
+
+        public DataRow[] GetRowsById(int uid) {
+            return this.Table.Select($"uid = '{uid}'");
         }
 
         public DataRow[] GetRowsByTeam(int teamUID) {

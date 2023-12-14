@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
-using Leagueinator_Model.Model.Tables;
+using Leagueinator.Model.Tables;
 using Printer_Dev_Form;
 using System.Data;
 using System.Diagnostics;
@@ -19,23 +19,24 @@ var roundXML = xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.roun
 
 ApplicationConfiguration.Initialize();
 var form = new Form1();
-form.canvas.DocElement.AddChild(documentXML);
-
+form.canvas.Root = documentXML;
 
 var eventData = new MockEvent().ToDataSet();
 var teamTable = new TeamTable(eventData);
 var eventTable = new EventTable(eventData);
+var summaryTable = new SummaryTable(eventData);
 
 Debug.WriteLine(eventTable);
 Debug.WriteLine(teamTable);
+Debug.WriteLine(summaryTable);
 ApplyData();
-//Debug.WriteLine(documentXML.ToXML());
 
 Application.Run(form);
 
 void ApplyData() {
     foreach (int teamUID in teamTable.AllIDs()) InsertTeam(teamUID);
     xmlLoader.ApplyStyles(documentXML);
+    documentXML.Update();
 }
 
 void InsertTeam(int teamUID) {
@@ -49,8 +50,19 @@ void InsertTeam(int teamUID) {
     }
 
     var roundElement = roundXML.Clone();
-    var rows = eventTable.GetRowsByTeam(teamUID);
 
-    roundElement.ApplyRowAsText(rows[0]);
-    teamElement["rounds"][0].AddChild(roundElement);
+    foreach (var row in eventTable.GetRowsByTeam(teamUID)) {
+        var newRoundXML = roundXML.Clone();
+        newRoundXML.ApplyRowAsText(row);
+        teamElement["rounds"][0].AddChild(newRoundXML);
+    }
+
+    var summaryRow = summaryTable.GetRowsByTeam(teamUID)[0];
+    var summaryXML = roundXML.Clone();
+    summaryXML.ApplyRowAsText(summaryRow);
+    summaryXML["#round"][0].InnerText = "\u03A3";
+    teamElement["rounds"][0].AddChild(summaryXML);
+
+    documentXML.Update();
+    Debug.WriteLine(documentXML.OuterRect.ToString());
 }

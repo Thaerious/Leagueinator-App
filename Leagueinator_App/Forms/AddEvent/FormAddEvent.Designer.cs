@@ -97,7 +97,7 @@
             label3.Name = "label3";
             label3.Size = new Size(107, 25);
             label3.TabIndex = 11;
-            label3.Text = "Event Name";
+            label3.Text = "Event TagName";
             // 
             // txtName
             // 

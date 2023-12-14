@@ -6,11 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Leagueinator_Model.Model.Tables {
-
-
+namespace Leagueinator.Model.Tables {
     public static class Extensions {
-
         public static string ToString(this DataTable Table, string? title = null) {
             DataRowCollection rowCollection = Table.Rows;
             DataRow[] rowArray = new DataRow[rowCollection.Count];
@@ -22,6 +19,10 @@ namespace Leagueinator_Model.Model.Tables {
             DataRow[] rowArray = new DataRow[rowCollection.Count];
             rowCollection.CopyTo(rowArray, 0);
             return Table.ToString(rowArray, title);
+        }
+
+        public static string ToString(this DataTable Table, DataRow row, string? title = null) {
+            return Table.ToString(new DataRow[] { row }, title);
         }
 
         public static string ToString(this DataTable Table, DataRow[] rows, string? title = null) {
@@ -42,7 +43,7 @@ namespace Leagueinator_Model.Model.Tables {
                 sb.Append(" | ");
                 headerSize += column.ColumnName.Length + 3;
             }
-
+            Debug.WriteLine("Header Size " + headerSize);
             title = title.PadLeft((headerSize / 2) + (title.Length / 2));
             title = title.PadRight(headerSize);
             sb.Insert(0, $"|{title}|\n");

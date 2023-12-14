@@ -24,10 +24,10 @@ namespace Leagueinator.Components {
         /// When the drop occurs 'sendData' is called on the destination with the parameters (T, source) : T
         /// Any value returned from 'sendData' will be returned to the source with 'hndResponse' using parameters (T, destination).
         /// </summary>
-        /// <param Name="control"></param>
-        /// <param Name="getData"></param>
-        /// <param Name="sendData"></param>
-        /// <param Name="hndResponse"></param>
+        /// <param TagName="control"></param>
+        /// <param TagName="getData"></param>
+        /// <param TagName="sendData"></param>
+        /// <param TagName="hndResponse"></param>
         public ControlDragHandlers(Control control, Func<T?> getData, Func<T?, object?, T?> sendData, Action<T?, object?> sendResponse) {
             this.control = control;
             this.getData = getData;

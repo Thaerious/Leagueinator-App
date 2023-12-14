@@ -1,20 +1,38 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 
 namespace Leagueinator.Utility {
 
-    internal class InlineTag : OpenTag{
+    internal class Tag {
+        public Tag(string name) {
+            this.Name = name;
+        }
+
+        public readonly string Name = "";
+        internal readonly List<string> Attributes = new();
+
+        public void AddAttribute(string key, string value) {
+            this.Attributes.Add($"{key}='{value}'");
+        }
+
+        public void AddAttributes(string[] array) {
+            this.Attributes.AddRange(array);
+        }
+    }
+
+    internal class InlineTag : Tag{
         public string Text = "";
 
         public InlineTag(string name) : base(name) {}
 
         public override string ToString() {
             if (Text == "") {
-                if (attributes.Count > 0) return $"<{this.Name} {attributes.DelString(" ")}/>";
+                if (Attributes.Count > 0) return $"<{this.Name} {Attributes.DelString(" ")}/>";
                 return $"<{this.Name}/>";
             }
             else {
                 var s = "";
-                if (attributes.Count > 0) s += $"<{this.Name} {attributes.DelString(" ")}>";
+                if (Attributes.Count > 0) s += $"<{this.Name} {Attributes.DelString(" ")}>";
                 s += Text;
                 s += $"</{this.Name}>";
                 return s;
@@ -22,24 +40,11 @@ namespace Leagueinator.Utility {
         }
     }
 
-    internal class OpenTag {
-        public readonly string Name = "";
-        internal readonly List<string> attributes = new();
-
-        public OpenTag(string name) {
-            this.Name = name;
-        }
-
-        public void AddAttribute(string key, string value) {
-            this.attributes.Add($"{key}='{value}'");
-        }
-
-        public void AddAttributes(string[] array) {
-            this.attributes.AddRange(array);
-        }
+    internal class OpenTag : Tag {
+        public OpenTag(string name) : base(name) {}
 
         public override string ToString() {
-            if (attributes.Count > 0) return $"<{this.Name} {attributes.DelString(" ")}>";
+            if (Attributes.Count > 0) return $"<{this.Name} {Attributes.DelString(" ")}>";
             return $"<{this.Name}>";
         }
     }
@@ -60,7 +65,7 @@ namespace Leagueinator.Utility {
     public class XMLStringBuilder {
         public char Indent = '\t';
         private readonly List<IndentedObject> lines = new();
-        private readonly Stack<OpenTag> CurrentTag = new();
+        private readonly Stack<Tag> CurrentTag = new();
 
         private void AddLine(object obj, int indent) {
             this.lines.Add(new IndentedObject(obj, indent));
@@ -80,6 +85,8 @@ namespace Leagueinator.Utility {
         }
 
         public XMLStringBuilder InnerText(string text) {
+            if (this.CurrentTag.Count == 0) return this;
+
             if (this.CurrentTag.Peek() is InlineTag) {
                 (this.CurrentTag.Peek() as InlineTag).Text = text;
             }
@@ -95,16 +102,24 @@ namespace Leagueinator.Utility {
         }
 
         public XMLStringBuilder InlineTag(string tagname) {
-            InlineTag inlineTag = new(tagname);
-            this.AddLine(inlineTag, 0);
+            InlineTag inlineTag = new(tagname);            
+            this.CurrentTag.Push(inlineTag);
             return this;
         }
  
         public XMLStringBuilder CloseTag() {
-            var openTag = this.CurrentTag.Pop();
-            CloseTag closeTag = new(openTag.Name);
-            this.AddLine(closeTag, -1);
+            var tag = this.CurrentTag.Pop();
+
+            if (tag is InlineTag) {
+                this.AddLine(tag, 0);
+            }
+            else {
+                CloseTag closeTag = new(tag.Name);
+                this.AddLine(closeTag, -1);
+            }
+
             return this;
+
         }           
 
         public XMLStringBuilder AppendXML(XMLStringBuilder xsb) {

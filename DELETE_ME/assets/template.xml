@@ -1,0 +1,19 @@
+﻿<entry>
+  <names class="bold-border">
+    Adam
+  </names>
+  <scores>
+    <titles class="score_row">
+      <game class="score_item">Game</game>
+      <lane class="score_item">Lane</lane>
+      <rank class="score_item">Rank</rank>
+      <ends class="score_item">Ends</ends>
+      <bowls_for class="score_item">F</bowls_for>
+      <plus_for class="score_item">+</plus_for>
+      <score_for class="score_item">=</score_for>
+      <bowls_against class="score_item">A</bowls_against>
+      <plus_against class="score_item">=</plus_against>
+      <score_against class="score_item">+</score_against>
+    </titles>
+  </scores>
+</entry>

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Leagueinator_Model\Leagueinator_Model.csproj" />
     <ProjectReference Include="..\Leagueinator_Utility\Leagueinator_Utility.csproj" />
   </ItemGroup>
 

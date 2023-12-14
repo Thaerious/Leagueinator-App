@@ -2,7 +2,7 @@
 using System.Data;
 using System.Diagnostics;
 
-namespace Leagueinator_Model.Model.Tables {
+namespace Leagueinator.Model.Tables {
     public class TeamTable : ATable{
         private static readonly string TABLE_NAME = "team";
         private static readonly string ID_COL = "uid";

@@ -81,7 +81,7 @@ namespace Leagueinator.App.Components.EventPanel {
         /// <summary>
         /// AddChild a round to this panel.<br>
         /// </summary>
-        /// <param Name="round"></param>
+        /// <param TagName="round"></param>
         private void AddRoundButton(Round round) {
             var button = new Button() {
                 Text = $"Round #{this.flowRounds.Controls.Count + 1}",
@@ -97,8 +97,8 @@ namespace Leagueinator.App.Components.EventPanel {
         /// <summary>
         /// This is the "Set Round" control point.
         /// </summary>
-        /// <param Name="source"></param>
-        /// <param Name="_"></param>
+        /// <param TagName="source"></param>
+        /// <param TagName="_"></param>
         private void RoundButtonClick(object? source, EventArgs _) {
             ArgumentNullException.ThrowIfNull(source, nameof(source));
 
@@ -119,7 +119,7 @@ namespace Leagueinator.App.Components.EventPanel {
         /// Populate the match card panel with new match cards.
         /// </summary>
         /// <return>The last card added</return>
-        /// <param Name="round"></param>
+        /// <param TagName="round"></param>
         private void UpdateMatchCards() {
             this.flowMatchCards.Controls.Clear();
             if (this.CurrentRoundIndex < 0) return;

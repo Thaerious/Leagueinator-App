@@ -46,9 +46,7 @@ namespace Leagueinator.Printer {
                 this.ApplyIDStyles(current, nullableStyle);
                 this.ApplyWildcardStyles(current, nullableStyle);
 
-                if (current.Parent is not null) {
-                    nullableStyle.MergeInheritedCSS(current.Parent.Style);
-                }
+                //nullableStyle.MergeInheritedCSS(current.ContainerProvider.Style);
 
                 current.Style = nullableStyle.ToStyle<Flex>();
 
@@ -76,8 +74,8 @@ namespace Leagueinator.Printer {
         }
 
         internal void ApplyNameStyles(PrinterElement current, NullableStyle nStyle) {
-            if (this.loadedStyles.ContainsKey(current.Name)) {
-                NullableStyle.MergeCSS(nStyle, loadedStyles[current.Name]);
+            if (this.loadedStyles.ContainsKey(current.TagName)) {
+                NullableStyle.MergeCSS(nStyle, loadedStyles[current.TagName]);
             }
         }
 
@@ -93,14 +91,14 @@ namespace Leagueinator.Printer {
             if (xml.Root == null) throw new NullReferenceException();
             XElement xElement = xml.Root;
 
-            PrinterElement printerElement = new(xElement.Attributes()) {
-                Name = xElement.Name.ToString()
+            PrinterElement rootElement = new(xElement.Attributes()) {
+                TagName = xElement.Name.ToString()
             };
 
             Stack<XElement> xmlStack = new Stack<XElement>();
             Stack<PrinterElement> printStack = new Stack<PrinterElement>();
             xmlStack.Push(xElement);
-            printStack.Push(printerElement);
+            printStack.Push(rootElement);
 
             while (xmlStack.Count > 0) {
                 XElement xmlCurrent = xmlStack.Pop();
@@ -111,7 +109,7 @@ namespace Leagueinator.Printer {
 
                     if (xmlChild is XElement element) {
                         var printChild = printCurrent.AddChild(new PrinterElement(element.Attributes()) {
-                            Name = element.Name.ToString()
+                            TagName = element.Name.ToString()
                         });
                         xmlStack.Push(element);
                         printStack.Push(printChild);
@@ -122,8 +120,8 @@ namespace Leagueinator.Printer {
                 }
             }
 
-            this.ApplyStyles(printerElement);
-            return printerElement;
+            this.ApplyStyles(rootElement);
+            return rootElement;
         }
     }
 }

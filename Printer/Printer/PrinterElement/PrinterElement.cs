@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Utility;
-using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 
@@ -9,13 +9,13 @@ namespace Leagueinator.Printer {
 
     public class PrinterElementList : List<PrinterElement> {
 
-        public PrinterElementList this[string id] => this.QuerySelectorAll(id);
+        public PrinterElementList this[string id] => this.QueryAll(id);
 
         public PrinterElementList() { }
 
         public PrinterElementList(IEnumerable<PrinterElement> collection) : base(collection) { }
 
-        public PrinterElementList QuerySelectorAll(string query) {
+        public PrinterElementList QueryAll(string query) {
             PrinterElementList result = new();
             Queue<PrinterElementList> queue = new();
             queue.Enqueue(this);
@@ -40,7 +40,7 @@ namespace Leagueinator.Printer {
                 }
                 else {
                     foreach (PrinterElement element in current) {
-                        if (element.Name == query) result.Add(element);
+                        if (element.TagName == query) result.Add(element);
                     }
                 }
 
@@ -51,7 +51,7 @@ namespace Leagueinator.Printer {
             return result;
         }
 
-        public PrinterElement? QuerySelector(string query) {
+        public PrinterElement? Query(string query) {
             Queue<PrinterElementList> queue = new();
             queue.Enqueue(this);
 
@@ -72,7 +72,7 @@ namespace Leagueinator.Printer {
                 }
                 else {
                     foreach (PrinterElement element in current) {
-                        if (element.Name == query) return element;
+                        if (element.TagName == query) return element;
                     }
                 }
 
@@ -85,26 +85,37 @@ namespace Leagueinator.Printer {
         }
     }
 
-    public class PrinterElement : IPrinterElement {
+    public interface HasContentRect {
+        public RectangleF ContentRect { get; }
+    }
+
+    public class ContentRectProvider : HasContentRect {
+        public delegate RectangleF ProvideRectangle();
+        private ProvideRectangle source;
+        
+        public ContentRectProvider(ProvideRectangle source) {
+            this.source = source;
+        }
+
+        public RectangleF ContentRect => source();
+    }
+
+    public class PrinterElement : HasContentRect {
         public delegate void DrawDelegate(Graphics g, PrinterElement ele);
         public event DrawDelegate OnDraw = delegate { };
 
-        public string Name = "";
-        public Style Style = new Flex();
+        public string TagName { get; init; } = "";
+
+        public Style Style { get; internal set; } = new Flex();
+
         public PrinterElementList Children => new(this._children);
 
-        private List<string>? _classList = null;
         public List<string> ClassList {
             get {
-                if (_classList == null) BuildClassList();
-                return _classList!;
-            }
-        }
-
-        private void BuildClassList() {
-            _classList = new();
-            if (this.Attributes.TryGetValue("class", out string? value)) {
-                this._classList.AddRange(value.Split(" "));
+                if (this.Attributes.TryGetValue("class", out string? value)) {
+                    return value.Split().ToList();
+                }
+                return new();
             }
         }
 
@@ -112,7 +123,13 @@ namespace Leagueinator.Printer {
 
         public PrinterElementList this[string query] {
             get {
-                return this.Children.QuerySelectorAll(query);
+                return this.Children.QueryAll(query);
+            }
+        }
+
+        public PrinterElement this[int index] {
+            get {
+                return this.Children[index];
             }
         }
 
@@ -145,9 +162,15 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Set parent child and fallback style.
+        /// Set the size of the parent container used for layout.
         /// </summary>
-        public PrinterElement? Parent { get; private set; }
+        public HasContentRect ContainerProvider { private get; set; } = new ContentRectProvider(
+            () => new()
+        );
+
+        public RectangleF ContainerRect {
+            get => this.ContainerProvider.ContentRect;
+        }
 
         /// <summary>
         /// The (x,y) translation of this child relative to it's TargetElement.
@@ -160,21 +183,20 @@ namespace Leagueinator.Printer {
         /// The rectangle print actions will take place in.
         /// This is defined by style width and height.
         /// </summary>
-        public virtual SizeF ContentSize { get; set; } = new();
+        internal virtual SizeF ContentSize { get; set; } = new();
 
         /// <summary>
         /// The rectable the border will be printed in.
         /// </summary>
-        public virtual SizeF BorderSize { get; set; } = new();
+        internal virtual SizeF BorderSize { get; set; } = new();
 
         /// <summary>
         /// The rectangle parent elements will use for child size.
         /// </summary>
-        public virtual SizeF OuterSize { get; set; } = new();
+        internal virtual SizeF OuterSize { get; set; } = new();
 
         /// <summary>
-        /// Area to determine relative location of child elements.
-        /// Takes padding and border into consideration.
+        /// The area on the screen where drawing takes place for this element.
         /// </summary>
         public RectangleF ContentRect {
             get {
@@ -223,17 +245,8 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// The screen location of this child.
         /// </summary>
-        public virtual PointF Location => this.Parent == null
-                    ? this.Translation
-                    : new PointF(this.Parent.ContentRect.X + this.Translation.X, this.Parent.ContentRect.Y + this.Translation.Y);
+        public virtual PointF Location => new(this.ContainerRect.X + this.Translation.X, this.ContainerRect.Y + this.Translation.Y);
 
-        /// <summary>
-        /// Create a new printer child with a default name and classlist.
-        /// </summary>
-        public PrinterElement() {
-            this.Style = new Flex();
-            this.Name = $"@child-{this.GetHashCode():X}";
-        }
 
         /// <summary>
         /// Create a new printer child with a default name and classlist.
@@ -251,7 +264,7 @@ namespace Leagueinator.Printer {
         /// <param name="classes"></param>
         public PrinterElement(string name, params string[] classes) {
             this.Style = new Flex();
-            this.Name = name;
+            this.TagName = name;
             foreach (string className in classes) {
                 this.ClassList.Add(className);
             }
@@ -262,9 +275,8 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <returns></returns>
         public virtual PrinterElement Clone() {
-            PrinterElement clone = new() {
+            PrinterElement clone = new(this.TagName) {
                 Style = this.Style,
-                Name = this.Name,
                 Attributes = new(this.Attributes)
             };
 
@@ -319,8 +331,8 @@ namespace Leagueinator.Printer {
         /// <param name="child"></param>
         /// <returns></returns>
         public PrinterElement AddChild(PrinterElement child, bool applyStyle = true) {
+            if (this._children.Contains(child)) return child;
             this._children.Add(child);
-            child.Parent = this;
             return child;
         }
 
@@ -339,9 +351,7 @@ namespace Leagueinator.Printer {
         /// <param name="child"></param>
         /// <exception cref="Exception">If the child does not belong to this parent.</exception>
         public void RemoveChild(PrinterElement child) {
-            if (child.Parent != this) throw new Exception("Attempt to remove child from non-parent");
             this._children.Remove(child);
-            child.Parent = null;
         }
 
         public void Translate(float x, float y) {
@@ -353,13 +363,13 @@ namespace Leagueinator.Printer {
         }
 
         public override string ToString() {
-            return $"[\"{this.Name}\", {{{this.ClassList.DelString(".")}}}, {this.OuterRect}, {this.Children.Count}]";
+            return $"[\"{this.TagName}\", {{{this.ClassList.DelString(".")}}}, {this.OuterRect}, {this.Children.Count}]";
         }
 
         public virtual XMLStringBuilder ToXML() {
             XMLStringBuilder xml = new();
 
-            xml.OpenTag(this.Name);
+            xml.OpenTag(this.TagName);
 
             foreach (string attr in this.Attributes.Keys) {
                 xml.Attribute(attr, this.Attributes[attr]);
@@ -371,6 +381,22 @@ namespace Leagueinator.Printer {
             xml.CloseTag();
 
             return xml;
+        }
+
+        public string DiffHash() {
+            string rawData = this.ToXML().ToString();
+
+            using (SHA256 sha256Hash = SHA256.Create()) {
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++) {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
 
         private readonly PrinterElementList _children = new();

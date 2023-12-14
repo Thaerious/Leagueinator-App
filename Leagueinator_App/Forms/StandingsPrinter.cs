@@ -24,7 +24,7 @@ namespace Leagueinator_App.Forms {
         private bool DrawNextPage(Graphics? graphics) {
             if (graphics == null) throw new ArgumentNullException(nameof(graphics));
             var root = new PrinterElement() {
-                Name = "root",
+                TagName = "root",
                 Style = new Flex() {
                     //Width = 1100f,
                     //Height = 800f

@@ -35,14 +35,14 @@ rounds {
     padding: 10px;
 }
 
+category {
+    font-style: bold;
+}
+
 category, entry {
     border: 1px Solid Black;
     width: 85px;
     height: 35px;
     justify-content: Center;
     align-items: Center;
-}
-
-.bold-font {
-    font-style: bold;
 }

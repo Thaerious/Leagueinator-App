@@ -16,7 +16,7 @@ namespace Leagueinator.CSSParser {
         /// directly joined together without any additional characters or capitalization
         /// to mark word boundaries.
         /// </summary>
-        /// <param name="fields">Array source, the Name field of FieldInfo is used for
+        /// <param name="fields">Array source, the TagName field of FieldInfo is used for
         /// the key.
         /// </param>
         /// <returns></returns>
@@ -42,7 +42,7 @@ namespace Leagueinator.CSSParser {
         /// directly joined together without any additional characters or capitalization
         /// to mark word boundaries.
         /// </summary>
-        /// <param name="fields">Array source, the Name field of PropertyInfo is used for
+        /// <param name="fields">Array source, the TagName field of PropertyInfo is used for
         /// the key.
         /// </param>
         /// <returns></returns>

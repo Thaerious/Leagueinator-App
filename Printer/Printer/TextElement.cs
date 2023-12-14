@@ -11,7 +11,7 @@ namespace Leagueinator.Printer
         public override PrinterElement Clone() {
             TextElement clone = new(this.Text) {
                 Style = this.Style,
-                Name = this.Name
+                TagName = this.TagName
             };
 
             clone.ClassList.AddRange(this.ClassList);
@@ -22,11 +22,11 @@ namespace Leagueinator.Printer
             return clone;
         }
 
-        public override SizeF ContentSize => Size();
+        internal override SizeF ContentSize => Size();
 
-        public override SizeF BorderSize => Size();
+        internal override SizeF BorderSize => Size();
 
-        public override SizeF OuterSize => Size();
+        internal override SizeF OuterSize => Size();
 
         private SizeF Size() {
             if (this.Style == null) return new();
@@ -37,9 +37,8 @@ namespace Leagueinator.Printer
             return graphics.MeasureString(Text, this.Style.Font);
         }
 
-        public TextElement(string text) : base() {
+        public TextElement(string text) : base("@text") {
             this.Text = text.Trim();
-            this.Name = "@text";
         }
 
         public override XMLStringBuilder ToXML() {

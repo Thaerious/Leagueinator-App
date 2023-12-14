@@ -31,20 +31,23 @@
             // canvas
             // 
             this.canvas.Dock = DockStyle.Fill;
-            this.canvas.GridSize = 100;
+            this.canvas.GridSize = 0;
             this.canvas.Location = new Point(0, 0);
+            this.canvas.Margin = new Padding(2, 2, 2, 2);
             this.canvas.Name = "canvas";
-            this.canvas.Size = new Size(1430, 834);
-            this.canvas.SubGridSize = 20;
+            this.canvas.Root = null;
+            this.canvas.Size = new Size(1001, 500);
+            this.canvas.SubGridSize = 0;
             this.canvas.TabIndex = 0;
             this.canvas.ToBack = true;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new SizeF(10F, 25F);
+            this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(1430, 834);
+            this.ClientSize = new Size(1001, 500);
             this.Controls.Add(this.canvas);
+            this.Margin = new Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);

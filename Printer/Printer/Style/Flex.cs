@@ -1,4 +1,5 @@
 ﻿using Printer.Printer;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Leagueinator.Printer {
@@ -48,11 +49,15 @@ namespace Leagueinator.Printer {
             element.OuterSize = new SizeF(outerWidth, outerHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
+
+            foreach (PrinterElement child in element.Children) {
+                child.ContainerProvider = element;
+            }
         }
 
         void SetDefaultSize(PrinterElement element) {
-            this.Width.Factor = element.Parent?.ContentSize.Width ?? 0f;
-            this.Height.Factor = element.Parent?.ContentSize.Height ?? 0f;
+            this.Width.Factor = element.ContainerRect.Width;
+            this.Height.Factor = element.ContainerRect.Height;
             element.ContentSize = new SizeF(this.Width, this.Height);
         }
 

@@ -1,6 +1,6 @@
 ﻿using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
-using Leagueinator_Model.Model.Tables;
+using Leagueinator.Model.Tables;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -138,17 +138,19 @@ namespace Leagueinator.Model {
         public DataSet ToDataSet() {
             var eventTable = new EventTable();
             var teamTable = new TeamTable();
+            var summaryTable = new SummaryTable();
 
-            PopulateEventTable(eventTable, teamTable);
+            PopulateTables(eventTable, teamTable, summaryTable);
 
             DataSet dataSet = new();
             dataSet.Tables.Add(eventTable.Table);
             dataSet.Tables.Add(teamTable.Table);
+            dataSet.Tables.Add(summaryTable.Table);
 
             return dataSet;
         }
 
-        private void PopulateEventTable(EventTable eventTable, TeamTable teamTable) {
+        private void PopulateTables(EventTable eventTable, TeamTable teamTable, SummaryTable summaryTable) {
             for (int round = 0; round < this.Rounds.Count; round++) {
                 for (int lane = 0; lane < this.Rounds[round].Matches.Count; lane++) {
                     var match = this.Rounds[round].Matches[lane];
@@ -156,19 +158,30 @@ namespace Leagueinator.Model {
 
                     foreach (Team team in match.Teams.Values.NotNull()) {
                         int teamId = teamTable.TryAddTeam(team.Players.toArray().Select(p => p.Name).ToArray());
-                        eventTable.AddRow(
+                        
+                        var eventRow = eventTable.AddRow(
                             round: round + 1,
                             lane: lane + 1,
                             teamID: teamId,
                             bowls: team.Bowls,
                             ends: match.EndsPlayed,
-                            against: match.SumBowls() - team.Bowls
+                            against: match.SumBowls() - team.Bowls,
+                            tiebreaker: 0
+                        );
+
+                        summaryTable.AddRound(
+                            teamID: teamId,
+                            bowls: team.Bowls,
+                            ends: match.EndsPlayed,
+                            against: match.SumBowls() - team.Bowls,
+                            win: (int)eventRow["win"]
                         );
                     }
                 }
             }
 
             eventTable.AssignRanks();
+            summaryTable.AssignRanks();
         }
     }
 

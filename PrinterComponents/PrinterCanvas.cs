@@ -1,10 +1,12 @@
 ﻿using Leagueinator.Printer;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace Leagueinator.PrinterComponents
 {
     public partial class PrinterCanvas : UserControl{
-        public RootElement DocElement { get; }
+        public PrinterElement? Root { get; set; }
 
         [Category("Grid")]
         public int GridSize { get; set; } = 0;
@@ -19,14 +21,19 @@ namespace Leagueinator.PrinterComponents
 
         public PrinterCanvas() {
             this.InitializeComponent();
-            this.DocElement = new RootElement(() => new SizeF(this.Width, this.Height));
         }
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
-            this.DocElement.Update();
+
+            if (this.Root != null) {
+                this.Root.ContainerProvider = new ContentRectProvider(() => new(0, 0, this.Width, this.Height));
+            }
+            
+            this.Root?.Update();
+
             if (this.ToBack) this.DrawGrids(e.Graphics);
-            this.DocElement.Draw(e.Graphics);
+            this.Root?.Draw(e.Graphics);
             if (!this.ToBack) this.DrawGrids(e.Graphics);
         }
 

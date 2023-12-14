@@ -1,8 +1,6 @@
 ﻿using Leagueinator.Components;
 using Leagueinator.Model;
 using Leagueinator.Utility.ObservableDiscreteCollection;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 using static Leagueinator.Model.Team;
 
 namespace Leagueinator.App.Components.MatchCard {

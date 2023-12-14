@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<team class="bold-border">
+<team>
   <players class="bold-border">
   </players>
   <rounds class="bold-border">
     <row>
-      <category >Game</category>
-      <category >Rank</category>
-      <category >Lane</category>
-      <category >Ends</category>
-      <category >For</category>
-      <category >=</category>
-      <category >+</category>
-      <category >Against</category>
-      <category >=</category>
-      <category >+</category>
+      <category class="bold-font">Game</category>
+      <category class="bold-font">Rank</category>
+      <category class="bold-font">Lane</category>
+      <category class="bold-font">Ends</category>
+      <category class="bold-font">Win</category>
+      <category class="bold-font">For</category>
+      <category class="bold-font">=</category>
+      <category class="bold-font">+</category>
+      <category class="bold-font">Against</category>
+      <category class="bold-font">=</category>
+      <category class="bold-font">+</category>
+      <category class="bold-font">Tie</category>
     </row>
   </rounds>
 </team>

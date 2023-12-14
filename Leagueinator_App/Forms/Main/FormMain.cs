@@ -91,7 +91,7 @@ namespace Leagueinator.App.Forms.Main {
 
             foreach (var player in this.League.SeekDeep<PlayerInfo>()) {
                 if (player.Name == form.PlayerName) {
-                    string msg = "Name already in use";
+                    string msg = "TagName already in use";
                     MessageBox.Show(msg, "Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
@@ -322,12 +322,12 @@ namespace Leagueinator.App.Forms.Main {
 
             form.InitColumns(
                 new string[] {
-                    "Name", "Round", "Rank", "Bowls", "Ends",
+                    "TagName", "Round", "Rank", "Bowls", "Ends",
                     "Wins", "Losses", "Ties",
                     "PointsFor", "PlusFor", "PointsAgainst", "PlusAgainst"
                 },
                 new string[] {
-                    "Name", "Round", "Rank", "Bowls", "Ends",
+                    "TagName", "Round", "Rank", "Bowls", "Ends",
                     "W", "L", "T",
                     "F", "F+", "A", "A+"
                 }
