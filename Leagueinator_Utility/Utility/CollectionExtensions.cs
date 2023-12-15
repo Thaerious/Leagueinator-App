@@ -28,12 +28,6 @@ namespace Leagueinator.Utility {
             return newList;
         }
 
-        public static List<T> NotNull<T>(this IEnumerable<T?> list) {
-            var newList = new List<T>();
-            foreach (T? t in list) if (t != null) newList.Add(t);
-            return newList;
-        }
-
         public static T? Prev<T>(this ICollection<T> collection, T target) {
             var prev = default(T);
             foreach (T t in collection) {

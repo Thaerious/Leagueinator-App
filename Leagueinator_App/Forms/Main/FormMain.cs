@@ -6,7 +6,6 @@ using Leagueinator.App.Forms.AddPlayer;
 using Leagueinator.App.Forms.RenamePlayer;
 using Leagueinator.App.Forms.Report;
 using Leagueinator.App.Forms.SelectEvent;
-using Leagueinator.Model;
 using Leagueinator.Utility;
 using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
@@ -14,6 +13,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Leagueinator.Algorithms;
 using Leagueinator_App.Forms;
+using Model;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -39,8 +39,8 @@ namespace Leagueinator.App.Forms.Main {
                     this.playersToolStripMenuItem.Enabled = true;
                     this.eventPanel.Visible = true;
 
-                    if (value.Events.Count > 0) {
-                        this.eventPanel.LeagueEvent = value.Events.Last();
+                    if (value.LeagueEvents.Count > 0) {
+                        this.eventPanel.LeagueEvent = value.LeagueEvents.Last();
                     }
                     else {
                         this.eventPanel.LeagueEvent = null;
@@ -54,6 +54,7 @@ namespace Leagueinator.App.Forms.Main {
 
         public FormMain() {
             InitializeComponent();
+
             this.eventPanel.OnAddRound += (s) => {
                 if (this.eventPanel.LeagueEvent is null) return;
                 this.eventPanel.LeagueEvent.NewRound();
@@ -84,8 +85,9 @@ namespace Leagueinator.App.Forms.Main {
             if (this.League is null) return;
             if (this.eventPanel.LeagueEvent is null) return;
 
-            var form = new FormRenamePlayer();
-            form.StartPosition = FormStartPosition.CenterParent;
+            var form = new FormRenamePlayer {
+                StartPosition = FormStartPosition.CenterParent
+            };
             var result = form.ShowDialog();
             if (result == DialogResult.Cancel) return;
 
@@ -260,7 +262,7 @@ namespace Leagueinator.App.Forms.Main {
             if (this.League is null) return;
 
             FormSelectEvent childForm = new FormSelectEvent();
-            childForm.SetEvents(this.League.Events);
+            childForm.SetEvents(this.League.LeagueEvents);
 
             DialogResult result = childForm.ShowDialog();
             if (result == DialogResult.Cancel) return;
@@ -271,7 +273,7 @@ namespace Leagueinator.App.Forms.Main {
                 this.eventPanel.Visible = true;
             }
             else if (childForm.Action == "Delete") {
-                this.League.Events.Remove(childForm.LeagueEvent);
+                this.League.LeagueEvents.Remove(childForm.LeagueEvent);
                 if (this.eventPanel.LeagueEvent == childForm.LeagueEvent) {
                     this.eventPanel.Visible = false;
                     this.eventPanel.LeagueEvent = null;
@@ -314,7 +316,7 @@ namespace Leagueinator.App.Forms.Main {
 
         private void Dev_HashCode(object sender, EventArgs e) {
             Debug.WriteLine("Rounds collection for current event");
-            Debug.WriteLine($"Hash Code {this.eventPanel.LeagueEvent.Rounds.GetHashCode().ToString("X")}");
+            Debug.WriteLine(message: $"Hash Code {this.eventPanel.LeagueEvent.Rounds.GetHashCode().ToString("X")}");
         }
 
         private FormReport InitFormReport(FormReport.RowGenerator generator) {

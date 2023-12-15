@@ -8,8 +8,12 @@
             return string.Join(del, list.Select(t => t?.ToString()).ToArray());
         }
 
-        public static string DelString<T>(this IEnumerable<T> list, int colsize, string del = ", ") {
-            string?[] array = list.Select(t => t?.ToString())
+        public static string DelString<T>(this IEnumerable<T> inEnumerable, int colsize, string del = ", ") {
+            inEnumerable.NotNull();
+
+
+
+            string?[] array = inEnumerable.Select(t => t?.ToString())
                 .NotNull()
                 .Select(t => t?.PadRight(colsize, ' '))
                 .ToArray();

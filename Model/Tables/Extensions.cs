@@ -2,29 +2,51 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace Leagueinator.Model.Tables {
+namespace Model.Tables {
+
     public static class Extensions {
-        public static string ToString(this DataTable Table, string? title = null) {
+
+        /// <summary>
+        /// Retrieve a list of all values for a specified column.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public static IEnumerable<T?> ColumnValues<T>(this DataTable table, string column) {
+            return table.AsEnumerable().Select(row => row.Field<T>(column));
+        }
+
+        public static List<string> ColumnNames(this DataTable table) {
+            List<string> list = [];
+            foreach (DataColumn column in table.Columns) list.Add(column.ColumnName);
+            return list;
+        }
+
+        public static string PrettyPrint(this DataTable Table, string? title = null) {
             DataRowCollection rowCollection = Table.Rows;
             DataRow[] rowArray = new DataRow[rowCollection.Count];
             rowCollection.CopyTo(rowArray, 0);
-            return Table.ToString(rowArray, title);
+            return Table.PrettyPrint(rowArray, title);
         }
 
-        public static string ToString(this DataTable Table, DataRowCollection rowCollection, string? title = null) {            
+        public static string PrettyPrint(this DataTable Table, DataRowCollection rowCollection, string? title = null) {
             DataRow[] rowArray = new DataRow[rowCollection.Count];
             rowCollection.CopyTo(rowArray, 0);
-            return Table.ToString(rowArray, title);
+            return Table.PrettyPrint(rowArray, title);
         }
 
-        public static string ToString(this DataTable Table, DataRow row, string? title = null) {
-            return Table.ToString(new DataRow[] { row }, title);
+        public static string PrettyPrint(this DataTable Table, DataView view, string? title = null) {
+            return Extensions.PrettyPrint(view.ToTable(), title);
         }
 
-        public static string ToString(this DataTable Table, DataRow[] rows, string? title = null) {
+        public static string PrettyPrint(this DataTable Table, DataRow row, string? title = null) {
+            return Table.PrettyPrint(new DataRow[] { row }, title);
+        }
+
+        public static string PrettyPrint(this DataTable Table, DataRow[] rows, string? title = null) {
             title ??= Table.TableName;
             var sb = new StringBuilder();
-
 
             sb.Append('+');
             foreach (DataColumn column in Table.Columns) {
@@ -67,14 +89,6 @@ namespace Leagueinator.Model.Tables {
             }
 
             return sb.ToString();
-        }
-    }
-
-    public abstract class ATable {
-        public DataTable Table { get; init; } = new();
-
-        public override string ToString() {
-            return Table.ToString(this.Table.Rows);
         }
     }
 }
