@@ -3,51 +3,61 @@
 namespace Model.Tables {
     internal static class EventTable {
         public static readonly string TABLE_NAME = "event";
-        public static readonly string ID_COL = "uid";
+
+        public static class COL {
+            public static readonly string ID = "uid";
+            public static readonly string EVENT_NAME = "event_name";
+            public static readonly string ROUND = "round";
+            public static readonly string LANE = "lane";
+            public static readonly string TEAM = "team";
+            public static readonly string TIE = "tie";
+            public static readonly string BOWLS = "bowls";
+            public static readonly string ENDS = "ends";
+        }
 
         public static DataTable MakeTable() {
             DataTable table = new DataTable(TABLE_NAME);
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "uid",
+                ColumnName = COL.ID,
                 Unique = true,
                 AutoIncrement = true
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(string),
-                ColumnName = "event_name"
+                ColumnName = COL.EVENT_NAME
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "round"
+                ColumnName = COL.ROUND
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "lane"
+                ColumnName = COL.LANE
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "team"
+                ColumnName = COL.TEAM
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "tie"
+                ColumnName = COL.TIE
             });
 
             table.Columns.Add(new DataColumn() {
                 DataType = typeof(int),
-                ColumnName = "bowls"
+                ColumnName = COL.BOWLS
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = "ends"
+                ColumnName = COL.ENDS
             });
 
             return table;

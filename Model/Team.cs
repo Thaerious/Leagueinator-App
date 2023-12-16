@@ -1,14 +1,23 @@
-﻿using System.Data;
+﻿using Model.Tables;
+using System.Data;
 
-namespace Model.Tables {
-    public class Team {
+namespace Model {
+
+    /// <summary>
+    /// A view of TeamTable paired with a Row from EventTable.
+    /// The public methods may update the data set.
+    /// </summary>
+    public class Team : DataView{
         private Match Match { get; }
 
         public int TeamIndex { get; }
 
-        internal Team(Match match, int matchIndex) {
+        private DataRow Row { get; }
+
+        internal Team(Match match, DataRow row, int teamIndex) : base(match.Round.LeagueEvent.League.TeamTable) {            
             this.Match = match;
-            this.TeamIndex = matchIndex;
+            this.Row = row;
+            this.TeamIndex = teamIndex;
         }
 
         public bool AddPlayer(string name) {
@@ -17,29 +26,34 @@ namespace Model.Tables {
             var table = this.Match.Round.LeagueEvent.League.TeamTable;
             var row = table.NewRow();
 
-            row[TeamTable.TEAM_ID_COL] = this.TeamIndex;
-            row[TeamTable.NAME_COL] = name;
+            row[TeamTable.COL.EVENT_NAME] = this.Row[EventTable.COL.EVENT_NAME];
+            row[TeamTable.COL.TEAM_IDX] = this.TeamIndex;
+            row[TeamTable.COL.PLAYER_NAME] = name;
             table.Rows.Add(row);
 
             return true;
         }
 
         public bool HasPlayer(string name) {
-            var table = this.Match.Round.LeagueEvent.League.TeamTable;
-            var rows = table.Select($"{TeamTable.TEAM_ID_COL} = {this.TeamIndex} AND {TeamTable.NAME_COL} = '{name}'");
+            DataTable table = this.Table ?? throw new NullReferenceException();
+            string eventName = (string)this.Row[EventTable.COL.EVENT_NAME];
+
+            var rows = table.Select($"{TeamTable.COL.TEAM_IDX} = {this.TeamIndex}" +
+                                    $" AND {TeamTable.COL.PLAYER_NAME} = '{name}'" +
+                                    $" AND {TeamTable.COL.EVENT_NAME} = '{eventName}'");
             return rows.Length > 0;
         }
 
-        public List<Player> GetPlayers(int team) {
-            List<Player> list = [];
+        public List<string> GetPlayers() {
+            List<string> list = [];
             var table = this.Match.Round.LeagueEvent.League.TeamTable;
 
             var view = new DataView(table) {
-                RowFilter = $"team = ${this.TeamIndex}"
+                RowFilter = $"{TeamTable.COL.TEAM_IDX} = {this.TeamIndex}"
             };
 
             foreach (DataRowView row in view) {
-                list.Add(new Player(row));
+                list.Add((string)row[TeamTable.COL.PLAYER_NAME]);
             }
 
             return list;

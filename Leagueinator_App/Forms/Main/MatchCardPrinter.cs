@@ -1,4 +1,4 @@
-﻿using Leagueinator.Model;
+﻿
 using Leagueinator.Utility;
 using System.Drawing.Printing;
 

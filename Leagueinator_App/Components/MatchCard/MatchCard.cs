@@ -1,5 +1,5 @@
 ﻿using Leagueinator.Components;
-using Leagueinator.Model;
+
 using Leagueinator.Utility.ObservableDiscreteCollection;
 using static Leagueinator.Model.Team;
 

@@ -21,7 +21,7 @@ namespace Model {
         public ReadOnlyDictionary<string, LeagueEvent> LeagueEvents {
             get {
                 var dictionary = EventDirectoryTable
-                .ColumnValues<string>(Model.Tables.EventDirectoryTable.NAME_COL)
+                .ColumnValues<string>(Model.Tables.EventDirectoryTable.COL.NAME)
                     .NotNull()
                     .ToDictionary(
                         eventName => eventName,
@@ -32,17 +32,31 @@ namespace Model {
             }
         }
 
-        public LeagueEvent AddLeagueEvent(string eventName) {
-            var row = EventDirectoryTable.NewRow();
+        public LeagueEvent AddLeagueEvent(string eventName) {            
+            AddToRoundDirectory(eventName);
+            return AddToEventDirectory(eventName);
+        }
 
-            row[Model.Tables.EventDirectoryTable.NAME_COL] = eventName;
-            row[Model.Tables.EventDirectoryTable.DATE_COL] = DateTime.Today.ToString("yyyy-MM-dd");
+        private LeagueEvent AddToEventDirectory(string eventName) {
+            var row = this.EventDirectoryTable.NewRow();
 
-            this.Tables[Model.Tables.EventDirectoryTable.TABLE_NAME]!.Rows.Add(row);
+            row[Model.Tables.EventDirectoryTable.COL.NAME] = eventName;
+            row[Model.Tables.EventDirectoryTable.COL.DATE] = DateTime.Today.ToString("yyyy-MM-dd");
+
+            this.EventDirectoryTable.Rows.Add(row);
 
             return new LeagueEvent(this, eventName) {
                 RowFilter = $"event_name = '{eventName}'"
             };
+        }
+
+        private void AddToRoundDirectory(string eventName) {
+            var row = RoundDirectoryTable.NewRow();
+
+            row[Model.Tables.RoundDirectoryTable.COL.EVENT_NAME] = eventName;
+            row[Model.Tables.RoundDirectoryTable.COL.ROUND_COUNT] = -1;
+
+            this.RoundDirectoryTable.Rows.Add(row);
         }
     }
 }

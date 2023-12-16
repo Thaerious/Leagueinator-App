@@ -1,4 +1,4 @@
-﻿using Leagueinator.Model;
+﻿
 using System.Diagnostics;
 
 namespace Leagueinator.App.Components.PlayerListBox {

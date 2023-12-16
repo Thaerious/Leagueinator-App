@@ -1,4 +1,4 @@
-﻿using Leagueinator.Model;
+﻿using Model;
 using System.Collections.Specialized;
 
 namespace Leagueinator.App.Components.EventPanel {
@@ -51,29 +51,6 @@ namespace Leagueinator.App.Components.EventPanel {
                     }
 
                     this.UpdateMatchCards();
-
-                    // Whenever a round is added or removed.
-                    this.leagueEvent.Rounds.CollectionChanged += (source, args) => {
-                        switch (args.Action) {
-                            case NotifyCollectionChangedAction.Add:
-                                if (args.NewItems is null) return;
-                                foreach (Round round in args.NewItems) this.AddRoundButton(round);
-                                break;
-                            case NotifyCollectionChangedAction.Remove:
-                                this.flowRounds.Controls.RemoveAt(args.OldStartingIndex);
-                                for (int i = 0; i < this.flowRounds.Controls.Count; i++) {
-                                    this.flowRounds.Controls[i].Text = $"Round #{i + 1}";
-                                }
-
-                                if (args.OldStartingIndex == this._currentRoundIndex) {
-                                    //this.playerListBox.Items.Clear();
-                                    this.CurrentRoundIndex = -1;
-                                }
-                                break;
-                        }
-                    };
-
-                    //ScoreKeeper.Singleton.LeagueEvent = value; // TODO
                 }
             }
         }

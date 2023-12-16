@@ -1,4 +1,4 @@
-﻿using Leagueinator.Model;
+﻿
 using Leagueinator.Utility;
 
 namespace Leagueinator.App.Algorithms.Solutions {

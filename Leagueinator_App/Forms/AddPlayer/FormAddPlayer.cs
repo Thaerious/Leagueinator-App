@@ -1,4 +1,4 @@
-﻿using Leagueinator.Model;
+﻿
 
 namespace Leagueinator.App.Forms.AddPlayer {
     public class PlayerAddedArgs {

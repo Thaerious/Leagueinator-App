@@ -23,6 +23,20 @@ namespace Model.Tables {
             return list;
         }
 
+        public static DataView Clone(this DataView view) {
+            // Create a new DataView
+            DataView clone = new DataView();
+
+            // Copy the properties from the original DataView
+            clone.Table = view.Table;
+            clone.RowFilter = view.RowFilter;
+            clone.Sort = view.Sort;
+            clone.RowStateFilter = view.RowStateFilter;
+
+            // Return the clone
+            return clone;
+        }
+
         public static string PrettyPrint(this DataTable Table, string? title = null) {
             DataRowCollection rowCollection = Table.Rows;
             DataRow[] rowArray = new DataRow[rowCollection.Count];
