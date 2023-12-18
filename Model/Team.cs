@@ -1,5 +1,6 @@
 ﻿using Model.Tables;
 using System.Data;
+using System.Diagnostics;
 
 namespace Model {
 
@@ -8,11 +9,17 @@ namespace Model {
     /// The public methods may update the data set.
     /// </summary>
     public class Team : DataView{
-        private Match Match { get; }
+        public Match Match { get; }
 
         public int TeamIndex { get; }
 
+        public List<string> Players {
+            get => this.GetPlayers();
+        }
+
         private DataRow Row { get; }
+
+        public bool Deleted { get; private set; } = false;
 
         internal Team(Match match, DataRow row, int teamIndex) : base(match.Round.LeagueEvent.League.TeamTable) {            
             this.Match = match;
@@ -23,13 +30,12 @@ namespace Model {
         public bool AddPlayer(string name) {
             if (this.HasPlayer(name)) return false;
 
-            var table = this.Match.Round.LeagueEvent.League.TeamTable;
-            var row = table.NewRow();
-
-            row[TeamTable.COL.EVENT_NAME] = this.Row[EventTable.COL.EVENT_NAME];
-            row[TeamTable.COL.TEAM_IDX] = this.TeamIndex;
-            row[TeamTable.COL.PLAYER_NAME] = name;
-            table.Rows.Add(row);
+            this.Match.Round.LeagueEvent.League.TeamTable.AddRow(
+                eventName:  (string) this.Row[EventTable.COL.EVENT_NAME],
+                round:      (int) this.Row[EventTable.COL.ROUND],
+                teamIdx:    this.TeamIndex,
+                playerName: name
+            );
 
             return true;
         }
@@ -59,5 +65,38 @@ namespace Model {
             return list;
         }
 
+        /// <summary>
+        /// Remove a player from this team.
+        /// If the player doesn't exist no change is made.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns>True if a change was made</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool RemovePlayer(string name) {          
+            this.Sort = TeamTable.COL.PLAYER_NAME;
+            int rowIndex = this.Find(name);
+
+            if (rowIndex == -1) return false;
+
+            if (this.Table is null) throw new NullReferenceException();
+            this.Table.Rows.RemoveAt(rowIndex);
+
+            return true;
+        }
+
+        public void Delete() {
+            if (this.Deleted) return;
+
+            foreach (string player in this.Players) this.RemovePlayer(player);
+            var eventTable = this.Match.Round.LeagueEvent.League.EventTable;
+            eventTable.Rows.Remove(this.Row);
+
+            this.Deleted = true;
+        }
+
+        public string PrettyPrint() {
+            return this.Table.PrettyPrint(this) + "\n" +
+                   this.Row.PrettyPrint();
+        }
     }
 }

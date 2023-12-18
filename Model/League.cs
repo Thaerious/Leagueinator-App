@@ -2,37 +2,38 @@
 using System.Data;
 using Leagueinator.Utility;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Model {
     public class League : DataSet {
 
-        public DataTable EventTable => this.Tables[Model.Tables.EventTable.TABLE_NAME]!;
-        public DataTable TeamTable => this.Tables[Model.Tables.TeamTable.TABLE_NAME]!;
-        public DataTable EventDirectoryTable => this.Tables[Model.Tables.EventDirectoryTable.TABLE_NAME]!;
-        public DataTable RoundDirectoryTable => this.Tables[Model.Tables.RoundDirectoryTable.TABLE_NAME]!;
+        public EventTable EventTable { get; } = new();
+        public TeamTable TeamTable { get; } = new();
+        public EventDirectoryTable EventDirectoryTable { get; } = new();
+        public RoundDirectoryTable RoundDirectoryTable { get; } = new();
 
         public League() {
-            Tables.Add(Model.Tables.EventTable.MakeTable());
-            Tables.Add(Model.Tables.TeamTable.MakeTable());
-            Tables.Add(Model.Tables.EventDirectoryTable.MakeTable());
-            Tables.Add(Model.Tables.RoundDirectoryTable.MakeTable());
+            Tables.Add(EventTable);
+            Tables.Add(TeamTable);
+            Tables.Add(EventDirectoryTable);
+            Tables.Add(RoundDirectoryTable);
         }
 
         public ReadOnlyDictionary<string, LeagueEvent> LeagueEvents {
             get {
                 var dictionary = EventDirectoryTable
                 .ColumnValues<string>(Model.Tables.EventDirectoryTable.COL.NAME)
-                    .NotNull()
-                    .ToDictionary(
-                        eventName => eventName,
-                        eventName => new LeagueEvent(this, eventName)
-                    );
+                .NotNull()
+                .ToDictionary(
+                    eventName => eventName,
+                    eventName => new LeagueEvent(this, eventName)
+                );
 
                 return new ReadOnlyDictionary<string, LeagueEvent>(dictionary);
             }
         }
 
-        public LeagueEvent AddLeagueEvent(string eventName) {            
+        public LeagueEvent AddLeagueEvent(string eventName) {
             AddToRoundDirectory(eventName);
             return AddToEventDirectory(eventName);
         }
@@ -57,6 +58,13 @@ namespace Model {
             row[Model.Tables.RoundDirectoryTable.COL.ROUND_COUNT] = -1;
 
             this.RoundDirectoryTable.Rows.Add(row);
+        }
+
+        public string PrettyPrint() {
+            return EventTable.PrettyPrint() + "\n" +
+                TeamTable.PrettyPrint() + "\n" +
+                RoundDirectoryTable.PrettyPrint() + "\n" +
+                EventDirectoryTable.PrettyPrint();
         }
     }
 }

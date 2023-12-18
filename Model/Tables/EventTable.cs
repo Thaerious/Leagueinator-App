@@ -1,7 +1,7 @@
 ﻿using System.Data;
 
 namespace Model.Tables {
-    internal static class EventTable {
+    public class EventTable : DataTable {
         public static readonly string TABLE_NAME = "event";
 
         public static class COL {
@@ -9,14 +9,31 @@ namespace Model.Tables {
             public static readonly string EVENT_NAME = "event_name";
             public static readonly string ROUND = "round";
             public static readonly string LANE = "lane";
-            public static readonly string TEAM = "team";
+            public static readonly string TEAM_IDX = "team";
             public static readonly string TIE = "tie";
             public static readonly string BOWLS = "bowls";
             public static readonly string ENDS = "ends";
         }
 
-        public static DataTable MakeTable() {
-            DataTable table = new DataTable(TABLE_NAME);
+        public EventTable() : base(TABLE_NAME) {
+            MakeTable(this);
+        }
+
+        public DataRow AddRow(string eventName, int round, int lane, int teamIdx) {
+            var row = this.NewRow();
+            row[COL.EVENT_NAME] = eventName;
+            row[COL.ROUND] = round;
+            row[COL.LANE] = lane;
+            row[COL.TEAM_IDX] = teamIdx;
+            row[COL.TIE] = 0;
+            row[COL.BOWLS] = 0;
+            row[COL.ENDS] = 0;
+            this.Rows.Add(row);
+            return row;
+        }
+
+        public static EventTable MakeTable(EventTable? table = null) {
+            table ??= new();
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
@@ -42,7 +59,7 @@ namespace Model.Tables {
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.TEAM
+                ColumnName = COL.TEAM_IDX
             });
 
             table.Columns.Add(new DataColumn {

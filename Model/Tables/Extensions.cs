@@ -58,6 +58,10 @@ namespace Model.Tables {
             return Table.PrettyPrint(new DataRow[] { row }, title);
         }
 
+        public static string PrettyPrint(this DataRow row, string? title = null) {
+            return row.Table.PrettyPrint(new DataRow[] { row }, title);
+        }
+
         public static string PrettyPrint(this DataTable Table, DataRow[] rows, string? title = null) {
             title ??= Table.TableName;
             var sb = new StringBuilder();
@@ -75,7 +79,7 @@ namespace Model.Tables {
                 sb.Append(" | ");
                 headerSize += column.ColumnName.Length + 3;
             }
-            Debug.WriteLine("Header Size " + headerSize);
+
             title = title.PadLeft((headerSize / 2) + (title.Length / 2));
             title = title.PadRight(headerSize);
             sb.Insert(0, $"|{title}|\n");

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 
 namespace Model.Tables {
-    internal class RoundDirectoryTable {
+    public class RoundDirectoryTable : DataTable{
         public static readonly string TABLE_NAME = "round_directory";
         public static class COL {
             public static readonly string ID = "uid";
@@ -9,8 +9,12 @@ namespace Model.Tables {
             public static readonly string ROUND_COUNT = "round_count";
         }
 
-        public static DataTable MakeTable() {
-            DataTable table = new DataTable(TABLE_NAME);
+        public RoundDirectoryTable() : base(TABLE_NAME) {
+            MakeTable(this);
+        }
+
+        public static RoundDirectoryTable MakeTable(RoundDirectoryTable? table = null) {
+            table ??= new();
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),

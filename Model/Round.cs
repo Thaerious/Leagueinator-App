@@ -31,8 +31,8 @@ namespace Model {
             };
         }
 
-        internal DataRow AddRow(int lane, int teamID = -1, int bowls = 0, int ends = 0, int tiebreaker = 0) {
-            return this.LeagueEvent.AddRow(this.RoundIndex, lane, teamID, bowls, ends, tiebreaker);
+        internal DataRow AddRow(int lane, int teamUID) {
+            return this.LeagueEvent.AddRow(this.RoundIndex, lane, teamUID);
         }
 
         /// <summary>
@@ -60,6 +60,11 @@ namespace Model {
             return matches;
         }
 
+        public void Delete() {
+            foreach (Match match in this.Matches) {
+                match.Delete();
+            }
+        }
         public string PrettyPrint() {
             return this.Table.PrettyPrint(this, $"Round {RoundIndex} of {LeagueEvent.EventName}");
         }

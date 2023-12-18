@@ -2,7 +2,7 @@
 using System.Data;
 
 namespace Model.Tables {
-    internal static class EventDirectoryTable {
+    public class EventDirectoryTable : DataTable {
         public static readonly string TABLE_NAME = "event_directory";
 
         public static class COL {
@@ -11,8 +11,12 @@ namespace Model.Tables {
             public static readonly string DATE = "date";
         }
 
-        public static DataTable MakeTable() {
-            DataTable table = new DataTable(TABLE_NAME);
+        public EventDirectoryTable() : base(TABLE_NAME) {
+            MakeTable(this);
+        }
+
+        public static DataTable MakeTable(EventDirectoryTable? table = null) {
+            table ??= new ();
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),

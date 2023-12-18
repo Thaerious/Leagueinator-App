@@ -82,6 +82,23 @@ namespace Model_Test {
             match.NewTeam();
 
             Assert.AreEqual(3, match.Size);
+            Assert.AreEqual(3, match.Teams.Count);
+        }
+
+        [TestMethod]
+        public void Delete() {
+            League league = new League();
+            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            match.NewTeam();
+            match.NewTeam();
+            match.NewTeam();
+
+            match.Delete();
+
+            Assert.AreEqual(0, match.Size);
+            Assert.AreEqual(0, match.Teams.Count);
         }
     }
 }

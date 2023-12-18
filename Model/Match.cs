@@ -1,14 +1,11 @@
 ﻿using Model.Tables;
-using System;
 using System.Data;
 using System.Diagnostics;
-using System.Numerics;
 
 namespace Model {
 
     /// <summary>
     /// A view of EventTable restricted to event name, round, and match.
-    /// The public methods may update the data set.
     /// </summary>
     public class Match : DataView {
 
@@ -24,7 +21,7 @@ namespace Model {
             get {
                 var eventTable = Round.LeagueEvent.League.EventTable;
 
-                var computedMax = eventTable.Compute($"MAX({EventTable.COL.TEAM})", this.RowFilter);
+                var computedMax = eventTable.Compute($"MAX({EventTable.COL.TEAM_IDX})", this.RowFilter);
                 int lastTeamIndex = (computedMax != DBNull.Value) ? Convert.ToInt32(computedMax) : -1;
 
                 return lastTeamIndex + 1;
@@ -44,17 +41,18 @@ namespace Model {
         public Team NewTeam() {
             int index = this.Size;
 
-            this.Sort = EventTable.COL.TEAM;
+            this.Sort = EventTable.COL.TEAM_IDX;
             DataRowView[] rows = this.FindRows(index);
             if (rows.Length != 0) throw new Exception("Sanity Check Failed");
 
+            // Add row to event table.
             this.AddRow(index);
 
             return GetTeam(index);
         }
 
         private Team GetTeam(int index) {
-            this.Sort = EventTable.COL.TEAM;
+            this.Sort = EventTable.COL.TEAM_IDX;
             DataRowView[] rows = this.FindRows(index);
 
             if (rows.Length > 1) throw new Exception("Sanity Check Failed on Rows");
@@ -82,21 +80,27 @@ namespace Model {
             foreach (DataRow row in table.AsEnumerable()) {
                 int roundIndex = (row.Field<int>(EventTable.COL.ROUND));
                 int laneIndex = (row.Field<int>(EventTable.COL.LANE));
-                int teamIndex = (row.Field<int>(EventTable.COL.TEAM));
+                int teamIndex = (row.Field<int>(EventTable.COL.TEAM_IDX));
 
                 if (roundIndex != this.Round.RoundIndex) continue;
                 if (laneIndex != this.Lane) continue;
-                if (ids.Contains(laneIndex)) continue;
+                if (ids.Contains(teamIndex)) continue;
 
-                ids.Add(laneIndex);
+                ids.Add(teamIndex);
                 teams.Add(this.GetTeam(teamIndex));
             }
 
             return teams;
         }
 
-        internal DataRow AddRow(int teamIndex, int bowls = 0, int ends = 0, int tiebreaker = 0) {
-            return this.Round.AddRow(this.Lane, teamIndex, bowls, ends, tiebreaker);
+        internal DataRow AddRow(int teamIDX) {
+            return this.Round.AddRow(this.Lane, teamIDX);
+        }
+
+        public void Delete() {
+            foreach (Team team in this.Teams) {
+                team.Delete();
+            }
         }
 
         public string PrettyPrint() {

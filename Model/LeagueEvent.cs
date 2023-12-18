@@ -25,22 +25,15 @@ namespace Model {
             this.View = new DataView(this.Table) {
                 RowFilter = $"event_name = '{eventName}'"
             };
-        }               
+        }
 
-        internal DataRow AddRow(int round, int lane, int teamID = -1, int bowls = 0, int ends = 0, int tiebreaker = 0) {            
-            var eRow = this.Table?.NewRow() ?? throw new ArgumentNullException(nameof(this.Table));
-
-            eRow["event_name"] = this.EventName;
-            eRow["round"] = round;
-            eRow["lane"] = lane;
-            eRow["team"] = teamID;
-            eRow["bowls"] = bowls;
-            eRow["tie"] = tiebreaker;
-            eRow["ends"] = ends;
-
-            this.Table.Rows.Add(eRow);
-
-            return eRow;
+        internal DataRow AddRow(int round, int lane, int teamIDX) {
+            return this.League.EventTable.AddRow(
+                eventName: this.EventName,
+                round: round,
+                lane: lane,
+                teamIdx: teamIDX
+            );
         }
 
         private List<Round> GetRounds() {

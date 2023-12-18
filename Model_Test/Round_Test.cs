@@ -1,6 +1,4 @@
 ﻿using Model;
-using Model.Tables;
-using System.Data;
 using System.Diagnostics;
 
 namespace Model_Test {
@@ -79,6 +77,57 @@ namespace Model_Test {
             match.NewTeam();
 
             Assert.AreEqual(round.Matches.Count, 1);
+        }
+
+
+        [TestMethod]
+        public void Delete() {
+            League league = new League();
+            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            match.NewTeam();
+            match.NewTeam();
+            match.NewTeam();
+
+            Debug.WriteLine(league.PrettyPrint());
+            round.Delete();
+            Debug.WriteLine(league.PrettyPrint());
+
+            Assert.AreEqual(-1, lEvent.LastRoundIndex);
+        }
+
+        [TestMethod]
+        public void Delete_Team() {
+            League league = new League();
+            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+            team.AddPlayer("Adam");
+            team.Delete();
+
+            List<string> list = team.Players;
+
+            Assert.AreEqual(0, list.Count);
+            Assert.AreEqual(0, match.Teams.Count);
+        }
+
+        [TestMethod]
+        public void Delete_Team_Twice() {
+            League league = new League();
+            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+            team.AddPlayer("Adam");
+            team.Delete();
+            team.Delete();
+
+            List<string> list = team.Players;
+
+            Assert.AreEqual(0, list.Count);
+            Assert.AreEqual(0, match.Teams.Count);
         }
     }
 }
