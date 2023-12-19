@@ -6,8 +6,8 @@ namespace Model_Test {
     public class Integration_Test {
         public static League Mock() {
             League league = new();
-            LeagueEvent myEvent = league.AddLeagueEvent("my_event");
-            LeagueEvent myOtherEvent = league.AddLeagueEvent("my_other_event");
+            LeagueEvent myEvent = league.NewLeagueEvent("my_event");
+            LeagueEvent myOtherEvent = league.NewLeagueEvent("my_other_event");
             
             myEvent.NewRound();
             myEvent.NewRound();
@@ -34,7 +34,7 @@ namespace Model_Test {
         [TestMethod]
         public void Count_Rounds_From_League_Event() {
             League league = Mock();
-            LeagueEvent lEvent = league.LeagueEvents["my_event"];
+            LeagueEvent lEvent = league.GetLeagueEvent("my_event");
             Debug.WriteLine(lEvent.PrettyPrint());
             Assert.AreEqual(3, lEvent.Rounds.Count);
         }

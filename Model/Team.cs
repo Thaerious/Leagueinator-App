@@ -8,7 +8,7 @@ namespace Model {
     /// A view of TeamTable paired with a Row from EventTable.
     /// The public methods may update the data set.
     /// </summary>
-    public class Team : DataView{
+    public class Team : DataView, IDeleted{
         public Match Match { get; }
 
         public int TeamIndex { get; }
@@ -28,6 +28,7 @@ namespace Model {
         }
 
         public bool AddPlayer(string name) {
+            DeletedException.ThrowIf(this);
             if (this.HasPlayer(name)) return false;
 
             this.Match.Round.LeagueEvent.League.TeamTable.AddRow(
@@ -41,6 +42,7 @@ namespace Model {
         }
 
         public bool HasPlayer(string name) {
+            DeletedException.ThrowIf(this);
             DataTable table = this.Table ?? throw new NullReferenceException();
             string eventName = (string)this.Row[EventTable.COL.EVENT_NAME];
 
@@ -51,6 +53,7 @@ namespace Model {
         }
 
         public List<string> GetPlayers() {
+            DeletedException.ThrowIf(this);
             List<string> list = [];
             var table = this.Match.Round.LeagueEvent.League.TeamTable;
 
@@ -72,7 +75,8 @@ namespace Model {
         /// <param name="v"></param>
         /// <returns>True if a change was made</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public bool RemovePlayer(string name) {          
+        public bool RemovePlayer(string name) {
+            DeletedException.ThrowIf(this);
             this.Sort = TeamTable.COL.PLAYER_NAME;
             int rowIndex = this.Find(name);
 
@@ -85,7 +89,7 @@ namespace Model {
         }
 
         public void Delete() {
-            if (this.Deleted) return;
+            DeletedException.ThrowIf(this);
 
             foreach (string player in this.Players) this.RemovePlayer(player);
             var eventTable = this.Match.Round.LeagueEvent.League.EventTable;

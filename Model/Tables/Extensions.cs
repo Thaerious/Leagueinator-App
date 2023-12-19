@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Newtonsoft.Json.Linq;
+using System.Data;
 using System.Diagnostics;
 using System.Text;
 
@@ -25,13 +26,13 @@ namespace Model.Tables {
 
         public static DataView Clone(this DataView view) {
             // Create a new DataView
-            DataView clone = new DataView();
-
-            // Copy the properties from the original DataView
-            clone.Table = view.Table;
-            clone.RowFilter = view.RowFilter;
-            clone.Sort = view.Sort;
-            clone.RowStateFilter = view.RowStateFilter;
+            DataView clone = new DataView {
+                // Copy the properties from the original DataView
+                Table = view.Table,
+                RowFilter = view.RowFilter,
+                Sort = view.Sort,
+                RowStateFilter = view.RowStateFilter
+            };
 
             // Return the clone
             return clone;
@@ -54,6 +55,10 @@ namespace Model.Tables {
             return Extensions.PrettyPrint(view.ToTable(), title);
         }
 
+        public static string PrettyPrint(this DataView view, string? title = null) {
+            return Extensions.PrettyPrint(view.ToTable(), view, title);
+        }
+
         public static string PrettyPrint(this DataTable Table, DataRow row, string? title = null) {
             return Table.PrettyPrint(new DataRow[] { row }, title);
         }
@@ -63,31 +68,51 @@ namespace Model.Tables {
         }
 
         public static string PrettyPrint(this DataTable Table, DataRow[] rows, string? title = null) {
-            title ??= Table.TableName;
+            title ??= $"Table\n'{Table.TableName}'";
             var sb = new StringBuilder();
+
+            Dictionary<DataColumn, int> colSizes = [];
+
+            foreach (DataColumn column in Table.Columns) {
+                colSizes[column] = column.ColumnName.Length;
+            }
+
+            foreach (DataRow row in rows) {
+                foreach (DataColumn column in Table.Columns) {
+                    string value = row[column].ToString() ?? "";
+                    colSizes[column] = Math.Max(value.Length, colSizes[column]);
+                }
+            }
 
             sb.Append('+');
             foreach (DataColumn column in Table.Columns) {
-                sb.Append(new string('-', column.ColumnName.Length + 2));
+                sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
 
             int headerSize = -1;
             sb.Append("\n| ");
             foreach (DataColumn column in Table.Columns) {
-                sb.Append(column.ColumnName);
+                string value = column.ColumnName.PadLeft(colSizes[column]);
+
+                sb.Append(value);
                 sb.Append(" | ");
-                headerSize += column.ColumnName.Length + 3;
+                headerSize += value.Length + 3;
             }
 
-            title = title.PadLeft((headerSize / 2) + (title.Length / 2));
-            title = title.PadRight(headerSize);
-            sb.Insert(0, $"|{title}|\n");
+            string[] splitTitle = title.Split('\n');
+
+            foreach (string split in splitTitle.Reverse()) {
+                var line = split;
+                line = line.PadLeft((headerSize / 2) + (line.Length / 2));
+                line = line.PadRight(headerSize);
+                sb.Insert(0, $"|{line}|\n");
+            }
             sb.Insert(0, "+" + new string('-', headerSize) + "+\n");
 
             sb.Append("\n+");
             foreach (DataColumn column in Table.Columns) {
-                sb.Append(new string('-', column.ColumnName.Length + 2));
+                sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
 
@@ -95,14 +120,14 @@ namespace Model.Tables {
                 sb.Append("\n| ");
                 foreach (DataColumn column in Table.Columns) {
                     string s = row[column.ColumnName].ToString() ?? "NULL";
-                    sb.Append(s.PadLeft(column.ColumnName.Length));
+                    sb.Append(s.PadLeft(colSizes[column]));
                     sb.Append(" | ");
                 }
             }
 
             sb.Append("\n+");
             foreach (DataColumn column in Table.Columns) {
-                sb.Append(new string('-', column.ColumnName.Length + 2));
+                sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
 

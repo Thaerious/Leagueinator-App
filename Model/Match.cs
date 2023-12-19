@@ -1,17 +1,29 @@
 ﻿using Model.Tables;
+using System.Collections;
 using System.Data;
 using System.Diagnostics;
 
 namespace Model {
 
     /// <summary>
-    /// A view of EventTable restricted to event name, round, and match.
+    /// A view of EventTable restricted to event name, Round, and match.
     /// </summary>
-    public class Match : DataView {
+    public class Match : DataView, IDeleted {
+        public ICollection<string>? Players {
+            get {
+                List<string> list = [];
+                foreach (Team team in this.Teams) {
+                    list.AddRange(team.Players);    
+                }
+                return list;
+            }
+        }
 
         public Round Round { get; }
 
         public int Lane { get; }
+
+        public bool Deleted { get; private set; } = false;
 
         public List<Team> Teams {
             get => this.GetTeams();
@@ -19,6 +31,7 @@ namespace Model {
 
         public int Size {
             get {
+                DeletedException.ThrowIf(this);
                 var eventTable = Round.LeagueEvent.League.EventTable;
 
                 var computedMax = eventTable.Compute($"MAX({EventTable.COL.TEAM_IDX})", this.RowFilter);
@@ -39,6 +52,7 @@ namespace Model {
         /// <returns>A new Team view</returns>
         /// <exception cref="Exception"></exception>
         public Team NewTeam() {
+            DeletedException.ThrowIf(this);
             int index = this.Size;
 
             this.Sort = EventTable.COL.TEAM_IDX;
@@ -72,6 +86,7 @@ namespace Model {
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
         private List<Team> GetTeams() {
+            DeletedException.ThrowIf(this);
             DataTable table = this.Table ?? throw new NullReferenceException();
 
             SortedSet<int> ids = [];
@@ -98,9 +113,13 @@ namespace Model {
         }
 
         public void Delete() {
+            DeletedException.ThrowIf(this);
+
             foreach (Team team in this.Teams) {
                 team.Delete();
             }
+
+            this.Deleted = true;
         }
 
         public string PrettyPrint() {

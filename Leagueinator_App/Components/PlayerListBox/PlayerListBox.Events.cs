@@ -4,10 +4,10 @@ using System.Diagnostics;
 namespace Leagueinator.App.Components.PlayerListBox {
     
     public class PlayerListBoxArgs {
-        public readonly PlayerInfo PlayerInfo;
+        public readonly string PlayerName;
 
-        public PlayerListBoxArgs(PlayerInfo playerInfo) {
-            this.PlayerInfo = playerInfo;
+        public PlayerListBoxArgs(string playerName) {
+            this.PlayerName = playerName;
         }
     }
 

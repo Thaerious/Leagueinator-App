@@ -14,6 +14,7 @@ using System.Reflection;
 using Leagueinator.Algorithms;
 using Leagueinator_App.Forms;
 using Model;
+using Leagueinator_App;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -81,6 +82,10 @@ namespace Leagueinator.App.Forms.Main {
             };
         }
 
+        private void DoRenamePlayer(string before, string after) {
+            throw new NotImplementedException();
+        }
+
         private void PlayerListBox_OnRename(PlayerListBox source, PlayerListBoxArgs args) {
             if (this.League is null) return;
             if (this.eventPanel.LeagueEvent is null) return;
@@ -91,39 +96,13 @@ namespace Leagueinator.App.Forms.Main {
             var result = form.ShowDialog();
             if (result == DialogResult.Cancel) return;
 
-            foreach (var player in this.League.SeekDeep<PlayerInfo>()) {
-                if (player.Name == form.PlayerName) {
-                    string msg = "TagName already in use";
-                    MessageBox.Show(msg, "Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            string previous = args.PlayerInfo.Name;
-            foreach (Round round in this.eventPanel.LeagueEvent.Rounds) {
-                if (round.IdlePlayers.Contains(args.PlayerInfo)) {
-                    round.IdlePlayers.Remove(args.PlayerInfo);
-                    round.IdlePlayers.Add(new PlayerInfo(form.PlayerName));
-                }
-                foreach (Team team in round.Teams) {
-                    if (team.Players.Contains(args.PlayerInfo)) {
-                        team.Players.ReplaceValue(args.PlayerInfo, new PlayerInfo(form.PlayerName));
-                    }
-                }
-            }
+            DoRenamePlayer(args.PlayerName, form.PlayerName);
         }
 
         private void PlayerListBox_OnDelete(PlayerListBox source, PlayerListBoxArgs args) {
-            if (this.eventPanel.CurrentRound is null) return;
-
-            Round round = this.eventPanel.CurrentRound;
-            foreach (Team team in round.SeekDeep<Team>()) {
-                if (team.Players.Contains(args.PlayerInfo)) {
-                    team.RemovePlayer(args.PlayerInfo);
-                }
-            }
-
-            round.IdlePlayers.Remove(args.PlayerInfo);
+            Round? round = this.eventPanel.CurrentRound;
+            if (round is null) return;
+            round.DeletePlayer(args.PlayerName);
         }
 
         private static void SetupFileDialog(FileDialog dialog) {
@@ -205,17 +184,6 @@ namespace Leagueinator.App.Forms.Main {
 
         private void File_Print(object sender, EventArgs e) {
             throw new NotImplementedException();
-            //    //var round = this.eventPanel.CurrentRound;
-            //    //if (round == null) return;
-            //    ////ScoreCardPrinter.Print(round);
-
-            //    //int _currentRoundIndex = this.eventPanel.LeagueEvent.Rounds.IndexOf(this.eventPanel.CurrentRound);
-            //    //var standingsPrinter = new MatchCardPrinter(round, _currentRoundIndex);
-
-            //    //if (this.printDialog.ShowDialog() == DialogResult.OK) {
-            //    //    this.printDocument.PrintPage += standingsPrinter.HndPrint;
-            //    //    this.printDocument.Print();
-            //    //}
         }
 
         private void Events_AddEvent(object sender, EventArgs e) {
@@ -224,10 +192,9 @@ namespace Leagueinator.App.Forms.Main {
             var childForm = new FormAddEvent();
             if (childForm.ShowDialog() == DialogResult.Cancel) return;
 
-            var lEvent = this.League.AddEvent(
+            var lEvent = this.League.NewLeagueEvent(
                 childForm.EventName,
-                childForm.Date,
-                childForm.Settings
+                childForm.Date
             );
 
             IsSaved.Value = false;
@@ -261,11 +228,11 @@ namespace Leagueinator.App.Forms.Main {
         private void Events_SelectEvent(object sender, EventArgs e) {
             if (this.League is null) return;
 
-            FormSelectEvent childForm = new FormSelectEvent();
-            childForm.SetEvents(this.League.LeagueEvents);
+            FormSelectEvent childForm = new FormSelectEvent(this.League.LeagueEvents);
 
             DialogResult result = childForm.ShowDialog();
             if (result == DialogResult.Cancel) return;
+            if (childForm.LeagueEvent is null) return;
 
             if (childForm.Action == "Select") {
                 LeagueEvent lEvent = childForm.LeagueEvent;
@@ -346,95 +313,17 @@ namespace Leagueinator.App.Forms.Main {
             return form;
         }
 
-        private static void SortFinal(List<object> final) {
-            if (final.Count <= 1) return;
-
-            final.Sort((obj1, obj2) => {
-                var name1 = (obj1 as IHasPlayer)!.Player.Name;
-                var name2 = (obj2 as IHasPlayer)!.Player.Name;
-                var nameCompare = string.Compare(name1, name2);
-                if (nameCompare != 0) return nameCompare;
-
-                if (obj1 is EventDatum) return -1;
-                if (obj2 is EventDatum) return 1;
-
-                return (obj1 as RoundDatum)!.Round - (obj2 as RoundDatum)!.Round;
-            });
-        }
-
         private void View_Report(object sender, EventArgs e) {
-            LeagueEvent? lEvent = this.eventPanel.LeagueEvent;
-            if (lEvent == null) return;
-
-            var form = this.InitFormReport(() => {
-                var lEvent = this.eventPanel.LeagueEvent;
-                List<object> final = new(GenerateEventData.ByPlayer(lEvent));
-
-                foreach (Round round in lEvent.Rounds) {
-                    final.AddRange(this.GenerateRoundData(round));
-                }
-
-                SortFinal(final);
-                return final;
-            });
-
-            form.Text = "View Report";
-            form.RefreshAll();
-            form.ShowDialog(this);
+            throw new NotImplementedException();
         }
 
         private void View_RoundSummary(object sender, EventArgs e) {
-            if (eventPanel.CurrentRound == null) return;
-
-            var form = this.InitFormReport(() => {
-                List<object> final = new(this.GenerateRoundData(eventPanel.CurrentRound));
-                SortFinal(final);
-                return final;
-            });
-
-            form.Text = "Round Report";
-            form.RefreshAll();
-            form.ShowDialog(this);
+            throw new NotImplementedException();
         }
+
         private void View_EventSummary(object sender, EventArgs e) {
-            var form = this.InitFormReport(() => {
-                List<object> final = new(GenerateEventData.ByPlayer(eventPanel.LeagueEvent));
-                SortFinal(final);
-                return final;
-            });
-
-            form.Text = "Event Report";
-            form.RefreshAll();
-            form.ShowDialog(this);
+            throw new NotImplementedException();
         }
-
-        private List<RoundDatum> GenerateRoundData(Round round) {
-            Debug.WriteLine("GenerateRoundData");
-            List<RoundDatum> roundData = new();
-
-            var lEvent = this.eventPanel.LeagueEvent;
-            if (lEvent == null) return roundData;
-
-            lEvent.Players.ForEach(player => {
-                roundData.Add(new RoundDatum(lEvent, round, player));
-            });
-
-            roundData.Sort();
-            roundData.Reverse();
-
-            int rank = 1;
-            roundData.ForEach(datum => {
-                var prev = roundData.Prev(datum);
-
-                if (prev == null || datum.Score == prev.Score) {
-                    datum.Rank = rank;
-                }
-                else {
-                    datum.Rank = ++rank;
-                }
-            });
-            return roundData;
-        }             
 
         private void Players_Copy(object sender, EventArgs e) {
             if (this.eventPanel.LeagueEvent == null) return;
@@ -447,8 +336,8 @@ namespace Leagueinator.App.Forms.Main {
             Round? previous = this.eventPanel.LeagueEvent.Rounds.Prev(current);
             if (previous == null) return;
 
-            foreach (PlayerInfo pInfo in previous.IdlePlayers) {
-                current.IdlePlayers.Add(pInfo);
+            foreach (string playerName in previous.IdlePlayers) {
+                current.IdlePlayers.Add(playerName);
             }
 
             for (int m = 0; m < current.Matches.Count; m++) {
@@ -457,9 +346,10 @@ namespace Leagueinator.App.Forms.Main {
                 for (int t = 0; t < match.Teams.Count; t++) {
                     Team? team = match.Teams[t];
                     if (team is null) continue;
-                    for (int p = 0; p < team.Players.MaxSize; p++) {
-                        team.Players[p] = previous.Matches[m]?.Teams[t]?.Players[p];
-                    }
+                    throw new NotImplementedException();
+                    //for (int p = 0; p < team.Players.MaxSize; p++) {
+                        //team.Players[p] = previous.Matches[m]?.Teams[t]?.Players[p];
+                    //}
                 }
             }
         }
@@ -477,13 +367,14 @@ namespace Leagueinator.App.Forms.Main {
                 for (int t = 0; t < match.Teams.Count; t++) {
                     Team? team = match.Teams[t];
                     if (team is null) continue;
-                    for (int p = 0; p < team.Players.MaxSize; p++) {
-                        if (current.IdlePlayers.Count == 0) return;
-                        if (team.Players[p] is not null) continue;
-                        int r = random.Next(current.IdlePlayers.Count);
-                        team.Players[p] = current.IdlePlayers[r];
-                        current.IdlePlayers.RemoveAt(r);
-                    }
+                    throw new NotImplementedException();
+                    //for (int p = 0; p < team.Players.MaxSize; p++) {
+                    //    if (current.IdlePlayers.Count == 0) return;
+                    //    if (team.Players[p] is not null) continue;
+                    //    int r = random.Next(current.IdlePlayers.Count);
+                    //    team.Players[p] = current.IdlePlayers[r];
+                    //    current.IdlePlayers.RemoveAt(r);
+                    //}
                 }
             }
         }
@@ -493,8 +384,9 @@ namespace Leagueinator.App.Forms.Main {
             if (this.eventPanel.CurrentRound == null) return;
 
             Round current = this.eventPanel.CurrentRound;
-            current.IdlePlayers.Clear();
-            foreach (Team team in current.Teams) { team.Clear(); }
+            throw new NotImplementedException();
+            //current.IdlePlayers.Clear();
+            //foreach (Team team in current.Teams) { team.Clear(); }
         }
 
         private void Players_Reset(object sender, EventArgs e) {
@@ -502,12 +394,13 @@ namespace Leagueinator.App.Forms.Main {
             if (this.eventPanel.CurrentRound == null) return;
 
             Round current = this.eventPanel.CurrentRound;
-            foreach (Team team in current.Teams) {
-                foreach (PlayerInfo pInfo in team.Players.Values.NotNull()) {
-                    current.IdlePlayers.Add(pInfo);
-                }
-                team.Clear();
-            }
+            throw new NotImplementedException();
+            //foreach (Team team in current.Teams) {
+            //    foreach (PlayerInfo pInfo in team.Players.Values.NotNull()) {
+            //        current.IdlePlayers.Add(pInfo);
+            //    }
+            //    team.Clear();
+            //}
         }
 
         private void File_Print_Preview(object sender, EventArgs e) {
@@ -517,11 +410,12 @@ namespace Leagueinator.App.Forms.Main {
             if (round == null) return;
 
             int currentRoundIndex = lEvent.Rounds.IndexOf(round);
-            var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
-            this.printDocument.PrintPage += mcp.HndPrint;
+            throw new NotImplementedException();
+            //var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
+            //this.printDocument.PrintPage += mcp.HndPrint;
 
-            this.printPreviewDialog.Document = this.printDocument;
-            this.printPreviewDialog.ShowDialog();
+            //this.printPreviewDialog.Document = this.printDocument;
+            //this.printPreviewDialog.ShowDialog();
         }
 
         private void File_Print_Card(object sender, EventArgs e) {
@@ -532,12 +426,13 @@ namespace Leagueinator.App.Forms.Main {
 
 
             int currentRoundIndex = lEvent.Rounds.IndexOf(round);
-            var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
+            throw new NotImplementedException();
+            //var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
 
-            if (this.printDialog.ShowDialog() == DialogResult.OK) {
-                this.printDocument.PrintPage += mcp.HndPrint;
-                this.printDocument.Print();
-            }
+            //if (this.printDialog.ShowDialog() == DialogResult.OK) {
+            //    this.printDocument.PrintPage += mcp.HndPrint;
+            //    this.printDocument.Print();
+            //}
         }
 
         private void Players_Scramble(object sender, EventArgs e) {
@@ -549,8 +444,9 @@ namespace Leagueinator.App.Forms.Main {
             Round target = this.eventPanel.CurrentRound;
             Round first = lEvent.Rounds.First();
 
-            Scramble scramble = new Scramble(first, target);
-            scramble.DoScramble(lEvent.Rounds.IndexOf(target));
+            throw new NotImplementedException();
+            //Scramble scramble = new Scramble(first, target);
+            //scramble.DoScramble(lEvent.Rounds.IndexOf(target));
         }
 
         private void Players_AssignLanes(object sender, EventArgs e) {
@@ -565,29 +461,31 @@ namespace Leagueinator.App.Forms.Main {
             LeagueEvent lEvent = this.eventPanel.LeagueEvent;
             Round target = this.eventPanel.CurrentRound;
 
-            var laneSolution = new LaneSolution(lEvent, target);
-            var algo = new GreedyWalk();
+            throw new NotImplementedException();
+            //var laneSolution = new LaneSolution(lEvent, target);
+            //var algo = new GreedyWalk();
 
-            var bestSolution = algo.Run(laneSolution, _s => {
-                LaneSolution? solution = _s as LaneSolution;
-                if (solution is null) return;
-            });
+            //var bestSolution = algo.Run(laneSolution, _s => {
+            //    LaneSolution? solution = _s as LaneSolution;
+            //    if (solution is null) return;
+            //});
 
-            for (int i = 0; i < bestSolution.Count(); i++) {
-                target.Matches[i].CopyFrom(bestSolution[i]);
-            }
+            //for (int i = 0; i < bestSolution.Count(); i++) {
+            //    target.Matches[i].CopyFrom(bestSolution[i]);
+            //}
         }
 
         private void File_Print_Standings(object sender, EventArgs e) {
             var lEvent = this.eventPanel.LeagueEvent;
             if (lEvent == null) return;
 
-            var printer = new StandingsPrinter(lEvent);
+            throw new NotImplementedException();
+            //var printer = new StandingsPrinter(lEvent);
 
-            this.printDocument.DefaultPageSettings.Landscape = true;
-            this.printDocument.PrintPage += printer.HndPrint;
-            this.printPreviewDialog.Document = this.printDocument;
-            this.printPreviewDialog.ShowDialog();
+            //this.printDocument.DefaultPageSettings.Landscape = true;
+            //this.printDocument.PrintPage += printer.HndPrint;
+            //this.printPreviewDialog.Document = this.printDocument;
+            //this.printPreviewDialog.ShowDialog();
         }
     }
 }

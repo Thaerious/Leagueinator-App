@@ -1,20 +1,25 @@
 ﻿
 using Leagueinator.Utility;
+using Leagueinator_App;
+using Model;
 
 namespace Leagueinator.App.Algorithms.Solutions {
     public class LaneSolution : ASolution<Match> {
         private static readonly Random random = new Random();
         private readonly LeagueEvent LeagueEvent;
         public readonly Round Reference;
+        public LeagueSettings Settings
 
-        public LaneSolution(LeagueEvent leagueEvent, Round round) : base(leagueEvent.Settings.LaneCount) {
+        public LaneSolution(LeagueEvent leagueEvent, Round round, LeagueSettings settings) : base(settings.LaneCount) {
             this.LeagueEvent = leagueEvent;
             this.Reference = round;
+            this.Settings = settings;
 
-            for (int lane = 0; lane < leagueEvent.Settings.LaneCount; lane++) {
-                this[lane] = new Match(round.Matches[lane].Settings);
-                this[lane].CopyFrom(round.Matches[lane]);
-            }
+            throw new NotImplementedException();
+            //for (int lane = 0; lane < settings.LaneCount; lane++) {
+            //    this[lane] = new Match(round.Matches[lane].Settings);
+            //    this[lane].CopyFrom(round.Matches[lane]);
+            //}
         }
 
         /// <summary>
@@ -23,13 +28,14 @@ namespace Leagueinator.App.Algorithms.Solutions {
         /// </summary>
         /// <returns></returns>
         public override int Evaluate() {
-            int laneCount = this.LeagueEvent.Settings.LaneCount;
+            int laneCount = this.Settings.LaneCount;
             int sum = 0;
 
-            for (int lane = 0; lane < this.Size; lane++) {
-                Match match = this[lane];
-                match.Players.ForEach(p => sum += this.Count(p, lane));
-            }
+            throw new NotImplementedException();
+            //for (int lane = 0; lane < this.Size; lane++) {
+            //    Match match = this[lane];
+            //    match.Players.ForEach(p => sum += this.Count(p, lane));
+            //}
 
             return sum;
         }
@@ -40,7 +46,7 @@ namespace Leagueinator.App.Algorithms.Solutions {
         /// <param name="player"></param>
         /// <param name="lane"></param>
         /// <returns></returns>
-        internal int Count(PlayerInfo player, int lane) {
+        internal int Count(string player, int lane) {
             int sum = 0;
 
             foreach (Round round in this.LeagueEvent.Rounds) {

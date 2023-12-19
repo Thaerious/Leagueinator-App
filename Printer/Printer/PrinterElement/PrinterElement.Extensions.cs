@@ -1,7 +1,5 @@
 ﻿using Leagueinator.Utility;
-using Leagueinator.Model.Tables;
 using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer
 {

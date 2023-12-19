@@ -7,12 +7,23 @@ namespace Model.Tables {
 
         public static class COL {
             public static readonly string ID = "uid";
-            public static readonly string NAME = "name";
+            public static readonly string EVENT_NAME = "name";
             public static readonly string DATE = "date";
+            public static readonly string ROUND_COUNT = "round_count";
         }
 
         public EventDirectoryTable() : base(TABLE_NAME) {
             MakeTable(this);
+        }
+
+        public DataRow AddRow(string eventName, string date) {
+            var row = this.NewRow();
+
+            row[EventDirectoryTable.COL.EVENT_NAME] = eventName;
+            row[EventDirectoryTable.COL.DATE] = date;
+
+            this.Rows.Add(row);
+            return row;
         }
 
         public static DataTable MakeTable(EventDirectoryTable? table = null) {
@@ -27,7 +38,7 @@ namespace Model.Tables {
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(string),
-                ColumnName = COL.NAME,
+                ColumnName = COL.EVENT_NAME,
                 Unique = true,
                 AutoIncrement = false
             });
@@ -37,6 +48,14 @@ namespace Model.Tables {
                 ColumnName = COL.DATE,
                 Unique = false,
                 AutoIncrement = false
+            });
+
+            table.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.ROUND_COUNT,
+                Unique = false,
+                AutoIncrement = false,
+                DefaultValue = 0
             });
 
             return table;

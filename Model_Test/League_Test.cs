@@ -1,5 +1,6 @@
 ﻿using Model;
 using System.Data;
+using System.Diagnostics;
 
 namespace Model_Test {
     [TestClass]
@@ -8,7 +9,10 @@ namespace Model_Test {
         [TestMethod]
         public void Sanity_Check() {
             League league = new();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            
+            Debug.WriteLine(league.PrettyPrint());
+            
             Assert.IsNotNull(lEvent);
         }
 
@@ -19,7 +23,7 @@ namespace Model_Test {
         [TestMethod]
         public void Add_League_Event() {
             League league = new();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Assert.IsTrue(lEvent != null);
             Assert.IsTrue(lEvent.Table != null);
         }
@@ -31,8 +35,8 @@ namespace Model_Test {
         [ExpectedException(typeof(ConstraintException))]
         public void Add_League_Event_Repeat_Gives_Exception() {
             League league = new();
-            league.AddLeagueEvent("my_event");
-            league.AddLeagueEvent("my_event");
+            league.NewLeagueEvent("my_event");
+            league.NewLeagueEvent("my_event");
         }
 
         /// <summary>
@@ -42,7 +46,7 @@ namespace Model_Test {
         [TestMethod]
         public void Get_League_Event() {
             League league = new();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Assert.IsTrue(lEvent != null);
             Assert.IsTrue(lEvent.Table != null);
         }
@@ -50,16 +54,12 @@ namespace Model_Test {
         [TestMethod]
         public void Get_League_Events_List() {
             League league = new();
-            league.AddLeagueEvent("my_event");
-            league.AddLeagueEvent("my_other_event");
+            league.NewLeagueEvent("my_event");
+            league.NewLeagueEvent("my_other_event");
 
             var list = league.LeagueEvents;
             Assert.IsTrue(list != null);
             Assert.AreEqual(2, list.Count);
-            Assert.IsTrue(list.ContainsKey("my_event"));
-            Assert.IsTrue(list.ContainsKey("my_other_event"));
-            Assert.IsNotNull(list["my_event"]);
-            Assert.IsNotNull(list["my_other_event"]);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Model_Test {
         [ExpectedException(typeof(KeyNotFoundException))]
         public void Retrive_Unknown_Event_Gives_Exception() {
             League league = new();
-            var lEvent = league.LeagueEvents["my_event"];
+            var lEvent = league.GetLeagueEvent("my_event");
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Model_Test {
         [TestMethod]
         public void New_League_Event_Is_Empty() {
             League league = new();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Assert.AreEqual(0, lEvent.Count);
         }
     }

@@ -57,7 +57,7 @@
             this.buttonDelete.TabIndex = 0;
             this.buttonDelete.Text = "Delete";
             this.buttonDelete.UseVisualStyleBackColor = true;
-            this.buttonDelete.Click += new System.EventHandler(this.clickDelete);
+            this.buttonDelete.Click += new System.EventHandler(this.ClickDelete);
             // 
             // listEvents
             // 
@@ -80,7 +80,7 @@
             this.butSelect.TabIndex = 2;
             this.butSelect.Text = "Select";
             this.butSelect.UseVisualStyleBackColor = true;
-            this.butSelect.Click += new System.EventHandler(this.clickSelect);
+            this.butSelect.Click += new System.EventHandler(this.ClickSelect);
             // 
             // FormSelectEvent
             // 

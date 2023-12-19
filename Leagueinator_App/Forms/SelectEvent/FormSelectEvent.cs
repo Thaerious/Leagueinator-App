@@ -1,41 +1,46 @@
 ﻿
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Windows.Forms;
+using Model;
 
 namespace Leagueinator.App.Forms.SelectEvent {
     public partial class FormSelectEvent : Form {
         public string Action = "";
-        public LeagueEvent LeagueEvent = null;
+        public LeagueEvent? LeagueEvent { get; private set; }
 
-        public FormSelectEvent() {
+        public FormSelectEvent(IEnumerable<LeagueEvent> events) {       
             this.InitializeComponent();
+            this.SetEvents(events);
         }
 
-        public void SetEvents(IEnumerable<LeagueEvent> events) {
+        private void SetEvents(IEnumerable<LeagueEvent> events) {
             this.listEvents.Items.Clear();
             this.listEvents.Items.AddRange(
-                events.Select(e => new LeagueEventWrapper { LeagueEvent = e }).ToArray()
+                events.Select(e => new LeagueEventWrapper(e)).ToArray()
             );
         }
 
-        private void clickSelect(object sender, EventArgs e) {
+        private void ClickSelect(object sender, EventArgs e) {
             this.Action = "Select";
-            this.LeagueEvent = (this.listEvents.SelectedItem as LeagueEventWrapper).LeagueEvent;
+            if (this.listEvents.SelectedItem is not LeagueEventWrapper selected) return;
+            this.LeagueEvent = selected.LeagueEvent;
         }
 
-        private void clickDelete(object sender, EventArgs e) {
+        private void ClickDelete(object sender, EventArgs e) {
             this.Action = "Delete";
-            this.LeagueEvent = (this.listEvents.SelectedItem as LeagueEventWrapper).LeagueEvent;
+            if (this.listEvents.SelectedItem is not LeagueEventWrapper selected) return;
+            this.LeagueEvent = selected.LeagueEvent;
         }
     }
 
     class LeagueEventWrapper {
         public LeagueEvent LeagueEvent;
+
+        public LeagueEventWrapper(LeagueEvent leagueEvent) {
+            this.LeagueEvent = leagueEvent;
+        }
+
         public override string ToString() {
-            return this.LeagueEvent.Name + " " + this.LeagueEvent.Date;
+            return this.LeagueEvent.EventName + " " + this.LeagueEvent.EventDate;
         }
     }
 }

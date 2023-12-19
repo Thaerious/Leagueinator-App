@@ -9,7 +9,7 @@ namespace Model_Test {
         [TestMethod]
         public void Match() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -19,7 +19,7 @@ namespace Model_Test {
         [TestMethod]
         public void Index_0() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();            
@@ -29,7 +29,7 @@ namespace Model_Test {
         [TestMethod]
         public void Index_1() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             match.NewTeam();
@@ -40,7 +40,7 @@ namespace Model_Test {
         [TestMethod]
         public void Add_New_Player() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -54,7 +54,7 @@ namespace Model_Test {
         [TestMethod]
         public void Add_Exising_Player() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -67,7 +67,7 @@ namespace Model_Test {
         [TestMethod]
         public void Has_Player_True() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -80,7 +80,7 @@ namespace Model_Test {
         [TestMethod]
         public void Has_Player_False() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -92,7 +92,7 @@ namespace Model_Test {
         [TestMethod]
         public void Get_Players_Empty() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -104,7 +104,7 @@ namespace Model_Test {
         [TestMethod]
         public void Get_Players_One() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -118,7 +118,7 @@ namespace Model_Test {
         [TestMethod]
         public void Get_Players_Many() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -138,7 +138,7 @@ namespace Model_Test {
         [TestMethod]
         public void Remove_Player_Exists() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -155,7 +155,7 @@ namespace Model_Test {
         [TestMethod]
         public void Remove_Player_Not_Exists() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Team team = match.NewTeam();
@@ -170,7 +170,7 @@ namespace Model_Test {
         [TestMethod]
         public void Remove_Player_Multiple_Matches() {
             League league = new League();
-            LeagueEvent lEvent = league.AddLeagueEvent("my_event");
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
 
             lEvent.NewRound()
                 .GetMatch(0)
