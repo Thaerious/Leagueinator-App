@@ -32,6 +32,19 @@ namespace Model.Tables {
             return row;
         }
 
+        public DataRow GetRow(string eventName, int round, int lane, int teamIdx) {
+            var rows = this.AsEnumerable()
+                        .Where(row => row.Field<string>(COL.EVENT_NAME) == eventName)
+                        .Where(row => row.Field<int>(COL.ROUND) == round)
+                        .Where(row => row.Field<int>(COL.LANE) == lane)
+                        .Where(row => row.Field<int>(COL.TEAM_IDX) == teamIdx)
+                        .ToList()
+                        ;
+
+            if (rows.Count == 0) throw new KeyNotFoundException();
+            return rows[0];
+        }
+
         public static EventTable MakeTable(EventTable? table = null) {
             table ??= new();
 

@@ -2,6 +2,7 @@
 using Leagueinator.Utility;
 using LLeagueinator.App.Forms.Main;
 using System.Diagnostics;
+using Model;
 
 namespace Leagueinator.App.Forms.Main {
     public class Scramble {
@@ -12,15 +13,15 @@ namespace Leagueinator.App.Forms.Main {
             this.refRound = reference;
             this.targetRound = target;
 
-            PlayerInfo[] rr = this.refRound.AllPlayers.ToArray();
+            string[] rr = this.refRound.AllPlayers.ToArray();
         }
 
         public void DoScramble(int count) {
-            List<PlayerInfo> players = new();
+            List<string> players = new();
 
             foreach(Match match in refRound.Matches) {
-                foreach(Team team in match.Teams.Values) {
-                    foreach(PlayerInfo player in team.Players.Values) {
+                foreach(Team team in match.Teams) {
+                    foreach(string player in team.Players) {
                         if (player is null) continue;
                         players.Add(player);
                     }
@@ -36,9 +37,9 @@ namespace Leagueinator.App.Forms.Main {
             this.AssignTeams(adjacent);
         }
 
-        private PlayerInfo[] Shift(PlayerInfo[] players, int count) {
+        private string[] Shift(string[] players, int count) {
             while (count-- > 0) {
-                PlayerInfo temp = players[1];
+                string temp = players[1];
                 for (int i = 1; i < players.Length - 1; i++) {
                     players[i] = players[i + 1];
                 }
@@ -47,9 +48,9 @@ namespace Leagueinator.App.Forms.Main {
             return players;
         }
 
-        private void AssignTeams(List<PlayerInfo> players) {
+        private void AssignTeams(List<string> players) {
             this.targetRound.ResetPlayers();
-            Queue<PlayerInfo> queue = new Queue<PlayerInfo>(players);
+            Queue<string> queue = new Queue<string>(players);
             Debug.WriteLine(players.DelString());
 
             int m = 0;
@@ -61,7 +62,7 @@ namespace Leagueinator.App.Forms.Main {
                     Team? targetTeam = targetMatch.Teams[t++];
                     
                     for (int i = 0; i < refTeam.Players.Count; i++) {
-                        PlayerInfo player = queue.Dequeue();
+                        string player = queue.Dequeue();
                         targetTeam.AddPlayer(player);
                         if (this.targetRound.IdlePlayers.Contains(player) ) {
                             this.targetRound.IdlePlayers.Remove(player);

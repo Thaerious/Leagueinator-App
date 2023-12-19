@@ -1,4 +1,4 @@
-﻿
+﻿using Leagueinator_App;
 
 namespace Leagueinator.App.Forms.AddEvent {
     public partial class FormAddEvent : Form {

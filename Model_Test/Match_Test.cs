@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Tables;
 using System.Data;
 using System.Diagnostics;
 
@@ -23,6 +24,19 @@ namespace Model_Test {
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
             Assert.AreEqual(0, match.Size);
+        }
+
+        [TestMethod]
+        public void New_Team() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team t1 = match.NewTeam();
+            Team t2 = match.NewTeam();
+
+            Assert.AreEqual(0, t1.TeamIndex);
+            Assert.AreEqual(1, t2.TeamIndex);
         }
 
         [TestMethod]
@@ -112,8 +126,8 @@ namespace Model_Test {
             team1.AddPlayer("Eve");
 
             Team team2 = match.NewTeam();
-            team1.AddPlayer("Chucky");
-            team1.AddPlayer("Dianne");
+            team2.AddPlayer("Chucky");
+            team2.AddPlayer("Dianne");
 
             var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
 

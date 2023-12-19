@@ -1,18 +1,13 @@
-﻿
-using Leagueinator.App.Algorithms.Solutions;
-using Leagueinator.App.Components.PlayerListBox;
+﻿using Leagueinator.App.Components.PlayerListBox;
 using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
 using Leagueinator.App.Forms.RenamePlayer;
 using Leagueinator.App.Forms.Report;
 using Leagueinator.App.Forms.SelectEvent;
 using Leagueinator.Utility;
-using Leagueinator.Utility.Seek;
 using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection;
-using Leagueinator.Algorithms;
-using Leagueinator_App.Forms;
 using Model;
 using Leagueinator_App;
 

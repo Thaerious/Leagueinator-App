@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Leagueinator.Utility;
+using Model;
 using System.Diagnostics;
 
 namespace Model_Test {
@@ -126,6 +127,117 @@ namespace Model_Test {
 
             Assert.AreEqual(0, list.Count);
             Assert.AreEqual(0, match.Teams.Count);
+        }
+
+        [TestMethod]
+        public void Idle_Add_Contains() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+
+            round.IdlePlayers.Add("Zen");
+
+            Assert.IsTrue(round.IdlePlayers.Contains("Zen"));
+        }
+
+        [TestMethod]
+        public void Idle_Remove_Contains() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+
+            round.IdlePlayers.Add("Zen");
+            round.IdlePlayers.Remove("Zen");
+
+            Assert.IsFalse(round.IdlePlayers.Contains("Zen"));
+        }
+
+        [TestMethod]
+        public void Idle_Iterator() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+
+            round.IdlePlayers.Add("Zen");
+
+            foreach (string player in round.IdlePlayers.Cast<string>()) {
+                Assert.AreEqual("Zen", player);
+            }
+        }
+
+        [TestMethod]
+        public void AllPlayers() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+
+            Team team1 = match.NewTeam();
+            team1.AddPlayer("Adam");
+            team1.AddPlayer("Eve");
+
+            Team team2 = match.NewTeam();
+            team1.AddPlayer("Chucky");
+            team1.AddPlayer("Dianne");
+
+            round.IdlePlayers.Add("Zed");
+
+            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne", "Zed" };
+
+            Debug.WriteLine(league.PrettyPrint());
+            CollectionAssert.AreEquivalent(expected, round.AllPlayers as System.Collections.ICollection);
+        }
+
+        [TestMethod]
+        public void Players() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+
+            Team team1 = match.NewTeam();
+            team1.AddPlayer("Adam");
+            team1.AddPlayer("Eve");
+
+            Team team2 = match.NewTeam();
+            team2.AddPlayer("Chucky");
+            team2.AddPlayer("Dianne");
+
+            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
+
+            Debug.WriteLine(league.PrettyPrint());
+            CollectionAssert.AreEquivalent(expected, round.Players.ToList());
+        }
+
+        [TestMethod]
+        public void Reset() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+
+            Team team1 = match.NewTeam();
+            team1.AddPlayer("Adam");
+            team1.AddPlayer("Eve");
+
+            Team team2 = match.NewTeam();
+            team2.AddPlayer("Chucky");
+            team2.AddPlayer("Dianne");
+
+            round.IdlePlayers.Add("Zed");
+            round.ResetPlayers();
+
+            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne", "Zed" };
+
+            Debug.WriteLine(league.PrettyPrint());
+            Debug.WriteLine(round.IdlePlayers.DelString());
+            CollectionAssert.AreEquivalent(expected, round.IdlePlayers.ToList());
         }
     }
 }

@@ -1,78 +1,13 @@
 ﻿using Leagueinator.Components;
 
 using Leagueinator.Utility.ObservableDiscreteCollection;
-using static Leagueinator.Model.Team;
+using Model;
 
 namespace Leagueinator.App.Components.MatchCard {
     public partial class MatchCard : UserControl {
-        private DiscreteList<PlayerInfo>.CollectionChangedHnd hnd1 = delegate { }, hnd2 = delegate { };
-        private TeamUpdateHnd team0UpdateHnd = delegate { }, team1UpdateHnd = delegate { };
 
-        public Match? Match {
-            get => this._match;
-            set {
-                ArgumentNullException.ThrowIfNull(value, "MatchCard set Match");
-                if (value.Teams[0] is null) throw new NullReferenceException();
-                if (value.Teams[1] is null) throw new NullReferenceException();
+        public Match? Match { get; set; }
 
-                if (this._match == value) return;
-
-                // if the current match is not null remove the previous handlers
-                if (this._match != null) {
-
-                    value.Teams[0].Players.CollectionChanged -= this.hnd1;
-                    value.Teams[1].Players.CollectionChanged -= this.hnd2;
-                    value.Teams[0].OnUpdate -= team0UpdateHnd;
-                    value.Teams[1].OnUpdate -= team1UpdateHnd;
-                }
-
-                this.ClearLabels();
-                for (int i = 0; i < value.Teams[0].Players.MaxSize; i++) {
-                    Label label = this.AddLabel(0, "");
-                    label.Text = value?.Teams[0]?.Players[i]?.Name;
-                }
-                for (int i = 0; i < value.Teams[1].Players.MaxSize; i++) {
-                    Label label = this.AddLabel(1, "");
-                    label.Text = value?.Teams[1]?.Players[i]?.Name;
-                }
-
-                this.txtScore0.Text = value.Teams[0].Bowls.ToString();
-                this.txtScore1.Text = value.Teams[1].Bowls.ToString();
-
-                this.hnd1 = (src, args) => this.PlayersCollectionChanged(this.flowTeam0, src, args);
-                this.hnd2 = (src, args) => this.PlayersCollectionChanged(this.flowTeam1, src, args);
-                this.team0UpdateHnd = (src, args) => this.BowlsChanged(src, this.txtScore0, args);
-                this.team1UpdateHnd = (src, args) => this.BowlsChanged(src, this.txtScore1, args);
-
-                value.Teams[0].Players.CollectionChanged += this.hnd1;
-                value.Teams[1].Players.CollectionChanged += this.hnd2;
-                value.Teams[0].OnUpdate += this.team0UpdateHnd;
-                value.Teams[1].OnUpdate += this.team1UpdateHnd;
-
-                this._match = value;
-                this.Reposition();
-            }
-        }
-
-        private void BowlsChanged(Team team, TextBox textBox, TeamUpdateArgs args) {
-            if (args.NewValue != null && args.NewValue.ToString() != textBox.Text) {
-                textBox.Text = args.NewValue.ToString();
-            }
-        }
-
-        private void PlayersCollectionChanged(FlowLayoutPanel flow, DiscreteList<PlayerInfo> source, DiscreteList<PlayerInfo>.Args args) {
-            Label label = (Label)flow.Controls[args.Key];
-
-            switch (args.Action) {
-                case CollectionChangedAction.Add:
-                case CollectionChangedAction.Replace:
-                    label.Text = args.NewValue.Name;
-                    break;
-                case CollectionChangedAction.Remove:
-                    label.Text = "";
-                    break;
-            }
-        }
 
         public MatchCard() {
             this.InitializeComponent();
@@ -108,7 +43,7 @@ namespace Leagueinator.App.Components.MatchCard {
 
             flowPanel.Controls.Add(label);
 
-            new ControlDragHandlers<PlayerInfo>(label,
+            new ControlDragHandlers<string>(label,
                 () => { // get data from source
                     Team? team = this.Match?.Teams[teamIndex];
                     if (team == null) return null;

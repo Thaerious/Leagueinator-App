@@ -8,7 +8,7 @@ namespace Leagueinator.App.Algorithms.Solutions {
         private static readonly Random random = new Random();
         private readonly LeagueEvent LeagueEvent;
         public readonly Round Reference;
-        public LeagueSettings Settings
+        public LeagueSettings Settings;
 
         public LaneSolution(LeagueEvent leagueEvent, Round round, LeagueSettings settings) : base(settings.LaneCount) {
             this.LeagueEvent = leagueEvent;
@@ -64,9 +64,10 @@ namespace Leagueinator.App.Algorithms.Solutions {
         }
 
         public override LaneSolution Clone() {
-            LaneSolution that = new LaneSolution(this.LeagueEvent, this.Reference);
-            for (int i = 0; i < this.Size; i++) that[i] = this[i];
-            return that;
+            throw new NotImplementedException();
+            //LaneSolution that = new LaneSolution(this.LeagueEvent, this.Reference);
+            //for (int i = 0; i < this.Size; i++) that[i] = this[i];
+            //return that;
         }
 
         public override void Mutate() {

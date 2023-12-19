@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Tables\IdleTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Team.cs" />
     <Compile Update="Match.cs" />
   </ItemGroup>

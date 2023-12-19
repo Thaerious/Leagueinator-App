@@ -1,67 +1,89 @@
 ﻿using Model.Tables;
 using System.Data;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace Model {
 
     /// <summary>
-    /// A view of TeamTable paired with a Row from EventTable.
+    /// A view of TeamTableView paired with a EventTableRow from EventTable.
     /// The public methods may update the data set.
     /// </summary>
-    public class Team : DataView, IDeleted{
+    public class Team : DataView, IDeleted {
+
+        public League League { get => this.LeagueEvent.League; }
+
+        public LeagueEvent LeagueEvent { get => this.Round.LeagueEvent; }
+
+        public Round Round { get => this.Match.Round; }
+
         public Match Match { get; }
 
         public int TeamIndex { get; }
+
+        public int EventTableUID { get => (int)EventTableRow[EventTable.COL.ID]; }
 
         public List<string> Players {
             get => this.GetPlayers();
         }
 
-        private DataRow Row { get; }
+        private DataRow EventTableRow { get; }
 
         public bool Deleted { get; private set; } = false;
-
-        internal Team(Match match, DataRow row, int teamIndex) : base(match.Round.LeagueEvent.League.TeamTable) {            
-            this.Match = match;
-            this.Row = row;
-            this.TeamIndex = teamIndex;
+        public int Bowls {
+            get => (int)this.EventTableRow[EventTable.COL.BOWLS];
+            set => this.EventTableRow[EventTable.COL.BOWLS] = value;
         }
+
+        internal Team(Match match, DataRow eventTableRow, int teamIndex) : base(match.League.TeamTable) {
+            this.Match = match;
+            this.EventTableRow = eventTableRow;
+            this.TeamIndex = teamIndex;
+
+            this.RowFilter = $"{TeamTable.COL.EVENT_TABLE_UID} = {this.EventTableUID}";
+
+            var row = this.League.EventTable.GetRow(
+                eventName: this.LeagueEvent.EventName,
+                round: this.Round.RoundIndex,
+                lane: this.Match.Lane,
+                teamIdx: this.TeamIndex
+            );
+        }
+
 
         public bool AddPlayer(string name) {
             DeletedException.ThrowIf(this);
             if (this.HasPlayer(name)) return false;
 
-            this.Match.Round.LeagueEvent.League.TeamTable.AddRow(
-                eventName:  (string) this.Row[EventTable.COL.EVENT_NAME],
-                round:      (int) this.Row[EventTable.COL.ROUND],
-                teamIdx:    this.TeamIndex,
+            this.League.TeamTable.AddRow(
+                eventTableUID: this.EventTableUID,
                 playerName: name
             );
 
             return true;
         }
 
-        public bool HasPlayer(string name) {
+        /// <summary>
+        /// Add the player to the TeamTable for this team.
+        /// </summary>
+        /// <param playerName="playerName"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public bool HasPlayer(string playerName) {
             DeletedException.ThrowIf(this);
-            DataTable table = this.Table ?? throw new NullReferenceException();
-            string eventName = (string)this.Row[EventTable.COL.EVENT_NAME];
 
-            var rows = table.Select($"{TeamTable.COL.TEAM_IDX} = {this.TeamIndex}" +
-                                    $" AND {TeamTable.COL.PLAYER_NAME} = '{name}'" +
-                                    $" AND {TeamTable.COL.EVENT_NAME} = '{eventName}'");
-            return rows.Length > 0;
+            this.Sort = TeamTable.COL.PLAYER_NAME;
+            int index = this.Find(playerName);
+            return index != -1;
         }
 
-        public List<string> GetPlayers() {
+        private List<string> GetPlayers() {
             DeletedException.ThrowIf(this);
+
             List<string> list = [];
-            var table = this.Match.Round.LeagueEvent.League.TeamTable;
+            var table = this.League.TeamTable;
 
-            var view = new DataView(table) {
-                RowFilter = $"{TeamTable.COL.TEAM_IDX} = {this.TeamIndex}"
-            };
-
-            foreach (DataRowView row in view) {
+            foreach (DataRowView row in this) {
                 list.Add((string)row[TeamTable.COL.PLAYER_NAME]);
             }
 
@@ -72,7 +94,7 @@ namespace Model {
         /// Remove a player from this team.
         /// If the player doesn't exist no change is made.
         /// </summary>
-        /// <param name="v"></param>
+        /// <param playerName="v"></param>
         /// <returns>True if a change was made</returns>
         /// <exception cref="NotImplementedException"></exception>
         public bool RemovePlayer(string name) {
@@ -92,15 +114,21 @@ namespace Model {
             DeletedException.ThrowIf(this);
 
             foreach (string player in this.Players) this.RemovePlayer(player);
-            var eventTable = this.Match.Round.LeagueEvent.League.EventTable;
-            eventTable.Rows.Remove(this.Row);
+            var eventTable = this.League.EventTable;
+            eventTable.Rows.Remove(this.EventTableRow);
 
             this.Deleted = true;
         }
 
+        public void MovePlayer(string player, int newTeamIndex) {
+            this.League.TeamTable.RemoveRows(this.EventTableUID, player);
+            this.League.IdleTable.AddRow(this.LeagueEvent.EventName, this.Round.RoundIndex, player);
+        }
+
         public string PrettyPrint() {
             return this.Table.PrettyPrint(this) + "\n" +
-                   this.Row.PrettyPrint();
+                   this.EventTableRow.PrettyPrint();
         }
     }
 }
+

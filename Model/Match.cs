@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Data;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace Model {
 
@@ -9,15 +10,19 @@ namespace Model {
     /// A view of EventTable restricted to event name, Round, and match.
     /// </summary>
     public class Match : DataView, IDeleted {
-        public ICollection<string>? Players {
+        public ICollection<string> Players {
             get {
                 List<string> list = [];
                 foreach (Team team in this.Teams) {
-                    list.AddRange(team.Players);    
+                    list.AddRange(team.Players);
                 }
                 return list;
             }
         }
+
+        public League League { get => this.LeagueEvent.League; }
+
+        public LeagueEvent LeagueEvent { get => this.Round.LeagueEvent; }
 
         public Round Round { get; }
 
@@ -59,8 +64,12 @@ namespace Model {
             DataRowView[] rows = this.FindRows(index);
             if (rows.Length != 0) throw new Exception("Sanity Check Failed");
 
-            // Add row to event table.
-            this.AddRow(index);
+            this.League.EventTable.AddRow(
+                eventName: this.LeagueEvent.EventName,
+                round: this.Round.RoundIndex,
+                lane: this.Lane,
+                teamIdx: index
+            );
 
             return GetTeam(index);
         }
@@ -75,9 +84,7 @@ namespace Model {
             rows = this.FindRows(index);
             DataRow row = rows[0].Row;
 
-            return new Team(this, row, index) {
-                RowFilter = $"{TeamTable.COL.EVENT_NAME} = '{this.Round.LeagueEvent.EventName}'"
-            };
+            return new Team(this, row, index);
         }
 
         /// <summary>
@@ -108,9 +115,7 @@ namespace Model {
             return teams;
         }
 
-        internal DataRow AddRow(int teamIDX) {
-            return this.Round.AddRow(this.Lane, teamIDX);
-        }
+
 
         public void Delete() {
             DeletedException.ThrowIf(this);

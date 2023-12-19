@@ -46,8 +46,6 @@ namespace Model_Test {
             Team team = match.NewTeam();
             bool actual = team.AddPlayer("Adam");
 
-            Debug.WriteLine(league.PrettyPrint());
-
             Assert.IsTrue(actual);
         }
 
@@ -65,6 +63,21 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Players() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+            team.AddPlayer("Adam");
+            team.AddPlayer("Bernie");
+
+            List<string> expected = ["Adam", "Bernie"];
+            CollectionAssert.AreEquivalent(expected, round.AllPlayers as System.Collections.ICollection);
+
+        }
+
+        [TestMethod]
         public void Has_Player_True() {
             League league = new League();
             LeagueEvent lEvent = league.NewLeagueEvent("my_event");
@@ -75,6 +88,26 @@ namespace Model_Test {
             bool actual = team.HasPlayer("Adam");
 
             Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void Has_Player_True_Many() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            Team team = match.NewTeam();
+            team.AddPlayer("Adam");
+            team.AddPlayer("Bart");
+            team.AddPlayer("Carly");
+            team.AddPlayer("Dianne");
+
+            Debug.WriteLine(league.PrettyPrint());
+
+            Assert.IsTrue(team.HasPlayer("Adam"));
+            Assert.IsTrue(team.HasPlayer("Bart"));
+            Assert.IsTrue(team.HasPlayer("Carly"));
+            Assert.IsTrue(team.HasPlayer("Dianne"));
         }
 
         [TestMethod]
@@ -126,7 +159,9 @@ namespace Model_Test {
             team.AddPlayer("Bart");
             team.AddPlayer("Carly");
             team.AddPlayer("Dianne");
-            List<String> list = team.Players;
+            List<string> list = team.Players;
+
+            Debug.WriteLine(league.PrettyPrint());
 
             Assert.AreEqual(4, list.Count);
             Assert.IsTrue(list.Contains("Adam"));
@@ -168,21 +203,26 @@ namespace Model_Test {
         }
 
         [TestMethod]
-        public void Remove_Player_Multiple_Matches() {
+        public void Remove_Player_Multiple_Rounds() {
             League league = new League();
             LeagueEvent lEvent = league.NewLeagueEvent("my_event");
 
-            lEvent.NewRound()
+            bool r1 = lEvent.NewRound()
                 .GetMatch(0)
                 .NewTeam()
                 .AddPlayer("Adam");
 
-            lEvent.NewRound()
+            bool r2 = lEvent.NewRound()
                 .GetMatch(0)
                 .NewTeam()
                 .AddPlayer("Adam");
+
+            Assert.IsTrue(r1);
+            Assert.IsTrue(r2);
 
             bool result = lEvent.Rounds[0].GetMatch(0).Teams[0].RemovePlayer("Adam");
+
+            Debug.WriteLine(league.PrettyPrint());
 
             // player is removed from first round
             List<string> list1 = lEvent.Rounds[0].GetMatch(0).Teams[0].Players;

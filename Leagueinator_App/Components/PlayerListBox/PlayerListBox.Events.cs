@@ -20,18 +20,18 @@ namespace Leagueinator.App.Components.PlayerListBox {
 
         private void HndMouseDown(object? sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Right) {
-                if (this.SelectedItem is not PlayerInfo pInfo) return;
+                if (this.SelectedItem is not string pInfo) return;
                 this.contextMenu.Show(this, new Point(e.X, e.Y));
             }
         }
 
         private void HndMenuDelete(object? sender, EventArgs? e) {
-            if (this.SelectedItem is not PlayerInfo pInfo) return;
+            if (this.SelectedItem is not string pInfo) return;
             this.OnDelete?.Invoke(this, new PlayerListBoxArgs(pInfo));
         }
 
         private void HndMenuRename(object? sender, EventArgs? e) {
-            if (this.SelectedItem is not PlayerInfo pInfo) return;
+            if (this.SelectedItem is not string pInfo) return;
             this.OnRename?.Invoke(this, new PlayerListBoxArgs(pInfo));
         }
     }

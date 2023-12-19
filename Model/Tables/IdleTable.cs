@@ -1,47 +1,44 @@
-﻿using Leagueinator.Utility;
-using System.Data;
-using System.Diagnostics;
+﻿using System.Data;
 
 namespace Model.Tables {
-    public class TeamTable : DataTable {
-        public static readonly string TABLE_NAME = "team";
-
-        public static class CONST {
-            public static readonly int IDLE = -1;
-            public static readonly int NO_MATCH = -1;
-        }
+    public class IdleTable : DataTable {
+        public static readonly string TABLE_NAME = "idle";
 
         public static class COL {
             public static readonly string UID = "uid";
-            public static readonly string EVENT_TABLE_UID = "event_uid";
+            public static readonly string EVENT_NAME = "event_name";
+            public static readonly string ROUND = "round";
             public static readonly string PLAYER_NAME = "player_name";
         }
 
-        public TeamTable() : base(TABLE_NAME) {
+        public IdleTable() : base(TABLE_NAME) {
             MakeTable(this);
         }
 
-        public DataRow AddRow(int eventTableUID, string playerName) {
+        public DataRow AddRow(string eventName, int round, string playerName) {
             var row = this.NewRow();
-            row[COL.EVENT_TABLE_UID] = eventTableUID;
+            row[COL.EVENT_NAME] = eventName;
+            row[COL.ROUND] = round;
             row[COL.PLAYER_NAME] = playerName;
             this.Rows.Add(row);
             return row;
         }
 
-        public void RemoveRows(int eventTableUID, string playerName) {
+        public void RemoveRows(string eventName, int round, string playerName) {
+
             var rowsToDelete = this.AsEnumerable()
-                               .Where(row => row.Field<int>(COL.EVENT_TABLE_UID) == eventTableUID)
+                               .Where(row => row.Field<string>(COL.EVENT_NAME) == eventName)
+                               .Where(row => row.Field<int>(COL.ROUND) == round)
                                .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
                                .ToList()
                                ;
 
-            foreach (DataRow row in rowsToDelete) {
+            foreach(DataRow row in rowsToDelete){
                 this.Rows.Remove(row);
             }
         }
 
-        public static TeamTable MakeTable(TeamTable? table = null) {
+        public static IdleTable MakeTable(IdleTable? table = null) {
             table ??= new();
 
             table.Columns.Add(new DataColumn {
@@ -52,8 +49,15 @@ namespace Model.Tables {
             });
 
             table.Columns.Add(new DataColumn {
+                DataType = typeof(string),
+                ColumnName = COL.EVENT_NAME,
+                Unique = false,
+                AutoIncrement = false
+            });
+
+            table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.EVENT_TABLE_UID,
+                ColumnName = COL.ROUND,
                 Unique = false,
                 AutoIncrement = false
             });

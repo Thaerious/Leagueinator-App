@@ -1,4 +1,4 @@
-﻿namespace Leagueinator.Model {
+﻿namespace Leagueinator.App.Forms.Report {
     internal class EditableAttribute : Attribute {
         public bool Value { get; private set; }
 

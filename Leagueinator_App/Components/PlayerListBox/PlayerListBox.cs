@@ -1,9 +1,7 @@
 ﻿using Leagueinator.Components;
-
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
+using Model;
 
 namespace Leagueinator.App.Components.PlayerListBox {
     public partial class PlayerListBox : ListBox {
@@ -20,7 +18,7 @@ namespace Leagueinator.App.Components.PlayerListBox {
                 this.Items.Clear();
                 if (value == null) return;
 
-                foreach (PlayerInfo pi in value.IdlePlayers) {
+                foreach (string pi in value.IdlePlayers) {
                     this.Items.Add(pi);
                 }
 
@@ -36,11 +34,11 @@ namespace Leagueinator.App.Components.PlayerListBox {
             this.menuDelete.Click += new System.EventHandler(this.HndMenuDelete);
             this.menuRename.Click += new System.EventHandler(this.HndMenuRename);
 
-            new ControlDragHandlers<PlayerInfo>(this,
+            new ControlDragHandlers<string>(this,
                 () => { // [getData] called when this is the source
                     if (this.Round is null) return null;
                     if (this.SelectedItem == null) return null;
-                    var pInfo = (PlayerInfo)this.SelectedItem;                    
+                    var pInfo = (string)this.SelectedItem;                    
                     return pInfo;
                 },
                 (pi, src) => { // [sendData] called when this is the destination, receives value from [getData]
@@ -52,7 +50,7 @@ namespace Leagueinator.App.Components.PlayerListBox {
                 (pi, dest) => { // [hndResponse] called when this is the source, receives value from [sendData]
                     if (dest == this) return;  // don't drop on source
                     if (this.Round is null) return;
-                    PlayerInfo? pInfo = (PlayerInfo?)this.SelectedItem;
+                    string? pInfo = (string?)this.SelectedItem;
                     if (pInfo == null) return;  // do nothing is no item is selected
                     this.Round.IdlePlayers.Remove(pInfo);
 

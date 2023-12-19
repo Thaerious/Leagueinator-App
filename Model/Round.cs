@@ -1,19 +1,24 @@
 ﻿using Model.Tables;
 using System.Data;
 using System.Diagnostics;
+using System.Text;
 
 namespace Model {
 
-    public class IdlePlayers : DataView {
-        private Round Round;
+    /// <summary>
+    /// A view of IdleTable showing only the idle players for the specified round.
+    /// </summary>
+    public class IdlePlayers : DataView, IEnumerable<string> {
+        private readonly Round Round;
 
-        internal IdlePlayers(Round round) : base(round.LeagueEvent.League.TeamTable) {
+        public IdleTable IdleTable { get => this.Round.League.IdleTable; }
+
+        internal IdlePlayers(Round round) : base(round.League.IdleTable) {
             this.Round = round;
 
-            RowFilter = 
-                $"{TeamTable.COL.EVENT_NAME} = '{round.LeagueEvent.EventName}' AND " +
-                $"{TeamTable.COL.ROUND} = {round.RoundIndex} AND " +
-                $"{TeamTable.COL.TEAM_IDX} = -1";
+            RowFilter =
+                $"{IdleTable.COL.EVENT_NAME} = '{round.LeagueEvent.EventName}' AND " +
+                $"{IdleTable.COL.ROUND} = {round.RoundIndex}";
 
             Sort = TeamTable.COL.PLAYER_NAME;
         }
@@ -23,36 +28,61 @@ namespace Model {
         }
 
         public void Remove(string playerName) {
-            int index = this.Find(playerName);
-            if (index == -1) throw new KeyNotFoundException();
-            if (this.Table is null) throw new NullReferenceException();
-
-            this.Table.Rows.RemoveAt(index);
+            this.IdleTable.RemoveRows(this.Round.LeagueEvent.EventName, this.Round.RoundIndex, playerName);
         }
 
         public void Add(string playerName) {
             if (this.Contains(playerName)) throw new ArgumentException(null, nameof(playerName));
-            this.Round.LeagueEvent.League.TeamTable.AddRow(
+            
+            this.IdleTable.AddRow(
                 eventName: this.Round.LeagueEvent.EventName,
                 round: this.Round.RoundIndex,
-                playerName: playerName,
-                teamIdx: -1
+                playerName: playerName
             );
         }
+
+        IEnumerator<string> IEnumerable<string>.GetEnumerator() {
+            foreach (DataRowView row in this) {
+                yield return (string)row[TeamTable.COL.PLAYER_NAME];
+            }
+        }
     }
+
 
     /// <summary>
     /// A view of EventTable restricted to event name and Round.
     /// The public methods do not directly change the data set.
     /// </summary>
     public class Round : DataView, IDeleted {
+
+        public League League { get => this.LeagueEvent.League; }
+
         public LeagueEvent LeagueEvent { get; }
 
         public int RoundIndex { get; }
 
         public bool Deleted { get; private set; } = false;
 
+        public ICollection<string> Players {
+            get {
+                List<string> list = [];
+                foreach (Match match in this.Matches) {
+                    list.AddRange(match.Players);
+                }
+                return list;
+            }
+        }
+
         public IdlePlayers IdlePlayers { get; }
+
+        public ICollection<string> AllPlayers {
+            get {
+                List<string> list = [];
+                list.AddRange(Players);
+                list.AddRange(IdlePlayers);
+                return list;
+            }
+        }
 
         /// <summary>
         /// Retrieve all matches that contain at least one player.
@@ -76,11 +106,6 @@ namespace Model {
             return new Match(this, lane) {
                 RowFilter = $"{EventTable.COL.LANE} = {lane}"
             };
-        }
-
-        internal DataRow AddRow(int lane, int teamUID) {
-            DeletedException.ThrowIf(this);
-            return this.LeagueEvent.AddRow(this.RoundIndex, lane, teamUID);
         }
 
         /// <summary>
@@ -125,6 +150,22 @@ namespace Model {
 
         public void DeletePlayer(string playerName) {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Remove all players from all matches and add them to idle players.
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public void ResetPlayers() {
+            foreach (Match match in this.Matches) {
+                foreach (Team team in match.Teams) {
+                    foreach (string Player in team.Players) {
+                        team.RemovePlayer(Player);
+                        this.IdlePlayers.Add(Player);
+                    }
+                }
+            }
+
         }
     }
 }
