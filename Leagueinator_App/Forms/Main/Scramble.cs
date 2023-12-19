@@ -58,7 +58,7 @@ namespace Leagueinator.App.Forms.Main {
                 Match targetMatch = this.targetRound.Matches[m++];
 
                 int t = 0;
-                foreach (Team refTeam in refMatch.Teams.Values.NotNull()) {
+                foreach (Team refTeam in refMatch.Teams) {
                     Team? targetTeam = targetMatch.Teams[t++];
                     
                     for (int i = 0; i < refTeam.Players.Count; i++) {

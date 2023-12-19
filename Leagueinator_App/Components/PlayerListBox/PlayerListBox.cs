@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Model;
+using System.Data;
 
 namespace Leagueinator.App.Components.PlayerListBox {
     public partial class PlayerListBox : ListBox {
@@ -38,11 +39,11 @@ namespace Leagueinator.App.Components.PlayerListBox {
                 () => { // [getData] called when this is the source
                     if (this.Round is null) return null;
                     if (this.SelectedItem == null) return null;
-                    var pInfo = (string)this.SelectedItem;                    
+                    var pInfo = (string)this.SelectedItem;
                     return pInfo;
                 },
                 (pi, src) => { // [sendData] called when this is the destination, receives value from [getData]
-                    if (src == this) return null; 
+                    if (src == this) return null;
                     if (this.Round is null) return null;
                     if (pi is not null) this.Round.IdlePlayers.Add(pi);
                     return null;
@@ -65,24 +66,24 @@ namespace Leagueinator.App.Components.PlayerListBox {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        private void IdlePlayersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args) {
-            switch (args.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    if (args.NewItems != null) {
-                        foreach (var pi in args.NewItems) this.Items.Add(pi);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    if (args.OldItems != null) {
-                        foreach (var pi in args.OldItems) this.Items.Remove(pi);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    this.Items.Clear();
-                    break;
-            }
+        private void IdlePlayersCollectionChanged(object? sender, DataRowChangeEventArgs args) {
+            throw new NotImplementedException();
+            //switch (args.Action) {
+            //case DataRowAction.Delete:
+            //    if (args.NewItems != null) {
+            //        foreach (var pi in args.NewItems) this.Items.Add(pi);
+            //    }
+            //    break;
+            //case NotifyCollectionChangedAction.Remove:
+            //    if (args.OldItems != null) {
+            //        foreach (var pi in args.OldItems) this.Items.Remove(pi);
+            //    }
+            //    break;
+            //case NotifyCollectionChangedAction.Reset:
+            //    this.Items.Clear();
+            //    break;
+            //}
         }
-
         private void Context_Opening(object sender, CancelEventArgs e) {
             if (this.SelectedItems.Count == 0) {
                 e.Cancel = true;

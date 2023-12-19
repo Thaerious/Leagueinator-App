@@ -9,6 +9,8 @@ namespace Model {
     /// A view of IdleTable showing only the idle players for the specified round.
     /// </summary>
     public class IdlePlayers : DataView, IEnumerable<string> {
+        public event DataRowChangeEventHandler? CollectionChanged = delegate { };
+
         private readonly Round Round;
 
         public IdleTable IdleTable { get => this.Round.League.IdleTable; }
@@ -21,6 +23,14 @@ namespace Model {
                 $"{IdleTable.COL.ROUND} = {round.RoundIndex}";
 
             Sort = TeamTable.COL.PLAYER_NAME;
+
+            this.IdleTable.RowChanged += this.DataRowChangeEventHandler;
+        }
+
+        private void DataRowChangeEventHandler(object sender, DataRowChangeEventArgs e) {
+            if ((string)e.Row[IdleTable.COL.EVENT_NAME] != this.Round.LeagueEvent.EventName) return;
+            if ((int)e.Row[IdleTable.COL.ROUND] != this.Round.RoundIndex) return;
+            this.CollectionChanged?.Invoke(this, e);
         }
 
         public bool Contains(string playerName) {
