@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Tables\EventSettingsTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Tables\IdleTable.cs">
       <SubType>Component</SubType>
     </Compile>

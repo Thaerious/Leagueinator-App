@@ -8,16 +8,14 @@ namespace Leagueinator.App.Algorithms.Solutions {
         private static readonly Random random = new Random();
         private readonly LeagueEvent LeagueEvent;
         public readonly Round Reference;
-        public LeagueSettings Settings;
 
-        public LaneSolution(LeagueEvent leagueEvent, Round round, LeagueSettings settings) : base(settings.LaneCount) {
+        public LaneSolution(LeagueEvent leagueEvent, Round round) : base(0) {
             this.LeagueEvent = leagueEvent;
             this.Reference = round;
-            this.Settings = settings;
 
             throw new NotImplementedException();
             //for (int lane = 0; lane < settings.LaneCount; lane++) {
-            //    this[lane] = new Match(round.Matches[lane].Settings);
+            //    this[lane] = new Match(round.Matches[lane].EventSettings);
             //    this[lane].CopyFrom(round.Matches[lane]);
             //}
         }
@@ -28,7 +26,7 @@ namespace Leagueinator.App.Algorithms.Solutions {
         /// </summary>
         /// <returns></returns>
         public override int Evaluate() {
-            int laneCount = this.Settings.LaneCount;
+            //int laneCount = this.EventSettings.LaneCount;
             int sum = 0;
 
             throw new NotImplementedException();

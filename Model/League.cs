@@ -9,43 +9,44 @@ namespace Model {
 
         public EventTable EventTable { get; } = new();
         public TeamTable TeamTable { get; } = new();
-
         public IdleTable IdleTable { get; } = new();
-
         public EventDirectoryTable EventDirectoryTable { get; } = new();
+        public EventSettingsTable EventSettings { get; } = new();
 
         public League() {
             Tables.Add(EventTable);
             Tables.Add(TeamTable);
             Tables.Add(EventDirectoryTable);
             Tables.Add(IdleTable);
+            Tables.Add(EventSettings);
         }
 
         public List<LeagueEvent> LeagueEvents {
             get {
                 return EventDirectoryTable
-                .ColumnValues<string>(EventDirectoryTable.COL.EVENT_NAME)
+                .ColumnValues<int>(EventDirectoryTable.COL.ID)
                 .NotNull()
-                .Select(name => new LeagueEvent(this, name))
+                .Select(uid => new LeagueEvent(this, uid))
                 .ToList();
             }
         }
 
         public LeagueEvent NewLeagueEvent(string eventName, string? date = null) {
             date ??= DateTime.Today.ToString("yyyy-MM-dd");
-            this.EventDirectoryTable.AddRow(eventName, date);
-            return new LeagueEvent(this, eventName);
+            var row = this.EventDirectoryTable.AddRow(eventName, date);
+            return new LeagueEvent(this, (int)row[EventDirectoryTable.COL.ID]);
         }
 
-        public LeagueEvent GetLeagueEvent(string eventName) {
-            return new LeagueEvent(this, eventName);
+        public LeagueEvent GetLeagueEvent(int uid) {
+            return new LeagueEvent(this, uid);
         }
 
         public string PrettyPrint() {
             return EventTable.PrettyPrint() + "\n" +
                 TeamTable.PrettyPrint() + "\n" +
                 IdleTable.PrettyPrint() + "\n" +
-                EventDirectoryTable.PrettyPrint();
+                EventDirectoryTable.PrettyPrint() + "\n" +
+                EventSettings.PrettyPrint();
         }
     }
 }

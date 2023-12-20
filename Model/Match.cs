@@ -65,7 +65,7 @@ namespace Model {
             if (rows.Length != 0) throw new Exception("Sanity Check Failed");
 
             this.League.EventTable.AddRow(
-                eventName: this.LeagueEvent.EventName,
+                eventUID: this.LeagueEvent.UID,
                 round: this.Round.RoundIndex,
                 lane: this.Lane,
                 teamIdx: index
@@ -128,6 +128,7 @@ namespace Model {
         }
 
         public string PrettyPrint() {
+            if (this.Round.Table is null) throw new NullReferenceException();
             return this.Round.Table.PrettyPrint(this, $"Lane {Lane} in Round {Round.RoundIndex} of {Round.LeagueEvent.EventName}");
         }
     }

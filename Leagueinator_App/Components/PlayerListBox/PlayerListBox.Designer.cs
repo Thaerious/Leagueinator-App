@@ -1,4 +1,4 @@
-﻿namespace Leagueinator.App.Components.PlayerListBox {
+﻿namespace Leagueinator.App.Components {
     partial class PlayerListBox {
         /// <summary>
         /// Required designer variable.

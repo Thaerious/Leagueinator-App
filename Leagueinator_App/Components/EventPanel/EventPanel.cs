@@ -1,95 +1,59 @@
 ﻿using Model;
-using System.Collections.Specialized;
 
-namespace Leagueinator.App.Components.EventPanel {
+namespace Leagueinator.App.Components {
 
     public partial class EventPanel : UserControl {
+
+
         /// <summary>
         /// Retrieve or set the currently selected round.
-        /// On set the current round is replaced in both the league event
-        /// and this panel.
         /// </summary>
         public Round? CurrentRound {
             get {
-                if (this.LeagueEvent == null) return null;
-                if (this._currentRoundIndex == -1) return null;
-                return this.LeagueEvent.Rounds[this._currentRoundIndex];
+                return this._currentRound;
             }
-        }
-
-        public int CurrentRoundIndex {
-            get => this._currentRoundIndex;
             private set {
-                if (this._currentRoundIndex == value) return;
-                this._currentRoundIndex = value;
-                this.UpdateMatchCards();
+                this._currentRound = value;
+                if (value is not null) this.UpdateMatchCards(value);
             }
         }
 
-        public PlayerListBox.PlayerListBox PlayerListBox => this.playerListBox;
+        public PlayerListBox PlayerListBox => this.playerListBox;
 
         public EventPanel() {
             this.InitializeComponent();
         }
 
         public LeagueEvent? LeagueEvent {
-            get { return this.leagueEvent; }
+            get => this._currentEvent;
             set {
-                if (value != null) {
-                    if (value == this.LeagueEvent) return; 
+                if (value == this.LeagueEvent) return;
+                this._currentEvent = value;
+                if (value == null) return;
 
-                    this.leagueEvent = value;
-                    this.flowRounds.Controls.Clear();
-                    this.playerListBox.Items.Clear();                    
+                this.flowRounds.Controls.Clear();
+                this.playerListBox.Items.Clear();
 
-                    foreach (Round round in value.Rounds) this.AddRoundButton(round);
-
-                    this._currentRoundIndex = value.Rounds.Count - 1;
-                    if (this._currentRoundIndex >= 0) {
-                        this.flowRounds.Controls[this._currentRoundIndex].BackColor = Color.LightGreen;
-                        this.playerListBox.Round = this?.LeagueEvent?.Rounds[this._currentRoundIndex];
-                    }
-
-                    this.UpdateMatchCards();
-                }
+                foreach (Round round in value.Rounds) this.AddRoundButton(round);
+                this.SelectLastRoundButton();
             }
-        }
+        }  
 
         /// <summary>
         /// AddChild a round to this panel.<br>
         /// </summary>
         /// <param TagName="round"></param>
-        private void AddRoundButton(Round round) {
-            var button = new Button() {
+        private RoundButton AddRoundButton(Round round) {
+            var button = new RoundButton(round) {
                 Text = $"Round #{this.flowRounds.Controls.Count + 1}",
                 Width = (int)(this.flowRounds.Width * 0.9),
                 Left = (int)(this.flowRounds.Width * 0.05),
                 Height = 45
             };
+
             this.flowRounds.Controls.Add(button);
-
-            button.Click += new EventHandler(this.RoundButtonClick);
-        }
-
-        /// <summary>
-        /// This is the "Set Round" control point.
-        /// </summary>
-        /// <param TagName="source"></param>
-        /// <param TagName="_"></param>
-        private void RoundButtonClick(object? source, EventArgs _) {
-            ArgumentNullException.ThrowIfNull(source, nameof(source));
-
-            Button button = (Button)source;
-            int index = this.flowRounds.Controls.IndexOf(button);
-
-            if (this.CurrentRoundIndex > -1) {
-                this.flowRounds.Controls[this.CurrentRoundIndex].BackColor = Color.White;
-            }
-
-            this.flowRounds.Controls[index].BackColor = Color.LightGreen;
-            this.playerListBox.Round = this?.LeagueEvent?.Rounds[index];
-
-            this.CurrentRoundIndex = index;
+            button.Click += (sender, args) => this.SelectRoundButton(button);
+            return button;
         }
 
         /// <summary>
@@ -97,23 +61,66 @@ namespace Leagueinator.App.Components.EventPanel {
         /// </summary>
         /// <return>The last card added</return>
         /// <param TagName="round"></param>
-        private void UpdateMatchCards() {
+        private void UpdateMatchCards(Round round) {
             this.flowMatchCards.Controls.Clear();
-            if (this.CurrentRoundIndex < 0) return;
-            if (this.CurrentRound == null) return;
 
             int lane = 1;
-            foreach (Match match in this.CurrentRound.Matches) {
-                var matchCard = new MatchCard.MatchCard();
-                matchCard.Match = match;
-                matchCard.Lane = lane++;
+            foreach (Match match in round.Matches) {
+                MatchCard matchCard = new() {
+                    Match = match,
+                    Lane = lane++
+                };
                 this.flowMatchCards.Controls.Add(matchCard);
             }
-
         }
 
-        private LeagueEvent? leagueEvent = null;
+        public void HndAddRound(object _, EventArgs __) {
+            if (this.LeagueEvent is null) throw new AppStateException();
+            var round = this.LeagueEvent.NewRound();
+            this.CurrentRound = round;
+            var button = this.AddRoundButton(round);
+            this.SelectRoundButton(button);
+        }
 
-        private int _currentRoundIndex = -1;
+        public void HndDeleteRound(object _, EventArgs __) {
+            if (this.LeagueEvent is null) throw new AppStateException();
+            if (this.CurrentRound is null) throw new AppStateException();
+            this.CurrentRound.Delete();
+
+            int index = 1;
+            foreach (var button in this.flowRounds.Controls.OfType<RoundButton>()) {
+                if (button.Round == this.CurrentRound) {
+                    this.flowRounds.Controls.Remove(button);
+                    break;
+                }
+            }
+
+            foreach (var button in this.flowRounds.Controls.OfType<RoundButton>()) {
+                button.Text = $"Round #{index++}";
+            }
+
+            this.SelectLastRoundButton();
+        }
+
+        private void SelectLastRoundButton() {
+            var buttons = this.flowRounds.Controls.OfType<RoundButton>().ToList();
+            if (buttons.Count == 0) return;
+            this.SelectRoundButton(buttons.Last());
+        }
+
+        private void SelectRoundButton(RoundButton button) {
+            foreach (var b in this.flowRounds.Controls.OfType<RoundButton>()) {
+                b.BackColor = Color.White;
+            }
+
+            this.CurrentRound = button.Round;
+            button.BackColor = Color.LightGreen;
+            this.UpdateMatchCards(button.Round);
+        }
+
+
+        private Round? _currentRound = null;
+
+        private LeagueEvent? _currentEvent = null;
     }
 }

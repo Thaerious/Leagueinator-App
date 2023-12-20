@@ -30,7 +30,7 @@ internal class MockEvent : LeagueEvent
         round1.Matches[1].Teams[1].Bowls = 9;
 
         var round2 = this.NewRound();
-
+    
         round2.Matches[0].Teams[0].AddPlayer(new("Adam"));
         round2.Matches[0].Teams[0].AddPlayer(new("Betty"));
         round2.Matches[0].Teams[1].AddPlayer(new("Ethan"));

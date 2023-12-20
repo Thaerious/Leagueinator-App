@@ -6,7 +6,7 @@ namespace Model.Tables {
 
         public static class COL {
             public static readonly string ID = "uid";
-            public static readonly string EVENT_NAME = "event_name";
+            public static readonly string EVENT_UID = "event_dir_uid";
             public static readonly string ROUND = "round";
             public static readonly string LANE = "lane";
             public static readonly string TEAM_IDX = "team";
@@ -19,9 +19,9 @@ namespace Model.Tables {
             MakeTable(this);
         }
 
-        public DataRow AddRow(string eventName, int round, int lane, int teamIdx) {
+        public DataRow AddRow(int eventUID, int round, int lane, int teamIdx) {
             var row = this.NewRow();
-            row[COL.EVENT_NAME] = eventName;
+            row[COL.EVENT_UID] = eventUID;
             row[COL.ROUND] = round;
             row[COL.LANE] = lane;
             row[COL.TEAM_IDX] = teamIdx;
@@ -32,9 +32,9 @@ namespace Model.Tables {
             return row;
         }
 
-        public DataRow GetRow(string eventName, int round, int lane, int teamIdx) {
+        public DataRow GetRow(int eventUID, int round, int lane, int teamIdx) {
             var rows = this.AsEnumerable()
-                        .Where(row => row.Field<string>(COL.EVENT_NAME) == eventName)
+                        .Where(row => row.Field<int>(COL.EVENT_UID) == eventUID)
                         .Where(row => row.Field<int>(COL.ROUND) == round)
                         .Where(row => row.Field<int>(COL.LANE) == lane)
                         .Where(row => row.Field<int>(COL.TEAM_IDX) == teamIdx)
@@ -56,8 +56,8 @@ namespace Model.Tables {
             });
 
             table.Columns.Add(new DataColumn {
-                DataType = typeof(string),
-                ColumnName = COL.EVENT_NAME
+                DataType = typeof(int),
+                ColumnName = COL.EVENT_UID
             });
 
             table.Columns.Add(new DataColumn {

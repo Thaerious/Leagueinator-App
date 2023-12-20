@@ -3,7 +3,7 @@
 using Leagueinator.Utility.ObservableDiscreteCollection;
 using Model;
 
-namespace Leagueinator.App.Components.MatchCard {
+namespace Leagueinator.App.Components {
     public partial class MatchCard : UserControl {
 
         public Match? Match { get; set; }

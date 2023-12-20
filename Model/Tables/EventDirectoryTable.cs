@@ -19,11 +19,29 @@ namespace Model.Tables {
         public DataRow AddRow(string eventName, string date) {
             var row = this.NewRow();
 
-            row[EventDirectoryTable.COL.EVENT_NAME] = eventName;
-            row[EventDirectoryTable.COL.DATE] = date;
+            row[COL.EVENT_NAME] = eventName;
+            row[COL.DATE] = date;
 
             this.Rows.Add(row);
             return row;
+        }
+
+        public DataRow GetRow(int eventUID) {
+            var rows = this.AsEnumerable()
+                           .Where(row => row.Field<int>(COL.ID) == eventUID)
+                           .ToList();
+
+            if (rows.Count == 0) throw new KeyNotFoundException($"{COL.ID} == {eventUID}");
+            return rows[0];
+        }
+
+        public bool HasRow(int eventUID) {
+            var rows = this.AsEnumerable()
+                           .Where(row => row.Field<int>(COL.ID) == eventUID)
+                           .ToList();
+
+            if (rows.Count == 0) return false;
+            return true;
         }
 
         public static DataTable MakeTable(EventDirectoryTable? table = null) {
@@ -39,7 +57,7 @@ namespace Model.Tables {
             table.Columns.Add(new DataColumn {
                 DataType = typeof(string),
                 ColumnName = COL.EVENT_NAME,
-                Unique = true,
+                Unique = false,
                 AutoIncrement = false
             });
 
@@ -57,6 +75,8 @@ namespace Model.Tables {
                 AutoIncrement = false,
                 DefaultValue = 0
             });
+
+            table.PrimaryKey = [table.Columns[COL.ID]!];
 
             return table;
         }

@@ -3,9 +3,9 @@
 namespace Leagueinator.App.Forms.AddEvent {
     public partial class FormAddEvent : Form {
 
-        public LeagueSettings Settings {
+        public EventSettings EventSettings {
             get {
-                var setting = new LeagueSettings {
+                var setting = new EventSettings {
                     TeamSize = (int)this.spinTeamSize.Value,
                     LaneCount = (int)this.spinLaneCount.Value,
                     NumberOfEnds = (int)this.spinNumEnds.Value,

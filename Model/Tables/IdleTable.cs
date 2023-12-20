@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 
 namespace Model.Tables {
     public class IdleTable : DataTable {
@@ -6,7 +7,7 @@ namespace Model.Tables {
 
         public static class COL {
             public static readonly string UID = "uid";
-            public static readonly string EVENT_NAME = "event_name";
+            public static readonly string EVENT_UID = "event_dir_uid";
             public static readonly string ROUND = "round";
             public static readonly string PLAYER_NAME = "player_name";
         }
@@ -15,19 +16,23 @@ namespace Model.Tables {
             MakeTable(this);
         }
 
-        public DataRow AddRow(string eventName, int round, string playerName) {
+        public DataRow AddRow(int eventUID, int round, string playerName) {
             var row = this.NewRow();
-            row[COL.EVENT_NAME] = eventName;
+                        
+            row[COL.EVENT_UID] = eventUID;
             row[COL.ROUND] = round;
             row[COL.PLAYER_NAME] = playerName;
+
+            Debug.WriteLine($"{row[COL.EVENT_UID]} {row[COL.EVENT_UID].GetType()}");
+
             this.Rows.Add(row);
             return row;
         }
 
-        public void RemoveRows(string eventName, int round, string playerName) {
+        public void RemoveRows(int eventUID, int round, string playerName) {
 
             var rowsToDelete = this.AsEnumerable()
-                               .Where(row => row.Field<string>(COL.EVENT_NAME) == eventName)
+                               .Where(row => row.Field<int>(COL.EVENT_UID) == eventUID)
                                .Where(row => row.Field<int>(COL.ROUND) == round)
                                .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
                                .ToList()
@@ -49,8 +54,8 @@ namespace Model.Tables {
             });
 
             table.Columns.Add(new DataColumn {
-                DataType = typeof(string),
-                ColumnName = COL.EVENT_NAME,
+                DataType = typeof(int),
+                ColumnName = COL.EVENT_UID,
                 Unique = false,
                 AutoIncrement = false
             });

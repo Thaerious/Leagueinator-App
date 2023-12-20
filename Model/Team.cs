@@ -42,12 +42,12 @@ namespace Model {
 
             this.RowFilter = $"{TeamTable.COL.EVENT_TABLE_UID} = {this.EventTableUID}";
 
-            var row = this.League.EventTable.GetRow(
-                eventName: this.LeagueEvent.EventName,
-                round: this.Round.RoundIndex,
-                lane: this.Match.Lane,
-                teamIdx: this.TeamIndex
-            );
+            //var row = this.League.EventTable.GetRow(
+            //    eventUID: this.LeagueEvent.UID,
+            //    round: this.Round.RoundIndex,
+            //    lane: this.Match.Lane,
+            //    teamIdx: this.TeamIndex
+            //);
         }
 
 
@@ -122,10 +122,11 @@ namespace Model {
 
         public void MovePlayer(string player, int newTeamIndex) {
             this.League.TeamTable.RemoveRows(this.EventTableUID, player);
-            this.League.IdleTable.AddRow(this.LeagueEvent.EventName, this.Round.RoundIndex, player);
+            this.League.IdleTable.AddRow(this.LeagueEvent.UID, this.Round.RoundIndex, player);
         }
 
         public string PrettyPrint() {
+            if (this.Table is null) throw new NullReferenceException();
             return this.Table.PrettyPrint(this) + "\n" +
                    this.EventTableRow.PrettyPrint();
         }

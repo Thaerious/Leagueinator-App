@@ -1,4 +1,4 @@
-﻿namespace Leagueinator.App.Components.MatchCard {
+﻿namespace Leagueinator.App.Components {
     partial class MatchCard {
         /// <summary> 
         /// Required designer variable.

@@ -1,42 +1,60 @@
 ﻿using Model.Tables;
+using System.Collections.ObjectModel;
 using System.Data;
 
 namespace Model {
+    public class EventSettings {
+        public LeagueEvent LeagueEvent { get; }
+
+        public string this[string key] {
+            get {
+                return this.LeagueEvent.League.EventSettings.GetValue(LeagueEvent.UID, key);
+            }
+            set {
+                this.LeagueEvent.League.EventSettings.SetValue(LeagueEvent.UID, key, value);
+            }
+        }
+
+        public EventSettings(LeagueEvent leagueEvent) {
+            this.LeagueEvent = leagueEvent;
+        }
+
+        
+    }
+
+
     /// <summary>
     /// A view of EventTable restricted to event.
     /// The public methods do not directly change the data set.
     /// </summary>
     public class LeagueEvent : DataView, IDeleted {
-
-        public string EventName { get; init; }
+        internal DataRow DirectoryRow { get; }
+        public string EventName { get => (string)this.DirectoryRow[EventDirectoryTable.COL.EVENT_NAME]; }
 
         public string EventDate { get => (string)this.DirectoryRow[EventDirectoryTable.COL.DATE]; }
 
         public League League { get; }
 
-        private DataRow DirectoryRow { get; }
-
         public bool Deleted { get; private set; } = false;
 
-        public List<Round> Rounds {
-            get => this.GetRounds();
+        public EventSettings Settings { get; }
+
+        public ReadOnlyCollection<Round> Rounds {
+            get => new(this.GetRounds());
         }
 
-        internal LeagueEvent(League league, string eventName) : base(league.EventTable) {
-            this.EventName = eventName;
+        internal int UID { get => (int)DirectoryRow[EventDirectoryTable.COL.ID]; }
+
+        internal LeagueEvent(League league, int uid) : base(league.EventTable) {
+            this.DirectoryRow = league.EventDirectoryTable.GetRow(uid);            
             this.League = league;
-
-            league.EventDirectoryTable.DefaultView.Sort = EventDirectoryTable.COL.EVENT_NAME;
-            int index = league.EventDirectoryTable.DefaultView.Find(eventName);
-            if (index == -1) throw new KeyNotFoundException($"Event Name: {eventName}");
-            this.DirectoryRow = league.EventDirectoryTable.Rows[index];
-
-            this.RowFilter = $"event_name = '{eventName}'";
+            this.Settings = new EventSettings(this);
+            this.RowFilter = $"{EventTable.COL.EVENT_UID} = {this.UID}";
         }
 
         internal DataRow AddRow(int round, int lane, int teamIDX) {
             return this.League.EventTable.AddRow(
-                eventName: this.EventName,
+                eventUID: this.UID,
                 round: round,
                 lane: lane,
                 teamIdx: teamIDX
@@ -58,7 +76,6 @@ namespace Model {
 
         private Round GetRound(int roundIndex) {
             DeletedException.ThrowIf(this);
-
             return new Round(this, roundIndex);
         }
 
@@ -83,6 +100,7 @@ namespace Model {
         }
 
         public string PrettyPrint() {
+            if (this.Table is null) throw new NullReferenceException("Table");
             return this.Table.PrettyPrint(this, this.EventName) + "\n" +
                    this.DirectoryRow.PrettyPrint();
         }

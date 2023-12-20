@@ -19,7 +19,7 @@ namespace Model {
             this.Round = round;
 
             RowFilter =
-                $"{IdleTable.COL.EVENT_NAME} = '{round.LeagueEvent.EventName}' AND " +
+                $"{IdleTable.COL.EVENT_UID} = {round.LeagueEvent.UID} AND " +
                 $"{IdleTable.COL.ROUND} = {round.RoundIndex}";
 
             Sort = TeamTable.COL.PLAYER_NAME;
@@ -28,7 +28,7 @@ namespace Model {
         }
 
         private void DataRowChangeEventHandler(object sender, DataRowChangeEventArgs e) {
-            if ((string)e.Row[IdleTable.COL.EVENT_NAME] != this.Round.LeagueEvent.EventName) return;
+            if ((string)e.Row[IdleTable.COL.EVENT_UID] != this.Round.LeagueEvent.EventName) return;
             if ((int)e.Row[IdleTable.COL.ROUND] != this.Round.RoundIndex) return;
             this.CollectionChanged?.Invoke(this, e);
         }
@@ -38,14 +38,14 @@ namespace Model {
         }
 
         public void Remove(string playerName) {
-            this.IdleTable.RemoveRows(this.Round.LeagueEvent.EventName, this.Round.RoundIndex, playerName);
+            this.IdleTable.RemoveRows(this.Round.LeagueEvent.UID, this.Round.RoundIndex, playerName);
         }
 
         public void Add(string playerName) {
             if (this.Contains(playerName)) throw new ArgumentException(null, nameof(playerName));
             
             this.IdleTable.AddRow(
-                eventName: this.Round.LeagueEvent.EventName,
+                eventUID: this.Round.LeagueEvent.UID,
                 round: this.Round.RoundIndex,
                 playerName: playerName
             );
@@ -108,7 +108,7 @@ namespace Model {
             this.RoundIndex = roundIndex;
             this.IdlePlayers = new IdlePlayers(this);
 
-            RowFilter = $"event_name = '{this.LeagueEvent.EventName}' AND round = {roundIndex}";
+            RowFilter = $"{EventTable.COL.EVENT_UID} = {this.LeagueEvent.UID} AND {EventTable.COL.ROUND} = {roundIndex}";
         }
 
         public Match GetMatch(int lane) {
@@ -155,6 +155,7 @@ namespace Model {
             this.Deleted = true;
         }
         public string PrettyPrint() {
+            if (this.Table is null) throw new NullReferenceException();
             return this.Table.PrettyPrint(this, $"Round {RoundIndex} of {LeagueEvent.EventName}");
         }
 

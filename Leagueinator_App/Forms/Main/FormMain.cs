@@ -1,5 +1,4 @@
-﻿using Leagueinator.App.Components.PlayerListBox;
-using Leagueinator.App.Forms.AddEvent;
+﻿using Leagueinator.App.Forms.AddEvent;
 using Leagueinator.App.Forms.AddPlayer;
 using Leagueinator.App.Forms.RenamePlayer;
 using Leagueinator.App.Forms.Report;
@@ -10,6 +9,8 @@ using System.Diagnostics;
 using System.Reflection;
 using Model;
 using Leagueinator_App;
+using Leagueinator.App.Components;
+using Newtonsoft.Json.Linq;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -33,15 +34,7 @@ namespace Leagueinator.App.Forms.Main {
                     this.closeToolStripMenuItem.Enabled = true;
                     this.eventsToolStripMenuItem.Enabled = true;
                     this.playersToolStripMenuItem.Enabled = true;
-                    this.eventPanel.Visible = true;
-
-                    if (value.LeagueEvents.Count > 0) {
-                        this.eventPanel.LeagueEvent = value.LeagueEvents.Last();
-                    }
-                    else {
-                        this.eventPanel.LeagueEvent = null;
-                        this.eventPanel.Visible = false;
-                    }
+                    this.eventPanel.Visible = false;      
                 }
             }
         }
@@ -50,22 +43,6 @@ namespace Leagueinator.App.Forms.Main {
 
         public FormMain() {
             InitializeComponent();
-
-            this.eventPanel.OnAddRound += (s) => {
-                if (this.eventPanel.LeagueEvent is null) return;
-                this.eventPanel.LeagueEvent.NewRound();
-            };
-
-            this.eventPanel.OnDeleteRound += (s) => {
-                if (this.eventPanel is null) return;
-                if (this.eventPanel.LeagueEvent is null) return;
-                if (this.eventPanel.CurrentRound is null) return;
-
-                this.eventPanel.LeagueEvent.Rounds.Remove(this.eventPanel.CurrentRound);
-            };
-
-            this.eventPanel.PlayerListBox.OnDelete += this.PlayerListBox_OnDelete;
-            this.eventPanel.PlayerListBox.OnRename += this.PlayerListBox_OnRename;
 
             LeagueSingleton.ModelUpdate += (src, args) => {
                 IsSaved.Value = false;
@@ -101,7 +78,7 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private static void SetupFileDialog(FileDialog dialog) {
-            //dialog.InitialDirectory = Properties.Settings.Default.save_dir; TODO
+            //dialog.InitialDirectory = Properties.EventSettings.Default.save_dir; TODO
             dialog.Filter = "league files (*.league)|*.league|All files (*.*)|*.*";
             dialog.FilterIndex = 1;
             dialog.RestoreDirectory = true;
@@ -182,15 +159,18 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void Events_AddEvent(object sender, EventArgs e) {
-            if (this.League is null) return;
+            if (this.League is null) throw new AppStateException("League is Null");
 
-            var childForm = new FormAddEvent();
-            if (childForm.ShowDialog() == DialogResult.Cancel) return;
+            var formAddEvent = new FormAddEvent();
+            if (formAddEvent.ShowDialog() == DialogResult.Cancel) return;
 
             var lEvent = this.League.NewLeagueEvent(
-                childForm.EventName,
-                childForm.Date
+                formAddEvent.EventName,
+                formAddEvent.EventSettings.Date
             );
+
+            lEvent.Settings["Team_Size"] = formAddEvent.EventSettings.TeamSize.ToString();
+            lEvent.Settings["Lane_Count"] = formAddEvent.EventSettings.LaneCount.ToString();
 
             IsSaved.Value = false;
             this.eventPanel.Visible = true;
@@ -221,22 +201,22 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void Events_SelectEvent(object sender, EventArgs e) {
-            if (this.League is null) return;
+            if (this.League is null) throw new AppStateException();
 
-            FormSelectEvent childForm = new FormSelectEvent(this.League.LeagueEvents);
+            FormSelectEvent formSelectEvent = new FormSelectEvent(this.League.LeagueEvents);
 
-            DialogResult result = childForm.ShowDialog();
+            DialogResult result = formSelectEvent.ShowDialog();
             if (result == DialogResult.Cancel) return;
-            if (childForm.LeagueEvent is null) return;
+            if (formSelectEvent.LeagueEvent is null) return;
 
-            if (childForm.Action == "Select") {
-                LeagueEvent lEvent = childForm.LeagueEvent;
+            if (formSelectEvent.Action == "Select") {
+                LeagueEvent lEvent = formSelectEvent.LeagueEvent;
                 this.eventPanel.LeagueEvent = lEvent;
                 this.eventPanel.Visible = true;
             }
-            else if (childForm.Action == "Delete") {
-                this.League.LeagueEvents.Remove(childForm.LeagueEvent);
-                if (this.eventPanel.LeagueEvent == childForm.LeagueEvent) {
+            else if (formSelectEvent.Action == "Delete") {
+                this.League.LeagueEvents.Remove(formSelectEvent.LeagueEvent);
+                if (this.eventPanel.LeagueEvent == formSelectEvent.LeagueEvent) {
                     this.eventPanel.Visible = false;
                     this.eventPanel.LeagueEvent = null;
                 }
@@ -245,7 +225,7 @@ namespace Leagueinator.App.Forms.Main {
 
         private void Help_About(object sender, EventArgs e) {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            Version version = Assembly.GetExecutingAssembly().GetName().Version ?? throw new NullReferenceException("version");
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
             string msg = $"Version\n{version}\n({buildDate})";
@@ -268,7 +248,7 @@ namespace Leagueinator.App.Forms.Main {
                 Debug.WriteLine("League is [NULL]");
             }
             else {
-                Debug.WriteLine(this.League.ToString());
+                Debug.WriteLine(this.League.PrettyPrint());
             }
         }
 
@@ -277,8 +257,9 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void Dev_HashCode(object sender, EventArgs e) {
+            if (this.eventPanel.LeagueEvent is null) throw new AppStateException();
             Debug.WriteLine("Rounds collection for current event");
-            Debug.WriteLine(message: $"Hash Code {this.eventPanel.LeagueEvent.Rounds.GetHashCode().ToString("X")}");
+            Debug.WriteLine(message: $"Hash Code {this.eventPanel.LeagueEvent.Rounds.GetHashCode().ToString():X}");
         }
 
         private FormReport InitFormReport(FormReport.RowGenerator generator) {

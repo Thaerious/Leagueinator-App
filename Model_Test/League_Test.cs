@@ -32,11 +32,13 @@ namespace Model_Test {
         /// You can not add two events with the same name.
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(ConstraintException))]
         public void Add_League_Event_Repeat_Gives_Exception() {
             League league = new();
             league.NewLeagueEvent("my_event");
             league.NewLeagueEvent("my_event");
+
+            Assert.AreEqual(league.EventDirectoryTable.Rows.Count, 2);
+            Debug.WriteLine(league.PrettyPrint());
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace Model_Test {
         [ExpectedException(typeof(KeyNotFoundException))]
         public void Retrive_Unknown_Event_Gives_Exception() {
             League league = new();
-            var lEvent = league.GetLeagueEvent("my_event");
+            var lEvent = league.GetLeagueEvent(0);
         }
 
         /// <summary>

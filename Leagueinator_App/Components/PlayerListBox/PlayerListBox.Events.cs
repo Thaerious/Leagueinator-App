@@ -1,7 +1,7 @@
 ﻿
 using System.Diagnostics;
 
-namespace Leagueinator.App.Components.PlayerListBox {
+namespace Leagueinator.App.Components {
     
     public class PlayerListBoxArgs {
         public readonly string PlayerName;

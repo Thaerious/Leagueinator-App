@@ -1,4 +1,4 @@
-﻿namespace Leagueinator.App.Components.EventPanel {
+﻿namespace Leagueinator.App.Components {
     partial class EventPanel {
         /// <summary> 
         /// Required designer variable.
@@ -24,89 +24,89 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            layoutRounds = new TableLayoutPanel();
-            butAddRound = new Button();
-            butRemoveRound = new Button();
-            flowRounds = new FlowLayoutPanel();
-            layoutRoot = new TableLayoutPanel();
-            this.playerListBox = new PlayerListBox.PlayerListBox(this.components);
-            flowMatchCards = new FlowLayoutPanel();
-            this.matchCard1 = new MatchCard.MatchCard();
-            layoutRounds.SuspendLayout();
-            layoutRoot.SuspendLayout();
-            flowMatchCards.SuspendLayout();
+            this.layoutRounds = new TableLayoutPanel();
+            this.butAddRound = new Button();
+            this.butRemoveRound = new Button();
+            this.flowRounds = new FlowLayoutPanel();
+            this.layoutRoot = new TableLayoutPanel();
+            this.playerListBox = new PlayerListBox(this.components);
+            this.flowMatchCards = new FlowLayoutPanel();
+            this.matchCard1 = new MatchCard();
+            this.layoutRounds.SuspendLayout();
+            this.layoutRoot.SuspendLayout();
+            this.flowMatchCards.SuspendLayout();
             this.SuspendLayout();
             // 
             // layoutRounds
             // 
-            layoutRounds.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
-            layoutRounds.ColumnCount = 1;
-            layoutRounds.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            layoutRounds.Controls.Add(butAddRound, 0, 1);
-            layoutRounds.Controls.Add(butRemoveRound, 0, 2);
-            layoutRounds.Controls.Add(flowRounds, 0, 0);
-            layoutRounds.Dock = DockStyle.Left;
-            layoutRounds.Location = new Point(3, 4);
-            layoutRounds.Margin = new Padding(3, 4, 3, 4);
-            layoutRounds.Name = "layoutRounds";
-            layoutRounds.RowCount = 4;
-            layoutRounds.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
-            layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
-            layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-            layoutRounds.Size = new Size(244, 931);
-            layoutRounds.TabIndex = 0;
+            this.layoutRounds.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
+            this.layoutRounds.ColumnCount = 1;
+            this.layoutRounds.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            this.layoutRounds.Controls.Add(this.butAddRound, 0, 1);
+            this.layoutRounds.Controls.Add(this.butRemoveRound, 0, 2);
+            this.layoutRounds.Controls.Add(this.flowRounds, 0, 0);
+            this.layoutRounds.Dock = DockStyle.Left;
+            this.layoutRounds.Location = new Point(3, 4);
+            this.layoutRounds.Margin = new Padding(3, 4, 3, 4);
+            this.layoutRounds.Name = "layoutRounds";
+            this.layoutRounds.RowCount = 4;
+            this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
+            this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
+            this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+            this.layoutRounds.Size = new Size(244, 931);
+            this.layoutRounds.TabIndex = 0;
             // 
             // butAddRound
             // 
-            butAddRound.Dock = DockStyle.Fill;
-            butAddRound.Location = new Point(4, 783);
-            butAddRound.Margin = new Padding(3, 4, 3, 4);
-            butAddRound.Name = "butAddRound";
-            butAddRound.Size = new Size(236, 54);
-            butAddRound.TabIndex = 0;
-            butAddRound.Text = "AddChild";
-            butAddRound.UseVisualStyleBackColor = true;
-            butAddRound.Click += this.HndAddRound;
+            this.butAddRound.Dock = DockStyle.Fill;
+            this.butAddRound.Location = new Point(4, 783);
+            this.butAddRound.Margin = new Padding(3, 4, 3, 4);
+            this.butAddRound.Name = "butAddRound";
+            this.butAddRound.Size = new Size(236, 54);
+            this.butAddRound.TabIndex = 0;
+            this.butAddRound.Text = "Add Round";
+            this.butAddRound.UseVisualStyleBackColor = true;
+            this.butAddRound.Click += this.HndAddRound;
             // 
             // butRemoveRound
             // 
-            butRemoveRound.Dock = DockStyle.Fill;
-            butRemoveRound.Location = new Point(4, 846);
-            butRemoveRound.Margin = new Padding(3, 4, 3, 4);
-            butRemoveRound.Name = "butRemoveRound";
-            butRemoveRound.Size = new Size(236, 54);
-            butRemoveRound.TabIndex = 1;
-            butRemoveRound.Text = "Remove";
-            butRemoveRound.UseVisualStyleBackColor = true;
-            butRemoveRound.Click += this.HndDeleteRound;
+            this.butRemoveRound.Dock = DockStyle.Fill;
+            this.butRemoveRound.Location = new Point(4, 846);
+            this.butRemoveRound.Margin = new Padding(3, 4, 3, 4);
+            this.butRemoveRound.Name = "butRemoveRound";
+            this.butRemoveRound.Size = new Size(236, 54);
+            this.butRemoveRound.TabIndex = 1;
+            this.butRemoveRound.Text = "Remove";
+            this.butRemoveRound.UseVisualStyleBackColor = true;
+            this.butRemoveRound.Click += this.HndDeleteRound;
             // 
             // flowRounds
             // 
-            flowRounds.Dock = DockStyle.Fill;
-            flowRounds.Location = new Point(4, 5);
-            flowRounds.Margin = new Padding(3, 4, 3, 4);
-            flowRounds.Name = "flowRounds";
-            flowRounds.Size = new Size(236, 769);
-            flowRounds.TabIndex = 2;
+            this.flowRounds.Dock = DockStyle.Fill;
+            this.flowRounds.Location = new Point(4, 5);
+            this.flowRounds.Margin = new Padding(3, 4, 3, 4);
+            this.flowRounds.Name = "flowRounds";
+            this.flowRounds.Size = new Size(236, 769);
+            this.flowRounds.TabIndex = 2;
             // 
             // layoutRoot
             // 
-            layoutRoot.ColumnCount = 3;
-            layoutRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300F));
-            layoutRoot.ColumnStyles.Add(new ColumnStyle());
-            layoutRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 640F));
-            layoutRoot.Controls.Add(layoutRounds, 0, 0);
-            layoutRoot.Controls.Add(this.playerListBox, 1, 0);
-            layoutRoot.Controls.Add(flowMatchCards, 2, 0);
-            layoutRoot.Dock = DockStyle.Fill;
-            layoutRoot.Location = new Point(0, 0);
-            layoutRoot.Margin = new Padding(3, 4, 3, 4);
-            layoutRoot.Name = "layoutRoot";
-            layoutRoot.RowCount = 1;
-            layoutRoot.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            layoutRoot.Size = new Size(1583, 939);
-            layoutRoot.TabIndex = 1;
+            this.layoutRoot.ColumnCount = 3;
+            this.layoutRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300F));
+            this.layoutRoot.ColumnStyles.Add(new ColumnStyle());
+            this.layoutRoot.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 640F));
+            this.layoutRoot.Controls.Add(this.layoutRounds, 0, 0);
+            this.layoutRoot.Controls.Add(this.playerListBox, 1, 0);
+            this.layoutRoot.Controls.Add(this.flowMatchCards, 2, 0);
+            this.layoutRoot.Dock = DockStyle.Fill;
+            this.layoutRoot.Location = new Point(0, 0);
+            this.layoutRoot.Margin = new Padding(3, 4, 3, 4);
+            this.layoutRoot.Name = "layoutRoot";
+            this.layoutRoot.RowCount = 1;
+            this.layoutRoot.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            this.layoutRoot.Size = new Size(1583, 939);
+            this.layoutRoot.TabIndex = 1;
             // 
             // playerListBox
             // 
@@ -119,20 +119,22 @@
             // 
             // flowMatchCards
             // 
-            flowMatchCards.Controls.Add(this.matchCard1);
-            flowMatchCards.Location = new Point(603, 4);
-            flowMatchCards.Margin = new Padding(3, 4, 3, 4);
-            flowMatchCards.Name = "flowMatchCards";
-            flowMatchCards.Size = new Size(694, 931);
-            flowMatchCards.TabIndex = 1;
+            this.flowMatchCards.Controls.Add(this.matchCard1);
+            this.flowMatchCards.Location = new Point(603, 4);
+            this.flowMatchCards.Margin = new Padding(3, 4, 3, 4);
+            this.flowMatchCards.Name = "flowMatchCards";
+            this.flowMatchCards.Size = new Size(694, 931);
+            this.flowMatchCards.TabIndex = 1;
             // 
             // matchCard1
             // 
             this.matchCard1.BackColor = Color.Silver;
             this.matchCard1.BorderStyle = BorderStyle.FixedSingle;
-            this.matchCard1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            this.matchCard1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            this.matchCard1.Lane = 1;
             this.matchCard1.Location = new Point(3, 4);
             this.matchCard1.Margin = new Padding(3, 4, 3, 4);
+            this.matchCard1.Match = null;
             this.matchCard1.MaximumSize = new Size(620, 110);
             this.matchCard1.MinimumSize = new Size(620, 110);
             this.matchCard1.Name = "matchCard1";
@@ -143,13 +145,13 @@
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.Controls.Add(layoutRoot);
+            this.Controls.Add(this.layoutRoot);
             this.Margin = new Padding(3, 4, 3, 4);
             this.Name = "EventPanel";
             this.Size = new Size(1583, 939);
-            layoutRounds.ResumeLayout(false);
-            layoutRoot.ResumeLayout(false);
-            flowMatchCards.ResumeLayout(false);
+            this.layoutRounds.ResumeLayout(false);
+            this.layoutRoot.ResumeLayout(false);
+            this.flowMatchCards.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -161,7 +163,7 @@
         private FlowLayoutPanel flowRounds;
         private TableLayoutPanel layoutRoot;
         private FlowLayoutPanel flowMatchCards;
-        private PlayerListBox.PlayerListBox playerListBox;
-        private MatchCard.MatchCard matchCard1;
+        private PlayerListBox playerListBox;
+        private MatchCard matchCard1;
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Model;
 using System.Data;
 
-namespace Leagueinator.App.Components.PlayerListBox {
+namespace Leagueinator.App.Components {
     public partial class PlayerListBox : ListBox {
 
         public Round? Round {

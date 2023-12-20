@@ -4,7 +4,7 @@
     }
 
     [Serializable]
-    public struct LeagueSettings {
+    public struct EventSettings {
         public int TeamSize = 2;
         public int LaneCount = 8;
         public int MatchSize = 2;
@@ -14,6 +14,6 @@
         public string Date = DateTime.Now.ToShortDateString();
         public string Name = "N/A";
 
-        public LeagueSettings() {}
+        public EventSettings() {}
     }
 }
