@@ -52,7 +52,7 @@ namespace Model {
         }
 
         /// <summary>
-        /// Add a row to the EventTable.
+        /// Add a row to the EventTable to represent a team in this match.
         /// </summary>
         /// <returns>A new Team view</returns>
         /// <exception cref="Exception"></exception>
@@ -88,18 +88,18 @@ namespace Model {
         }
 
         /// <summary>
-        /// Retrieve all teams that contain at least one player.
+        /// Retrieve all teams.
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
         private List<Team> GetTeams() {
             DeletedException.ThrowIf(this);
-            DataTable table = this.Table ?? throw new NullReferenceException();
+            DataTable eventTable = this.Table ?? throw new NullReferenceException();
 
             SortedSet<int> ids = [];
             List<Team> teams = [];
 
-            foreach (DataRow row in table.AsEnumerable()) {
+            foreach (DataRow row in eventTable.AsEnumerable()) {
                 int roundIndex = (row.Field<int>(EventTable.COL.ROUND));
                 int laneIndex = (row.Field<int>(EventTable.COL.LANE));
                 int teamIndex = (row.Field<int>(EventTable.COL.TEAM_IDX));
@@ -115,15 +115,9 @@ namespace Model {
             return teams;
         }
 
-
-
         public void Delete() {
             DeletedException.ThrowIf(this);
-
-            foreach (Team team in this.Teams) {
-                team.Delete();
-            }
-
+            foreach (Team team in this.Teams) team.Delete();
             this.Deleted = true;
         }
 

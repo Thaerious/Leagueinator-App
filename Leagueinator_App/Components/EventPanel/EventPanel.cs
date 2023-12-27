@@ -1,4 +1,5 @@
 ﻿using Model;
+using System.Text.RegularExpressions;
 
 namespace Leagueinator.App.Components {
 
@@ -62,13 +63,16 @@ namespace Leagueinator.App.Components {
         /// <return>The last card added</return>
         /// <param TagName="round"></param>
         private void UpdateMatchCards(Round round) {
-            this.flowMatchCards.Controls.Clear();
+            if (this.LeagueEvent is null) throw new AppStateException();
+            if (this.CurrentRound is null) throw new AppStateException();
 
-            int lane = 1;
-            foreach (Match match in round.Matches) {
+            this.flowMatchCards.Controls.Clear();
+                        
+            int laneCount = int.Parse(this.LeagueEvent.Settings["Lane_Count"]);
+            for (int i = 0; i < laneCount; i++) {
                 MatchCard matchCard = new() {
-                    Match = match,
-                    Lane = lane++
+                    Match = this.CurrentRound.GetMatch(i),
+                    Lane = i + 1
                 };
                 this.flowMatchCards.Controls.Add(matchCard);
             }

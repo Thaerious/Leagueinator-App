@@ -31,7 +31,6 @@
             this.layoutRoot = new TableLayoutPanel();
             this.playerListBox = new PlayerListBox(this.components);
             this.flowMatchCards = new FlowLayoutPanel();
-            this.matchCard1 = new MatchCard();
             this.layoutRounds.SuspendLayout();
             this.layoutRoot.SuspendLayout();
             this.flowMatchCards.SuspendLayout();
@@ -124,22 +123,7 @@
             this.flowMatchCards.Margin = new Padding(3, 4, 3, 4);
             this.flowMatchCards.Name = "flowMatchCards";
             this.flowMatchCards.Size = new Size(694, 931);
-            this.flowMatchCards.TabIndex = 1;
-            // 
-            // matchCard1
-            // 
-            this.matchCard1.BackColor = Color.Silver;
-            this.matchCard1.BorderStyle = BorderStyle.FixedSingle;
-            this.matchCard1.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            this.matchCard1.Lane = 1;
-            this.matchCard1.Location = new Point(3, 4);
-            this.matchCard1.Margin = new Padding(3, 4, 3, 4);
-            this.matchCard1.Match = null;
-            this.matchCard1.MaximumSize = new Size(620, 110);
-            this.matchCard1.MinimumSize = new Size(620, 110);
-            this.matchCard1.Name = "matchCard1";
-            this.matchCard1.Size = new Size(620, 110);
-            this.matchCard1.TabIndex = 0;
+            this.flowMatchCards.TabIndex = 1;            
             // 
             // EventPanel
             // 

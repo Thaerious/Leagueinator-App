@@ -7,28 +7,51 @@ namespace Model {
 
     /// <summary>
     /// A view of TeamTableView paired with a EventTableRow from EventTable.
-    /// The public methods may update the data set.
     /// </summary>
     public class Team : DataView, IDeleted {
 
+        /// <summary>
+        /// Retrieve the league this team belongs to.
+        /// </summary>
         public League League { get => this.LeagueEvent.League; }
 
+        /// <summary>
+        /// Retrievet the league event this team belongs to.
+        /// </summary>
         public LeagueEvent LeagueEvent { get => this.Round.LeagueEvent; }
 
+        /// <summary>
+        /// Retrieve the round this team belongs to.
+        /// </summary>
         public Round Round { get => this.Match.Round; }
 
+        /// <summary>
+        /// Retrieve the match this team belongs to.
+        /// </summary>
         public Match Match { get; }
 
+        /// <summary>
+        /// Retrive the team index of this team.
+        /// </summary>
         public int TeamIndex { get; }
 
+        /// <summary>
+        /// Property to get the unique ID from the event table row. 
+        /// </summary>
         public int EventTableUID { get => (int)EventTableRow[EventTable.COL.ID]; }
 
+        /// <summary>
+        /// Property to retrieve a non-reflective list of players.
+        /// </summary>
         public List<string> Players {
             get => this.GetPlayers();
         }
 
         private DataRow EventTableRow { get; }
 
+        /// <summary>
+        /// Property to track if delete has been invoked.
+        /// </summary>
         public bool Deleted { get; private set; } = false;
         public int Bowls {
             get => (int)this.EventTableRow[EventTable.COL.BOWLS];
@@ -41,17 +64,15 @@ namespace Model {
             this.TeamIndex = teamIndex;
 
             this.RowFilter = $"{TeamTable.COL.EVENT_TABLE_UID} = {this.EventTableUID}";
-
-            //var row = this.League.EventTable.GetRow(
-            //    eventUID: this.LeagueEvent.UID,
-            //    round: this.Round.RoundIndex,
-            //    lane: this.Match.Lane,
-            //    teamIdx: this.TeamIndex
-            //);
         }
 
-
+        /// <summary>
+        /// Add a new player to this team at the next available index.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True </returns>
         public bool AddPlayer(string name) {
+            Debug.WriteLine($"AddPlayer {this.Match.Lane}:{this.TeamIndex} {name}");
             DeletedException.ThrowIf(this);
             if (this.HasPlayer(name)) return false;
 
@@ -64,7 +85,16 @@ namespace Model {
         }
 
         /// <summary>
-        /// Add the player to the TeamTable for this team.
+        /// Add a new player to this team at the next available index.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>True </returns>
+        public void AddPlayers(IEnumerable<string> names) {
+            foreach (string name in names) this.AddPlayer(name);
+        }
+
+        /// <summary>
+        /// Determine if this team contains the specified player.
         /// </summary>
         /// <param playerName="playerName"></param>
         /// <returns></returns>
@@ -97,19 +127,35 @@ namespace Model {
         /// <param playerName="v"></param>
         /// <returns>True if a change was made</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public bool RemovePlayer(string name) {
+        public bool RemovePlayer(string name) {            
             DeletedException.ThrowIf(this);
             this.Sort = TeamTable.COL.PLAYER_NAME;
             int rowIndex = this.Find(name);
-
+            
             if (rowIndex == -1) return false;
+            DataRowView rowView = this[rowIndex];
 
             if (this.Table is null) throw new NullReferenceException();
-            this.Table.Rows.RemoveAt(rowIndex);
+            this.Table.Rows.Remove(rowView.Row);
 
             return true;
         }
 
+        /// <summary>
+        /// Remove all players from this team.
+        /// </summary>
+        /// <returns>A list of the players removed.</returns>
+        public List<string> ClearPlayers() {
+            var players = this.Players;
+            foreach (string player in players) {
+                this.RemovePlayer(player);
+            }
+            return players;
+        }
+
+        /// <summary>
+        /// Remove this team from the underlying dataset.
+        /// </summary>
         public void Delete() {
             DeletedException.ThrowIf(this);
 

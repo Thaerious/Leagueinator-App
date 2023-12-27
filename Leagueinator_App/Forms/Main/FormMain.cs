@@ -18,6 +18,7 @@ namespace Leagueinator.App.Forms.Main {
             get => _league;
             set {
                 _league = value;
+
                 if (value == null) {
                     this.saveToolStripMenuItem.Enabled = false;
                     this.saveAsToolStripMenuItem.Enabled = false;
@@ -34,7 +35,9 @@ namespace Leagueinator.App.Forms.Main {
                     this.closeToolStripMenuItem.Enabled = true;
                     this.eventsToolStripMenuItem.Enabled = true;
                     this.playersToolStripMenuItem.Enabled = true;
-                    this.eventPanel.Visible = false;      
+                    this.eventPanel.Visible = false;
+
+                    this.OnSetLeague(value);
                 }
             }
         }
@@ -52,6 +55,14 @@ namespace Leagueinator.App.Forms.Main {
                 if (!value) this.Text = this.filename + " *";
                 else this.Text = this.filename;
             };
+        }
+
+        private void OnSetLeague(League league) {
+            if (league.LeagueEvents.Count > 0) {
+                var lEvent = league.LeagueEvents.Last();
+                this.eventPanel.Visible = true;
+                this.eventPanel.LeagueEvent = lEvent;
+            }
         }
 
         private void DoRenamePlayer(string before, string after) {
@@ -88,7 +99,7 @@ namespace Leagueinator.App.Forms.Main {
             try {
                 using (StreamReader inputFile = new StreamReader(filename)) {
                     string leagueJson = inputFile.ReadToEnd();
-                    this.League = JsonConvert.DeserializeObject<League>(leagueJson) as League;
+                    this.League = JsonConvert.DeserializeObject<League>(leagueJson);
                 }
                 this.filename = filename;
                 this.Text = filename;
