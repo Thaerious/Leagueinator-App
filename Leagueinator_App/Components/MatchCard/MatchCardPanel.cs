@@ -6,12 +6,15 @@ namespace Leagueinator.App.Components {
 
         public MatchCardPanel() : base() {
             InitializeComponents();
-            this.Resize += OnResize;
+            //this.Resize += OnResize;
         }
 
         public Round? Round {
             get => _round;
             set {
+                this._round = value;
+
+                this.Visible = false;
                 this.Controls.Clear();
                 if (value == null) return;
 
@@ -21,6 +24,7 @@ namespace Leagueinator.App.Components {
                 for (int i = 0; i < laneCount; i++) {
                     var matchCard = this.AddMatchCard(value.GetMatch(i));
                 }
+                this.Visible = true;
             }
         }
 

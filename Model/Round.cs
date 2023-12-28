@@ -1,7 +1,6 @@
 ﻿using Model.Tables;
 using System.Data;
 using System.Diagnostics;
-using System.Text;
 
 namespace Model {
 
@@ -28,7 +27,7 @@ namespace Model {
         }
 
         private void DataRowChangeEventHandler(object sender, DataRowChangeEventArgs e) {
-            if ((string)e.Row[IdleTable.COL.EVENT_UID] != this.Round.LeagueEvent.EventName) return;
+            if ((int)e.Row[IdleTable.COL.EVENT_UID] != this.Round.LeagueEvent.UID) return;
             if ((int)e.Row[IdleTable.COL.ROUND] != this.Round.RoundIndex) return;
             this.CollectionChanged?.Invoke(this, e);
         }
@@ -43,12 +42,14 @@ namespace Model {
 
         public void Add(string playerName) {
             if (this.Contains(playerName)) throw new ArgumentException(null, nameof(playerName));
-            
+
+            Debug.WriteLine("Before");
             this.IdleTable.AddRow(
-                eventUID: this.Round.LeagueEvent.UID,
-                round: this.Round.RoundIndex,
-                playerName: playerName
+                eventUID: (Int32)this.Round.LeagueEvent.UID,
+                round: (Int32)this.Round.RoundIndex,
+                playerName: (string)playerName
             );
+            Debug.WriteLine("After");
         }
 
         IEnumerator<string> IEnumerable<string>.GetEnumerator() {
@@ -57,7 +58,6 @@ namespace Model {
             }
         }
     }
-
 
     /// <summary>
     /// A view of EventTable restricted to event name and Round.

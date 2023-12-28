@@ -43,7 +43,10 @@ namespace Model {
             get => new(this.GetRounds());
         }
 
-        internal int UID { get => (int)DirectoryRow[EventDirectoryTable.COL.ID]; }
+        /// <summary>
+        /// The primary key form the event directory table.
+        /// </summary>
+        public int UID { get => (int)DirectoryRow[EventDirectoryTable.COL.ID]; }
 
         internal LeagueEvent(League league, int uid) : base(league.EventTable) {
             this.DirectoryRow = league.EventDirectoryTable.GetRow(uid);            

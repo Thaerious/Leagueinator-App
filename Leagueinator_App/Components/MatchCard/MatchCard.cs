@@ -96,27 +96,30 @@ namespace Leagueinator.App.Components {
             foreach (MemoryTextBox textBox in sender.flowRight.Controls) textBox.ForeColor = Color.Black;
         }
 
-        public void AddTextBox() {
-            this.flowLeft.AddTextBox();
-            this.flowRight.AddTextBox();
-        }
-
         private void InitializeComponents() {
-            this.tableLayout = new TableLayoutPanel();
-
             while (this.Match.Teams.Count < 2) this.Match.NewTeam();
+
+            this.tableLayout = new TableLayoutPanel();
             this.flowLeft = new(this.Match.Teams[0]);
             this.flowRight = new(this.Match.Teams[1]);
             this.txtBowls1 = new(this.Match.Teams[0]);
             this.txtBowls2 = new(this.Match.Teams[1]);
             this.lblLane = new();
-            this.AutoSize = true;
 
             this.SuspendLayout();
             this.tableLayout.SuspendLayout();
             this.txtBowls1.SuspendLayout();
             this.txtBowls2.SuspendLayout();
             this.lblLane.SuspendLayout();
+
+            this.BorderStyle = BorderStyle.FixedSingle;
+            this.MinimumSize = new Size(400, 64);
+            this.Size = new Size(400, 64);
+            this.AutoSize = true;
+            this.BackColor = MatchCard.DefaultBackColor;
+            this.AllowDrop = true;
+
+            this.Controls.Add(this.tableLayout);
 
             this.tableLayout.AutoSize = true;
             this.tableLayout.ColumnCount = 6;
@@ -151,14 +154,6 @@ namespace Leagueinator.App.Components {
             this.lblLane.Size = new Size(50, 55);
             this.lblLane.TextAlign = ContentAlignment.MiddleCenter;
             this.lblLane.MouseDown += OnMouseDown;
-
-            this.BorderStyle = BorderStyle.FixedSingle;
-            this.Controls.Add(this.tableLayout);
-            this.MinimumSize = new Size(300, 64);
-            this.Size = new Size(300, 64);
-            this.BackColor = MatchCard.DefaultBackColor;
-            this.AllowDrop = true;
-            this.DoubleBuffered = true;
 
             this.tableLayout.ResumeLayout(false);
             this.txtBowls1.ResumeLayout(false);
@@ -205,7 +200,6 @@ namespace Leagueinator.App.Components {
             if ((int)e.Row[TeamTable.COL.EVENT_TABLE_UID] != this.Team.EventTableUID) return;
             string name = (string)e.Row[TeamTable.COL.PLAYER_NAME];
 
-            Debug.WriteLine(e.Row.PrettyPrint("Row Changed"));
             if (!this.HasPlayerName(name)) this.AddPlayerName(name);
         }
 
@@ -262,7 +256,7 @@ namespace Leagueinator.App.Components {
                 textBox.Width = parent.Width - parent.Margin.Left - parent.Margin.Right;
             });
 
-            textBox.MemoryUpdate += this.TextBox_MemoryUpdate;
+            textBox.TextChanged += this.TextBox_MemoryUpdate;
 
             textBox.ResumeLayout(false);
         }
@@ -270,75 +264,6 @@ namespace Leagueinator.App.Components {
         private void TextBox_MemoryUpdate(object? sender, MemoryTextBox.MemoryUpdateArgs e) {
             if (e.TextBefore != "") this.Team.RemovePlayer(e.TextBefore);
             if (e.TextAfter != "") this.Team.AddPlayer(e.TextAfter);
-        }
-    }
-
-    public class MemoryTextBox : TextBox {
-        public class MemoryUpdateArgs {
-            public required string TextBefore { get; init; }
-            public required string TextAfter { get; init; }
-        }
-
-        public delegate void MemoryUpdateEvent(object? sender, MemoryUpdateArgs e);
-        public event MemoryUpdateEvent MemoryUpdate = delegate { };
-
-        public string Temp {
-            set {
-                base.Text = value;
-            }
-        }
-
-        public new string Text {
-            get => base.Text;
-            set {
-                base.Text = value;
-                this.Memory = value;
-            }
-        }
-
-        public string Memory {
-            get; private set;
-        }
-
-        public MemoryTextBox() : base() {
-            this.InitializeComponents();
-            this.LostFocus += this.MemoryTextBox_LostFocus;
-            this.KeyDown += this.MemoryTextBox_KeyDown;
-            this.Memory = this.Text;
-        }
-
-        public void InitializeComponents() {
-            this.SuspendLayout();
-            this.BackColor = Color.WhiteSmoke;
-            this.ResumeLayout(false);
-        }
-
-        private void MemoryTextBox_KeyDown(object? sender, KeyEventArgs e) {
-            if (e.KeyCode == Keys.Enter) {
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-                this.InvokeMemoryEvent();
-            }
-        }
-
-        public void Revert() {
-            base.Text = this.Memory;
-        }
-
-        private void MemoryTextBox_LostFocus(object? sender, EventArgs e) {
-            this.InvokeMemoryEvent();
-        }
-
-        private void InvokeMemoryEvent() {
-            if (this.Text == this.Memory) return;
-
-            MemoryUpdateArgs args = new() {
-                TextBefore = this.Memory,
-                TextAfter = this.Text
-            };
-            this.Memory = this.Text;
-
-            MemoryUpdate.Invoke(this, args);
         }
     }
 
@@ -350,7 +275,6 @@ namespace Leagueinator.App.Components {
             this.Team = team;
             this.txtTeam = new TextBox();
             this.InitializeComponents();
-            this.Resize += OnResize;            
         }
 
         private void InitializeComponents() {
@@ -399,10 +323,6 @@ namespace Leagueinator.App.Components {
                 this.Memory = value;
                 this.Team.Bowls = value;
             }
-        }
-
-        private void OnResize(object? sender, EventArgs e) {
-            this.Center(this.txtTeam);
         }
 
         private readonly TextBox txtTeam;

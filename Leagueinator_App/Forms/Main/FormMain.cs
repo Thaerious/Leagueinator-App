@@ -11,6 +11,7 @@ using Model;
 using Leagueinator_App;
 using Leagueinator.App.Components;
 using Newtonsoft.Json.Linq;
+using Model.Tables;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -37,7 +38,11 @@ namespace Leagueinator.App.Forms.Main {
                     this.playersToolStripMenuItem.Enabled = true;
                     this.eventPanel.Visible = false;
 
-                    this.OnSetLeague(value);
+                    if (value.LeagueEvents.Count > 0) {
+                        var lEvent = value.LeagueEvents.Last();
+                        this.eventPanel.Visible = true;
+                        this.eventPanel.LeagueEvent = lEvent;
+                    }
                 }
             }
         }
@@ -57,35 +62,8 @@ namespace Leagueinator.App.Forms.Main {
             };
         }
 
-        private void OnSetLeague(League league) {
-            if (league.LeagueEvents.Count > 0) {
-                var lEvent = league.LeagueEvents.Last();
-                this.eventPanel.Visible = true;
-                this.eventPanel.LeagueEvent = lEvent;
-            }
-        }
-
         private void DoRenamePlayer(string before, string after) {
             throw new NotImplementedException();
-        }
-
-        private void PlayerListBox_OnRename(PlayerListBox source, PlayerListBoxArgs args) {
-            if (this.League is null) return;
-            if (this.eventPanel.LeagueEvent is null) return;
-
-            var form = new FormRenamePlayer {
-                StartPosition = FormStartPosition.CenterParent
-            };
-            var result = form.ShowDialog();
-            if (result == DialogResult.Cancel) return;
-
-            DoRenamePlayer(args.PlayerName, form.PlayerName);
-        }
-
-        private void PlayerListBox_OnDelete(PlayerListBox source, PlayerListBoxArgs args) {
-            Round? round = this.eventPanel.CurrentRound;
-            if (round is null) return;
-            round.DeletePlayer(args.PlayerName);
         }
 
         private static void SetupFileDialog(FileDialog dialog) {
@@ -250,7 +228,7 @@ namespace Leagueinator.App.Forms.Main {
                 Debug.WriteLine("League Event is [NULL]");
             }
             else {
-                Debug.WriteLine(this.eventPanel.LeagueEvent.ToString());
+                Debug.WriteLine(this.eventPanel.LeagueEvent.PrettyPrint());
             }
         }
 
@@ -335,7 +313,7 @@ namespace Leagueinator.App.Forms.Main {
                     if (team is null) continue;
                     throw new NotImplementedException();
                     //for (int p = 0; p < team.Players.MaxSize; p++) {
-                        //team.Players[p] = previous.Matches[m]?.Teams[t]?.Players[p];
+                    //team.Players[p] = previous.Matches[m]?.Teams[t]?.Players[p];
                     //}
                 }
             }
@@ -473,6 +451,18 @@ namespace Leagueinator.App.Forms.Main {
             //this.printDocument.PrintPage += printer.HndPrint;
             //this.printPreviewDialog.Document = this.printDocument;
             //this.printPreviewDialog.ShowDialog();
+        }
+
+        private void currentRoundToolStripMenuItem_Click(object sender, EventArgs e) {
+            if (this.eventPanel.CurrentRound == null) {
+                Debug.WriteLine("Current Round is [NULL]");
+                return;
+            }
+            Debug.WriteLine(this.eventPanel.CurrentRound.PrettyPrint());
+        }
+
+        private void addRowToolStripMenuItem_Click(object sender, EventArgs e) {
+            this.eventPanel.CurrentRound.IdlePlayers.Add("I dunno, wtf");
         }
     }
 }

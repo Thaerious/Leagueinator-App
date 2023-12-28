@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Tables;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -19,8 +20,6 @@ namespace Leagueinator.App.Components {
             }
         }
 
-        public PlayerListBox PlayerListBox => this.playerListBox;
-
         public EventPanel() {
             this.InitializeComponent();
         }
@@ -33,12 +32,11 @@ namespace Leagueinator.App.Components {
                 if (value == null) return;
 
                 this.flowRounds.Controls.Clear();
-                this.playerListBox.Items.Clear();
 
                 foreach (Round round in value.Rounds) this.AddRoundButton(round);
                 this.SelectLastRoundButton();
             }
-        }  
+        }
 
         /// <summary>
         /// AddChild a round to this panel.<br>
@@ -60,8 +58,6 @@ namespace Leagueinator.App.Components {
         public void HndAddRound(object _, EventArgs __) {
             if (this.LeagueEvent is null) throw new AppStateException();
             var round = this.LeagueEvent.NewRound();
-
-            Debug.WriteLine(round.League.PrettyPrint()) ;
 
             this.CurrentRound = round;
             var button = this.AddRoundButton(round);
@@ -103,5 +99,25 @@ namespace Leagueinator.App.Components {
         }
 
         private LeagueEvent? _currentEvent = null;
+    }
+
+    public class PlayerTextBox : MemoryTextBox {
+        public PlayerTextBox() : base() {
+            this.TextChanged += OnTextChanged;
+        }
+
+        private void OnTextChanged(object? sender, MemoryUpdateArgs e) {
+            EventPanel eventPanel = this.Parent<EventPanel>() ?? throw new AppStateException();
+            Round round = eventPanel.CurrentRound ?? throw new AppStateException();
+
+            //var row = round.League.IdleTable.GetRow(round.LeagueEvent.UID, round.RoundIndex, e.TextBefore);
+
+            //if (row is null) {
+                round.League.IdleTable.AddRow(round.LeagueEvent.UID, round.RoundIndex, this.Text);
+            //}
+            //else {
+                //row[IdleTable.COL.PLAYER_NAME] = e.TextAfter;
+            //}
+        }
     }
 }

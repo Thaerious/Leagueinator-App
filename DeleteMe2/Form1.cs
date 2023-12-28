@@ -6,24 +6,19 @@ namespace DeleteMe2 {
 
         public Form1() {
             InitializeComponent();
-            var mock = new Mock();
-            this.matchCard = new MatchCard(mock.LeagueEvents[0].Rounds[0].Matches[0]);
-            this.matchCard.Size = new Size(500, 300);
-            matchCard.Location = new Point(200, 50);
-            this.Controls.Add(matchCard);
         }
 
         private void button1_Click(object sender, EventArgs e) {
             this.flowLayoutPanel1.SuspendLayout();
 
+            var button = new Button() {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                AutoSize = true,
+            };
+
             this.flowLayoutPanel1.Controls.Add(new Button());
 
-            this.flowLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout();
-        }
-
-        private void button2_Click(object sender, EventArgs e) {
-            this.matchCard.flowLeft.AddTextBox();
+            this.flowLayoutPanel1.ResumeLayout(true);
         }
     }
 }

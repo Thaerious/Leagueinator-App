@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Utility;
 using Model;
+using Model.Tables;
 using System.Diagnostics;
 
 namespace Model_Test {
@@ -238,6 +239,21 @@ namespace Model_Test {
             Debug.WriteLine(league.PrettyPrint());
             Debug.WriteLine(round.IdlePlayers.DelString());
             CollectionAssert.AreEquivalent(expected, round.IdlePlayers.ToList());
+        }
+
+        [TestMethod]
+        public void Idle_Table_Event_Handler() {
+            League league = new League();
+            var lEvent = league.NewLeagueEvent("myEvent");
+            var round = lEvent.NewRound();
+
+            bool triggered = false;
+            round.IdlePlayers.CollectionChanged += (s, e) => {
+                triggered = true;
+            };
+
+            round.IdlePlayers.Add("newton");
+            Assert.IsTrue(triggered);
         }
     }
 }

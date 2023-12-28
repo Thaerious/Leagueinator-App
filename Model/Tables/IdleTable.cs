@@ -17,16 +17,27 @@ namespace Model.Tables {
         }
 
         public DataRow AddRow(int eventUID, int round, string playerName) {
+            Debug.WriteLine($"ADDROW {eventUID}:{eventUID.GetType()} {round}:{round.GetType()} {playerName}:{playerName.GetType()} ");
+
             var row = this.NewRow();
-                        
+
             row[COL.EVENT_UID] = eventUID;
             row[COL.ROUND] = round;
             row[COL.PLAYER_NAME] = playerName;
 
-            Debug.WriteLine($"{row[COL.EVENT_UID]} {row[COL.EVENT_UID].GetType()}");
-
             this.Rows.Add(row);
             return row;
+        }
+
+        public DataRow? GetRow(int eventDirUID, int round, string playerName) {
+            var rows = this.AsEnumerable()
+                           .Where(row => row.Field<int>(COL.EVENT_UID) == eventDirUID)
+                           .Where(row => row.Field<int>(COL.ROUND) == round)
+                           .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
+                           .ToList();
+
+            if (rows.Count == 0) return null;
+            return rows[0];
         }
 
         public void RemoveRows(int eventUID, int round, string playerName) {
@@ -38,7 +49,7 @@ namespace Model.Tables {
                                .ToList()
                                ;
 
-            foreach(DataRow row in rowsToDelete){
+            foreach (DataRow row in rowsToDelete) {
                 this.Rows.Remove(row);
             }
         }

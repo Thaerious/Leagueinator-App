@@ -23,14 +23,13 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
             this.layoutRounds = new TableLayoutPanel();
             this.butAddRound = new Button();
             this.butRemoveRound = new Button();
             this.flowRounds = new FlowLayoutPanel();
-            this.playerListBox = new PlayerListBox(this.components);
             this.splitContainer1 = new SplitContainer();
             this.splitContainer2 = new SplitContainer();
+            this.txtIdle = new PlayerTextBox();
             this.matchCardPanel = new MatchCardPanel();
             this.layoutRounds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
@@ -96,16 +95,6 @@
             this.flowRounds.Size = new Size(519, 777);
             this.flowRounds.TabIndex = 2;
             // 
-            // playerListBox
-            // 
-            this.playerListBox.Dock = DockStyle.Fill;
-            this.playerListBox.FormattingEnabled = true;
-            this.playerListBox.ItemHeight = 25;
-            this.playerListBox.Location = new Point(0, 0);
-            this.playerListBox.Name = "playerListBox";
-            this.playerListBox.Size = new Size(350, 939);
-            this.playerListBox.TabIndex = 2;
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = DockStyle.Fill;
@@ -131,14 +120,24 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.playerListBox);
+            this.splitContainer2.Panel1.Controls.Add(this.txtIdle);
+            this.splitContainer2.Panel1.Padding = new Padding(10);
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.matchCardPanel);
             this.splitContainer2.Size = new Size(1052, 939);
-            this.splitContainer2.SplitterDistance = 350;
+            this.splitContainer2.SplitterDistance = 474;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // txtIdle
+            // 
+            this.txtIdle.Dock = DockStyle.Top;
+            this.txtIdle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            this.txtIdle.Location = new Point(10, 10);
+            this.txtIdle.Name = "txtIdle";
+            this.txtIdle.Size = new Size(454, 45);
+            this.txtIdle.TabIndex = 0;
             // 
             // matchCardPanel
             // 
@@ -167,6 +166,7 @@
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)this.splitContainer2).EndInit();
             this.splitContainer2.ResumeLayout(false);
@@ -179,10 +179,10 @@
         private Button butAddRound;
         private Button butRemoveRound;
         private FlowLayoutPanel flowRounds;
-        private PlayerListBox playerListBox;
         private MatchCard matchCard1;
         private SplitContainer splitContainer1;
         private SplitContainer splitContainer2;
         private MatchCardPanel matchCardPanel;
+        private PlayerTextBox txtIdle;
     }
 }
