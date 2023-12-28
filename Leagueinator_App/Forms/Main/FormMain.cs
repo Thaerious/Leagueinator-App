@@ -180,8 +180,8 @@ namespace Leagueinator.App.Forms.Main {
                 formAddEvent.EventSettings.Date
             );
 
-            lEvent.Settings["Team_Size"] = formAddEvent.EventSettings.TeamSize.ToString();
-            lEvent.Settings["Lane_Count"] = formAddEvent.EventSettings.LaneCount.ToString();
+            lEvent.Settings["team_size"] = formAddEvent.EventSettings.TeamSize.ToString();
+            lEvent.Settings["lane_count"] = formAddEvent.EventSettings.LaneCount.ToString();
 
             IsSaved.Value = false;
             this.eventPanel.Visible = true;

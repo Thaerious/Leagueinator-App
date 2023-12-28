@@ -1,5 +1,4 @@
 ﻿using Leagueinator.App.Forms.Main;
-using Leagueinator_App.Forms;
 
 namespace Leagueinator_App {
     internal static class Program {
@@ -11,7 +10,7 @@ namespace Leagueinator_App {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MatchDevForm());
+            Application.Run(new FormMain());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Model;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Leagueinator.App.Components {
@@ -11,11 +12,10 @@ namespace Leagueinator.App.Components {
         /// </summary>
         public Round? CurrentRound {
             get {
-                return this._currentRound;
+                return this.matchCardPanel.Round;
             }
             private set {
-                this._currentRound = value;
-                if (value is not null) this.UpdateMatchCards(value);
+                this.matchCardPanel.Round = value;
             }
         }
 
@@ -57,30 +57,12 @@ namespace Leagueinator.App.Components {
             return button;
         }
 
-        /// <summary>
-        /// Populate the match card panel with new match cards.
-        /// </summary>
-        /// <return>The last card added</return>
-        /// <param TagName="round"></param>
-        private void UpdateMatchCards(Round round) {
-            if (this.LeagueEvent is null) throw new AppStateException();
-            if (this.CurrentRound is null) throw new AppStateException();
-
-            this.flowMatchCards.Controls.Clear();
-                        
-            int laneCount = int.Parse(this.LeagueEvent.Settings["Lane_Count"]);
-            for (int i = 0; i < laneCount; i++) {
-                MatchCard matchCard = new() {
-                    Match = this.CurrentRound.GetMatch(i),
-                    Lane = i + 1
-                };
-                this.flowMatchCards.Controls.Add(matchCard);
-            }
-        }
-
         public void HndAddRound(object _, EventArgs __) {
             if (this.LeagueEvent is null) throw new AppStateException();
             var round = this.LeagueEvent.NewRound();
+
+            Debug.WriteLine(round.League.PrettyPrint()) ;
+
             this.CurrentRound = round;
             var button = this.AddRoundButton(round);
             this.SelectRoundButton(button);
@@ -119,11 +101,8 @@ namespace Leagueinator.App.Components {
 
             this.CurrentRound = button.Round;
             button.BackColor = Color.LightGreen;
-            this.UpdateMatchCards(button.Round);
+            this.matchCardPanel.Round = button.Round;
         }
-
-
-        private Round? _currentRound = null;
 
         private LeagueEvent? _currentEvent = null;
     }

@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Components\MatchCard\MatchCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Components\MatchCard\MatchCardPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
