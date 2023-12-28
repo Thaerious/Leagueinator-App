@@ -65,7 +65,6 @@ namespace Leagueinator.App.Components {
 
             this.CurrentRound = round;
             var button = this.AddRoundButton(round);
-            this.SelectRoundButton(button);
         }
 
         public void HndDeleteRound(object _, EventArgs __) {
@@ -101,7 +100,6 @@ namespace Leagueinator.App.Components {
 
             this.CurrentRound = button.Round;
             button.BackColor = Color.LightGreen;
-            this.matchCardPanel.Round = button.Round;
         }
 
         private LeagueEvent? _currentEvent = null;

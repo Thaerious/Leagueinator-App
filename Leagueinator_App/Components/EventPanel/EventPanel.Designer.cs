@@ -157,6 +157,7 @@
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.Controls.Add(this.splitContainer1);
+            this.DoubleBuffered = true;
             this.Margin = new Padding(3, 4, 3, 4);
             this.Name = "EventPanel";
             this.Size = new Size(1583, 939);

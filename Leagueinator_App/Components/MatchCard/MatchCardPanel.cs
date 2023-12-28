@@ -4,22 +4,23 @@ using System.Diagnostics;
 namespace Leagueinator.App.Components {
     public class MatchCardPanel : FlowLayoutPanel {
 
-        internal MatchCard? Dragging { get; set; }
+        public MatchCardPanel() : base() {
+            InitializeComponents();
+            this.Resize += OnResize;
+        }
 
         public Round? Round {
             get => _round;
             set {
                 this.Controls.Clear();
                 if (value == null) return;
-                
+
                 int laneCount = int.Parse(value.LeagueEvent.Settings["lane_count"]);
                 int teamSize = int.Parse(value.LeagueEvent.Settings["team_size"]);
 
                 for (int i = 0; i < laneCount; i++) {
                     var matchCard = this.AddMatchCard(value.GetMatch(i));
                 }
-
-                this.Resize += OnResize;
             }
         }
 
@@ -35,16 +36,11 @@ namespace Leagueinator.App.Components {
         }
 
         public MatchCard AddMatchCard(Match match) {
-            MatchCard matchCard = new(match);
-            matchCard.Width = (int)(this.Width * 0.8);
+            MatchCard matchCard = new(match) {
+                Width = (int)(this.Width * 0.8)
+            };
             this.Controls.Add(matchCard);
             return matchCard;
-        }
-
-
-
-        public MatchCardPanel() : base() {
-            InitializeComponents();
         }
 
         private void InitializeComponents() {
@@ -62,6 +58,7 @@ namespace Leagueinator.App.Components {
             this.ResumeLayout();
         }
 
+        internal MatchCard? Dragging { get; set; }
         private Round? _round = default;
     }
 }

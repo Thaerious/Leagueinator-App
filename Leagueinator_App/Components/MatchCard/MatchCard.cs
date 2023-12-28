@@ -22,7 +22,7 @@ namespace Leagueinator.App.Components {
 
         public MatchCard(Match match) {
             this.Match = match;
-            InitializeComponents();            
+            InitializeComponents();
             this.DragEnter += new DragEventHandler(OnDragEnter);
             this.DragLeave += new EventHandler(OnDragLeave);
             this.DragDrop += new DragEventHandler(OnDragDrop);
@@ -112,8 +112,11 @@ namespace Leagueinator.App.Components {
             this.lblLane = new();
             this.AutoSize = true;
 
+            this.SuspendLayout();
             this.tableLayout.SuspendLayout();
-            this.SuspendLayout();                       
+            this.txtBowls1.SuspendLayout();
+            this.txtBowls2.SuspendLayout();
+            this.lblLane.SuspendLayout();
 
             this.tableLayout.AutoSize = true;
             this.tableLayout.ColumnCount = 6;
@@ -158,10 +161,10 @@ namespace Leagueinator.App.Components {
             this.DoubleBuffered = true;
 
             this.tableLayout.ResumeLayout(false);
-            this.tableLayout.PerformLayout();
-
+            this.txtBowls1.ResumeLayout(false);
+            this.txtBowls2.ResumeLayout(false);
+            this.lblLane.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
         }
 
         private TableLayoutPanel tableLayout;
@@ -244,8 +247,7 @@ namespace Leagueinator.App.Components {
             this.FlowDirection = FlowDirection.TopDown;
             this.MaximumSize = new Size(0, 0);
 
-            this.ResumeLayout();
-            this.PerformLayout();
+            this.ResumeLayout(false);
         }
 
         public void AddTextBox() {
@@ -262,8 +264,7 @@ namespace Leagueinator.App.Components {
 
             textBox.MemoryUpdate += this.TextBox_MemoryUpdate;
 
-            textBox.PerformLayout();
-            textBox.ResumeLayout();
+            textBox.ResumeLayout(false);
         }
 
         private void TextBox_MemoryUpdate(object? sender, MemoryTextBox.MemoryUpdateArgs e) {
@@ -309,8 +310,7 @@ namespace Leagueinator.App.Components {
         public void InitializeComponents() {
             this.SuspendLayout();
             this.BackColor = Color.WhiteSmoke;
-            this.PerformLayout();
-            this.ResumeLayout();
+            this.ResumeLayout(false);
         }
 
         private void MemoryTextBox_KeyDown(object? sender, KeyEventArgs e) {
@@ -354,8 +354,8 @@ namespace Leagueinator.App.Components {
         }
 
         private void InitializeComponents() {
-            this.txtTeam.SuspendLayout();
             this.SuspendLayout();
+            this.txtTeam.SuspendLayout();
 
             this.Controls.Add(this.txtTeam);
             this.Dock = DockStyle.Fill;
@@ -371,10 +371,8 @@ namespace Leagueinator.App.Components {
             this.txtTeam.TextChanged += this.TxtTeam_TextChanged;
             this.txtTeam.GotFocus += this.TxtTeam_GotFocus;
 
-            this.ResumeLayout();
-            this.PerformLayout();
-            this.txtTeam.ResumeLayout();
-            this.txtTeam.PerformLayout();
+            this.txtTeam.ResumeLayout(false);
+            this.ResumeLayout(false);
         }
 
         private void TxtTeam_GotFocus(object? sender, EventArgs e) {
