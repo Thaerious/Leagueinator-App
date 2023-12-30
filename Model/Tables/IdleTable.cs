@@ -17,8 +17,6 @@ namespace Model.Tables {
         }
 
         public DataRow AddRow(int eventUID, int round, string playerName) {
-            Debug.WriteLine($"ADDROW {eventUID}:{eventUID.GetType()} {round}:{round.GetType()} {playerName}:{playerName.GetType()} ");
-
             var row = this.NewRow();
 
             row[COL.EVENT_UID] = eventUID;

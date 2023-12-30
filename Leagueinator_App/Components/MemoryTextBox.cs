@@ -10,11 +10,14 @@ namespace Leagueinator.App.Components {
         public delegate void MemoryUpdateEvent(object? sender, MemoryUpdateArgs e);
         new public event MemoryUpdateEvent TextChanged = delegate { };
 
+        /// <summary>
+        /// Update the text and memory values without triggering an event.
+        /// </summary>
         public new string Text {
             get => base.Text;
             set {
-                base.Text = value;
                 this.Memory = value;
+                base.Text = value;
             }
         }
 
@@ -29,7 +32,6 @@ namespace Leagueinator.App.Components {
         }
 
         private void Base_TextChanged(object? sender, EventArgs e) {
-            Debug.WriteLine($"InvokeMemoryEvent M:{this.Memory} T:{this.Text}");
             if (this.Text == this.Memory) return;
 
             MemoryUpdateArgs args = new() {

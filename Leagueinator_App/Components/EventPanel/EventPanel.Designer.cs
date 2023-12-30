@@ -29,8 +29,8 @@
             this.flowRounds = new FlowLayoutPanel();
             this.splitContainer1 = new SplitContainer();
             this.splitContainer2 = new SplitContainer();
-            this.txtIdle = new PlayerTextBox();
             this.matchCardPanel = new MatchCardPanel();
+            this.flowIdlePlayers = new FlowLayoutPanel();
             this.layoutRounds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -120,7 +120,7 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.txtIdle);
+            this.splitContainer2.Panel1.Controls.Add(this.flowIdlePlayers);
             this.splitContainer2.Panel1.Padding = new Padding(10);
             // 
             // splitContainer2.Panel2
@@ -129,15 +129,6 @@
             this.splitContainer2.Size = new Size(1052, 939);
             this.splitContainer2.SplitterDistance = 474;
             this.splitContainer2.TabIndex = 0;
-            // 
-            // txtIdle
-            // 
-            this.txtIdle.Dock = DockStyle.Top;
-            this.txtIdle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            this.txtIdle.Location = new Point(10, 10);
-            this.txtIdle.Name = "txtIdle";
-            this.txtIdle.Size = new Size(454, 45);
-            this.txtIdle.TabIndex = 0;
             // 
             // matchCardPanel
             // 
@@ -150,6 +141,17 @@
             this.matchCardPanel.Size = new Size(698, 939);
             this.matchCardPanel.TabIndex = 0;
             this.matchCardPanel.WrapContents = false;
+            // 
+            // flowIdlePlayers
+            // 
+            this.flowIdlePlayers.AutoScroll = true;
+            this.flowIdlePlayers.Dock = DockStyle.Fill;
+            this.flowIdlePlayers.FlowDirection = FlowDirection.TopDown;
+            this.flowIdlePlayers.Location = new Point(10, 10);
+            this.flowIdlePlayers.Name = "flowIdlePlayers";
+            this.flowIdlePlayers.Size = new Size(454, 919);
+            this.flowIdlePlayers.TabIndex = 1;
+            this.flowIdlePlayers.WrapContents = false;
             // 
             // EventPanel
             // 
@@ -166,7 +168,6 @@
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)this.splitContainer2).EndInit();
             this.splitContainer2.ResumeLayout(false);
@@ -183,6 +184,6 @@
         private SplitContainer splitContainer1;
         private SplitContainer splitContainer2;
         private MatchCardPanel matchCardPanel;
-        private PlayerTextBox txtIdle;
+        private FlowLayoutPanel flowIdlePlayers;
     }
 }

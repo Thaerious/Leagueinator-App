@@ -55,16 +55,12 @@
             this.devToolStripMenuItem = new ToolStripMenuItem();
             this.printLeagueToolStripMenuItem = new ToolStripMenuItem();
             this.printCurrentEventToolStripMenuItem = new ToolStripMenuItem();
-            this.isSavedToolStripMenuItem = new ToolStripMenuItem();
-            this.roundsCollectionToolStripMenuItem = new ToolStripMenuItem();
-            this.currentRoundToolStripMenuItem = new ToolStripMenuItem();
             this.helpToolStripMenuItem = new ToolStripMenuItem();
             this.aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel();
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.printPreviewDialog = new PrintPreviewDialog();
             this.printDialog = new PrintDialog();
-            this.addRowToolStripMenuItem = new ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -274,7 +270,7 @@
             // 
             // devToolStripMenuItem
             // 
-            this.devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.printLeagueToolStripMenuItem, this.printCurrentEventToolStripMenuItem, this.isSavedToolStripMenuItem, this.roundsCollectionToolStripMenuItem, this.currentRoundToolStripMenuItem, this.addRowToolStripMenuItem });
+            this.devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.printLeagueToolStripMenuItem, this.printCurrentEventToolStripMenuItem });
             this.devToolStripMenuItem.Name = "devToolStripMenuItem";
             this.devToolStripMenuItem.Size = new Size(59, 29);
             this.devToolStripMenuItem.Text = "Dev";
@@ -292,27 +288,6 @@
             this.printCurrentEventToolStripMenuItem.Size = new Size(270, 34);
             this.printCurrentEventToolStripMenuItem.Text = "Print Current Event";
             this.printCurrentEventToolStripMenuItem.Click += this.Dev_PrintCurrentEvent;
-            // 
-            // isSavedToolStripMenuItem
-            // 
-            this.isSavedToolStripMenuItem.Name = "isSavedToolStripMenuItem";
-            this.isSavedToolStripMenuItem.Size = new Size(270, 34);
-            this.isSavedToolStripMenuItem.Text = "Is Saved";
-            this.isSavedToolStripMenuItem.Click += this.Dev_IsSaved;
-            // 
-            // roundsCollectionToolStripMenuItem
-            // 
-            this.roundsCollectionToolStripMenuItem.Name = "roundsCollectionToolStripMenuItem";
-            this.roundsCollectionToolStripMenuItem.Size = new Size(270, 34);
-            this.roundsCollectionToolStripMenuItem.Text = "Rounds Collection";
-            this.roundsCollectionToolStripMenuItem.Click += this.Dev_HashCode;
-            // 
-            // currentRoundToolStripMenuItem
-            // 
-            this.currentRoundToolStripMenuItem.Name = "currentRoundToolStripMenuItem";
-            this.currentRoundToolStripMenuItem.Size = new Size(270, 34);
-            this.currentRoundToolStripMenuItem.Text = "Current Round";
-            this.currentRoundToolStripMenuItem.Click += this.currentRoundToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -354,13 +329,6 @@
             // 
             this.printDialog.UseEXDialog = true;
             // 
-            // addRowToolStripMenuItem
-            // 
-            this.addRowToolStripMenuItem.Name = "addRowToolStripMenuItem";
-            this.addRowToolStripMenuItem.Size = new Size(270, 34);
-            this.addRowToolStripMenuItem.Text = "Add Row";
-            this.addRowToolStripMenuItem.Click += this.addRowToolStripMenuItem_Click;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
@@ -398,8 +366,6 @@
         private ToolStripMenuItem addEventToolStripMenuItem;
         private ToolStripMenuItem printCurrentEventToolStripMenuItem;
         private ToolStripMenuItem printLeagueToolStripMenuItem;
-        private ToolStripMenuItem isSavedToolStripMenuItem;
-        private ToolStripMenuItem roundsCollectionToolStripMenuItem;
         private ToolStripMenuItem selectEventToolStripMenuItem;
         private ToolStripMenuItem reportToolStripMenuItem;
         private ToolStripMenuItem roundReportToolStripMenuItem;
@@ -418,7 +384,5 @@
         private ToolStripMenuItem scrambleToolStripMenuItem;
         private ToolStripMenuItem assignLanesToolStripMenuItem;
         private ToolStripMenuItem standingsToolStripMenuItem;
-        private ToolStripMenuItem currentRoundToolStripMenuItem;
-        private ToolStripMenuItem addRowToolStripMenuItem;
     }
 }

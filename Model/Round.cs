@@ -57,6 +57,12 @@ namespace Model {
                 yield return (string)row[TeamTable.COL.PLAYER_NAME];
             }
         }
+
+        public void Update(string textBefore, string textAfter) {
+            var row = this.IdleTable.GetRow(Round.LeagueEvent.UID, Round.RoundIndex, textBefore);
+            if (row == null) throw new KeyNotFoundException(textBefore);
+            row[TeamTable.COL.PLAYER_NAME] = textAfter;
+        }
     }
 
     /// <summary>
