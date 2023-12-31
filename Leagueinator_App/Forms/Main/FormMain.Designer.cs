@@ -49,9 +49,6 @@
             this.assignLanesToolStripMenuItem = new ToolStripMenuItem();
             this.scrambleToolStripMenuItem = new ToolStripMenuItem();
             this.viewToolStripMenuItem = new ToolStripMenuItem();
-            this.reportToolStripMenuItem = new ToolStripMenuItem();
-            this.roundReportToolStripMenuItem = new ToolStripMenuItem();
-            this.eventReportToolStripMenuItem = new ToolStripMenuItem();
             this.devToolStripMenuItem = new ToolStripMenuItem();
             this.printLeagueToolStripMenuItem = new ToolStripMenuItem();
             this.printCurrentEventToolStripMenuItem = new ToolStripMenuItem();
@@ -61,6 +58,7 @@
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.printPreviewDialog = new PrintPreviewDialog();
             this.printDialog = new PrintDialog();
+            this.summaryToolStripMenuItem = new ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -242,31 +240,10 @@
             // 
             // viewToolStripMenuItem
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.reportToolStripMenuItem, this.roundReportToolStripMenuItem, this.eventReportToolStripMenuItem });
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.summaryToolStripMenuItem });
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new Size(65, 29);
             this.viewToolStripMenuItem.Text = "View";
-            // 
-            // reportToolStripMenuItem
-            // 
-            this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
-            this.reportToolStripMenuItem.Size = new Size(270, 34);
-            this.reportToolStripMenuItem.Text = "Report";
-            this.reportToolStripMenuItem.Click += this.View_Report;
-            // 
-            // roundReportToolStripMenuItem
-            // 
-            this.roundReportToolStripMenuItem.Name = "roundReportToolStripMenuItem";
-            this.roundReportToolStripMenuItem.Size = new Size(270, 34);
-            this.roundReportToolStripMenuItem.Text = "Round Report";
-            this.roundReportToolStripMenuItem.Click += this.View_RoundSummary;
-            // 
-            // eventReportToolStripMenuItem
-            // 
-            this.eventReportToolStripMenuItem.Name = "eventReportToolStripMenuItem";
-            this.eventReportToolStripMenuItem.Size = new Size(270, 34);
-            this.eventReportToolStripMenuItem.Text = "Event Report";
-            this.eventReportToolStripMenuItem.Click += this.View_EventSummary;
             // 
             // devToolStripMenuItem
             // 
@@ -278,14 +255,14 @@
             // printLeagueToolStripMenuItem
             // 
             this.printLeagueToolStripMenuItem.Name = "printLeagueToolStripMenuItem";
-            this.printLeagueToolStripMenuItem.Size = new Size(270, 34);
+            this.printLeagueToolStripMenuItem.Size = new Size(261, 34);
             this.printLeagueToolStripMenuItem.Text = "Print League";
             this.printLeagueToolStripMenuItem.Click += this.Dev_PrintLeague;
             // 
             // printCurrentEventToolStripMenuItem
             // 
             this.printCurrentEventToolStripMenuItem.Name = "printCurrentEventToolStripMenuItem";
-            this.printCurrentEventToolStripMenuItem.Size = new Size(270, 34);
+            this.printCurrentEventToolStripMenuItem.Size = new Size(261, 34);
             this.printCurrentEventToolStripMenuItem.Text = "Print Current Event";
             this.printCurrentEventToolStripMenuItem.Click += this.Dev_PrintCurrentEvent;
             // 
@@ -310,8 +287,10 @@
             this.eventPanel.LeagueEvent = null;
             this.eventPanel.Location = new Point(0, 37);
             this.eventPanel.Margin = new Padding(3, 4, 3, 4);
+            this.eventPanel.MaximumSize = new Size(1200, 800);
+            this.eventPanel.MinimumSize = new Size(1100, 800);
             this.eventPanel.Name = "eventPanel";
-            this.eventPanel.Size = new Size(1278, 708);
+            this.eventPanel.Size = new Size(1200, 800);
             this.eventPanel.TabIndex = 1;
             this.eventPanel.Visible = false;
             // 
@@ -328,6 +307,13 @@
             // printDialog
             // 
             this.printDialog.UseEXDialog = true;
+            // 
+            // summaryToolStripMenuItem
+            // 
+            this.summaryToolStripMenuItem.Name = "summaryToolStripMenuItem";
+            this.summaryToolStripMenuItem.Size = new Size(270, 34);
+            this.summaryToolStripMenuItem.Text = "Summary";
+            this.summaryToolStripMenuItem.Click += this.Menu_Summary_Click;
             // 
             // FormMain
             // 
@@ -367,9 +353,6 @@
         private ToolStripMenuItem printCurrentEventToolStripMenuItem;
         private ToolStripMenuItem printLeagueToolStripMenuItem;
         private ToolStripMenuItem selectEventToolStripMenuItem;
-        private ToolStripMenuItem reportToolStripMenuItem;
-        private ToolStripMenuItem roundReportToolStripMenuItem;
-        private ToolStripMenuItem eventReportToolStripMenuItem;
         private ToolStripMenuItem playersToolStripMenuItem;
         private ToolStripMenuItem copyPreviousRoundToolStripMenuItem;
         private ToolStripMenuItem randomizeToolStripMenuItem;
@@ -384,5 +367,6 @@
         private ToolStripMenuItem scrambleToolStripMenuItem;
         private ToolStripMenuItem assignLanesToolStripMenuItem;
         private ToolStripMenuItem standingsToolStripMenuItem;
+        private ToolStripMenuItem summaryToolStripMenuItem;
     }
 }

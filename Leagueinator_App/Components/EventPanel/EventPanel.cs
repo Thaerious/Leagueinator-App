@@ -1,10 +1,4 @@
 ﻿using Model;
-using Model.Tables;
-using System;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace Leagueinator.App.Components {
 
@@ -35,11 +29,11 @@ namespace Leagueinator.App.Components {
             this.AddIdleTextBox();
         }
 
-        internal PlayerTextBox AddIdleTextBox(string name = "") {
-            var textBox = new PlayerTextBox {
+        internal IdlePlayerTextBox AddIdleTextBox(string name = "") {
+            var textBox = new IdlePlayerTextBox {
                 Text = name,
                 Font = new Font("Segoe UI Black", 14F, FontStyle.Bold, GraphicsUnit.Point, 0),
-                Width = 400,
+                Width = 300,
                 Height = 64,
             };
 
@@ -128,9 +122,9 @@ namespace Leagueinator.App.Components {
         private LeagueEvent? _currentEvent = null;
     }
 
-    public class PlayerTextBox : MemoryTextBox {
+    internal class IdlePlayerTextBox : MemoryTextBox {
 
-        public PlayerTextBox() : base() {
+        public IdlePlayerTextBox() : base() {
             this.TextChanged += OnTextChanged;
             this.KeyDown += OnKeyDown;
             this.LostFocus += OnLostFocus;

@@ -1,8 +1,6 @@
 ﻿using Model.Tables;
-using System.Collections;
 using System.Data;
 using System.Diagnostics;
-using System.Numerics;
 
 namespace Model {
 
@@ -46,9 +44,10 @@ namespace Model {
             }
         }
 
-        internal Match(Round round, int laneIndex) : base(round.Table) {
+        internal Match(Round round, int lane) : base(round.Table) {
             this.Round = round;
-            this.Lane = laneIndex;
+            this.Lane = lane;
+            this.RowFilter = $"{EventTable.COL.ROUND} = {round.RoundIndex} AND {EventTable.COL.LANE} = {lane} ";            
         }
 
         /// <summary>
@@ -119,11 +118,6 @@ namespace Model {
             DeletedException.ThrowIf(this);
             foreach (Team team in this.Teams) team.Delete();
             this.Deleted = true;
-        }
-
-        public string PrettyPrint() {
-            if (this.Round.Table is null) throw new NullReferenceException();
-            return this.Round.Table.PrettyPrint(this, $"Lane {Lane} in Round {Round.RoundIndex} of {Round.LeagueEvent.EventName}");
         }
     }
 }

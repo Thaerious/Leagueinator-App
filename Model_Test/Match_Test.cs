@@ -27,6 +27,46 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Size_For_One_Player() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            match.NewTeam().AddPlayer("Adam");
+
+            Assert.AreEqual(1, match.Size);
+            Assert.AreEqual(1, match.Teams.Count);
+        }
+
+        [TestMethod]
+        public void Size_For_Two_Teams_Two_Players() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            match.NewTeam().AddPlayer("Adam");
+            match.NewTeam().AddPlayer("Eve");
+
+            Assert.AreEqual(2, match.Size);
+            Assert.AreEqual(2, match.Teams.Count);
+        }
+
+        [TestMethod]
+        public void Size_For_One_Team_Two_Players() {
+            League league = new League();
+            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+            Round round = lEvent.NewRound();
+            Match match = round.GetMatch(0);
+            match.NewTeam().AddPlayer("Adam");
+            match.Teams[0].AddPlayer("Eve");
+
+            Debug.WriteLine(league.PrettyPrint());
+
+            Assert.AreEqual(1, match.Size);
+            Assert.AreEqual(1, match.Teams.Count);
+        }
+
+        [TestMethod]
         public void New_Team() {
             League league = new League();
             LeagueEvent lEvent = league.NewLeagueEvent("my_event");
@@ -120,7 +160,7 @@ namespace Model_Test {
             LeagueEvent lEvent = league.NewLeagueEvent("my_event");
             Round round = lEvent.NewRound();
             Match match = round.GetMatch(0);
-            
+
             Team team1 = match.NewTeam();
             team1.AddPlayer("Adam");
             team1.AddPlayer("Eve");
@@ -129,10 +169,35 @@ namespace Model_Test {
             team2.AddPlayer("Chucky");
             team2.AddPlayer("Dianne");
 
-            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
+            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne" };
 
             Debug.WriteLine(league.PrettyPrint());
             CollectionAssert.AreEquivalent(expected, match.Players as System.Collections.ICollection);
+        }
+
+        [TestMethod]
+        public void Team_Index() {
+            League league = new League();
+            LeagueEvent myEvent = league.NewLeagueEvent("my_event");
+
+            myEvent.NewRound();
+            myEvent.NewRound();
+
+            myEvent.Rounds[0].GetMatch(0).NewTeam();
+            myEvent.Rounds[0].GetMatch(0).NewTeam();
+
+            myEvent.Rounds[0].GetMatch(0).Teams[0].AddPlayer("Adam");
+            myEvent.Rounds[0].GetMatch(0).Teams[0].AddPlayer("Betty");
+            myEvent.Rounds[0].GetMatch(0).Teams[1].AddPlayer("Chuck");
+            myEvent.Rounds[0].GetMatch(0).Teams[1].AddPlayer("Dianne");
+
+            var team1 = myEvent.Rounds[1].GetMatch(0).NewTeam();
+            var team2 = myEvent.Rounds[1].GetMatch(0).NewTeam();
+
+            Debug.WriteLine(myEvent.Rounds[0].GetMatch(0).PrettyPrint());
+
+            Assert.AreEqual(0, team1.TeamIndex);
+            Assert.AreEqual(1, team2.TeamIndex);
         }
     }
 }

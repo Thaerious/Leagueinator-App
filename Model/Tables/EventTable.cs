@@ -6,10 +6,10 @@ namespace Model.Tables {
 
         public static class COL {
             public static readonly string ID = "uid";
-            public static readonly string EVENT_UID = "event_dir_uid";
-            public static readonly string ROUND = "round";
-            public static readonly string LANE = "lane";
-            public static readonly string TEAM_IDX = "team";
+            public static readonly string EVENT_UID = "event_dir";  // matches event directory table uid
+            public static readonly string ROUND = "round";          // round by index
+            public static readonly string LANE = "lane";            // lane (match) by index
+            public static readonly string TEAM_IDX = "team";        // team in lane by index    
             public static readonly string TIE = "tie";
             public static readonly string BOWLS = "bowls";
             public static readonly string ENDS = "ends";

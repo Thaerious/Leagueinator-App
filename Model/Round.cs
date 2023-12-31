@@ -119,9 +119,7 @@ namespace Model {
 
         public Match GetMatch(int lane) {
             DeletedException.ThrowIf(this);
-            return new Match(this, lane) {
-                RowFilter = $"{EventTable.COL.LANE} = {lane}"
-            };
+            return new Match(this, lane);
         }
 
         /// <summary>
@@ -162,7 +160,7 @@ namespace Model {
         }
         public string PrettyPrint() {
             if (this.Table is null) throw new NullReferenceException();
-            return this.Table.PrettyPrint(this, $"Round {RoundIndex} of {LeagueEvent.EventName}");
+            return this.PrettyPrint($"Round {RoundIndex} of {LeagueEvent.EventName}");
         }
 
         public void DeletePlayer(string playerName) {

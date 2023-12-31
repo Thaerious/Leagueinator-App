@@ -104,7 +104,7 @@ namespace Model {
 
         public string PrettyPrint() {
             if (this.Table is null) throw new NullReferenceException("Table");
-            return this.Table.PrettyPrint(this, this.EventName) + "\n" +
+            return this.PrettyPrint(this.EventName) + "\n" +
                    this.DirectoryRow.PrettyPrint();
         }
 

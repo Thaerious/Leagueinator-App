@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics;
+using System.Numerics;
 using System.Text;
 
 namespace Model.Tables {
 
-    public static class Extensions {
+    public static class TableExtensions {
 
         /// <summary>
-        /// Retrieve a list of all values for a specified column.
+        /// Retrieve a enumerable of all values for a specified column.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="table"></param>
@@ -51,12 +51,11 @@ namespace Model.Tables {
             return Table.PrettyPrint(rowArray, title);
         }
 
-        public static string PrettyPrint(this DataTable Table, DataView view, string? title = null) {
-            return Extensions.PrettyPrint(view.ToTable(), title);
-        }
-
         public static string PrettyPrint(this DataView view, string? title = null) {
-            return Extensions.PrettyPrint(view.ToTable(), view, title);
+            title ??= $"View of Table '{view.Table!.TableName}'\n" +
+                      $"{view.RowFilter}";
+
+            return TableExtensions.PrettyPrint(view.ToTable(), title);
         }
 
         public static string PrettyPrint(this DataTable Table, DataRow row, string? title = null) {
@@ -68,7 +67,7 @@ namespace Model.Tables {
         }
 
         public static string PrettyPrint(this DataTable Table, DataRow[] rows, string? title = null) {
-            title ??= $"Table\n'{Table.TableName}'";
+            title ??= $"Table: '{Table.TableName}'";
             var sb = new StringBuilder();
 
             Dictionary<DataColumn, int> colSizes = [];
@@ -94,12 +93,12 @@ namespace Model.Tables {
             sb.Append("\n| ");
             foreach (DataColumn column in Table.Columns) {
                 string value = column.ColumnName.PadLeft(colSizes[column]);
-
                 sb.Append(value);
                 sb.Append(" | ");
                 headerSize += value.Length + 3;
             }
 
+            headerSize = Math.Max(headerSize, 5);
             string[] splitTitle = title.Split('\n');
 
             foreach (string split in splitTitle.Reverse()) {
@@ -130,8 +129,67 @@ namespace Model.Tables {
                 sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
-
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Returns all records from the left table, and the matching records from 
+        /// the right table(table2).  Records are merged when leftCol equals rightCol.
+        /// </summary>
+        public static DataTable LeftJoin<T>(this DataTable left, DataTable right, string leftCol, string rightCol) {
+            if (left.Columns[leftCol] == null) throw new KeyNotFoundException(leftCol);
+            if (right.Columns[rightCol] == null) throw new KeyNotFoundException(rightCol);
+
+            var newTable = MergeTables(left, right);
+
+            var query = from row1 in left.AsEnumerable()
+                        join row2 in right.AsEnumerable()
+                        on row1.Field<T>(leftCol) equals row2.Field<T>(rightCol) into enumerable
+                        from subRow in enumerable
+                        select new {
+                            leftRow = row1,
+                            rightRow = subRow
+                        };
+
+            foreach (var record in query) {
+                var row = newTable.NewRow();
+                foreach (DataColumn col in left.Columns) {
+                    row[$"{left.TableName}.{col.ColumnName}"] = record.leftRow[col.ColumnName];
+                }
+                foreach (DataColumn col in right.Columns) {
+                    row[$"{right.TableName}.{col.ColumnName}"] = record.rightRow[col.ColumnName];
+                }
+
+                newTable.Rows.Add(row);
+            }
+
+            return newTable;
+        }
+
+        public static DataTable MergeTables(params DataTable[] tables) {
+            DataTable newTable = new();
+
+            foreach (var table in tables) {
+                foreach (DataColumn column in table.Columns) {
+                    DataColumn newCol = new() {
+                        DataType = column.DataType,
+                        ColumnName = $"{table.TableName}.{column.ColumnName}"
+                    };
+                    newTable.Columns.Add(newCol);   
+                }
+            }
+
+            return newTable;
+        }
+
+        public static DataTable As(this DataTable table, params string[] names) {
+            var newTable = table.Clone();
+
+            for (int i = 0; i < names.Length; i++) {
+                newTable.Columns[i].ColumnName = names[i];
+            }
+
+            return newTable;
         }
     }
 }

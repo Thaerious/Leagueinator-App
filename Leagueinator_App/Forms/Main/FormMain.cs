@@ -453,16 +453,8 @@ namespace Leagueinator.App.Forms.Main {
             //this.printPreviewDialog.ShowDialog();
         }
 
-        private void currentRoundToolStripMenuItem_Click(object sender, EventArgs e) {
-            if (this.eventPanel.CurrentRound == null) {
-                Debug.WriteLine("Current Round is [NULL]");
-                return;
-            }
-            Debug.WriteLine(this.eventPanel.CurrentRound.PrettyPrint());
-        }
+        private void Menu_Summary_Click(object sender, EventArgs e) {
 
-        private void addRowToolStripMenuItem_Click(object sender, EventArgs e) {
-            this.eventPanel.CurrentRound.IdlePlayers.Add("I dunno, wtf");
         }
     }
 }

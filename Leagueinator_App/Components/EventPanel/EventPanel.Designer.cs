@@ -27,19 +27,11 @@
             this.butAddRound = new Button();
             this.butRemoveRound = new Button();
             this.flowRounds = new FlowLayoutPanel();
-            this.splitContainer1 = new SplitContainer();
-            this.splitContainer2 = new SplitContainer();
-            this.matchCardPanel = new MatchCardPanel();
             this.flowIdlePlayers = new FlowLayoutPanel();
+            this.matchCardPanel = new MatchCardPanel();
+            this.tablePanel = new TableLayoutPanel();
             this.layoutRounds.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)this.splitContainer2).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
+            this.tablePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // layoutRounds
@@ -51,7 +43,7 @@
             this.layoutRounds.Controls.Add(this.butRemoveRound, 0, 2);
             this.layoutRounds.Controls.Add(this.flowRounds, 0, 0);
             this.layoutRounds.Dock = DockStyle.Fill;
-            this.layoutRounds.Location = new Point(0, 0);
+            this.layoutRounds.Location = new Point(3, 4);
             this.layoutRounds.Margin = new Padding(3, 4, 3, 4);
             this.layoutRounds.Name = "layoutRounds";
             this.layoutRounds.RowCount = 4;
@@ -59,16 +51,16 @@
             this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
             this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
             this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-            this.layoutRounds.Size = new Size(527, 939);
+            this.layoutRounds.Size = new Size(294, 792);
             this.layoutRounds.TabIndex = 0;
             // 
             // butAddRound
             // 
             this.butAddRound.Dock = DockStyle.Fill;
-            this.butAddRound.Location = new Point(4, 791);
+            this.butAddRound.Location = new Point(4, 644);
             this.butAddRound.Margin = new Padding(3, 4, 3, 4);
             this.butAddRound.Name = "butAddRound";
-            this.butAddRound.Size = new Size(519, 54);
+            this.butAddRound.Size = new Size(286, 54);
             this.butAddRound.TabIndex = 0;
             this.butAddRound.Text = "Add Round";
             this.butAddRound.UseVisualStyleBackColor = true;
@@ -77,10 +69,10 @@
             // butRemoveRound
             // 
             this.butRemoveRound.Dock = DockStyle.Fill;
-            this.butRemoveRound.Location = new Point(4, 854);
+            this.butRemoveRound.Location = new Point(4, 707);
             this.butRemoveRound.Margin = new Padding(3, 4, 3, 4);
             this.butRemoveRound.Name = "butRemoveRound";
-            this.butRemoveRound.Size = new Size(519, 54);
+            this.butRemoveRound.Size = new Size(286, 54);
             this.butRemoveRound.TabIndex = 1;
             this.butRemoveRound.Text = "Remove";
             this.butRemoveRound.UseVisualStyleBackColor = true;
@@ -92,43 +84,19 @@
             this.flowRounds.Location = new Point(4, 5);
             this.flowRounds.Margin = new Padding(3, 4, 3, 4);
             this.flowRounds.Name = "flowRounds";
-            this.flowRounds.Size = new Size(519, 777);
+            this.flowRounds.Size = new Size(286, 630);
             this.flowRounds.TabIndex = 2;
             // 
-            // splitContainer1
+            // flowIdlePlayers
             // 
-            this.splitContainer1.Dock = DockStyle.Fill;
-            this.splitContainer1.Location = new Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.layoutRounds);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new Size(1583, 939);
-            this.splitContainer1.SplitterDistance = 527;
-            this.splitContainer1.TabIndex = 3;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = DockStyle.Fill;
-            this.splitContainer2.Location = new Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.flowIdlePlayers);
-            this.splitContainer2.Panel1.Padding = new Padding(10);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.matchCardPanel);
-            this.splitContainer2.Size = new Size(1052, 939);
-            this.splitContainer2.SplitterDistance = 474;
-            this.splitContainer2.TabIndex = 0;
+            this.flowIdlePlayers.AutoScroll = true;
+            this.flowIdlePlayers.Dock = DockStyle.Fill;
+            this.flowIdlePlayers.FlowDirection = FlowDirection.TopDown;
+            this.flowIdlePlayers.Location = new Point(303, 3);
+            this.flowIdlePlayers.Name = "flowIdlePlayers";
+            this.flowIdlePlayers.Size = new Size(294, 794);
+            this.flowIdlePlayers.TabIndex = 1;
+            this.flowIdlePlayers.WrapContents = false;
             // 
             // matchCardPanel
             // 
@@ -142,35 +110,37 @@
             this.matchCardPanel.TabIndex = 0;
             this.matchCardPanel.WrapContents = false;
             // 
-            // flowIdlePlayers
+            // tablePanel
             // 
-            this.flowIdlePlayers.AutoScroll = true;
-            this.flowIdlePlayers.Dock = DockStyle.Fill;
-            this.flowIdlePlayers.FlowDirection = FlowDirection.TopDown;
-            this.flowIdlePlayers.Location = new Point(10, 10);
-            this.flowIdlePlayers.Name = "flowIdlePlayers";
-            this.flowIdlePlayers.Size = new Size(454, 919);
-            this.flowIdlePlayers.TabIndex = 1;
-            this.flowIdlePlayers.WrapContents = false;
+            this.tablePanel.ColumnCount = 3;
+            this.tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300F));
+            this.tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300F));
+            this.tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 500F));
+            this.tablePanel.Controls.Add(this.layoutRounds, 0, 0);
+            this.tablePanel.Controls.Add(this.flowIdlePlayers, 1, 0);
+            this.tablePanel.Controls.Add(this.matchCardPanel, 2, 0);
+            this.tablePanel.Dock = DockStyle.Fill;
+            this.tablePanel.Location = new Point(0, 0);
+            this.tablePanel.Name = "tablePanel";
+            this.tablePanel.RowCount = 1;
+            this.tablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            this.tablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            this.tablePanel.Size = new Size(1100, 800);
+            this.tablePanel.TabIndex = 1;
             // 
             // EventPanel
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.tablePanel);
             this.DoubleBuffered = true;
             this.Margin = new Padding(3, 4, 3, 4);
+            this.MaximumSize = new Size(1200, 800);
+            this.MinimumSize = new Size(1100, 800);
             this.Name = "EventPanel";
-            this.Size = new Size(1583, 939);
+            this.Size = new Size(1200, 800);
             this.layoutRounds.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)this.splitContainer1).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)this.splitContainer2).EndInit();
-            this.splitContainer2.ResumeLayout(false);
+            this.tablePanel.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -181,9 +151,8 @@
         private Button butRemoveRound;
         private FlowLayoutPanel flowRounds;
         private MatchCard matchCard1;
-        private SplitContainer splitContainer1;
-        private SplitContainer splitContainer2;
         private MatchCardPanel matchCardPanel;
         private FlowLayoutPanel flowIdlePlayers;
+        private TableLayoutPanel tablePanel;
     }
 }

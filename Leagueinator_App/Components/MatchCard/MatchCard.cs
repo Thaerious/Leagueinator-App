@@ -113,8 +113,8 @@ namespace Leagueinator.App.Components {
             this.lblLane.SuspendLayout();
 
             this.BorderStyle = BorderStyle.FixedSingle;
-            this.MinimumSize = new Size(400, 64);
-            this.Size = new Size(400, 64);
+            this.MinimumSize = new Size(500, 64);
+            this.Size = new Size(500, 64);
             this.AutoSize = true;
             this.BackColor = MatchCard.DefaultBackColor;
             this.AllowDrop = true;

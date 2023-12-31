@@ -72,7 +72,6 @@ namespace Model {
         /// <param name="name"></param>
         /// <returns>True </returns>
         public bool AddPlayer(string name) {
-            Debug.WriteLine($"AddPlayer {this.Match.Lane}:{this.TeamIndex} {name}");
             DeletedException.ThrowIf(this);
             if (this.HasPlayer(name)) return false;
 
@@ -173,7 +172,7 @@ namespace Model {
 
         public string PrettyPrint() {
             if (this.Table is null) throw new NullReferenceException();
-            return this.Table.PrettyPrint(this) + "\n" +
+            return this.PrettyPrint() + "\n" +
                    this.EventTableRow.PrettyPrint();
         }
     }
