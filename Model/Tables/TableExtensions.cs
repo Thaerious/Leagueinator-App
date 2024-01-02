@@ -7,6 +7,31 @@ namespace Model.Tables {
 
     public static class TableExtensions {
 
+        public static List<T> ToList<T>(this DataTable table, string column) {
+            if (!table.Columns.Contains(column)) throw new KeyNotFoundException(column);
+
+            var list = new List<T>();
+
+            foreach (DataRow row in table.Rows) {
+                list.Add(row.Field<T>(column)!);
+            }
+
+            return list;
+        }
+
+        public static List<T> ToList<T>(this DataView view, string column) {
+            if (view.Table == null) throw new NullReferenceException();
+            if (!view.Table.Columns.Contains(column)) throw new KeyNotFoundException(column);
+
+            var list = new List<T>();
+
+            foreach (DataRowView row in view) {
+                list.Add(row.Row.Field<T>(column)!);
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// Retrieve a enumerable of all values for a specified column.
         /// </summary>
@@ -140,7 +165,7 @@ namespace Model.Tables {
             if (left.Columns[leftCol] == null) throw new KeyNotFoundException(leftCol);
             if (right.Columns[rightCol] == null) throw new KeyNotFoundException(rightCol);
 
-            var newTable = MergeTables(left, right);
+            var newTable = new DataTable().MergeWith(left, right);
 
             var query = from row1 in left.AsEnumerable()
                         join row2 in right.AsEnumerable()
@@ -166,20 +191,32 @@ namespace Model.Tables {
             return newTable;
         }
 
-        public static DataTable MergeTables(params DataTable[] tables) {
-            DataTable newTable = new();
-
+        public static DataTable MergeWith(this DataTable target, params DataTable[] tables) {
             foreach (var table in tables) {
                 foreach (DataColumn column in table.Columns) {
                     DataColumn newCol = new() {
                         DataType = column.DataType,
                         ColumnName = $"{table.TableName}.{column.ColumnName}"
                     };
-                    newTable.Columns.Add(newCol);   
+                    target.Columns.Add(newCol);
                 }
             }
 
-            return newTable;
+            return target;
+        }
+
+        public static DataTable MergeWith(this DataTable target, Func<DataColumn, string> nameFunc, params DataTable[] tables) {
+            foreach (var table in tables) {
+                foreach (DataColumn column in table.Columns) {
+                    DataColumn newCol = new() {
+                        DataType = column.DataType,
+                        ColumnName = nameFunc(column)
+                    };
+                    target.Columns.Add(newCol);
+                }
+            }
+
+            return target;
         }
 
         public static DataTable As(this DataTable table, params string[] names) {

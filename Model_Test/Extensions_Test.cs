@@ -17,8 +17,10 @@ namespace Model_Test {
         [TestMethod]
         public void New_Table_From_Tables() {
             Mock league = new Mock();
-            DataTable table = TableExtensions.MergeTables(league.TeamTable, league.IdleTable);
-            
+            DataTable table = new DataTable().MergeWith(league.TeamTable, league.IdleTable);
+
+            Debug.WriteLine(table.PrettyPrint());
+
             Assert.IsTrue(table.ColumnNames().Contains("team.uid"));
             Assert.IsTrue(table.ColumnNames().Contains("team.event_uid"));
             Assert.IsTrue(table.ColumnNames().Contains("team.player_name"));
@@ -32,7 +34,7 @@ namespace Model_Test {
         [TestMethod]
         public void As() {
             Mock league = new Mock();
-            DataTable merged = TableExtensions.MergeTables(league.TeamTable, league.IdleTable);
+            DataTable merged = new DataTable().MergeWith(league.TeamTable, league.IdleTable);
             DataTable table = merged.As("uid", "event", "name");
             
             Assert.IsTrue(table.ColumnNames().Contains("uid"));

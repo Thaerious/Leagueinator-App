@@ -5,7 +5,7 @@ namespace Model.Tables {
         public static readonly string TABLE_NAME = "event";
 
         public static class COL {
-            public static readonly string ID = "uid";
+            public static readonly string UID = "uid";
             public static readonly string EVENT_UID = "event_dir";  // matches event directory table uid
             public static readonly string ROUND = "round";          // round by index
             public static readonly string LANE = "lane";            // lane (match) by index
@@ -50,7 +50,7 @@ namespace Model.Tables {
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.ID,
+                ColumnName = COL.UID,
                 Unique = true,
                 AutoIncrement = true
             });

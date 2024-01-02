@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TutorialApp1\TutorialApp2\TutorialApp2.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 

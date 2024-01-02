@@ -36,9 +36,9 @@ namespace Model {
         public int TeamIndex { get; }
 
         /// <summary>
-        /// Property to get the unique ID from the event table row. 
+        /// Property to get the unique UID from the event table row. 
         /// </summary>
-        public int EventTableUID { get => (int)EventTableRow[EventTable.COL.ID]; }
+        public int EventTableUID { get => (int)EventTableRow[EventTable.COL.UID]; }
 
         /// <summary>
         /// Property to retrieve a non-reflective list of players.
@@ -47,7 +47,7 @@ namespace Model {
             get => this.GetPlayers();
         }
 
-        private DataRow EventTableRow { get; }
+        public DataRow EventTableRow { get; }
 
         /// <summary>
         /// Property to track if delete has been invoked.
@@ -56,6 +56,15 @@ namespace Model {
         public int Bowls {
             get => (int)this.EventTableRow[EventTable.COL.BOWLS];
             set => this.EventTableRow[EventTable.COL.BOWLS] = value;
+        }
+
+        public int Ends {
+            get => (int)this.EventTableRow[EventTable.COL.ENDS];
+            set => this.EventTableRow[EventTable.COL.ENDS] = value;
+        }
+        public int Tie {
+            get => (int)this.EventTableRow[EventTable.COL.TIE];
+            set => this.EventTableRow[EventTable.COL.TIE] = value;
         }
 
         internal Team(Match match, DataRow eventTableRow, int teamIndex) : base(match.League.TeamTable) {

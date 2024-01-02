@@ -1,7 +1,7 @@
-﻿using Leagueinator.Model;
+﻿using Model;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
-using Leagueinator.Model.Tables;
+using Model.Tables;
 using Printer_Dev_Form;
 using System.Data;
 using System.Diagnostics;
@@ -21,9 +21,11 @@ ApplicationConfiguration.Initialize();
 var form = new Form1();
 form.canvas.Root = documentXML;
 
-var eventData = new MockEvent().ToDataSet();
-var teamTable = new TeamTable(eventData);
-var eventTable = new EventTable(eventData);
+var league = new Mock();
+
+var eventData = league.EventTable;
+var teamTable = league.TeamTable;
+var eventTable = league.EventTable;
 var summaryTable = new SummaryTable(eventData);
 
 Debug.WriteLine(eventTable);
