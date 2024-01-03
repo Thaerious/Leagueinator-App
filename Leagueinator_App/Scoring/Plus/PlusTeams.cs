@@ -1,12 +1,7 @@
 ﻿using Leagueinator.Utility;
 using Model.Tables;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leagueinator.App.Scoring.Plus {
     public class PlusTeams : DataTable {
@@ -16,6 +11,7 @@ namespace Leagueinator.App.Scoring.Plus {
         }
 
         public PlusTeams() {
+            this.TableName = "Plus Teams";
             PlusTeams.BuildColumns(this);
         }
 
@@ -41,7 +37,7 @@ namespace Leagueinator.App.Scoring.Plus {
         public int NextIndex {
             get {
                 if (this.Rows.Count == 0) return 0;
-                return (int)this.Compute($"MAX({COL.TEAM_INDEX})", "");
+                return (int)this.Compute($"MAX({COL.TEAM_INDEX})", "") + 1;
             }
         }
 
@@ -59,6 +55,18 @@ namespace Leagueinator.App.Scoring.Plus {
                 if (team.SequenceEqual(names)) return i;
             }
             return -1;
+        }
+
+        public int AddTeamIf(List<string> names) {
+            int index = this.FindTeam(names);
+            if (index != -1) return index;
+
+            index = this.NextIndex;
+            foreach (string name in names) {
+                this.AddRow(index, name);
+            }
+
+            return index;
         }
 
         public static void BuildColumns(DataTable table) {

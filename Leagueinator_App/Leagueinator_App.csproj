@@ -27,6 +27,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Scoring\Plus\PlusSummary.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

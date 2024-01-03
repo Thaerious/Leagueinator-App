@@ -77,17 +77,20 @@ namespace Model.Tables {
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.TIE
+                ColumnName = COL.TIE,
+                DefaultValue = 0
             });
 
             table.Columns.Add(new DataColumn() {
                 DataType = typeof(int),
-                ColumnName = COL.BOWLS
+                ColumnName = COL.BOWLS,
+                DefaultValue = 0
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.ENDS
+                ColumnName = COL.ENDS,
+                DefaultValue = 0
             });
 
             return table;

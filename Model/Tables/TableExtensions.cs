@@ -154,6 +154,8 @@ namespace Model.Tables {
                 sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
+
+            sb.Append("\n");
             return sb.ToString();
         }
 
@@ -210,7 +212,8 @@ namespace Model.Tables {
                 foreach (DataColumn column in table.Columns) {
                     DataColumn newCol = new() {
                         DataType = column.DataType,
-                        ColumnName = nameFunc(column)
+                        ColumnName = nameFunc(column),                        
+                        DefaultValue = column.DefaultValue,
                     };
                     target.Columns.Add(newCol);
                 }

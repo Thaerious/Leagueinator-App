@@ -10,7 +10,7 @@ namespace Test_App {
         [TestMethod]
         public void Sanity() {
             League league = new Mock();
-            PlusRounds plusScore = new(league.LeagueEvents[0]);
+            PlusScore plusScore = new(league.LeagueEvents[0]);
             Debug.WriteLine(plusScore.PrettyPrint());
         }
 
@@ -18,6 +18,26 @@ namespace Test_App {
         public void NextIndex_Empty() {
             PlusTeams plusTeam = new();
             Assert.AreEqual(0, plusTeam.NextIndex);
+        }
+
+        [TestMethod]
+        public void Add_Team_If_One() {
+            PlusTeams plusTeam = new();
+            int index = plusTeam.AddTeamIf(["Adam", "Eve"]);
+
+            Assert.AreEqual(0, index);
+            Assert.AreEqual(0, plusTeam.FindTeam(["Adam", "Eve"]));
+        }
+
+        [TestMethod]
+        public void Add_Team_If_Two() {
+            PlusTeams plusTeam = new();
+            plusTeam.AddTeamIf(["Adam", "Eve"]);
+            int index = plusTeam.AddTeamIf(["Cain", "Able"]);
+
+            //Assert.AreEqual(0, plusTeam.FindTeam(["Adam", "Eve"]));            
+            //Assert.AreEqual(1, plusTeam.FindTeam(["Cain", "Able"]));
+            Assert.AreEqual(1, index);
         }
 
         [TestMethod]
@@ -48,7 +68,7 @@ namespace Test_App {
         public void NextIndex_One() {
             PlusTeams plusTeam = new();
             plusTeam.AddRow(0, "Adam");
-            Assert.AreEqual(0, plusTeam.NextIndex);
+            Assert.AreEqual(1, plusTeam.NextIndex);
         }
 
         [TestMethod]

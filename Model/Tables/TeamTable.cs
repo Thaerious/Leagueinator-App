@@ -6,11 +6,6 @@ namespace Model.Tables {
     public class TeamTable : DataTable {
         public static readonly string TABLE_NAME = "team";
 
-        public static class CONST {
-            public static readonly int IDLE = -1;
-            public static readonly int NO_MATCH = -1;
-        }
-
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string EVENT_TABLE_UID = "event_uid";

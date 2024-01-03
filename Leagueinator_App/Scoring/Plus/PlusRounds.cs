@@ -21,6 +21,7 @@ namespace Leagueinator.App.Scoring.Plus {
         public float Ratio = 1.5f;
 
         public PlusRounds(LeagueEvent leagueEvent) {
+            this.TableName = "Plus Rounds";
             this.LeagueEvent = leagueEvent;
             this.Build();
         }
@@ -119,32 +120,38 @@ namespace Leagueinator.App.Scoring.Plus {
         private void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.WIN
+                ColumnName = COL.WIN,
+                DefaultValue = 0,
             });
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.LOSS
+                ColumnName = COL.LOSS,
+                DefaultValue = 0,
             });
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.FOR
+                ColumnName = COL.FOR,
+                DefaultValue = 0,
             });
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.PLUS_FOR
+                ColumnName = COL.PLUS_FOR,
+                DefaultValue = 0,
             });
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.AGAINST
+                ColumnName = COL.AGAINST,
+                DefaultValue = 0,
             });
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.PLUS_AGAINST
+                ColumnName = COL.PLUS_AGAINST,
+                DefaultValue = 0,
             });
 
             this.Columns.Add(new DataColumn {
