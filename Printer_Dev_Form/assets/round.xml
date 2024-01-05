@@ -6,10 +6,9 @@
   <entry id="ends"     class="entry"/>
   <entry id="win"      class="entry"/>
   <entry id="bowls"    class="entry"/>
-  <entry id="bowls="   class="entry"/>
-  <entry id="bowls+"   class="entry"/>  
+  <entry id="for"      class="entry"/>
+  <entry id="for+"     class="entry"/>
   <entry id="against"  class="entry"/>
-  <entry id="against=" class="entry"/>
   <entry id="against+" class="entry"/>
   <entry id="tie"      class="entry"/>
 </row>

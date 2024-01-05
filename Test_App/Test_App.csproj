@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Mock.cs">
+    <Compile Update="Mock2.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

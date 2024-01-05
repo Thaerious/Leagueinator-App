@@ -11,26 +11,93 @@ internal class Mock : League {
         LeagueEvent myEvent = this.NewLeagueEvent("my_event");
         LeagueEvent myOtherEvent = this.NewLeagueEvent("my_other_event");
 
-        myEvent.NewRound();
-        myEvent.NewRound();
-        myEvent.NewRound();
+        var round = myEvent.NewRound();
 
-        myEvent.Rounds[0].GetMatch(0).NewTeam();
-        myEvent.Rounds[0].GetMatch(0).NewTeam();
+        round.GetMatch(0).NewTeam();
+        round.GetMatch(0).NewTeam();
 
-        myEvent.Rounds[0].GetMatch(0).Teams[0].AddPlayer("Adam");
-        myEvent.Rounds[0].GetMatch(0).Teams[0].AddPlayer("Betty");
-        myEvent.Rounds[0].GetMatch(0).Teams[1].AddPlayer("Chuck");
-        myEvent.Rounds[0].GetMatch(0).Teams[1].AddPlayer("Dianne");
+        round.GetMatch(0).Teams[0].AddPlayer("Adam");
+        round.GetMatch(0).Teams[0].AddPlayer("Betty");
+        round.GetMatch(0).Teams[1].AddPlayer("Chuck");
+        round.GetMatch(0).Teams[1].AddPlayer("Dianne");
 
-        myEvent.NewRound();
-        myEvent.Rounds[1].GetMatch(0).NewTeam();
-        myEvent.Rounds[1].GetMatch(0).NewTeam();
+        round.GetMatch(0).Teams[0].Bowls = 4;
+        round.GetMatch(0).Teams[1].Bowls = 20;
+        round.GetMatch(0).Teams[0].Ends = 10;
+        round.GetMatch(0).Teams[1].Ends = 10;
 
-        //myEvent.Rounds[1].GetMatch(0).Teams[0].AddPlayer("Adam");
-        //myEvent.Rounds[1].GetMatch(0).Teams[0].AddPlayer("Dianne");
-        //myEvent.Rounds[1].GetMatch(0).Teams[1].AddPlayer("Chuck");
-        //myEvent.Rounds[1].GetMatch(0).Teams[1].AddPlayer("Betty");
+        round.GetMatch(1).NewTeam();
+        round.GetMatch(1).NewTeam();
+
+        round.GetMatch(1).Teams[0].AddPlayer("Eve");
+        round.GetMatch(1).Teams[0].AddPlayer("Fred");
+        round.GetMatch(1).Teams[1].AddPlayer("Greg");
+        round.GetMatch(1).Teams[1].AddPlayer("Hermione");
+
+        round.GetMatch(1).Teams[0].Bowls = 4;
+        round.GetMatch(1).Teams[1].Bowls = 9;
+        round.GetMatch(1).Teams[0].Ends = 10;
+        round.GetMatch(1).Teams[1].Ends = 10;
+
+        round = myEvent.NewRound();
+
+        round.GetMatch(0).NewTeam();
+        round.GetMatch(0).NewTeam();
+
+        round.GetMatch(0).Teams[0].AddPlayer("Eve");
+        round.GetMatch(0).Teams[0].AddPlayer("Fred");
+        round.GetMatch(0).Teams[1].AddPlayer("Chuck");
+        round.GetMatch(0).Teams[1].AddPlayer("Dianne");
+
+        round.GetMatch(0).Teams[0].Bowls = 4;
+        round.GetMatch(0).Teams[1].Bowls = 4;
+        round.GetMatch(0).Teams[0].Ends = 10;
+        round.GetMatch(0).Teams[1].Ends = 10;
+        round.GetMatch(0).Teams[0].Tie = 1;
+        round.GetMatch(0).Teams[1].Tie = 0;
+
+        round.GetMatch(1).NewTeam();
+        round.GetMatch(1).NewTeam();
+
+        round.GetMatch(1).Teams[0].AddPlayer("Adam");
+        round.GetMatch(1).Teams[0].AddPlayer("Betty");
+        round.GetMatch(1).Teams[1].AddPlayer("Greg");
+        round.GetMatch(1).Teams[1].AddPlayer("Hermione");
+
+        round.GetMatch(1).Teams[0].Bowls = 2;
+        round.GetMatch(1).Teams[1].Bowls = 21;
+        round.GetMatch(1).Teams[0].Ends = 10;
+        round.GetMatch(1).Teams[1].Ends = 10;
+
+        round = myEvent.NewRound();
+
+        round.GetMatch(0).NewTeam();
+        round.GetMatch(0).NewTeam();
+
+        round.GetMatch(0).Teams[0].AddPlayer("Eve");
+        round.GetMatch(0).Teams[0].AddPlayer("Fred");
+        round.GetMatch(0).Teams[1].AddPlayer("Chuck");
+        round.GetMatch(0).Teams[1].AddPlayer("Dianne");
+
+        round.GetMatch(0).Teams[0].Bowls = 4;
+        round.GetMatch(0).Teams[1].Bowls = 4;
+        round.GetMatch(0).Teams[0].Ends = 10;
+        round.GetMatch(0).Teams[1].Ends = 10;
+        round.GetMatch(0).Teams[0].Tie = 1;
+        round.GetMatch(0).Teams[1].Tie = 0;
+
+        round.GetMatch(1).NewTeam();
+        round.GetMatch(1).NewTeam();
+
+        round.GetMatch(1).Teams[0].AddPlayer("Adam");
+        round.GetMatch(1).Teams[0].AddPlayer("Betty");
+        round.GetMatch(1).Teams[1].AddPlayer("Greg");
+        round.GetMatch(1).Teams[1].AddPlayer("Hermione");
+
+        round.GetMatch(1).Teams[0].Bowls = 6;
+        round.GetMatch(1).Teams[1].Bowls = 7;
+        round.GetMatch(1).Teams[0].Ends = 10;
+        round.GetMatch(1).Teams[1].Ends = 10;
     }
 }
 

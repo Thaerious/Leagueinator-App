@@ -1,11 +1,9 @@
-﻿using Model;
-using Leagueinator.Printer;
-using Leagueinator.Utility;
+﻿using Leagueinator.Printer;
+using Model.Scoring.Plus;
 using Model.Tables;
 using Printer_Dev_Form;
 using System.Data;
 using System.Diagnostics;
-using System.Numerics;
 using System.Reflection;
 
 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -22,29 +20,24 @@ var form = new Form1();
 form.canvas.Root = documentXML;
 
 var league = new Mock();
+var plusScore = new PlusScore(league.LeagueEvents[0]);
 
-var eventData = league.EventTable;
-var teamTable = league.TeamTable;
-var eventTable = league.EventTable;
-var summaryTable = new SummaryTable(eventData);
-
-Debug.WriteLine(eventTable);
-Debug.WriteLine(teamTable);
-Debug.WriteLine(summaryTable);
+Debug.WriteLine(plusScore.PrettyPrint());
 ApplyData();
 
 Application.Run(form);
 
 void ApplyData() {
-    foreach (int teamUID in teamTable.AllIDs()) InsertTeam(teamUID);
+    foreach (int teamUID in plusScore.PlusTeams.AllIDs()) InsertTeam(teamUID);
     xmlLoader.ApplyStyles(documentXML);
     documentXML.Update();
 }
 
 void InsertTeam(int teamUID) {
     var teamElement = documentXML.AddChild(teamXML.Clone());
+    var names = plusScore.PlusTeams.TeamView(teamUID).ToList<string>(PlusTeams.COL.NAME);
 
-    foreach (var name in teamTable.GetNames(teamUID)) {
+    foreach (var name in names) {
         var player = new PrinterElement("player") {
             InnerText = name
         };
@@ -53,13 +46,18 @@ void InsertTeam(int teamUID) {
 
     var roundElement = roundXML.Clone();
 
-    foreach (var row in eventTable.GetRowsByTeam(teamUID)) {
+    foreach (DataRowView _row in plusScore.PlusRounds.GetRowsByTeam(teamUID)) {
         var newRoundXML = roundXML.Clone();
+        var row = _row.Row.Clone();
+
+        row[PlusRounds.COL.ROUND] = (int)row[PlusRounds.COL.ROUND] + 1;
+        row[PlusRounds.COL.LANE] = (int)row[PlusRounds.COL.LANE] + 1;
+
         newRoundXML.ApplyRowAsText(row);
         teamElement["rounds"][0].AddChild(newRoundXML);
     }
 
-    var summaryRow = summaryTable.GetRowsByTeam(teamUID)[0];
+    var summaryRow = plusScore.PlusSummary.GetRow(teamUID);
     var summaryXML = roundXML.Clone();
     summaryXML.ApplyRowAsText(summaryRow);
     summaryXML["#round"][0].InnerText = "\u03A3";

@@ -7,6 +7,16 @@ namespace Model.Tables {
 
     public static class TableExtensions {
 
+        public static DataRow Clone(this DataRow source) {
+            var dest = source.Table.NewRow();
+
+            for (int i = 0; i < source.ItemArray.Length; i++) {
+                dest[i] = source[i];
+            }
+
+            return dest;
+        }
+
         public static List<T> ToList<T>(this DataTable table, string column) {
             if (!table.Columns.Contains(column)) throw new KeyNotFoundException(column);
 

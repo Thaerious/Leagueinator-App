@@ -9,11 +9,10 @@
       <category class="bold-font">Lane</category>
       <category class="bold-font">Ends</category>
       <category class="bold-font">Win</category>
+      <category class="bold-font">Bowls</category>
       <category class="bold-font">For</category>
-      <category class="bold-font">=</category>
       <category class="bold-font">+</category>
       <category class="bold-font">Against</category>
-      <category class="bold-font">=</category>
       <category class="bold-font">+</category>
       <category class="bold-font">Tie</category>
     </row>

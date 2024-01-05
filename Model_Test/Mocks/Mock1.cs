@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Model_Test {
-    internal class Mock : League{
-        public Mock() {
+    internal class Mock1 : League{
+        public Mock1() {
             LeagueEvent myEvent = this.NewLeagueEvent("my_event");
             LeagueEvent myOtherEvent = this.NewLeagueEvent("my_other_event");
 

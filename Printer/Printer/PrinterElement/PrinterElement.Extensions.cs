@@ -1,9 +1,8 @@
 ﻿using Leagueinator.Utility;
 using System.Data;
 
-namespace Leagueinator.Printer
-{
-    public static class PrinterElementExtensions{
+namespace Leagueinator.Printer {
+    public static class PrinterElementExtensions {
 
         public static int ApplyRow(this PrinterElement element, DataRow row, Action<PrinterElement, string, object> action) {
             int count = 0;
@@ -33,7 +32,7 @@ namespace Leagueinator.Printer
                 var child = element.Children.Query($"#{col}");
                 if (child is null) return;
                 child.InnerText = value.ToString();
-                count++;                
+                count++;
             });
 
             return count;

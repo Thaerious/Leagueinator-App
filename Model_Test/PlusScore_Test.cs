@@ -1,10 +1,10 @@
-﻿using Leagueinator.App.Scoring.Plus;
-using Leagueinator.Utility;
+﻿using Leagueinator.Utility;
 using Model;
+using Model.Scoring.Plus;
 using Model.Tables;
 using System.Diagnostics;
 
-namespace Test_App {
+namespace Model_Test {
     [TestClass]
     public class PlusScore_Test {
         [TestMethod]
@@ -26,7 +26,7 @@ namespace Test_App {
             int index = plusTeam.AddTeamIf(["Adam", "Eve"]);
 
             Assert.AreEqual(0, index);
-            Assert.AreEqual(0, plusTeam.FindTeam(["Adam", "Eve"]));
+            Assert.AreEqual(0, plusTeam.LookupTeam(["Adam", "Eve"]));
         }
 
         [TestMethod]
@@ -48,20 +48,20 @@ namespace Test_App {
             plusTeam.AddRow(1, "Cain");
             plusTeam.AddRow(1, "Able");
 
-            Debug.WriteLine(plusTeam.GetView(0).PrettyPrint());
-            Debug.WriteLine(plusTeam.GetView(0).ToList<string>("name").DelString());
+            Debug.WriteLine(plusTeam.TeamView(0).PrettyPrint());
+            Debug.WriteLine(plusTeam.TeamView(0).ToList<string>("name").DelString());
 
             // exists
-            Assert.AreEqual(0, plusTeam.FindTeam(["Adam", "Eve"]));
-            Assert.AreEqual(1, plusTeam.FindTeam(["Cain", "Able"]));
+            Assert.AreEqual(0, plusTeam.LookupTeam(["Adam", "Eve"]));
+            Assert.AreEqual(1, plusTeam.LookupTeam(["Cain", "Able"]));
 
             // exists, reverse order 
-            Assert.AreEqual(0, plusTeam.FindTeam(["Eve", "Adam"]));
-            Assert.AreEqual(1, plusTeam.FindTeam(["Able", "Cain"]));
+            Assert.AreEqual(0, plusTeam.LookupTeam(["Eve", "Adam"]));
+            Assert.AreEqual(1, plusTeam.LookupTeam(["Able", "Cain"]));
 
             // doesn't exist
-            Assert.AreEqual(-1, plusTeam.FindTeam(["Adam"]));
-            Assert.AreEqual(-1, plusTeam.FindTeam(["Able", "Cain", "Billy"]));
+            Assert.AreEqual(-1, plusTeam.LookupTeam(["Adam"]));
+            Assert.AreEqual(-1, plusTeam.LookupTeam(["Able", "Cain", "Billy"]));
         }
 
         [TestMethod]
@@ -84,6 +84,18 @@ namespace Test_App {
             Assert.AreEqual(3, plusScore.GetRow(5)[PlusRounds.COL.RANK]);
             Assert.AreEqual(4, plusScore.GetRow(6)[PlusRounds.COL.RANK]);
             Assert.AreEqual(1, plusScore.GetRow(7)[PlusRounds.COL.RANK]);
+        }
+
+        [TestMethod]
+        public void Get_Rows_By_Team() {
+            League league = new Mock2();
+            PlusScore plusScore = new(league.LeagueEvents[0]);
+
+            int teamIndex = plusScore.PlusTeams.LookupTeam(["Adam", "Betty"]);
+            var rows = plusScore.PlusRounds.GetRowsByTeam(teamIndex);
+
+            Debug.WriteLine(plusScore.PrettyPrint());
+            Debug.WriteLine(rows.PrettyPrint());
         }
     }
 }

@@ -17,9 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="PrinterCanvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="PrinterCanvas.cs" />
   </ItemGroup>
 
 </Project>

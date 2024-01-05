@@ -9,14 +9,14 @@ namespace Model_Test {
 
         [TestMethod]
         public void Join() {
-            Mock league = new Mock();
+            Mock1 league = new Mock1();
             Debug.WriteLine(league.PrettyPrint());
             var joined = league.TeamTable.LeftJoin<int>(league.EventTable, "event_uid", "uid");
         }
 
         [TestMethod]
         public void New_Table_From_Tables() {
-            Mock league = new Mock();
+            Mock1 league = new Mock1();
             DataTable table = new DataTable().MergeWith(league.TeamTable, league.IdleTable);
 
             Debug.WriteLine(table.PrettyPrint());
@@ -33,7 +33,7 @@ namespace Model_Test {
 
         [TestMethod]
         public void As() {
-            Mock league = new Mock();
+            Mock1 league = new Mock1();
             DataTable merged = new DataTable().MergeWith(league.TeamTable, league.IdleTable);
             DataTable table = merged.As("uid", "event", "name");
             

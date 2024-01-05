@@ -1,8 +1,8 @@
 ﻿using Model;
 
-namespace Test_App {
-    internal class Mock : League{
-        public Mock() {
+namespace Model_Test {
+    internal class Mock2 : League{
+        public Mock2() {
             LeagueEvent myEvent = this.NewLeagueEvent("my_event");
             LeagueEvent myOtherEvent = this.NewLeagueEvent("my_other_event");
 
