@@ -49,7 +49,7 @@ void Part7() {
 
 public class Wrapper : DataSet {
 
-    public EventTable EventTable { get; } = new();
+    public RoundTable EventTable { get; } = new();
     public TeamTable TeamTable { get; } = new();
     public IdleTable IdleTable { get; } = new();
     public EventDirectoryTable EventDirectoryTable { get; } = new();

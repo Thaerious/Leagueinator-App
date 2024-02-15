@@ -22,7 +22,7 @@ namespace Model.Scoring.Plus {
                     foreach (Team team in match.Teams) {
                         int index = this.PlusTeams.AddTeamIf(team.Players);
                         var row = this.PlusRounds.GetRow(team.EventTableUID);
-                        row[EventTable.COL.TEAM_IDX] = index;
+                        row[RoundTable.COL.TEAM_IDX] = index;
                     }
                 }
             }

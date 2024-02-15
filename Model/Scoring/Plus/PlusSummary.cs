@@ -22,7 +22,7 @@ namespace Model.Scoring.Plus {
 
         public bool HasRow(int team) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(EventTable.COL.TEAM_IDX) == team)
+                           .Where(row => row.Field<int>(RoundTable.COL.TEAM_IDX) == team)
                            .ToList();
 
             return rows.Count != 0;
@@ -30,17 +30,17 @@ namespace Model.Scoring.Plus {
 
         public DataRow GetRow(int team) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(EventTable.COL.TEAM_IDX) == team)
+                           .Where(row => row.Field<int>(RoundTable.COL.TEAM_IDX) == team)
                            .ToList();
 
-            if (rows.Count == 0) throw new KeyNotFoundException($"{EventTable.COL.TEAM_IDX} = {team}");
+            if (rows.Count == 0) throw new KeyNotFoundException($"{RoundTable.COL.TEAM_IDX} = {team}");
             return rows[0];
         }
 
         private DataRow AddOrGet(int team) {
             if (!this.HasRow(team)) {
                 var row = this.NewRow();
-                row[EventTable.COL.TEAM_IDX] = team;
+                row[RoundTable.COL.TEAM_IDX] = team;
                 this.Rows.Add(row);
                 return row;
             }
@@ -50,15 +50,15 @@ namespace Model.Scoring.Plus {
 
         private void Build() {
             this.MergeWith(dataCol => dataCol.ColumnName, this.PlusRounds);
-            this.Columns.Remove(EventTable.COL.ROUND);
-            this.Columns.Remove(EventTable.COL.LANE);
-            this.Columns.Remove(EventTable.COL.UID);
-            this.Columns.Remove(EventTable.COL.TIE);
+            this.Columns.Remove(RoundTable.COL.ROUND);
+            this.Columns.Remove(RoundTable.COL.LANE);
+            this.Columns.Remove(RoundTable.COL.UID);
+            this.Columns.Remove(RoundTable.COL.TIE);
         }
 
         private void Fill() {
             foreach (DataRow roundRow in this.PlusRounds.Rows) {
-                int teamIndex = roundRow.Field<int>(EventTable.COL.TEAM_IDX);
+                int teamIndex = roundRow.Field<int>(RoundTable.COL.TEAM_IDX);
                 DataRow summaryRow = this.AddOrGet(teamIndex);
 
                 summaryRow[PlusRounds.COL.WIN] = (int)summaryRow[PlusRounds.COL.WIN] + (int)roundRow[PlusRounds.COL.WIN];

@@ -11,7 +11,7 @@ namespace Model_Test {
         public void Join() {
             Mock1 league = new Mock1();
             Debug.WriteLine(league.PrettyPrint());
-            var joined = league.TeamTable.LeftJoin<int>(league.EventTable, "event_uid", "uid");
+            var joined = league.TeamTable.LeftJoin<int>(league.RoundTable, "event_uid", "uid");
         }
 
         [TestMethod]

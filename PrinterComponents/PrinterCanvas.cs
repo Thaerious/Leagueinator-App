@@ -6,7 +6,18 @@ using System.Xml.Linq;
 namespace Leagueinator.PrinterComponents
 {
     public partial class PrinterCanvas : UserControl{
-        public PrinterElement? Root { get; set; }
+
+        private PrinterElement? _rootElement = null;
+        public PrinterElement? RootElement { 
+            get => this._rootElement;
+            set {
+                this._rootElement = value;
+
+                if (this._rootElement != null) {
+                    this._rootElement.ContainerProvider = new ContentRectProvider(() => new(0, 0, this.Width, this.Height));
+                }
+            }
+        }
 
         [Category("Grid")]
         public int GridSize { get; set; } = 0;
@@ -23,18 +34,14 @@ namespace Leagueinator.PrinterComponents
             this.InitializeComponent();
         }
 
+        protected override void OnResize(EventArgs e) {
+            base.OnResize(e);
+            this.RootElement?.Update();
+        }
+
         protected override void OnPaint(PaintEventArgs e) {
-            base.OnPaint(e);
-
-            if (this.Root != null) {
-                this.Root.ContainerProvider = new ContentRectProvider(() => new(0, 0, this.Width, this.Height));
-            }
-            
-            this.Root?.Update();
-
-            if (this.ToBack) this.DrawGrids(e.Graphics);
-            this.Root?.Draw(e.Graphics);
-            if (!this.ToBack) this.DrawGrids(e.Graphics);
+            base.OnPaint(e);                        
+            this.RootElement?.Draw(e.Graphics);
         }
 
         private void DrawGrids(Graphics g) {

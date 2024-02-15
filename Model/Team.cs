@@ -6,7 +6,7 @@ using System.Xml.Linq;
 namespace Model {
 
     /// <summary>
-    /// A view of TeamTableView paired with a EventTableRow from EventTable.
+    /// A view of TeamTableView paired with a EventTableRow from RoundTable.
     /// </summary>
     public class Team : DataView, IDeleted {
 
@@ -38,7 +38,7 @@ namespace Model {
         /// <summary>
         /// Property to get the unique UID from the event table row. 
         /// </summary>
-        public int EventTableUID { get => (int)EventTableRow[EventTable.COL.UID]; }
+        public int EventTableUID { get => (int)EventTableRow[RoundTable.COL.UID]; }
 
         /// <summary>
         /// Property to retrieve a non-reflective list of players.
@@ -54,17 +54,17 @@ namespace Model {
         /// </summary>
         public bool Deleted { get; private set; } = false;
         public int Bowls {
-            get => (int)this.EventTableRow[EventTable.COL.BOWLS];
-            set => this.EventTableRow[EventTable.COL.BOWLS] = value;
+            get => (int)this.EventTableRow[RoundTable.COL.BOWLS];
+            set => this.EventTableRow[RoundTable.COL.BOWLS] = value;
         }
 
         public int Ends {
-            get => (int)this.EventTableRow[EventTable.COL.ENDS];
-            set => this.EventTableRow[EventTable.COL.ENDS] = value;
+            get => (int)this.EventTableRow[RoundTable.COL.ENDS];
+            set => this.EventTableRow[RoundTable.COL.ENDS] = value;
         }
         public int Tie {
-            get => (int)this.EventTableRow[EventTable.COL.TIE];
-            set => this.EventTableRow[EventTable.COL.TIE] = value;
+            get => (int)this.EventTableRow[RoundTable.COL.TIE];
+            set => this.EventTableRow[RoundTable.COL.TIE] = value;
         }
 
         internal Team(Match match, DataRow eventTableRow, int teamIndex) : base(match.League.TeamTable) {
@@ -168,7 +168,7 @@ namespace Model {
             DeletedException.ThrowIf(this);
 
             foreach (string player in this.Players) this.RemovePlayer(player);
-            var eventTable = this.League.EventTable;
+            var eventTable = this.League.RoundTable;
             eventTable.Rows.Remove(this.EventTableRow);
 
             this.Deleted = true;

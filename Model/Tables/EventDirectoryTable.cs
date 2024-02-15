@@ -6,7 +6,7 @@ namespace Model.Tables {
         public static readonly string TABLE_NAME = "event_directory";
 
         public static class COL {
-            public static readonly string ID = "uid";
+            public static readonly string UID = "uid";
             public static readonly string EVENT_NAME = "name";
             public static readonly string DATE = "date";
             public static readonly string ROUND_COUNT = "round_count";
@@ -28,16 +28,16 @@ namespace Model.Tables {
 
         public DataRow GetRow(int eventUID) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.ID) == eventUID)
+                           .Where(row => row.Field<int>(COL.UID) == eventUID)
                            .ToList();
 
-            if (rows.Count == 0) throw new KeyNotFoundException($"{COL.ID} == {eventUID}");
+            if (rows.Count == 0) throw new KeyNotFoundException($"{COL.UID} == {eventUID}");
             return rows[0];
         }
 
         public bool HasRow(int eventUID) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.ID) == eventUID)
+                           .Where(row => row.Field<int>(COL.UID) == eventUID)
                            .ToList();
 
             if (rows.Count == 0) return false;
@@ -49,7 +49,7 @@ namespace Model.Tables {
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.ID,
+                ColumnName = COL.UID,
                 Unique = true,
                 AutoIncrement = true
             });
@@ -76,7 +76,7 @@ namespace Model.Tables {
                 DefaultValue = 0
             });
 
-            table.PrimaryKey = [table.Columns[COL.ID]!];
+            table.PrimaryKey = [table.Columns[COL.UID]!];
 
             return table;
         }

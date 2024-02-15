@@ -24,7 +24,7 @@ namespace Model {
 
 
     /// <summary>
-    /// A view of EventTable restricted to event.
+    /// A view of RoundTable restricted to event.
     /// The public methods do not directly change the data set.
     /// </summary>
     public class LeagueEvent : DataView, IDeleted {
@@ -46,17 +46,17 @@ namespace Model {
         /// <summary>
         /// The primary key form the event directory table.
         /// </summary>
-        public int UID { get => (int)DirectoryRow[EventDirectoryTable.COL.ID]; }
+        public int UID { get => (int)DirectoryRow[EventDirectoryTable.COL.UID]; }
 
-        internal LeagueEvent(League league, int uid) : base(league.EventTable) {
+        internal LeagueEvent(League league, int uid) : base(league.RoundTable) {
             this.DirectoryRow = league.EventDirectoryTable.GetRow(uid);            
             this.League = league;
             this.Settings = new EventSettings(this);
-            this.RowFilter = $"{EventTable.COL.EVENT_UID} = {this.UID}";
+            this.RowFilter = $"{RoundTable.COL.DIR_UID} = {this.UID}";
         }
 
         internal DataRow AddRow(int round, int lane, int teamIDX) {
-            return this.League.EventTable.AddRow(
+            return this.League.RoundTable.AddRow(
                 eventUID: this.UID,
                 round: round,
                 lane: lane,

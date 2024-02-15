@@ -73,7 +73,7 @@
 
 //    public static class COL {
 //        public static readonly string UID = "uid";
-//        public static readonly string EVENT_UID = "event_dir_uid";
+//        public static readonly string DIR_UID = "event_dir_uid";
 //        public static readonly string ROUND = "round";
 //        public static readonly string PLAYER_NAME = "player_name";
 //    }
@@ -87,7 +87,7 @@
 
 //        var row = this.NewRow();
 
-//        row[COL.EVENT_UID] = eventUID;
+//        row[COL.DIR_UID] = eventUID;
 //        row[COL.ROUND] = round;
 //        row[COL.PLAYER_NAME] = playerName;
 
@@ -97,7 +97,7 @@
 
 //    public DataRow? GetRow(int eventDirUID, int round, string playerName) {
 //        var rows = this.AsEnumerable()
-//                       .Where(row => row.Field<int>(COL.EVENT_UID) == eventDirUID)
+//                       .Where(row => row.Field<int>(COL.DIR_UID) == eventDirUID)
 //                       .Where(row => row.Field<int>(COL.ROUND) == round)
 //                       .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
 //                       .ToList();
@@ -109,7 +109,7 @@
 //    public void RemoveRows(int eventUID, int round, string playerName) {
 
 //        var rowsToDelete = this.AsEnumerable()
-//                           .Where(row => row.Field<int>(COL.EVENT_UID) == eventUID)
+//                           .Where(row => row.Field<int>(COL.DIR_UID) == eventUID)
 //                           .Where(row => row.Field<int>(COL.ROUND) == round)
 //                           .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
 //                           .ToList()
@@ -132,7 +132,7 @@
 
 //        table.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
-//            ColumnName = COL.EVENT_UID,
+//            ColumnName = COL.DIR_UID,
 //            Unique = false,
 //            AutoIncrement = false
 //        });

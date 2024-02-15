@@ -66,7 +66,7 @@ namespace Model {
     }
 
     /// <summary>
-    /// A view of EventTable restricted to event name and Round.
+    /// A view of RoundTable restricted to event name and Round.
     /// The public methods do not directly change the data set.
     /// </summary>
     public class Round : DataView, IDeleted {
@@ -114,7 +114,7 @@ namespace Model {
             this.RoundIndex = roundIndex;
             this.IdlePlayers = new IdlePlayers(this);
 
-            RowFilter = $"{EventTable.COL.EVENT_UID} = {this.LeagueEvent.UID} AND {EventTable.COL.ROUND} = {roundIndex}";
+            RowFilter = $"{RoundTable.COL.DIR_UID} = {this.LeagueEvent.UID} AND {RoundTable.COL.ROUND} = {roundIndex}";
         }
 
         public Match GetMatch(int lane) {
@@ -135,8 +135,8 @@ namespace Model {
             List<Match> matches = [];
 
             foreach (DataRow row in table.AsEnumerable()) {
-                int roundIndex = (row.Field<int>(EventTable.COL.ROUND));
-                int laneIndex = (row.Field<int>(EventTable.COL.LANE));
+                int roundIndex = (row.Field<int>(RoundTable.COL.ROUND));
+                int laneIndex = (row.Field<int>(RoundTable.COL.LANE));
 
                 if (roundIndex != this.RoundIndex) continue;
                 if (ids.Contains(laneIndex)) continue;

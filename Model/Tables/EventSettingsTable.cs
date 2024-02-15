@@ -5,8 +5,8 @@ namespace Model.Tables {
         public static readonly string TABLE_NAME = "event_settings";
 
         public static class COL {
-            public static readonly string ID = "uid";
-            public static readonly string EVENT_UID = "event_dir_uid";
+            public static readonly string UID = "uid";
+            public static readonly string DIR_UID = "dir_uid";
             public static readonly string KEY = "key";
             public static readonly string VALUE = "value";
         }
@@ -18,17 +18,17 @@ namespace Model.Tables {
         public DataRow SetValue(int eventUID, string key, string value) {
             var row = this.GetRow(eventUID, key);
 
-            row[COL.EVENT_UID] = eventUID;
+            row[COL.DIR_UID] = eventUID;
             row[COL.KEY] = key;
             row[COL.VALUE] = value;
 
-            if (!this.Rows.Contains(row[COL.ID])) this.Rows.Add(row);
+            if (!this.Rows.Contains(row[COL.UID])) this.Rows.Add(row);
             return row;
         }
 
         public DataRow GetRow(int eventUID, string key) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.EVENT_UID) == eventUID)
+                           .Where(row => row.Field<int>(COL.DIR_UID) == eventUID)
                            .Where(row => row.Field<string>(COL.KEY) == key)
                            .ToList();
 
@@ -38,7 +38,7 @@ namespace Model.Tables {
 
         public string GetValue(int eventUID, string key) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.EVENT_UID) == eventUID)
+                           .Where(row => row.Field<int>(COL.DIR_UID) == eventUID)
                            .Where(row => row.Field<string>(COL.KEY) == key)
                            .ToList();
 
@@ -51,14 +51,14 @@ namespace Model.Tables {
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.ID,
+                ColumnName = COL.UID,
                 Unique = true,
                 AutoIncrement = true
             });
 
             table.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.EVENT_UID
+                ColumnName = COL.DIR_UID
             });
 
             table.Columns.Add(new DataColumn {
@@ -71,7 +71,7 @@ namespace Model.Tables {
                 ColumnName = COL.VALUE
             });
 
-            table.PrimaryKey = [table.Columns[COL.ID]!];
+            table.PrimaryKey = [table.Columns[COL.UID]!];
 
             return table;
         }

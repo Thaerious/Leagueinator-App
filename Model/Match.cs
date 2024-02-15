@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace Model {
 
     /// <summary>
-    /// A view of EventTable restricted to event name, Round, and match.
+    /// A view of RoundTable restricted to event name, Round, and match.
     /// </summary>
     public class Match : DataView, IDeleted {
         public ICollection<string> Players {
@@ -35,9 +35,9 @@ namespace Model {
         public int Size {
             get {
                 DeletedException.ThrowIf(this);
-                var eventTable = Round.LeagueEvent.League.EventTable;
+                var eventTable = Round.LeagueEvent.League.RoundTable;
 
-                var computedMax = eventTable.Compute($"MAX({EventTable.COL.TEAM_IDX})", this.RowFilter);
+                var computedMax = eventTable.Compute($"MAX({RoundTable.COL.TEAM_IDX})", this.RowFilter);
                 int lastTeamIndex = (computedMax != DBNull.Value) ? Convert.ToInt32(computedMax) : -1;
 
                 return lastTeamIndex + 1;
@@ -47,11 +47,11 @@ namespace Model {
         internal Match(Round round, int lane) : base(round.Table) {
             this.Round = round;
             this.Lane = lane;
-            this.RowFilter = $"{EventTable.COL.ROUND} = {round.RoundIndex} AND {EventTable.COL.LANE} = {lane} ";            
+            this.RowFilter = $"{RoundTable.COL.ROUND} = {round.RoundIndex} AND {RoundTable.COL.LANE} = {lane} ";            
         }
 
         /// <summary>
-        /// Add a row to the EventTable to represent a team in this match.
+        /// Add a row to the RoundTable to represent a team in this match.
         /// </summary>
         /// <returns>A new Team view</returns>
         /// <exception cref="Exception"></exception>
@@ -59,11 +59,11 @@ namespace Model {
             DeletedException.ThrowIf(this);
             int index = this.Size;
 
-            this.Sort = EventTable.COL.TEAM_IDX;
+            this.Sort = RoundTable.COL.TEAM_IDX;
             DataRowView[] rows = this.FindRows(index);
             if (rows.Length != 0) throw new Exception("Sanity Check Failed");
 
-            this.League.EventTable.AddRow(
+            this.League.RoundTable.AddRow(
                 eventUID: this.LeagueEvent.UID,
                 round: this.Round.RoundIndex,
                 lane: this.Lane,
@@ -74,7 +74,7 @@ namespace Model {
         }
 
         private Team GetTeam(int index) {
-            this.Sort = EventTable.COL.TEAM_IDX;
+            this.Sort = RoundTable.COL.TEAM_IDX;
             DataRowView[] rows = this.FindRows(index);
 
             if (rows.Length > 1) throw new Exception("Sanity Check Failed on Rows");
@@ -99,9 +99,9 @@ namespace Model {
             List<Team> teams = [];
 
             foreach (DataRow row in eventTable.AsEnumerable()) {
-                int roundIndex = (row.Field<int>(EventTable.COL.ROUND));
-                int laneIndex = (row.Field<int>(EventTable.COL.LANE));
-                int teamIndex = (row.Field<int>(EventTable.COL.TEAM_IDX));
+                int roundIndex = (row.Field<int>(RoundTable.COL.ROUND));
+                int laneIndex = (row.Field<int>(RoundTable.COL.LANE));
+                int teamIndex = (row.Field<int>(RoundTable.COL.TEAM_IDX));
 
                 if (roundIndex != this.Round.RoundIndex) continue;
                 if (laneIndex != this.Lane) continue;

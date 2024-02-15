@@ -122,10 +122,18 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private void File_Exit(object sender, EventArgs e) {
-            throw new NotImplementedException();
+            if (IsSaved.Value == false) {
+                string message = "Event not saved, save now?";
+                DialogResult result = MessageBox.Show(message, "Event Not Saved", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes) this.File_Save(sender, e);
+                else this.Close();
+            }
+            else {
+                this.Close();
+            }
         }
 
-        private void File_SaveAs(object sender, EventArgs e) {
+        private void File_SaveAs(object _, EventArgs __) {
             using SaveFileDialog dialog = new SaveFileDialog();
             SetupFileDialog(dialog);
 

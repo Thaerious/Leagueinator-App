@@ -1,9 +1,5 @@
-﻿using Model;
-using Model.Tables;
+﻿using Model.Tables;
 using System.Data;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using Match = Model.Match;
 
 namespace Model.Scoring.Plus {
     public class PlusRounds : DataTable {
@@ -16,13 +12,13 @@ namespace Model.Scoring.Plus {
             public static readonly string PLUS_AGAINST = "against+";
             public static readonly string RANK = "rank";
 
-            public static readonly string UID = EventTable.COL.UID;
-            public static readonly string ROUND = EventTable.COL.ROUND;
-            public static readonly string LANE = EventTable.COL.LANE;
-            public static readonly string TEAM = EventTable.COL.TEAM_IDX;
-            public static readonly string TIE = EventTable.COL.TIE;
-            public static readonly string BOWLS = EventTable.COL.BOWLS;
-            public static readonly string ENDS = EventTable.COL.ENDS;
+            public static readonly string UID = RoundTable.COL.UID;
+            public static readonly string ROUND = RoundTable.COL.ROUND;
+            public static readonly string LANE = RoundTable.COL.LANE;
+            public static readonly string TEAM = RoundTable.COL.TEAM_IDX;
+            public static readonly string TIE = RoundTable.COL.TIE;
+            public static readonly string BOWLS = RoundTable.COL.BOWLS;
+            public static readonly string ENDS = RoundTable.COL.ENDS;
         }
 
         // The maximum score allowed, excess goes into plus.
@@ -50,9 +46,9 @@ namespace Model.Scoring.Plus {
         }
 
         private void Build() {
-            this.MergeWith(dataCol => dataCol.ColumnName, this.LeagueEvent.League.EventTable);
+            this.MergeWith(dataCol => dataCol.ColumnName, this.LeagueEvent.League.RoundTable);
             this.BuildColumns();
-            this.Columns.Remove(EventTable.COL.EVENT_UID);
+            this.Columns.Remove(RoundTable.COL.DIR_UID);
             this.Fill();
         }
 

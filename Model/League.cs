@@ -7,24 +7,24 @@ using System.Diagnostics;
 namespace Model {
     public class League : DataSet {
 
-        public EventTable EventTable { get; } = new();
+        public RoundTable RoundTable { get; } = new();
         public TeamTable TeamTable { get; } = new();
         public IdleTable IdleTable { get; } = new();
         public EventDirectoryTable EventDirectoryTable { get; } = new();
         public EventSettingsTable EventSettings { get; } = new();
 
         public League() {
-            Tables.Add(EventTable);
+            Tables.Add(RoundTable);
             Tables.Add(TeamTable);
             Tables.Add(EventDirectoryTable);
             Tables.Add(IdleTable);
-            Tables.Add(EventSettings);
+            Tables.Add(EventSettings);            
         }
 
         public List<LeagueEvent> LeagueEvents {
             get {
                 return EventDirectoryTable
-                .ColumnValues<int>(EventDirectoryTable.COL.ID)
+                .ColumnValues<int>(EventDirectoryTable.COL.UID)
                 .NotNull()
                 .Select(uid => new LeagueEvent(this, uid))
                 .ToList();
@@ -34,7 +34,7 @@ namespace Model {
         public LeagueEvent NewLeagueEvent(string eventName, string? date = null) {
             date ??= DateTime.Today.ToString("yyyy-MM-dd");
             var row = this.EventDirectoryTable.AddRow(eventName, date);
-            return new LeagueEvent(this, (int)row[EventDirectoryTable.COL.ID]);
+            return new LeagueEvent(this, (int)row[EventDirectoryTable.COL.UID]);
         }
 
         public LeagueEvent GetLeagueEvent(int uid) {
@@ -42,7 +42,7 @@ namespace Model {
         }
 
         public string PrettyPrint() {
-            return EventTable.PrettyPrint() + "\n" +
+            return RoundTable.PrettyPrint() + "\n" +
                 TeamTable.PrettyPrint() + "\n" +
                 IdleTable.PrettyPrint() + "\n" +
                 EventDirectoryTable.PrettyPrint() + "\n" +

@@ -50,7 +50,7 @@ namespace PrinterTestForm
                 xmlLoader.LoadStyle(styleString);
                 PrinterElement root = xmlLoader.LoadXML(xmlString);
 
-                this.printerCanvas.Root = root;
+                this.printerCanvas.RootElement = root;
                 this.printerCanvas.Invalidate();
             }
             catch (Exception ex) {
@@ -60,11 +60,11 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.Root.ToXML());
+            Debug.WriteLine(this.printerCanvas.RootElement.ToXML());
 
-            Debug.WriteLine(this.printerCanvas.Root["team"][0]["row"][0]);
-            Debug.WriteLine(this.printerCanvas.Root["team"][0]["row"][1]);
-            Debug.WriteLine(this.printerCanvas.Root["team"][0]["row"][2]);
+            Debug.WriteLine(this.printerCanvas.RootElement["team"][0]["row"][0]);
+            Debug.WriteLine(this.printerCanvas.RootElement["team"][0]["row"][1]);
+            Debug.WriteLine(this.printerCanvas.RootElement["team"][0]["row"][2]);
         }
 
         private void TXT_KeyPress(object sender, KeyPressEventArgs e) {
@@ -82,7 +82,7 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintCSS_Click(object sender, EventArgs e) {
-            var target = this.printerCanvas.Root["inner"][0];
+            var target = this.printerCanvas.RootElement["inner"][0];
             Debug.WriteLine(target);
             Debug.WriteLine(target.Style);
 
@@ -92,7 +92,7 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintLocXML(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.Root?.LocXML());
+            Debug.WriteLine(this.printerCanvas.RootElement?.LocXML());
         }
     }
 }
