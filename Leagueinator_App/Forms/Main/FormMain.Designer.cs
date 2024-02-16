@@ -49,16 +49,21 @@
             this.assignLanesToolStripMenuItem = new ToolStripMenuItem();
             this.scrambleToolStripMenuItem = new ToolStripMenuItem();
             this.viewToolStripMenuItem = new ToolStripMenuItem();
+            this.summaryToolStripMenuItem = new ToolStripMenuItem();
             this.devToolStripMenuItem = new ToolStripMenuItem();
             this.printLeagueToolStripMenuItem = new ToolStripMenuItem();
             this.printCurrentEventToolStripMenuItem = new ToolStripMenuItem();
+            this.viewEventsDirToolStripMenuItem = new ToolStripMenuItem();
+            this.viewRoundsTableToolStripMenuItem = new ToolStripMenuItem();
+            this.viewIdleTableToolStripMenuItem = new ToolStripMenuItem();
+            this.viewTeamsTableToolStripMenuItem = new ToolStripMenuItem();
+            this.viewSettingsTableToolStripMenuItem = new ToolStripMenuItem();
             this.helpToolStripMenuItem = new ToolStripMenuItem();
             this.aboutToolStripMenuItem = new ToolStripMenuItem();
             this.eventPanel = new Components.EventPanel();
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.printPreviewDialog = new PrintPreviewDialog();
             this.printDialog = new PrintDialog();
-            this.summaryToolStripMenuItem = new ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -174,7 +179,7 @@
             this.addEventToolStripMenuItem.Name = "addEventToolStripMenuItem";
             this.addEventToolStripMenuItem.Size = new Size(208, 34);
             this.addEventToolStripMenuItem.Text = "Add Event";
-            this.addEventToolStripMenuItem.Click += this.Events_AddEvent;
+            this.addEventToolStripMenuItem.Click += this.Menu_Events_AddEvent;
             // 
             // playersToolStripMenuItem
             // 
@@ -245,9 +250,16 @@
             this.viewToolStripMenuItem.Size = new Size(65, 29);
             this.viewToolStripMenuItem.Text = "View";
             // 
+            // summaryToolStripMenuItem
+            // 
+            this.summaryToolStripMenuItem.Name = "summaryToolStripMenuItem";
+            this.summaryToolStripMenuItem.Size = new Size(190, 34);
+            this.summaryToolStripMenuItem.Text = "Summary";
+            this.summaryToolStripMenuItem.Click += this.Menu_Summary_Click;
+            // 
             // devToolStripMenuItem
             // 
-            this.devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.printLeagueToolStripMenuItem, this.printCurrentEventToolStripMenuItem });
+            this.devToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.printLeagueToolStripMenuItem, this.printCurrentEventToolStripMenuItem, this.viewEventsDirToolStripMenuItem, this.viewRoundsTableToolStripMenuItem, this.viewIdleTableToolStripMenuItem, this.viewTeamsTableToolStripMenuItem, this.viewSettingsTableToolStripMenuItem });
             this.devToolStripMenuItem.Name = "devToolStripMenuItem";
             this.devToolStripMenuItem.Size = new Size(59, 29);
             this.devToolStripMenuItem.Text = "Dev";
@@ -255,16 +267,51 @@
             // printLeagueToolStripMenuItem
             // 
             this.printLeagueToolStripMenuItem.Name = "printLeagueToolStripMenuItem";
-            this.printLeagueToolStripMenuItem.Size = new Size(261, 34);
+            this.printLeagueToolStripMenuItem.Size = new Size(270, 34);
             this.printLeagueToolStripMenuItem.Text = "Print League";
             this.printLeagueToolStripMenuItem.Click += this.Dev_PrintLeague;
             // 
             // printCurrentEventToolStripMenuItem
             // 
             this.printCurrentEventToolStripMenuItem.Name = "printCurrentEventToolStripMenuItem";
-            this.printCurrentEventToolStripMenuItem.Size = new Size(261, 34);
+            this.printCurrentEventToolStripMenuItem.Size = new Size(270, 34);
             this.printCurrentEventToolStripMenuItem.Text = "Print Current Event";
             this.printCurrentEventToolStripMenuItem.Click += this.Dev_PrintCurrentEvent;
+            // 
+            // viewEventsDirToolStripMenuItem
+            // 
+            this.viewEventsDirToolStripMenuItem.Name = "viewEventsDirToolStripMenuItem";
+            this.viewEventsDirToolStripMenuItem.Size = new Size(270, 34);
+            this.viewEventsDirToolStripMenuItem.Text = "View Events Table";
+            this.viewEventsDirToolStripMenuItem.Click += this.Menu_Dev_ViewEventsDir;
+            // 
+            // viewRoundsTableToolStripMenuItem
+            // 
+            this.viewRoundsTableToolStripMenuItem.Name = "viewRoundsTableToolStripMenuItem";
+            this.viewRoundsTableToolStripMenuItem.Size = new Size(270, 34);
+            this.viewRoundsTableToolStripMenuItem.Text = "View  Rounds Table";
+            this.viewRoundsTableToolStripMenuItem.Click += this.Menu_Dev_ViewRounds;
+            // 
+            // viewIdleTableToolStripMenuItem
+            // 
+            this.viewIdleTableToolStripMenuItem.Name = "viewIdleTableToolStripMenuItem";
+            this.viewIdleTableToolStripMenuItem.Size = new Size(270, 34);
+            this.viewIdleTableToolStripMenuItem.Text = "View Idle Table";
+            this.viewIdleTableToolStripMenuItem.Click += this.Menu_Dev_ViewIdle;
+            // 
+            // viewTeamsTableToolStripMenuItem
+            // 
+            this.viewTeamsTableToolStripMenuItem.Name = "viewTeamsTableToolStripMenuItem";
+            this.viewTeamsTableToolStripMenuItem.Size = new Size(270, 34);
+            this.viewTeamsTableToolStripMenuItem.Text = "View Teams Table";
+            this.viewTeamsTableToolStripMenuItem.Click += this.Menu_Dev_ViewTeams;
+            // 
+            // viewSettingsTableToolStripMenuItem
+            // 
+            this.viewSettingsTableToolStripMenuItem.Name = "viewSettingsTableToolStripMenuItem";
+            this.viewSettingsTableToolStripMenuItem.Size = new Size(270, 34);
+            this.viewSettingsTableToolStripMenuItem.Text = "View Settings Table";
+            this.viewSettingsTableToolStripMenuItem.Click += this.Menu_Dev_ViewSettings;
             // 
             // helpToolStripMenuItem
             // 
@@ -307,13 +354,6 @@
             // printDialog
             // 
             this.printDialog.UseEXDialog = true;
-            // 
-            // summaryToolStripMenuItem
-            // 
-            this.summaryToolStripMenuItem.Name = "summaryToolStripMenuItem";
-            this.summaryToolStripMenuItem.Size = new Size(270, 34);
-            this.summaryToolStripMenuItem.Text = "Summary";
-            this.summaryToolStripMenuItem.Click += this.Menu_Summary_Click;
             // 
             // FormMain
             // 
@@ -368,5 +408,10 @@
         private ToolStripMenuItem assignLanesToolStripMenuItem;
         private ToolStripMenuItem standingsToolStripMenuItem;
         private ToolStripMenuItem summaryToolStripMenuItem;
+        private ToolStripMenuItem viewEventsDirToolStripMenuItem;
+        private ToolStripMenuItem viewRoundsTableToolStripMenuItem;
+        private ToolStripMenuItem viewIdleTableToolStripMenuItem;
+        private ToolStripMenuItem viewTeamsTableToolStripMenuItem;
+        private ToolStripMenuItem viewSettingsTableToolStripMenuItem;
     }
 }

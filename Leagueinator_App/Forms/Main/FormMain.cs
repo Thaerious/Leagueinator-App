@@ -9,9 +9,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Model;
 using Leagueinator_App;
-using Leagueinator.App.Components;
-using Newtonsoft.Json.Linq;
-using Model.Tables;
+using Leagueinator_App.Forms.ViewTable;
 
 namespace Leagueinator.App.Forms.Main {
     public partial class FormMain : Form {
@@ -113,6 +111,10 @@ namespace Leagueinator.App.Forms.Main {
 
         private void File_New(object sender, EventArgs e) {
             this.League = new League();
+            this.League.RowChanged += (s, e) => {
+                IsSaved.Value = false;
+            };
+
             this.Text = "Leagueinator *";
         }
 
@@ -151,11 +153,11 @@ namespace Leagueinator.App.Forms.Main {
             }
         }
 
-        private void File_Print(object sender, EventArgs e) {
+        private void Menu_File_Print(object sender, EventArgs e) {
             throw new NotImplementedException();
         }
 
-        private void Events_AddEvent(object sender, EventArgs e) {
+        private void Menu_Events_AddEvent(object sender, EventArgs e) {
             if (this.League is null) throw new AppStateException("League is Null");
 
             var formAddEvent = new FormAddEvent();
@@ -463,6 +465,36 @@ namespace Leagueinator.App.Forms.Main {
 
         private void Menu_Summary_Click(object sender, EventArgs e) {
 
+        }
+
+        private void Menu_Dev_ViewEventsDir(object sender, EventArgs e) {
+            if (this.League == null) return;
+            var form = new FormViewTable();
+            form.Show(this.League.EventDirectoryTable);
+        }
+
+        private void Menu_Dev_ViewRounds(object sender, EventArgs e) {
+            if (this.League == null) return;
+            var form = new FormViewTable();
+            form.Show(this.League.RoundTable);
+        }
+
+        private void Menu_Dev_ViewIdle(object sender, EventArgs e) {
+            if (this.League == null) return;
+            var form = new FormViewTable();
+            form.Show(this.League.IdleTable);
+        }
+
+        private void Menu_Dev_ViewTeams(object sender, EventArgs e) {
+            if (this.League == null) return;
+            var form = new FormViewTable();
+            form.Show(this.League.TeamTable);
+        }
+
+        private void Menu_Dev_ViewSettings(object sender, EventArgs e) {
+            if (this.League == null) return;
+            var form = new FormViewTable();
+            form.Show(this.League.EventSettings);
         }
     }
 }

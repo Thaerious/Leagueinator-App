@@ -1,6 +1,13 @@
 ﻿using System.Data;
 
 namespace Model.Tables {
+
+    public class RoundRow : DataRow {
+        protected internal RoundRow(DataRowBuilder builder) : base(builder) {}
+
+
+    }
+
     public class RoundTable : DataTable {
         public static readonly string TABLE_NAME = "round";
 

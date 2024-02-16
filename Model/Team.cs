@@ -72,7 +72,7 @@ namespace Model {
             this.EventTableRow = eventTableRow;
             this.TeamIndex = teamIndex;
 
-            this.RowFilter = $"{TeamTable.COL.EVENT_TABLE_UID} = {this.EventTableUID}";
+            this.RowFilter = $"{TeamTable.COL.ROUND_UID} = {this.EventTableUID}";
         }
 
         /// <summary>

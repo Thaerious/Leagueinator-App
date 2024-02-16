@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace Model {
     public class League : DataSet {
+        public event DataRowChangeEventHandler RowChanged = delegate { };
 
         public RoundTable RoundTable { get; } = new();
         public TeamTable TeamTable { get; } = new();
@@ -18,7 +19,13 @@ namespace Model {
             Tables.Add(TeamTable);
             Tables.Add(EventDirectoryTable);
             Tables.Add(IdleTable);
-            Tables.Add(EventSettings);            
+            Tables.Add(EventSettings);
+
+            foreach (DataTable table in this.Tables) {
+                table.RowChanged += (s, e) => {
+                    this.RowChanged.Invoke(s, e);
+                };
+            }
         }
 
         public List<LeagueEvent> LeagueEvents {

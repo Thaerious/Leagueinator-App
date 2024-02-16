@@ -197,14 +197,14 @@ namespace Leagueinator.App.Components {
         }
 
         private void TeamTable_RowChanged(object sender, DataRowChangeEventArgs e) {            
-            if ((int)e.Row[TeamTable.COL.EVENT_TABLE_UID] != this.Team.EventTableUID) return;
+            if ((int)e.Row[TeamTable.COL.ROUND_UID] != this.Team.EventTableUID) return;
             string name = (string)e.Row[TeamTable.COL.PLAYER_NAME];
 
             if (!this.HasPlayerName(name)) this.AddPlayerName(name);
         }
 
         private void TeamTable_RowDeleted(object sender, System.Data.DataRowChangeEventArgs e) {
-            if ((int)e.Row[TeamTable.COL.EVENT_TABLE_UID] != this.Team.EventTableUID) return;
+            if ((int)e.Row[TeamTable.COL.ROUND_UID] != this.Team.EventTableUID) return;
             this.DeletePlayerName((string)e.Row[TeamTable.COL.PLAYER_NAME]);
         }
 

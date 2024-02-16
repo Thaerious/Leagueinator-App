@@ -71,15 +71,17 @@ namespace Model {
             List<Round> rounds = [];
 
             for (int i = 0; i < this.RoundCount; i++) {
-                rounds.Add(this.GetRound(i));
+                rounds.Add(this.GetOrCreateRound(i));
             }
 
             return rounds;
         }
 
-        private Round GetRound(int roundIndex) {
+        private Round GetOrCreateRound(int roundIndex) {
             DeletedException.ThrowIf(this);
-            return new Round(this, roundIndex);
+            var round = new Round(this, roundIndex);
+
+            return round;
         }
 
         /// <summary>
@@ -87,9 +89,9 @@ namespace Model {
         /// </summary>
         /// <returns></returns>
         public Round NewRound() {
-            int count = RoundCount;
-            this.RoundCount = count + 1;
-            return GetRound(count);
+            int nextIndex = RoundCount;
+            this.RoundCount = nextIndex + 1;
+            return GetOrCreateRound(nextIndex);
         }
 
         public int RoundCount {
