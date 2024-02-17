@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Tables;
 using System.Data;
 using System.Diagnostics;
 
@@ -9,23 +10,9 @@ namespace Model_Test {
         [TestMethod]
         public void Sanity_Check() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            
-            Debug.WriteLine(league.PrettyPrint());
-            
-            Assert.IsNotNull(lEvent);
-        }
-
-        /// <summary>
-        /// When you call GetEventsTable it will create a new table if it
-        /// doesn't already exist.
-        /// </summary>
-        [TestMethod]
-        public void Add_League_Event() {
-            League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.IsTrue(lEvent != null);
-            Assert.IsTrue(lEvent.Table != null);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            Debug.WriteLine(league.PrettyPrint());           
+            Assert.IsNotNull(eventRow);
         }
 
         /// <summary>
@@ -34,54 +21,29 @@ namespace Model_Test {
         [TestMethod]
         public void Add_League_Event_Repeat_Gives_Exception() {
             League league = new();
-            league.NewLeagueEvent("my_event");
-            league.NewLeagueEvent("my_event");
 
-            Assert.AreEqual(league.EventDirectoryTable.Rows.Count, 2);
-            Debug.WriteLine(league.PrettyPrint());
-        }
-
-        /// <summary>
-        /// When you call GetEventsTable it will create a new table if it
-        /// doesn't already exist.
-        /// </summary>
-        [TestMethod]
-        public void Get_League_Event() {
-            League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.IsTrue(lEvent != null);
-            Assert.IsTrue(lEvent.Table != null);
+            Assert.ThrowsException<ConstraintException>(() => {
+                league.EventTable.AddRow("my_event");
+                league.EventTable.AddRow("my_event");
+            });
         }
 
         [TestMethod]
         public void Get_League_Events_List() {
             League league = new();
-            league.NewLeagueEvent("my_event");
-            league.NewLeagueEvent("my_other_event");
-
-            var list = league.LeagueEvents;
-            Assert.IsTrue(list != null);
-            Assert.AreEqual(2, list.Count);
+            league.EventTable.AddRow("my_first_event");
+            league.EventTable.AddRow("my_second_event");
+            Assert.AreEqual(2, league.EventTable.Rows.Count);
         }
 
-        /// <summary>
-        /// You can not retrieve events that haven't been added.
-        /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(KeyNotFoundException))]
-        public void Retrive_Unknown_Event_Gives_Exception() {
+        public void Retrieve_Event() {
             League league = new();
-            var lEvent = league.GetLeagueEvent(0);
-        }
-
-        /// <summary>
-        /// New league does not contain any data.
-        /// </summary>
-        [TestMethod]
-        public void New_League_Event_Is_Empty() {
-            League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.AreEqual(0, lEvent.Count);
+            EventRow eventRowIn = league.EventTable.AddRow("my_event");
+            EventRow eventRowOut = league.EventTable.GetRow("my_event");
+            Debug.WriteLine(league.PrettyPrint());
+            Assert.IsNotNull(eventRowOut);
+            Assert.AreEqual(eventRowIn.Name, eventRowOut.Name);
         }
     }
 }

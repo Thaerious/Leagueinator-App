@@ -55,14 +55,14 @@
 //Console.WriteLine(table3.PrettyPrint());
 
 //Debug.WriteLine("Part 4");
-//Wrapper league = new();
-//LeagueEvent leagueEvent = league.NewLeagueEvent("myEvent");
-//Round round = leagueEvent.NewRound();
-//round.IdlePlayers.Add("ima_name_4");
+//Wrapper League = new();
+//LeagueEvent leagueEvent = League.NewLeagueEvent("myEvent");
+//Round Round = leagueEvent.NewRound();
+//Round.IdlePlayers.Add("ima_name_4");
 
 //Debug.WriteLine("Part 5");
-//Debug.WriteLine(league.IdleTable.GetType() == table3.GetType());
-//league.IdleTable.AddRow(0, 0, "ima_name_5");
+//Debug.WriteLine(League.IdleTable.GetType() == table3.GetType());
+//League.IdleTable.AddRow(0, 0, "ima_name_5");
 
 //Console.WriteLine("Press any key to continue.");
 //Console.ReadKey();
@@ -73,45 +73,45 @@
 
 //    public static class COL {
 //        public static readonly string UID = "uid";
-//        public static readonly string DIR_UID = "event_dir_uid";
-//        public static readonly string ROUND = "round";
-//        public static readonly string PLAYER_NAME = "player_name";
+//        public static readonly string EVENT = "event_dir_uid";
+//        public static readonly string ROUND = "Round";
+//        public static readonly string NAME = "player_name";
 //    }
 
 //    public MyTable() : base(TABLE_NAME) {
-//        MakeTable(this);
+//        BuildColumns(this);
 //    }
 
-//    public DataRow AddRow(int eventUID, int round, string playerName) {
-//        Debug.WriteLine($"ADDROW {eventUID}:{eventUID.GetType()} {round}:{round.GetType()} {playerName}:{playerName.GetType()} ");
+//    public DataRow AddRow(int eventUID, int Round, string playerName) {
+//        Debug.WriteLine($"ADDROW {eventUID}:{eventUID.GetType()} {Round}:{Round.GetType()} {playerName}:{playerName.GetType()} ");
 
 //        var row = this.NewRow();
 
-//        row[COL.DIR_UID] = eventUID;
-//        row[COL.ROUND] = round;
-//        row[COL.PLAYER_NAME] = playerName;
+//        row[COL.EVENT] = eventUID;
+//        row[COL.ROUND] = Round;
+//        row[COL.NAME] = playerName;
 
 //        this.Rows.Add(row);
 //        return row;
 //    }
 
-//    public DataRow? GetRow(int eventDirUID, int round, string playerName) {
+//    public DataRow? GetRow(int eventDirUID, int Round, string playerName) {
 //        var rows = this.AsEnumerable()
-//                       .Where(row => row.Field<int>(COL.DIR_UID) == eventDirUID)
-//                       .Where(row => row.Field<int>(COL.ROUND) == round)
-//                       .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
+//                       .Where(row => row.Field<int>(COL.EVENT) == eventDirUID)
+//                       .Where(row => row.Field<int>(COL.ROUND) == Round)
+//                       .Where(row => row.Field<string>(COL.NAME) == playerName)
 //                       .ToList();
 
 //        if (rows.Count == 0) return null;
 //        return rows[0];
 //    }
 
-//    public void RemoveRows(int eventUID, int round, string playerName) {
+//    public void RemoveRows(int eventUID, int Round, string playerName) {
 
 //        var rowsToDelete = this.AsEnumerable()
-//                           .Where(row => row.Field<int>(COL.DIR_UID) == eventUID)
-//                           .Where(row => row.Field<int>(COL.ROUND) == round)
-//                           .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
+//                           .Where(row => row.Field<int>(COL.EVENT) == eventUID)
+//                           .Where(row => row.Field<int>(COL.ROUND) == Round)
+//                           .Where(row => row.Field<string>(COL.NAME) == playerName)
 //                           .ToList()
 //                           ;
 
@@ -120,7 +120,7 @@
 //        }
 //    }
 
-//    public static MyTable MakeTable(MyTable? table = null) {
+//    public static MyTable BuildColumns(MyTable? table = null) {
 //        table ??= new();
 
 //        table.Columns.Add(new DataColumn {
@@ -132,7 +132,7 @@
 
 //        table.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
-//            ColumnName = COL.DIR_UID,
+//            ColumnName = COL.EVENT,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
@@ -146,7 +146,7 @@
 
 //        table.Columns.Add(new DataColumn {
 //            DataType = typeof(string),
-//            ColumnName = COL.PLAYER_NAME,
+//            ColumnName = COL.NAME,
 //            Unique = false,
 //            AutoIncrement = false
 //        });

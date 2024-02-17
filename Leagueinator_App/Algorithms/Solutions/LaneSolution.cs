@@ -15,7 +15,7 @@ namespace Leagueinator.App.Algorithms.Solutions {
 
             throw new NotImplementedException();
             //for (int lane = 0; lane < settings.LaneCount; lane++) {
-            //    this[lane] = new Match(round.Matches[lane].EventSettings);
+            //    this[lane] = new Match(round.Matches[lane].SettingsTable);
             //    this[lane].CopyFrom(round.Matches[lane]);
             //}
         }
@@ -26,7 +26,7 @@ namespace Leagueinator.App.Algorithms.Solutions {
         /// </summary>
         /// <returns></returns>
         public override int Evaluate() {
-            //int laneCount = this.EventSettings.LaneCount;
+            //int laneCount = this.SettingsTable.LaneCount;
             int sum = 0;
 
             throw new NotImplementedException();

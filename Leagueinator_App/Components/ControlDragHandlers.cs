@@ -21,8 +21,8 @@ namespace Leagueinator.Components {
         /// Assign drag drop handlers to control.
         /// 
         /// When the drag start 'getData' is called to retrieve the data from the source.
-        /// When the drop occurs 'sendData' is called on the destination with the parameters (T, source) : T
-        /// Any value returned from 'sendData' will be returned to the source with 'hndResponse' using parameters (T, destination).
+        /// When the drop occurs 'sendData' is called on the destination with the parameters (R, source) : R
+        /// Any value returned from 'sendData' will be returned to the source with 'hndResponse' using parameters (R, destination).
         /// </summary>
         /// <param TagName="control"></param>
         /// <param TagName="getData"></param>

@@ -8,252 +8,166 @@ namespace Model_Test {
     public class Round_Test {
 
         [TestMethod]
-        public void League_Event() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-
-            Assert.IsNotNull(round.LeagueEvent);
-            Assert.AreEqual(lEvent, round.LeagueEvent);
+        public void New_Round() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            Assert.IsNotNull(eventRow);
+            Assert.AreEqual(0, roundRow.UID);
         }
+
 
         [TestMethod]
         public void Empty_Round() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-
-            Assert.IsNotNull(round);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            Assert.IsNotNull(roundRow);
         }
 
         [TestMethod]
         public void Empty_Round_Get_Matches() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
 
-            Assert.AreEqual(round.Matches.Count, 0);
+            Assert.IsNotNull(roundRow);
+            Assert.AreEqual(roundRow.Matches.Count, 0);
         }
 
         [TestMethod]
-        public void First_Round_Index() {
+        public void Get_First_Round_By_Index() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Rounds.Add();
 
-            Assert.AreEqual(0, round.RoundIndex);
+            Assert.IsNotNull(eventRow.Rounds[0]);
         }
 
         [TestMethod]
-        public void Second_Round_Index() {
+        public void Get_Second_Round_By_Index() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            lEvent.NewRound();
-            Round round = lEvent.NewRound();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Rounds.Add();
+            eventRow.Rounds.Add();
 
-            Assert.AreEqual(1, round.RoundIndex);
+            Assert.IsNotNull(eventRow.Rounds[1]);
         }
-
-        /// <summary>
-        /// Getting a match doesn't update the table.
-        /// </summary>
-        [TestMethod]
-        public void Empty_Round_Add_Match() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            round.GetMatch(0);
-
-            Assert.AreEqual(round.Matches.Count, 0);
-        }
-
-        /// <summary>
-        /// Matches with players will be returned by GetMatches.
-        /// </summary>
-        [TestMethod]
-        public void Update_Match_Get_Matches() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            match.NewTeam();
-
-            Assert.AreEqual(round.Matches.Count, 1);
-        }
-
 
         [TestMethod]
         public void Delete() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            match.NewTeam();
-            match.NewTeam();
-            match.NewTeam();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Rounds.Add();
+            eventRow.Rounds.Add();
 
             Debug.WriteLine(league.PrettyPrint());
-            round.Delete();
+            eventRow.Rounds[0].DataRow.Delete();
             Debug.WriteLine(league.PrettyPrint());
 
-            Assert.AreEqual(0, lEvent.RoundCount);
-        }
-
-        [TestMethod]
-        public void Delete_Team() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            Team team = match.NewTeam();
-            team.AddPlayer("Adam");
-            team.Delete();
-
-            Assert.IsTrue(team.Deleted);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(DeletedException))]
-        public void Delete_Team_Twice() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            Team team = match.NewTeam();
-            team.AddPlayer("Adam");
-            team.Delete();
-            team.Delete();
-
-            List<string> list = team.Players;
-
-            Assert.AreEqual(0, list.Count);
-            Assert.AreEqual(0, match.Teams.Count);
+            Assert.AreEqual(1, eventRow.Rounds.Count);
         }
 
         [TestMethod]
         public void Idle_Add_Contains() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            Team team = match.NewTeam();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            roundRow.IdlePlayers.Add("Zen");
 
-            round.IdlePlayers.Add("Zen");
-
-            Assert.IsTrue(round.IdlePlayers.Contains("Zen"));
+            Assert.IsTrue(roundRow.IdlePlayers.Contains("Zen"));
         }
 
         [TestMethod]
         public void Idle_Remove_Contains() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            Team team = match.NewTeam();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            roundRow.IdlePlayers.Add("Zen");
+            roundRow.IdlePlayers.Remove("Zen");
 
-            round.IdlePlayers.Add("Zen");
-            round.IdlePlayers.Remove("Zen");
-
-            Assert.IsFalse(round.IdlePlayers.Contains("Zen"));
+            Assert.IsFalse(roundRow.IdlePlayers.Contains("Zen"));
         }
 
         [TestMethod]
         public void Idle_Iterator() {
             League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            Team team = match.NewTeam();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            roundRow.IdlePlayers.Add("Zen");
 
-            round.IdlePlayers.Add("Zen");
-
-            foreach (string player in round.IdlePlayers.Cast<string>()) {
+            foreach (string player in roundRow.IdlePlayers) {
                 Assert.AreEqual("Zen", player);
             }
         }
 
-        [TestMethod]
-        public void AllPlayers() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
+        //[TestMethod]
+        //public void AllPlayers() {
+        //    League league = new League();
+        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+        //    Round round = lEvent.NewRound();
+        //    Match match = round.GetMatch(0);
 
-            Team team1 = match.NewTeam();
-            team1.AddPlayer("Adam");
-            team1.AddPlayer("Eve");
+        //    Team team1 = match.NewTeam();
+        //    team1.AddPlayer("Adam");
+        //    team1.AddPlayer("Eve");
 
-            Team team2 = match.NewTeam();
-            team1.AddPlayer("Chucky");
-            team1.AddPlayer("Dianne");
+        //    Team team2 = match.NewTeam();
+        //    team1.AddPlayer("Chucky");
+        //    team1.AddPlayer("Dianne");
 
-            round.IdlePlayers.Add("Zed");
+        //    round.IdlePlayers.Add("Zed");
 
-            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne", "Zed" };
+        //    var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne", "Zed" };
 
-            Debug.WriteLine(league.PrettyPrint());
-            CollectionAssert.AreEquivalent(expected, round.AllPlayers as System.Collections.ICollection);
-        }
+        //    Debug.WriteLine(league.PrettyPrint());
+        //    CollectionAssert.AreEquivalent(expected, round.AllPlayers as System.Collections.ICollection);
+        //}
 
-        [TestMethod]
-        public void Players() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
+        //[TestMethod]
+        //public void Players() {
+        //    League league = new League();
+        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+        //    Round round = lEvent.NewRound();
+        //    Match match = round.GetMatch(0);
 
-            Team team1 = match.NewTeam();
-            team1.AddPlayer("Adam");
-            team1.AddPlayer("Eve");
+        //    Team team1 = match.NewTeam();
+        //    team1.AddPlayer("Adam");
+        //    team1.AddPlayer("Eve");
 
-            Team team2 = match.NewTeam();
-            team2.AddPlayer("Chucky");
-            team2.AddPlayer("Dianne");
+        //    Team team2 = match.NewTeam();
+        //    team2.AddPlayer("Chucky");
+        //    team2.AddPlayer("Dianne");
 
-            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
+        //    var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
 
-            Debug.WriteLine(league.PrettyPrint());
-            CollectionAssert.AreEquivalent(expected, round.Players.ToList());
-        }
+        //    Debug.WriteLine(league.PrettyPrint());
+        //    CollectionAssert.AreEquivalent(expected, round.Players.ToList());
+        //}
 
-        [TestMethod]
-        public void Reset() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
+        //[TestMethod]
+        //public void Reset() {
+        //    League league = new League();
+        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
+        //    Round round = lEvent.NewRound();
+        //    Match match = round.GetMatch(0);
 
-            Team team1 = match.NewTeam();
-            team1.AddPlayer("Adam");
-            team1.AddPlayer("Eve");
+        //    Team team1 = match.NewTeam();
+        //    team1.AddPlayer("Adam");
+        //    team1.AddPlayer("Eve");
 
-            Team team2 = match.NewTeam();
-            team2.AddPlayer("Chucky");
-            team2.AddPlayer("Dianne");
+        //    Team team2 = match.NewTeam();
+        //    team2.AddPlayer("Chucky");
+        //    team2.AddPlayer("Dianne");
 
-            round.IdlePlayers.Add("Zed");
-            round.ResetPlayers();
+        //    round.IdlePlayers.Add("Zed");
+        //    round.ResetPlayers();
 
-            var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne", "Zed" };
+        //    var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne", "Zed" };
 
-            Debug.WriteLine(league.PrettyPrint());
-            Debug.WriteLine(round.IdlePlayers.DelString());
-            CollectionAssert.AreEquivalent(expected, round.IdlePlayers.ToList());
-        }
-
-        [TestMethod]
-        public void Idle_Table_Event_Handler() {
-            League league = new League();
-            var lEvent = league.NewLeagueEvent("myEvent");
-            var round = lEvent.NewRound();
-
-            bool triggered = false;
-            round.IdlePlayers.CollectionChanged += (s, e) => {
-                triggered = true;
-            };
-
-            round.IdlePlayers.Add("newton");
-            Assert.IsTrue(triggered);
-        }
+        //    Debug.WriteLine(league.PrettyPrint());
+        //    Debug.WriteLine(round.IdlePlayers.DelString());
+        //    CollectionAssert.AreEquivalent(expected, round.IdlePlayers.ToList());
+        //}
     }
 }

@@ -62,7 +62,7 @@ namespace Leagueinator.App.Components {
         }
 
         /// <summary>
-        /// Event handler for when the round model changes idle players.
+        /// EventRow handler for when the Round model changes idle players.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>

@@ -1,66 +1,102 @@
-﻿using Leagueinator.Utility;
+﻿using Model.Views;
 using System.Data;
-using System.Diagnostics;
 
 namespace Model.Tables {
-    public class TeamTable : DataTable {
-        public static readonly string TABLE_NAME = "team";
+
+    public class TeamRow : CustomRow {
+
+        public readonly PlayerCollection Players;
+
+        public TeamRow(League league, DataRow row) : base(league, row) {
+            this.Players = new(league.PlayerTable, this);
+        }
+
+        public int UID {
+            get => (int)this.DataRow[EventsTable.COL.UID];
+        }
+
+        public MatchRow Match {
+            get => this.League.MatchTable.GetRow((int)this.DataRow[TeamTable.COL.MATCH]);
+        }
+
+        public int Bowls {
+            get => (int)this.DataRow[TeamTable.COL.BOWLS];
+            set => this.DataRow[TeamTable.COL.BOWLS] = value;
+        }
+
+        public int Tie {
+            get => (int)this.DataRow[TeamTable.COL.TIE];
+            set => this.DataRow[TeamTable.COL.TIE] = value;
+        }
+    }
+
+    public class TeamTable(League league) : CustomTable(league, "teams") {
 
         public static class COL {
             public static readonly string UID = "uid";
-            public static readonly string ROUND_UID = "round_uid";
-            public static readonly string PLAYER_NAME = "player_name";
+            public static readonly string MATCH = "match_uid";
+            public static readonly string BOWLS = "bowls";
+            public static readonly string TIE = "tie";
         }
 
-        public TeamTable() : base(TABLE_NAME) {
-            MakeTable(this);
-        }
-
-        public DataRow AddRow(int eventTableUID, string playerName) {
+        public TeamRow AddRow(int match, int bowls = 0, int tie = 0) {
             var row = this.NewRow();
-            row[COL.ROUND_UID] = eventTableUID;
-            row[COL.PLAYER_NAME] = playerName;
+            row[COL.MATCH] = match;
+            row[COL.BOWLS] = bowls;
+            row[COL.TIE] = tie;
             this.Rows.Add(row);
-            return row;
+            return new(this.League, row);
         }
 
-        public void RemoveRows(int eventTableUID, string playerName) {
-            var rowsToDelete = this.AsEnumerable()
-                               .Where(row => row.Field<int>(COL.ROUND_UID) == eventTableUID)
-                               .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
-                               .ToList()
-                               ;
+        public TeamRow GetRow(int eventUID) {
+            var rows = this.AsEnumerable()
+                           .Where(row => row.Field<int>(COL.UID) == eventUID)
+                           .ToList();
 
-            foreach (DataRow row in rowsToDelete) {
-                this.Rows.Remove(row);
-            }
+            if (rows.Count == 0) throw new KeyNotFoundException($"{COL.UID} == {eventUID}");
+            return new(League, rows[0]);
         }
 
-        public static TeamTable MakeTable(TeamTable? table = null) {
-            table ??= new();
+        //public void RemoveRows(int eventTableUID, string playerName) {
+        //    var rowsToDelete = this.AsEnumerable()
+        //                       .Where(row => row.Field<int>(COL.ROUND_UID) == eventTableUID)
+        //                       .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
+        //                       .ToList()
+        //                       ;
 
-            table.Columns.Add(new DataColumn {
+        //    foreach (DataRow row in rowsToDelete) {
+        //        this.Rows.Remove(row);
+        //    }
+        //}
+
+        public override void BuildColumns() {
+            this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.UID,
                 Unique = true,
                 AutoIncrement = true
             });
 
-            table.Columns.Add(new DataColumn {
+            this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.ROUND_UID,
+                ColumnName = COL.MATCH,
                 Unique = false,
                 AutoIncrement = false
             });
 
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(string),
-                ColumnName = COL.PLAYER_NAME,
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.BOWLS,
                 Unique = false,
                 AutoIncrement = false
             });
 
-            return table;
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.TIE,
+                Unique = false,
+                AutoIncrement = false
+            });
         }
     }
 }

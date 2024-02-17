@@ -2,26 +2,35 @@
 using System.Diagnostics;
 
 namespace Model.Tables {
-    public class IdleTable : DataTable {
-        public static readonly string TABLE_NAME = "idle";
 
-        public static class COL {
-            public static readonly string UID = "uid";
-            public static readonly string EVENT_UID = "event_dir_uid";
-            public static readonly string ROUND = "round";
-            public static readonly string PLAYER_NAME = "player_name";
+    public class IdleRow(League league, DataRow row) : CustomRow(league, row) {
+
+        public EventRow Event {
+            get => this.League.EventTable.GetRow((int)this.DataRow[IdleTable.COL.ROUND]);
         }
 
-        public IdleTable() : base(TABLE_NAME) {
-            MakeTable(this);
+        public int Round {
+            get => (int)this.DataRow[IdleTable.COL.ROUND];
+            set => this.DataRow[IdleTable.COL.ROUND] = value;
+        }
+
+        public string Name {
+            get => (string)this.DataRow[IdleTable.COL.NAME];
+            set => this.DataRow[IdleTable.COL.NAME] = value;
+        }
+    }
+
+    public class IdleTable(League league) : CustomTable(league, "idle_players") {
+        public static class COL {
+            public static readonly string ROUND = "round";
+            public static readonly string NAME = "name";
         }
 
         public DataRow AddRow(int eventUID, int round, string playerName) {
             var row = this.NewRow();
 
-            row[COL.EVENT_UID] = eventUID;
             row[COL.ROUND] = round;
-            row[COL.PLAYER_NAME] = playerName;
+            row[COL.NAME] = playerName;
 
             this.Rows.Add(row);
             return row;
@@ -29,9 +38,8 @@ namespace Model.Tables {
 
         public DataRow? GetRow(int eventDirUID, int round, string playerName) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.EVENT_UID) == eventDirUID)
                            .Where(row => row.Field<int>(COL.ROUND) == round)
-                           .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
+                           .Where(row => row.Field<string>(COL.NAME) == playerName)
                            .ToList();
 
             if (rows.Count == 0) return null;
@@ -41,9 +49,8 @@ namespace Model.Tables {
         public void RemoveRows(int eventUID, int round, string playerName) {
 
             var rowsToDelete = this.AsEnumerable()
-                               .Where(row => row.Field<int>(COL.EVENT_UID) == eventUID)
                                .Where(row => row.Field<int>(COL.ROUND) == round)
-                               .Where(row => row.Field<string>(COL.PLAYER_NAME) == playerName)
+                               .Where(row => row.Field<string>(COL.NAME) == playerName)
                                .ToList()
                                ;
 
@@ -52,38 +59,27 @@ namespace Model.Tables {
             }
         }
 
-        public static IdleTable MakeTable(IdleTable? table = null) {
-            table ??= new();
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = COL.UID,
-                Unique = true,
-                AutoIncrement = true
-            });
-
-            table.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = COL.EVENT_UID,
-                Unique = false,
-                AutoIncrement = false
-            });
-
-            table.Columns.Add(new DataColumn {
+        public override void BuildColumns() {
+            this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.ROUND,
                 Unique = false,
                 AutoIncrement = false
             });
 
-            table.Columns.Add(new DataColumn {
+            this.Columns.Add(new DataColumn {
                 DataType = typeof(string),
-                ColumnName = COL.PLAYER_NAME,
+                ColumnName = COL.NAME,
                 Unique = false,
                 AutoIncrement = false
             });
 
-            return table;
+            this.Constraints.Add(
+                new UniqueConstraint("UniqueConstraint", [
+                this.Columns[COL.ROUND]!,
+                this.Columns[COL.NAME]!
+            ]));
         }
     }
 }
+

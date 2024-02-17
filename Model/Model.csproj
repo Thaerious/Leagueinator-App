@@ -7,27 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Scoring\Plus\PlusRounds.cs" />
+    <Compile Remove="Scoring\Plus\PlusScore.cs" />
+    <Compile Remove="Scoring\Plus\PlusSummary.cs" />
+    <Compile Remove="Scoring\Plus\PlusTeams.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Leagueinator_Utility\Leagueinator_Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Scoring\Plus\PlusRounds.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Scoring\Plus\PlusSummary.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Scoring\Plus\PlusTeams.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tables\EventSettingsTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Tables\IdleTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Team.cs" />
-    <Compile Update="Match.cs" />
+    <Compile Update="Tables\SettingsTable.cs" />
+    <Compile Update="Tables\IdleTable.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Scoring\Plus\" />
   </ItemGroup>
 
 </Project>

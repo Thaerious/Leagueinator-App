@@ -1,4 +1,5 @@
 ﻿using Model;
+using Model.Tables;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,8 +10,8 @@ using System.Threading.Tasks;
 namespace Model_Test {
     internal class Mock1 : League{
         public Mock1() {
-            LeagueEvent myEvent = this.NewLeagueEvent("my_event");
-            LeagueEvent myOtherEvent = this.NewLeagueEvent("my_other_event");
+            EventRow myEvent = this.EventTable.AddRow("my_event");
+            EventRow myOtherEvent = this.EventTable.AddRow("my_other_event");
 
             myEvent.NewRound();
             myEvent.NewRound();

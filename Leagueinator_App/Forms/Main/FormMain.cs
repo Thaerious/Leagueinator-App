@@ -65,7 +65,7 @@ namespace Leagueinator.App.Forms.Main {
         }
 
         private static void SetupFileDialog(FileDialog dialog) {
-            //dialog.InitialDirectory = Properties.EventSettings.Default.save_dir; TODO
+            //dialog.InitialDirectory = Properties.SettingsTable.Default.save_dir; TODO
             dialog.Filter = "league files (*.league)|*.league|All files (*.*)|*.*";
             dialog.FilterIndex = 1;
             dialog.RestoreDirectory = true;
@@ -386,7 +386,7 @@ namespace Leagueinator.App.Forms.Main {
 
             int currentRoundIndex = lEvent.Rounds.IndexOf(round);
             throw new NotImplementedException();
-            //var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
+            //var mcp = new MatchCardPrinter(lEvent, Round, currentRoundIndex);
             //this.printDocument.PrintPage += mcp.HndPrint;
 
             //this.printPreviewDialog.Document = this.printDocument;
@@ -402,7 +402,7 @@ namespace Leagueinator.App.Forms.Main {
 
             int currentRoundIndex = lEvent.Rounds.IndexOf(round);
             throw new NotImplementedException();
-            //var mcp = new MatchCardPrinter(lEvent, round, currentRoundIndex);
+            //var mcp = new MatchCardPrinter(lEvent, Round, currentRoundIndex);
 
             //if (this.printDialog.ShowDialog() == DialogResult.OK) {
             //    this.printDocument.PrintPage += mcp.HndPrint;
@@ -470,13 +470,13 @@ namespace Leagueinator.App.Forms.Main {
         private void Menu_Dev_ViewEventsDir(object sender, EventArgs e) {
             if (this.League == null) return;
             var form = new FormViewTable();
-            form.Show(this.League.EventDirectoryTable);
+            form.Show(this.League.EventTable);
         }
 
         private void Menu_Dev_ViewRounds(object sender, EventArgs e) {
             if (this.League == null) return;
             var form = new FormViewTable();
-            form.Show(this.League.RoundTable);
+            form.Show(this.League.MatchTable);
         }
 
         private void Menu_Dev_ViewIdle(object sender, EventArgs e) {
@@ -494,7 +494,7 @@ namespace Leagueinator.App.Forms.Main {
         private void Menu_Dev_ViewSettings(object sender, EventArgs e) {
             if (this.League == null) return;
             var form = new FormViewTable();
-            form.Show(this.League.EventSettings);
+            form.Show(this.League.SettingsTable);
         }
     }
 }

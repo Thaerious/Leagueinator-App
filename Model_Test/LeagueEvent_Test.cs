@@ -1,7 +1,5 @@
 ﻿using Model;
 using Model.Tables;
-using System.Data;
-using System.Diagnostics;
 
 namespace Model_Test {
     [TestClass]
@@ -10,109 +8,61 @@ namespace Model_Test {
         [TestMethod]
         public void League() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-
-            Assert.AreEqual(league, lEvent.League);
-        }
-
-        [TestMethod]
-        public void Sanity_Check() {
-            League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.IsNotNull(lEvent);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            Assert.AreEqual(league, eventRow.League);
+            Assert.IsNotNull(eventRow);
         }
 
         [TestMethod]
         public void Event_Name_Matched() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.AreEqual("my_event", lEvent.EventName);
-        }
-
-        [TestMethod]
-        public void New_Round() {
-            League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Assert.IsNotNull(lEvent);
-            Assert.AreEqual(0, round.RoundIndex);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            Assert.AreEqual("my_event", eventRow.Name);
         }
 
         [TestMethod]
         public void Round_Count_Empty() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.IsNotNull(lEvent);
-            Assert.AreEqual(0, lEvent.RoundCount);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            Assert.IsNotNull(eventRow);
+            Assert.AreEqual(0, eventRow.Rounds.Count);
         }
 
         [TestMethod]
         public void Round_Count_One() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            lEvent.NewRound();
-            Assert.AreEqual(1, lEvent.RoundCount);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Rounds.Add();
+            Assert.AreEqual(1, eventRow.Rounds.Count);
         }
 
         [TestMethod]
         public void Round_Count_Many() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            lEvent.NewRound();
-            lEvent.NewRound();
-            lEvent.NewRound();
-            lEvent.NewRound();
-            lEvent.NewRound();
-            Assert.AreEqual(5, lEvent.RoundCount);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Rounds.Add();
+            eventRow.Rounds.Add();
+            eventRow.Rounds.Add();
+            eventRow.Rounds.Add();
+            eventRow.Rounds.Add();
+            Assert.AreEqual(5, eventRow.Rounds.Count);
         }
 
-        [TestMethod]
-        public void All_Rounds() {
-            League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            lEvent.NewRound();
-            Assert.AreEqual(1, lEvent.Rounds.Count);
-        }
 
         [TestMethod]
         public void Get_Round() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            lEvent.NewRound();
-            Assert.IsNotNull(lEvent.Rounds[0]);
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Rounds.Add();
+            Assert.IsNotNull(eventRow.Rounds[0]);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
         public void Get_Round_Does_Not_Exist() {
             League league = new();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Assert.IsNotNull(lEvent.Rounds[0]);
-        }
-
-        [TestMethod]
-        public void Delete() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            Round round = lEvent.NewRound();
-            Match match = round.GetMatch(0);
-            match.NewTeam();
-            match.NewTeam();
-            match.NewTeam();
-
-            lEvent.Delete();
-
-            Assert.IsTrue(lEvent.Deleted);
-            Assert.AreEqual(0, league.EventDirectoryTable.Rows.Count);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(DeletedException))]
-        public void Delete_Twice() {
-            League league = new League();
-            LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-            lEvent.Delete();
-            lEvent.Delete();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            Assert.IsNotNull(eventRow.Rounds[0]);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace LLeagueinator.App.Forms.Main {
 
     /// <summary>
     /// Converts arrays where the pairings are next to each other, to 
-    /// the round robin encoding where pairings are opposite each other.
+    /// the Round robin encoding where pairings are opposite each other.
     /// 
     /// Adjacent: 1, 1, 2, 2, 3, 3
     /// Opposite: 1, 2, 3, 3, 2, 1

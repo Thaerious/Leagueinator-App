@@ -7,6 +7,17 @@ namespace Model.Tables {
 
     public static class TableExtensions {
 
+        public static void CopyTo(this CustomRow source, DataRow target) {
+            source.DataRow.CopyTo(target);
+        }
+
+        public static void CopyTo(this DataRow source, DataRow target) {
+            foreach (DataColumn col in source.Table.Columns) {
+                if (target.Table.Columns[col.ColumnName] == null) continue;
+                target[col.ColumnName] = source[col.ColumnName];
+            }
+        }
+
         public static DataRow Clone(this DataRow source) {
             var dest = source.Table.NewRow();
 
@@ -222,7 +233,7 @@ namespace Model.Tables {
                 foreach (DataColumn column in table.Columns) {
                     DataColumn newCol = new() {
                         DataType = column.DataType,
-                        ColumnName = nameFunc(column),                        
+                        ColumnName = nameFunc(column),
                         DefaultValue = column.DefaultValue,
                     };
                     target.Columns.Add(newCol);

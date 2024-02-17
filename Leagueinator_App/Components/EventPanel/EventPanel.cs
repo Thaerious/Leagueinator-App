@@ -6,7 +6,7 @@ namespace Leagueinator.App.Components {
 
 
         /// <summary>
-        /// Retrieve or set the currently selected round.
+        /// Retrieve or set the currently selected Round.
         /// </summary>
         public Round? CurrentRound {
             get {
@@ -60,9 +60,9 @@ namespace Leagueinator.App.Components {
         }
 
         /// <summary>
-        /// AddChild a round to this panel.<br>
+        /// AddChild a Round to this panel.<br>
         /// </summary>
-        /// <param TagName="round"></param>
+        /// <param TagName="Round"></param>
         private RoundButton AddRoundButton(Round round) {
             var button = new RoundButton(round) {
                 Text = $"Round #{this.flowRounds.Controls.Count + 1}",

@@ -28,17 +28,17 @@ namespace Leagueinator.App.Scoring.Plus {
 
         public DataRow GetRow(int uid) {
             var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(RoundTable.COL.UID) == uid)
+                           .Where(row => row.Field<int>(MatchTable.COL.UID) == uid)
                            .ToList();
 
-            if (rows.Count == 0) throw new KeyNotFoundException($"{RoundTable.COL.DIR_UID} = {uid}");
+            if (rows.Count == 0) throw new KeyNotFoundException($"{MatchTable.COL.EVENT} = {uid}");
             return rows[0];
         }
 
         private void Build() {
-            this.MergeWith(dataCol => dataCol.ColumnName, this.LeagueEvent.League.RoundTable);
+            this.MergeWith(dataCol => dataCol.ColumnName, this.LeagueEvent.League.MatchTable);
             this.BuildColumns();
-            this.Columns.Remove(RoundTable.COL.DIR_UID);
+            this.Columns.Remove(MatchTable.COL.EVENT);
             this.Fill();
         }
 
@@ -84,15 +84,15 @@ namespace Leagueinator.App.Scoring.Plus {
                 }
 
                 int bowlsAgainst = (int)us.Row[COL.AGAINST] + (int)us.Row[COL.PLUS_AGAINST];
-                if ((int)us[RoundTable.COL.BOWLS] > bowlsAgainst) {
+                if ((int)us[MatchTable.COL.BOWLS] > bowlsAgainst) {
                     us[COL.WIN] = 1;
                     us[COL.LOSS] = 0;
                 }
-                else if ((int)us[RoundTable.COL.BOWLS] < bowlsAgainst) {
+                else if ((int)us[MatchTable.COL.BOWLS] < bowlsAgainst) {
                     us[COL.WIN] = 0;
                     us[COL.LOSS] = 1;
                 }
-                else if ((int)us[RoundTable.COL.TIE] > 0) {
+                else if ((int)us[MatchTable.COL.TIE] > 0) {
                     us[COL.WIN] = 1;
                     us[COL.LOSS] = 0;
                 }
@@ -104,7 +104,7 @@ namespace Leagueinator.App.Scoring.Plus {
         }
         private void AssignRanks(Round round) {
             var sortedRows = this.AsEnumerable()
-                .Where(row => row.Field<int>(RoundTable.COL.ROUND) == round.RoundIndex)
+                .Where(row => row.Field<int>(MatchTable.COL.ROUND) == round.RoundIndex)
                 .OrderBy(row => row.Field<int>(COL.WIN))
                 .OrderBy(row => row.Field<int>(COL.FOR))
                 .ThenBy(row => row.Field<int>(COL.PLUS_FOR))

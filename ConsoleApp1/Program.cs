@@ -49,11 +49,11 @@ void Part7() {
 
 public class Wrapper : DataSet {
 
-    public RoundTable EventTable { get; } = new();
+    public MatchTable EventTable { get; } = new();
     public TeamTable TeamTable { get; } = new();
     public IdleTable IdleTable { get; } = new();
-    public EventDirectoryTable EventDirectoryTable { get; } = new();
-    public EventSettingsTable EventSettings { get; } = new();
+    public EventsTable EventDirectoryTable { get; } = new();
+    public SettingsTable EventSettings { get; } = new();
 
     public Wrapper() {
         Tables.Add(EventTable);

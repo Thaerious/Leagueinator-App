@@ -10,6 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions_Test.cs" />
+    <Compile Remove="IdleTable_Test.cs" />
+    <Compile Remove="Integration_Test.cs" />
+    <Compile Remove="LeagueEventSettings_Test.cs" />
+    <Compile Remove="Mocks\Mock1.cs" />
+    <Compile Remove="Mocks\Mock2.cs" />
+    <Compile Remove="PlusScore_Test.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
@@ -21,9 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Mocks\Mock2.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>
