@@ -6,12 +6,44 @@ using System.Diagnostics;
 using System.Reflection;
 
 namespace Model.Views {
-    public abstract class ReflectedRowList<R, T>(int foreignKey, T sourceTable) : IEnumerable<R>, IEnumerable
+    /// <summary>
+    /// The R and T (row and table) generic types represent the child table and row.
+    /// The is typically the table that contains the list.
+    /// The fkName and fkValue are from the child table.
+    /// The fkValue should also exist in the reference table.
+    /// 
+    /// [Child Table] o-> [Reference Table]
+    /// 
+    /// </summary>
+    /// <typeparam name="R">The type of row stored in this list.</typeparam>
+    /// <typeparam name="T">The type of table that the row belongs to.</typeparam>
+    /// <typeparam name="F">The type of foreign key.</typeparam>
+    public class ReflectedRowList<R, T, F> : IEnumerable<R>, IEnumerable
     where R : CustomRow
     where T : CustomTable {
-        internal readonly int foreignKeyValue = foreignKey;
-        internal readonly T sourceTable = sourceTable;
-        internal abstract string ForeignKeyName { get; }
+        internal F ForeignKeyValue { get; }
+        internal T ChildTable { get; }
+        internal string ForeignKeyName { get; }
+
+        /// <param name="fkName">The name of the column in the child table that has the foreign key constraint.</param>
+        /// <param name="fkValue">The value shared between the child and reference tables.</param>
+        /// <param name="childTable">The child table that the view is targeting.</param>
+        public ReflectedRowList(string fkName, F fkValue, T childTable) {
+            this.ForeignKeyValue = fkValue;
+            this.ChildTable = childTable;
+            this.ForeignKeyName = fkName;
+        }
+
+        public ReflectedRowList(ForeignKeyConstraint fkConstraint, F fValue) {
+            ArgumentNullException.ThrowIfNull(fkConstraint);
+
+            this.ForeignKeyValue = fValue;
+            this.ForeignKeyName = fkConstraint.Columns[0].ColumnName;
+            if (this.ForeignKeyName is null) throw new NullReferenceException();
+
+            if (fkConstraint.Table is null) throw new NullReferenceException();
+            this.ChildTable = (T)fkConstraint.Table;
+        }
 
         public List<C> Cast<C>() {
             var list = new List<C>();
@@ -22,11 +54,14 @@ namespace Model.Views {
             return list;
         }
 
+        /// <summary>
+        /// Retrieve rows from the child table that match the foreign key.
+        /// </summary>
         internal virtual R[] Rows {
             get {
-                string query = $"{this.ForeignKeyName} = {this.foreignKeyValue}";
-                return this.sourceTable.Select(query)
-                    .Select(dataRow => ReflectedRowList<R, T>.ConstructRow(this.sourceTable.League, dataRow))
+                string query = $"{this.ForeignKeyName} = {this.ForeignKeyValue}";
+                return this.ChildTable.Select(query)
+                    .Select(dataRow => ReflectedRowList<R, T, int>.ConstructRow(this.ChildTable.League, dataRow))
                     .ToArray();
             }
         }
@@ -54,14 +89,14 @@ namespace Model.Views {
 
 
         /// <summary>
-        /// Invokes the AddRow method for the referred sourceTable.
+        /// Invokes the AddRow method for the referred ChildTable.
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public R Add(params object[] args) {
             List<object> argList = new List<object>(args);
-            argList.Insert(0, this.foreignKeyValue);
+            argList.Insert(0, this.ForeignKeyValue);
 
             Type tableType = typeof(T);
             List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
@@ -73,7 +108,7 @@ namespace Model.Views {
                     = tableType.GetMethod("AddRow", [.. argTypes])
                     ?? throw new InvalidOperationException($"No matching AddRow({argTypes.DelString()}) method found for type '{tableType}'.");
 
-                R? r = (R?)method.Invoke(this.sourceTable, argList.ToArray());
+                R? r = (R?)method.Invoke(this.ChildTable, [.. argList]);
                 return r ?? throw new InvalidOperationException($"AddRow method for type '{tableType}' returned NULL.");
             }
             catch (Exception ex) {
@@ -103,6 +138,20 @@ namespace Model.Views {
                 if (r == row) return true;
             }
             return false;
+        }
+
+        public bool Has<TYPE>(string column, TYPE value) {
+            return this.ChildTable.AsEnumerable()
+                .Where(row => row[ForeignKeyName].Equals(this.ForeignKeyValue))
+                .Where(row => row[column].Equals(value))
+                .Any();
+        }
+
+        public DataRow Get<TYPE>(string column, TYPE value) {
+            return this.ChildTable.AsEnumerable()
+                .Where(row => row[ForeignKeyName].Equals(this.ForeignKeyValue))
+                .Where(row => row[column].Equals(value))
+                .First();
         }
 
         public IEnumerator<R> GetEnumerator() {

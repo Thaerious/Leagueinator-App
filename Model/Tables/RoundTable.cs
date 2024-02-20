@@ -4,12 +4,12 @@ using System.Data;
 namespace Model.Tables {
 
     public class RoundRow : CustomRow {
-        public readonly IdlePlayerCollection IdlePlayers;
-        public readonly MatchCollection Matches;
+        public readonly ReflectedRowList<IdleRow, IdleTable, int> IdlePlayers;
+        public readonly ReflectedRowList<MatchRow, MatchTable, int> Matches;
 
         public RoundRow(League league, DataRow row) : base(league, row) {
-            this.IdlePlayers = new(league.IdleTable, this);
-            this.Matches = new(league.MatchTable, this);
+            this.IdlePlayers = new(this.League.IdleTable.FKRound, this.UID);
+            this.Matches = new(this.League.MatchTable.FKRound, this.UID);
         }
 
         public int UID {
@@ -28,6 +28,8 @@ namespace Model.Tables {
             public static readonly string UID = "uid";
             public static readonly string EVENT = "event_uid";
         }
+
+        internal ForeignKeyConstraint FKEvent { set; get; }
 
         public RoundRow AddRow(int eventUID) {
             var row = this.NewRow();
@@ -49,6 +51,17 @@ namespace Model.Tables {
                 ColumnName = COL.EVENT,
                 Unique = false
             });
+
+            this.FKEvent = new ForeignKeyConstraint(
+                "FK_Event_Round",
+                this.League.EventTable.Columns[EventsTable.COL.UID]!, // Parent column
+                this.Columns[COL.EVENT]!                              // Child column
+            ) {
+                UpdateRule = Rule.Cascade,
+                DeleteRule = Rule.Cascade
+            };
+
+            this.Constraints.Add(this.FKEvent);
         }
 
         internal RoundRow GetRow(int roundUID) {

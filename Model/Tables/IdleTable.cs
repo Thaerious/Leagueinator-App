@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Model.Views;
+using System.Data;
 using System.Diagnostics;
 
 namespace Model.Tables {
@@ -9,28 +10,27 @@ namespace Model.Tables {
             get => this.League.EventTable.GetRow((int)this.DataRow[IdleTable.COL.ROUND]);
         }
 
+        public PlayerRow Player {
+            get => this.League.PlayersTable.GetRow((string)this.DataRow[IdleTable.COL.PLAYER]);
+        }
+
         public int Round {
             get => (int)this.DataRow[IdleTable.COL.ROUND];
             set => this.DataRow[IdleTable.COL.ROUND] = value;
-        }
-
-        public string Name {
-            get => (string)this.DataRow[IdleTable.COL.NAME];
-            set => this.DataRow[IdleTable.COL.NAME] = value;
         }
     }
 
     public class IdleTable(League league) : CustomTable(league, "idle_players") {
         public static class COL {
             public static readonly string ROUND = "round";
-            public static readonly string NAME = "name";
+            public static readonly string PLAYER = "player";
         }
 
         public IdleRow AddRow(int round, string playerName) {
             var row = this.NewRow();
 
             row[COL.ROUND] = round;
-            row[COL.NAME] = playerName;
+            row[COL.PLAYER] = playerName;
 
             this.Rows.Add(row);
             return new(this.League, row);
@@ -39,7 +39,7 @@ namespace Model.Tables {
         public DataRow? GetRow(int round, string playerName) {
             var rows = this.AsEnumerable()
                            .Where(row => row.Field<int>(COL.ROUND) == round)
-                           .Where(row => row.Field<string>(COL.NAME) == playerName)
+                           .Where(row => row.Field<string>(COL.PLAYER) == playerName)
                            .ToList();
 
             if (rows.Count == 0) return null;
@@ -50,7 +50,7 @@ namespace Model.Tables {
 
             var rowsToDelete = this.AsEnumerable()
                                .Where(row => row.Field<int>(COL.ROUND) == round)
-                               .Where(row => row.Field<string>(COL.NAME) == playerName)
+                               .Where(row => row.Field<string>(COL.PLAYER) == playerName)
                                .ToList()
                                ;
 
@@ -58,6 +58,9 @@ namespace Model.Tables {
                 this.Rows.Remove(row);
             }
         }
+
+        public ForeignKeyConstraint FKRound => (ForeignKeyConstraint)this.Constraints["FK_Idle_Round"]!;
+        public ForeignKeyConstraint FKPlayer => (ForeignKeyConstraint)this.Constraints["FK_Idle_Player"]!;
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
@@ -69,7 +72,7 @@ namespace Model.Tables {
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(string),
-                ColumnName = COL.NAME,
+                ColumnName = COL.PLAYER,
                 Unique = false,
                 AutoIncrement = false
             });
@@ -77,8 +80,26 @@ namespace Model.Tables {
             this.Constraints.Add(
                 new UniqueConstraint("UniqueConstraint", [
                 this.Columns[COL.ROUND]!,
-                this.Columns[COL.NAME]!
+                this.Columns[COL.PLAYER]!
             ]));
+
+            this.Constraints.Add(new ForeignKeyConstraint(
+                "FK_Idle_Round",
+                this.League.RoundsTable.Columns[RoundTable.COL.UID]!, // Parent column
+                this.Columns[COL.ROUND]!                              // Child column
+            ) {
+                UpdateRule = Rule.Cascade,
+                DeleteRule = Rule.Cascade
+            });
+
+            this.Constraints.Add(new ForeignKeyConstraint(
+                "FK_Idle_Player",
+                this.League.PlayersTable.Columns[PlayersTable.COL.NAME]!, // Parent column
+                this.Columns[COL.PLAYER]!                                 // Child column
+            ) {
+                UpdateRule = Rule.Cascade,
+                DeleteRule = Rule.Cascade
+            });
         }
     }
 }

@@ -181,8 +181,8 @@ namespace Model.Tables {
         }
 
         /// <summary>
-        /// Returns all records from the left sourceTable, and the matching records from 
-        /// the right sourceTable(table2).  Records are merged when leftCol equals rightCol.
+        /// Returns all records from the left ChildTable, and the matching records from 
+        /// the right ChildTable(table2).  Records are merged when leftCol equals rightCol.
         /// </summary>
         public static DataTable LeftJoin<T>(this DataTable left, DataTable right, string leftCol, string rightCol) {
             if (left.Columns[leftCol] == null) throw new KeyNotFoundException(leftCol);

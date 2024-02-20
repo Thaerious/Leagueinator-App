@@ -7,34 +7,47 @@ namespace Model {
         public event DataRowChangeEventHandler RowChanged = delegate { };
 
         public EventsTable EventTable { init; get; }
-
-        public RoundTable RoundTable { init; get; }
-
-        public IdleTable IdleTable { init; get; }
-
+        public RoundTable RoundsTable { init; get; }
         public MatchTable MatchTable { init; get; }
         public TeamTable TeamTable { init; get; }
-
-        public PlayerTable PlayerTable { init; get; }
-
+        public PlayersTable PlayersTable { init; get; }
         public SettingsTable SettingsTable { init; get; }
+        public MembersTable MembersTable { init; get; }
+        public IdleTable IdleTable { init; get; }
 
         public League() {
-            EventTable = new(this);
-            RoundTable = new(this);
-            MatchTable = new(this);
-            TeamTable = new(this);
-            IdleTable = new(this);
-            PlayerTable = new(this);
-            SettingsTable = new(this);
+            PlayersTable  = new(this);
+            this.Tables.Add(PlayersTable);
 
-            Tables.Add(EventTable);
-            Tables.Add(RoundTable);
-            Tables.Add(MatchTable);
-            Tables.Add(TeamTable);            
-            Tables.Add(IdleTable);
-            Tables.Add(PlayerTable);
-            Tables.Add(SettingsTable);
+            EventTable    = new(this);
+            this.Tables.Add(EventTable);
+
+            RoundsTable   = new(this);
+            this.Tables.Add(RoundsTable);
+
+            MatchTable    = new(this);
+            this.Tables.Add(MatchTable);
+
+            TeamTable     = new(this);
+            this.Tables.Add(TeamTable);
+
+            SettingsTable = new(this);
+            this.Tables.Add(SettingsTable);
+
+            MembersTable  = new(this);
+            this.Tables.Add(MembersTable);
+
+            IdleTable     = new(this);
+            this.Tables.Add(IdleTable);
+
+            this.PlayersTable.BuildColumns();
+            this.EventTable.BuildColumns();
+            this.RoundsTable.BuildColumns();
+            this.MatchTable.BuildColumns();
+            this.TeamTable.BuildColumns();
+            this.SettingsTable.BuildColumns();
+            this.IdleTable.BuildColumns();
+            this.MembersTable.BuildColumns();
 
             foreach (DataTable table in this.Tables) {
                 table.RowChanged += (s, e) => {

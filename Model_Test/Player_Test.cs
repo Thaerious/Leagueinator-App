@@ -9,11 +9,7 @@ namespace Model_Test {
         [TestMethod]
         public void PlayerRow() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
-            PlayerRow playerRow = teamRow.Players.Add("Adam");
+            PlayerRow playerRow = league.PlayersTable.AddRow("Zen");
 
             Assert.IsNotNull(playerRow);
         }
@@ -21,11 +17,7 @@ namespace Model_Test {
         [TestMethod]
         public void Cast_PlayerRow_String() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
-            PlayerRow playerRow = teamRow.Players.Add("Adam");
+            PlayerRow playerRow = league.PlayersTable.AddRow("Zen");
             string asString = (string)playerRow;
 
             Assert.IsTrue(asString is string);

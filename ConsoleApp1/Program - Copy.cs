@@ -31,7 +31,7 @@
 
 //table1.Columns.Add(new DataColumn {
 //    DataType = typeof(string),
-//    ColumnName = "NAME",
+//    ColumnName = "PLAYER",
 //    Unique = false,
 //    AutoIncrement = false
 //});
@@ -39,7 +39,7 @@
 //var row1 = table1.NewRow();
 //row1["FK_UID"] = 0;
 //row1["ROUND"] = 0;
-//row1["NAME"] = "ima_name_1";
+//row1["PLAYER"] = "ima_name_1";
 //table1.Rows.Add(row1);
 //Console.WriteLine(table1.PrettyPrint());
 
@@ -75,7 +75,7 @@
 //        public static readonly string UID = "uid";
 //        public static readonly string EVENT = "event_dir_uid";
 //        public static readonly string ROUND = "Round";
-//        public static readonly string NAME = "player_name";
+//        public static readonly string PLAYER = "player_name";
 //    }
 
 //    public MyTable() : base(TABLE_NAME) {
@@ -89,7 +89,7 @@
 
 //        row[COL.EVENT] = eventUID;
 //        row[COL.ROUND] = Round;
-//        row[COL.NAME] = playerName;
+//        row[COL.PLAYER] = playerName;
 
 //        this.Rows.Add(row);
 //        return row;
@@ -99,7 +99,7 @@
 //        var rows = this.AsEnumerable()
 //                       .Where(row => row.Field<int>(COL.EVENT) == eventDirUID)
 //                       .Where(row => row.Field<int>(COL.ROUND) == Round)
-//                       .Where(row => row.Field<string>(COL.NAME) == playerName)
+//                       .Where(row => row.Field<string>(COL.PLAYER) == playerName)
 //                       .ToList();
 
 //        if (rows.Count == 0) return null;
@@ -111,7 +111,7 @@
 //        var rowsToDelete = this.AsEnumerable()
 //                           .Where(row => row.Field<int>(COL.EVENT) == eventUID)
 //                           .Where(row => row.Field<int>(COL.ROUND) == Round)
-//                           .Where(row => row.Field<string>(COL.NAME) == playerName)
+//                           .Where(row => row.Field<string>(COL.PLAYER) == playerName)
 //                           .ToList()
 //                           ;
 
@@ -120,37 +120,37 @@
 //        }
 //    }
 
-//    public static MyTable BuildColumns(MyTable? sourceTable = null) {
-//        sourceTable ??= new();
+//    public static MyTable BuildColumns(MyTable? ChildTable = null) {
+//        ChildTable ??= new();
 
-//        sourceTable.Columns.Add(new DataColumn {
+//        ChildTable.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
 //            ColumnName = COL.UID,
 //            Unique = true,
 //            AutoIncrement = true
 //        });
 
-//        sourceTable.Columns.Add(new DataColumn {
+//        ChildTable.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
 //            ColumnName = COL.EVENT,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
 
-//        sourceTable.Columns.Add(new DataColumn {
+//        ChildTable.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
 //            ColumnName = COL.ROUND,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
 
-//        sourceTable.Columns.Add(new DataColumn {
+//        ChildTable.Columns.Add(new DataColumn {
 //            DataType = typeof(string),
-//            ColumnName = COL.NAME,
+//            ColumnName = COL.PLAYER,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
 
-//        return sourceTable;
+//        return ChildTable;
 //    }
 //}

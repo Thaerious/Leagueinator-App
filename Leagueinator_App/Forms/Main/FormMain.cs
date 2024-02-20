@@ -322,8 +322,8 @@ namespace Leagueinator.App.Forms.Main {
                     Team? team = match.Teams[t];
                     if (team is null) continue;
                     throw new NotImplementedException();
-                    //for (int p = 0; p < team.Players.MaxSize; p++) {
-                    //team.Players[p] = previous.Matches[m]?.Teams[t]?.Players[p];
+                    //for (int p = 0; p < team.Members.MaxSize; p++) {
+                    //team.Members[p] = previous.Matches[m]?.Teams[t]?.Members[p];
                     //}
                 }
             }
@@ -343,11 +343,11 @@ namespace Leagueinator.App.Forms.Main {
                     Team? team = match.Teams[t];
                     if (team is null) continue;
                     throw new NotImplementedException();
-                    //for (int p = 0; p < team.Players.MaxSize; p++) {
+                    //for (int p = 0; p < team.Members.MaxSize; p++) {
                     //    if (current.IdlePlayers.Count == 0) return;
-                    //    if (team.Players[p] is not null) continue;
+                    //    if (team.Members[p] is not null) continue;
                     //    int r = random.Next(current.IdlePlayers.Count);
-                    //    team.Players[p] = current.IdlePlayers[r];
+                    //    team.Members[p] = current.IdlePlayers[r];
                     //    current.IdlePlayers.RemoveAt(r);
                     //}
                 }
@@ -371,7 +371,7 @@ namespace Leagueinator.App.Forms.Main {
             Round current = this.eventPanel.CurrentRound;
             throw new NotImplementedException();
             //foreach (Team team in current.Teams) {
-            //    foreach (PlayerInfo pInfo in team.Players.Values.NotNull()) {
+            //    foreach (PlayerInfo pInfo in team.Members.Values.NotNull()) {
             //        current.IdlePlayers.Add(pInfo);
             //    }
             //    team.Clear();

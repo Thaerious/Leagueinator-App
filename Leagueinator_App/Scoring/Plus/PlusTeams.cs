@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace Leagueinator.App.Scoring.Plus {
     public class PlusTeams : DataTable {
         public static class COL {
-            public static readonly string TEAM_INDEX = "team_index"; // 'team' in score sourceTable
+            public static readonly string TEAM_INDEX = "team_index"; // 'team' in score ChildTable
             public static readonly string NAME = "name";
         }
 

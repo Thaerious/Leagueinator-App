@@ -11,7 +11,6 @@ namespace Model.Tables {
 
         public CustomTable(League league, string tableName) : base(tableName) {
             this.League = league;
-            this.BuildColumns();
         }
 
         abstract public void BuildColumns();

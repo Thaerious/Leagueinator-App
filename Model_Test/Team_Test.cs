@@ -7,6 +7,16 @@ namespace Model_Test {
     public class Team_Test {
 
         [TestMethod]
+        public void TeamTable_AddRow() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            
+            league.TeamTable.AddRow(matchRow);
+        }
+
+        [TestMethod]
         public void Team() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
@@ -24,7 +34,9 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
-            teamRow.Players.Add("Adam");
+
+            league.PlayersTable.AddRow("Adam");
+            teamRow.Members.Add("Adam");
 
             Assert.IsNotNull(teamRow);
         }
@@ -36,9 +48,11 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
-            teamRow.Players.Add("Adam");
 
-            Assert.AreEqual("Adam", teamRow.Players[0].Name);
+            league.PlayersTable.AddRow("Adam");
+            teamRow.Members.Add("Adam");
+
+            Assert.AreEqual("Adam", teamRow.Members[0].Name);
         }
 
         [TestMethod]
@@ -49,8 +63,11 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
-            teamRow.Players.Add("Adam");
-            teamRow.Players.Add("Adam");
+
+            league.PlayersTable.AddRow("Adam");
+
+            teamRow.Members.Add("Adam");
+            teamRow.Members.Add("Adam");
         }
 
         [TestMethod]
@@ -60,14 +77,20 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
-            teamRow.Players.Add("Adam");
-            teamRow.Players.Add("Eve");
-            teamRow.Players.Add("Cain");
-            teamRow.Players.Add("Able");
+
+            league.PlayersTable.AddRow("Adam");
+            league.PlayersTable.AddRow("Eve");
+            league.PlayersTable.AddRow("Cain");
+            league.PlayersTable.AddRow("Able");
+
+            teamRow.Members.Add("Adam");
+            teamRow.Members.Add("Eve");
+            teamRow.Members.Add("Cain");
+            teamRow.Members.Add("Able");
 
             List<string> expected = ["Adam", "Eve", "Cain", "Able"];
-            Console.WriteLine(teamRow.Players[0]);
-            List<string> actual = teamRow.Players.Cast<string>();
+            Console.WriteLine(teamRow.Members[0]);
+            List<string> actual = teamRow.Members.Cast<string>();
             CollectionAssert.AreEquivalent(expected, actual);
         }
 
@@ -123,7 +146,7 @@ namespace Model_Test {
         //    Round round = lEvent.NewRound();
         //    Match match = round.GetMatch(0);
         //    Team team = match.NewTeam();
-        //    List<String> list = team.Players;
+        //    List<String> list = team.Members;
 
         //    Assert.AreEqual(0, list.Count);
         //}
@@ -136,7 +159,7 @@ namespace Model_Test {
         //    Match match = round.GetMatch(0);
         //    Team team = match.NewTeam();
         //    team.AddPlayer("Adam");
-        //    List<string> list = team.Players;
+        //    List<string> list = team.Members;
 
         //    Assert.AreEqual(1, list.Count);
         //    Assert.IsTrue(list.Has("Adam"));
@@ -153,7 +176,7 @@ namespace Model_Test {
         //    team.AddPlayer("Bart");
         //    team.AddPlayer("Carly");
         //    team.AddPlayer("Dianne");
-        //    List<string> list = team.Players;
+        //    List<string> list = team.Members;
 
         //    Debug.WriteLine(league.PrettyPrint());
 
@@ -174,7 +197,7 @@ namespace Model_Test {
         //    team.AddPlayer("Adam");
 
         //    bool result = team.RemovePlayer("Adam");
-        //    List<string> list = team.Players;
+        //    List<string> list = team.Members;
 
         //    Assert.AreEqual(0, list.Count);
         //    Assert.IsFalse(list.Has("Adam"));
@@ -191,7 +214,7 @@ namespace Model_Test {
         //    match.NewTeam().AddPlayer("Eve");
 
         //    bool result = match.Teams[1].RemovePlayer("Eve");
-        //    List<string> list = match.Teams[1].Players;
+        //    List<string> list = match.Teams[1].Members;
 
         //    Assert.AreEqual(0, list.Count);
         //    Assert.IsTrue(result);
@@ -208,7 +231,7 @@ namespace Model_Test {
         //    team.AddPlayer("Eve");
 
         //    bool result = team.RemovePlayer("Eve");
-        //    List<string> list = team.Players;
+        //    List<string> list = team.Members;
 
         //    Debug.WriteLine(league.PrettyPrint());
         //    Assert.AreEqual(1, list.Count);
@@ -228,7 +251,7 @@ namespace Model_Test {
         //    team.AddPlayer("Eve");
 
         //    bool result = team.RemovePlayer("Adam");
-        //    List<string> list = team.Players;
+        //    List<string> list = team.Members;
 
         //    Debug.WriteLine(league.PrettyPrint());
         //    Assert.AreEqual(1, list.Count);
@@ -245,7 +268,7 @@ namespace Model_Test {
         //    Match match = round.GetMatch(0);
         //    Team team = match.NewTeam();
         //    bool result = team.RemovePlayer("Adam");
-        //    List<string> list = team.Players;
+        //    List<string> list = team.Members;
 
         //    Assert.AreEqual(0, list.Count);
         //    Assert.IsFalse(list.Has("Adam"));
@@ -275,13 +298,13 @@ namespace Model_Test {
         //    Debug.WriteLine(league.PrettyPrint());
 
         //    // player is removed from first round
-        //    List<string> list1 = lEvent.Rounds[0].GetMatch(0).Teams[0].Players;
+        //    List<string> list1 = lEvent.Rounds[0].GetMatch(0).Teams[0].Members;
         //    Assert.AreEqual(0, list1.Count);
         //    Assert.IsFalse(list1.Has("Adam"));
         //    Assert.IsTrue(result);
 
         //    // player is not removed from second round
-        //    List<string> list2 = lEvent.Rounds[1].GetMatch(0).Teams[0].Players;
+        //    List<string> list2 = lEvent.Rounds[1].GetMatch(0).Teams[0].Members;
         //    Assert.AreEqual(1, list2.Count);
         //    Assert.IsTrue(list2.Has("Adam"));
         //}

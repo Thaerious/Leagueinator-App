@@ -68,13 +68,15 @@ namespace Model_Test {
         }
 
         [TestMethod]
-        public void Idle_Add_Contains() {
+        public void Add_Player_To_Idle() {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
+
+            league.PlayersTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
 
-            Assert.IsTrue(roundRow.IdlePlayers.Has("Zen"));
+            Assert.IsTrue(roundRow.IdlePlayers.Has("Player", "Zen"));
         }
 
         [TestMethod]
@@ -82,10 +84,12 @@ namespace Model_Test {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
-            roundRow.IdlePlayers.Add("Zen");
-            roundRow.IdlePlayers.Get("Zen").DataRow.Delete();
 
-            Assert.IsFalse(roundRow.IdlePlayers.Has("Zen"));
+            league.PlayersTable.AddRow("Zen");
+            roundRow.IdlePlayers.Add("Zen");
+            roundRow.IdlePlayers.Get("Player", "Zen").Delete();
+
+            Assert.IsFalse(roundRow.IdlePlayers.Has("Name", "Zen"));
         }
 
         [TestMethod]
@@ -93,10 +97,12 @@ namespace Model_Test {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
+
+            league.PlayersTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
 
             foreach (IdleRow row in roundRow.IdlePlayers) {
-                Assert.AreEqual("Zen", row.Name);
+                Assert.AreEqual("Zen", row.Player.Name);
             }
         }
 
@@ -124,7 +130,7 @@ namespace Model_Test {
         //}
 
         //[TestMethod]
-        //public void Players() {
+        //public void Members() {
         //    League league = new League();
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    Round round = lEvent.NewRound();
@@ -141,7 +147,7 @@ namespace Model_Test {
         //    var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
 
         //    Debug.WriteLine(league.PrettyPrint());
-        //    CollectionAssert.AreEquivalent(expected, round.Players.ToList());
+        //    CollectionAssert.AreEquivalent(expected, round.Members.ToList());
         //}
 
         //[TestMethod]

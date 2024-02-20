@@ -6,11 +6,11 @@ using System.Text;
 namespace Model.Tables {
 
     public class EventRow : CustomRow {
-        public readonly RoundCollection Rounds;
+        public readonly ReflectedRowList<RoundRow, RoundTable, int> Rounds;
         public readonly ReflectedRowTable<string, string> Settings;
 
         public EventRow(League league, DataRow row) : base(league, row) {
-            this.Rounds = new(league.RoundTable, this);
+            this.Rounds = new(this.League.RoundsTable.FKEvent, this.UID);
 
             var column 
                 = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT] 

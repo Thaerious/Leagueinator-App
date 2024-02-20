@@ -5,14 +5,15 @@ namespace Model.Tables {
 
     public class TeamRow : CustomRow {
 
-        public readonly PlayerCollection Players;
+        public readonly ReflectedRowList<MemberRow, MembersTable, int> Members;
 
         public TeamRow(League league, DataRow row) : base(league, row) {
-            this.Players = new(league.PlayerTable, this);
+            InvalidTableException.CheckTable<TeamTable>(row);
+            this.Members = new(league.MembersTable.FKTeam, this);
         }
 
         public int UID {
-            get => (int)this.DataRow[EventsTable.COL.UID];
+            get => (int)this.DataRow[TeamTable.COL.UID];
         }
 
         public static implicit operator int(TeamRow teamRow) => teamRow.UID;
@@ -57,6 +58,8 @@ namespace Model.Tables {
             return new(League, rows[0]);
         }
 
+        public ForeignKeyConstraint FKMatch { private set; get; }
+
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
@@ -87,6 +90,17 @@ namespace Model.Tables {
                 AutoIncrement = false,
                 DefaultValue = 0
             });
+
+            this.FKMatch = new ForeignKeyConstraint(
+                "FK_Match_Team",
+                this.League.MatchTable.Columns[MatchTable.COL.UID]!, // Parent column
+                this.Columns[COL.MATCH]!                             // Child column
+            ) {
+                UpdateRule = Rule.Cascade,
+                DeleteRule = Rule.Cascade
+            };
+
+            this.Constraints.Add(this.FKMatch);
         }
     }
 }

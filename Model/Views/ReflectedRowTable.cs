@@ -4,8 +4,8 @@ using System.Data;
 namespace Model.Views {
 
     /// <summary>
-    /// Create a dictionary from a sourceTable.
-    /// The sourceTable must have extended properties set on two columns:
+    /// Create a dictionary from a ChildTable.
+    /// The ChildTable must have extended properties set on two columns:
     ///  - column.ExtendedProperties.Add("dict", "key");
     ///  - column.ExtendedProperties.Add("dict", "value");
     /// </summary>

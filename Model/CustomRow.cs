@@ -10,4 +10,16 @@ namespace Model.Tables {
         public readonly League League = league;
         public readonly DataRow DataRow = row;
     }
+
+    public class InvalidTableException : Exception {
+        public InvalidTableException(string? message) : base(message) {}
+
+        public static void CheckTable<T>(DataRow row) {
+            if (typeof(T) != row.Table.GetType()) {
+                throw new InvalidTableException(
+                    $"Incorrect table in DataRow, expected {typeof(T)}, found {row.Table.GetType()}"
+                );
+            }
+        }
+    }
 }
