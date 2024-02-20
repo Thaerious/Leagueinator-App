@@ -120,37 +120,37 @@
 //        }
 //    }
 
-//    public static MyTable BuildColumns(MyTable? table = null) {
-//        table ??= new();
+//    public static MyTable BuildColumns(MyTable? sourceTable = null) {
+//        sourceTable ??= new();
 
-//        table.Columns.Add(new DataColumn {
+//        sourceTable.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
 //            ColumnName = COL.UID,
 //            Unique = true,
 //            AutoIncrement = true
 //        });
 
-//        table.Columns.Add(new DataColumn {
+//        sourceTable.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
 //            ColumnName = COL.EVENT,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
 
-//        table.Columns.Add(new DataColumn {
+//        sourceTable.Columns.Add(new DataColumn {
 //            DataType = typeof(int),
 //            ColumnName = COL.ROUND,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
 
-//        table.Columns.Add(new DataColumn {
+//        sourceTable.Columns.Add(new DataColumn {
 //            DataType = typeof(string),
 //            ColumnName = COL.NAME,
 //            Unique = false,
 //            AutoIncrement = false
 //        });
 
-//        return table;
+//        return sourceTable;
 //    }
 //}

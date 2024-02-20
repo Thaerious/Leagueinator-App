@@ -1,5 +1,4 @@
-﻿using Leagueinator.Utility;
-using Model;
+﻿using Model;
 using Model.Tables;
 using System.Diagnostics;
 
@@ -75,7 +74,7 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.IdlePlayers.Add("Zen");
 
-            Assert.IsTrue(roundRow.IdlePlayers.Contains("Zen"));
+            Assert.IsTrue(roundRow.IdlePlayers.Has("Zen"));
         }
 
         [TestMethod]
@@ -84,9 +83,9 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.IdlePlayers.Add("Zen");
-            roundRow.IdlePlayers.Remove("Zen");
+            roundRow.IdlePlayers.Get("Zen").DataRow.Delete();
 
-            Assert.IsFalse(roundRow.IdlePlayers.Contains("Zen"));
+            Assert.IsFalse(roundRow.IdlePlayers.Has("Zen"));
         }
 
         [TestMethod]
@@ -96,8 +95,8 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.IdlePlayers.Add("Zen");
 
-            foreach (string player in roundRow.IdlePlayers) {
-                Assert.AreEqual("Zen", player);
+            foreach (IdleRow row in roundRow.IdlePlayers) {
+                Assert.AreEqual("Zen", row.Name);
             }
         }
 

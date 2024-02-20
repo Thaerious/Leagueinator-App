@@ -12,6 +12,8 @@ namespace Model.Tables {
             get => (string)this.DataRow[PlayerTable.COL.NAME];
             set => this.DataRow[PlayerTable.COL.NAME] = value;
         }
+
+        public static implicit operator string(PlayerRow playerRow) => playerRow.Name;
     }
 
     public class PlayerTable(League league) : CustomTable(league, "players") {
@@ -43,6 +45,12 @@ namespace Model.Tables {
                 Unique = false,
                 AutoIncrement = false
             });
+
+            this.Constraints.Add(
+                new UniqueConstraint("UniqueConstraint", [
+                this.Columns[COL.TEAM]!,
+                this.Columns[COL.NAME]!
+            ]));
         }
     }
 }

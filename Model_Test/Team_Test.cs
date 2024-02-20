@@ -1,6 +1,6 @@
 ﻿using Model;
 using Model.Tables;
-using System.Diagnostics;
+using System.Data;
 
 namespace Model_Test {
     [TestClass]
@@ -29,66 +29,47 @@ namespace Model_Test {
             Assert.IsNotNull(teamRow);
         }
 
-        //[TestMethod]
-        //public void Index_0() {
-        //    League league = new League();
-        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-        //    Round round = lEvent.NewRound();
-        //    Match match = round.GetMatch(0);
-        //    Team team = match.NewTeam();            
-        //    Assert.AreEqual(0, team.TeamIndex);
-        //}
+        [TestMethod]
+        public void Retrieve_Player() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+            teamRow.Players.Add("Adam");
 
-        //[TestMethod]
-        //public void Index_1() {
-        //    League league = new League();
-        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-        //    Round round = lEvent.NewRound();
-        //    Match match = round.GetMatch(0);
-        //    match.NewTeam();
-        //    Team team = match.NewTeam();
-        //    Assert.AreEqual(1, team.TeamIndex);
-        //}
+            Assert.AreEqual("Adam", teamRow.Players[0].Name);
+        }
 
-        //[TestMethod]
-        //public void Add_New_Player() {
-        //    League league = new League();
-        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-        //    Round round = lEvent.NewRound();
-        //    Match match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
-        //    bool actual = team.AddPlayer("Adam");
+        [TestMethod]
+        [ExpectedException(typeof(ConstraintException))]
+        public void Add_Exising_Player() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+            teamRow.Players.Add("Adam");
+            teamRow.Players.Add("Adam");
+        }
 
-        //    Assert.IsTrue(actual);
-        //}
+        [TestMethod]
+        public void List_Players() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+            teamRow.Players.Add("Adam");
+            teamRow.Players.Add("Eve");
+            teamRow.Players.Add("Cain");
+            teamRow.Players.Add("Able");
 
-        //[TestMethod]
-        //public void Add_Exising_Player() {
-        //    League league = new League();
-        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-        //    Round round = lEvent.NewRound();
-        //    Match match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
-        //    team.AddPlayer("Adam");
-        //    bool actual = team.AddPlayer("Adam");
-
-        //    Assert.IsFalse(actual);
-        //}
-
-        //[TestMethod]
-        //public void Players() {
-        //    League league = new League();
-        //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
-        //    Round round = lEvent.NewRound();
-        //    Match match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
-        //    team.AddPlayer("Adam");
-        //    team.AddPlayer("Bernie");
-
-        //    List<string> expected = ["Adam", "Bernie"];
-        //    CollectionAssert.AreEquivalent(expected, round.AllPlayers as System.Collections.ICollection);
-
-        //}
+            List<string> expected = ["Adam", "Eve", "Cain", "Able"];
+            Console.WriteLine(teamRow.Players[0]);
+            List<string> actual = teamRow.Players.Cast<string>();
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
 
         //[TestMethod]
         //public void Has_Player_True() {
@@ -158,7 +139,7 @@ namespace Model_Test {
         //    List<string> list = team.Players;
 
         //    Assert.AreEqual(1, list.Count);
-        //    Assert.IsTrue(list.Contains("Adam"));
+        //    Assert.IsTrue(list.Has("Adam"));
         //}
 
         //[TestMethod]
@@ -177,10 +158,10 @@ namespace Model_Test {
         //    Debug.WriteLine(league.PrettyPrint());
 
         //    Assert.AreEqual(4, list.Count);
-        //    Assert.IsTrue(list.Contains("Adam"));
-        //    Assert.IsTrue(list.Contains("Bart"));
-        //    Assert.IsTrue(list.Contains("Carly"));
-        //    Assert.IsTrue(list.Contains("Dianne"));
+        //    Assert.IsTrue(list.Has("Adam"));
+        //    Assert.IsTrue(list.Has("Bart"));
+        //    Assert.IsTrue(list.Has("Carly"));
+        //    Assert.IsTrue(list.Has("Dianne"));
         //}
 
         //[TestMethod]
@@ -196,7 +177,7 @@ namespace Model_Test {
         //    List<string> list = team.Players;
 
         //    Assert.AreEqual(0, list.Count);
-        //    Assert.IsFalse(list.Contains("Adam"));
+        //    Assert.IsFalse(list.Has("Adam"));
         //    Assert.IsTrue(result);
         //}
 
@@ -231,8 +212,8 @@ namespace Model_Test {
 
         //    Debug.WriteLine(league.PrettyPrint());
         //    Assert.AreEqual(1, list.Count);
-        //    Assert.IsTrue(list.Contains("Adam"));
-        //    Assert.IsFalse(list.Contains("Eve"));
+        //    Assert.IsTrue(list.Has("Adam"));
+        //    Assert.IsFalse(list.Has("Eve"));
         //    Assert.IsTrue(result);
         //}
 
@@ -251,8 +232,8 @@ namespace Model_Test {
 
         //    Debug.WriteLine(league.PrettyPrint());
         //    Assert.AreEqual(1, list.Count);
-        //    Assert.IsFalse(list.Contains("Adam"));
-        //    Assert.IsTrue(list.Contains("Eve"));
+        //    Assert.IsFalse(list.Has("Adam"));
+        //    Assert.IsTrue(list.Has("Eve"));
         //    Assert.IsTrue(result);
         //}
 
@@ -267,7 +248,7 @@ namespace Model_Test {
         //    List<string> list = team.Players;
 
         //    Assert.AreEqual(0, list.Count);
-        //    Assert.IsFalse(list.Contains("Adam"));
+        //    Assert.IsFalse(list.Has("Adam"));
         //    Assert.IsFalse(result);
         //}
 
@@ -296,13 +277,13 @@ namespace Model_Test {
         //    // player is removed from first round
         //    List<string> list1 = lEvent.Rounds[0].GetMatch(0).Teams[0].Players;
         //    Assert.AreEqual(0, list1.Count);
-        //    Assert.IsFalse(list1.Contains("Adam"));
+        //    Assert.IsFalse(list1.Has("Adam"));
         //    Assert.IsTrue(result);
 
         //    // player is not removed from second round
         //    List<string> list2 = lEvent.Rounds[1].GetMatch(0).Teams[0].Players;
         //    Assert.AreEqual(1, list2.Count);
-        //    Assert.IsTrue(list2.Contains("Adam"));
+        //    Assert.IsTrue(list2.Has("Adam"));
         //}
     }
 }

@@ -53,6 +53,9 @@ namespace Model.Tables {
                 DataType = typeof(string),
                 ColumnName = COL.VALUE
             });
+
+            this.Columns[COL.KEY]!.ExtendedProperties.Add("dict", "key");
+            this.Columns[COL.VALUE]!.ExtendedProperties.Add("dict", "value");
         }
     }
 }

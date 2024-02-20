@@ -8,7 +8,7 @@ namespace Model.Tables {
         public readonly MatchCollection Matches;
 
         public RoundRow(League league, DataRow row) : base(league, row) {
-            this.IdlePlayers = new(league.IdleTable, this.Event, this);
+            this.IdlePlayers = new(league.IdleTable, this);
             this.Matches = new(league.MatchTable, this);
         }
 
@@ -16,11 +16,11 @@ namespace Model.Tables {
             get => (int)this.DataRow[RoundTable.COL.UID];
         }
 
+        public static implicit operator int(RoundRow roundRow) => roundRow.UID;
+
         public EventRow Event {
             get => this.League.EventTable.GetRow((int)this.DataRow[RoundTable.COL.EVENT]);
         }
-
-        public static implicit operator int(RoundRow roundRow) => roundRow.UID;
     }
 
     public class RoundTable(League league) : CustomTable(league, "rounds") {

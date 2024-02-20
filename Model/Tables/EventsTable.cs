@@ -7,9 +7,16 @@ namespace Model.Tables {
 
     public class EventRow : CustomRow {
         public readonly RoundCollection Rounds;
+        public readonly ReflectedRowTable<string, string> Settings;
 
         public EventRow(League league, DataRow row) : base(league, row) {
             this.Rounds = new(league.RoundTable, this);
+
+            var column 
+                = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT] 
+                ?? throw new NullReferenceException("Column is null");
+
+            this.Settings = new(this.League.SettingsTable, column, this.UID);
         }
 
         public int UID {
@@ -26,22 +33,7 @@ namespace Model.Tables {
         public string Date {
             get => (string)this.DataRow[EventsTable.COL.DATE];
             set => this.DataRow[EventsTable.COL.DATE] = value;
-        }               
-                
-        public Dictionary<string, string> Settings() {
-            Dictionary<string, string> settings = new();
-
-            this.League.TeamTable.AsEnumerable()
-            .Where(row => row.Field<int>(SettingsTable.COL.EVENT) == this.UID)
-            .ToList()
-            .ForEach(row => {
-                var key = row[SettingsTable.COL.KEY];
-                var value = row[SettingsTable.COL.VALUE];
-                settings[(string)key] = (string)value;
-            });
-
-            return settings;
-        }
+        }                             
     }
 
     public class EventsTable(League league) : CustomTable(league, "events") {

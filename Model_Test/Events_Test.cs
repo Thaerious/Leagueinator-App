@@ -3,7 +3,7 @@ using Model.Tables;
 
 namespace Model_Test {
     [TestClass]
-    public class LeagueEvent_Test {
+    public class Events_Test {
 
         [TestMethod]
         public void League() {
@@ -63,6 +63,58 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             Assert.IsNotNull(eventRow.Rounds[0]);
+        }
+
+        [TestMethod]
+        public void Set_Setting() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Settings["MyKey"] = "MyValue";
+            Assert.AreEqual("MyValue", eventRow.Settings["MyKey"]);
+        }
+
+        [TestMethod]
+        public void Set_Setting_Multiple_Tables() {
+            League league = new();
+            EventRow eventRow1 = league.EventTable.AddRow("my_event1");
+            EventRow eventRow2 = league.EventTable.AddRow("my_event2");
+            eventRow1.Settings["MyKey"] = "MyValue1";
+            eventRow2.Settings["MyKey"] = "MyValue2";
+            Assert.AreEqual("MyValue1", eventRow1.Settings["MyKey"]);
+            Assert.AreEqual("MyValue2", eventRow2.Settings["MyKey"]);
+        }
+
+        [TestMethod]
+        public void ReSet_Setting() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Settings["MyKey"] = "MyValue";
+            eventRow.Settings["MyKey"] = "AnotherValue";
+            Assert.AreEqual("AnotherValue", eventRow.Settings["MyKey"]);
+        }
+
+        [TestMethod]
+        public void Delete_Setting() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Settings.Delete("MyKey");
+            Assert.IsNull(eventRow.Settings["MyKey"]);
+        }
+
+        [TestMethod]
+        public void NonExistant_Setting() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            Assert.IsNull(eventRow.Settings["MyKey"]);
+        }
+
+        [TestMethod]
+        public void Set_To_Null_Deletes_Setting() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            eventRow.Settings["MyKey"] = "MyValue";
+            eventRow.Settings["MyKey"] = null;
+            Assert.IsFalse(eventRow.Settings.HasKey("MyKey"));
         }
     }
 }

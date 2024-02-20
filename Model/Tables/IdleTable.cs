@@ -26,17 +26,17 @@ namespace Model.Tables {
             public static readonly string NAME = "name";
         }
 
-        public DataRow AddRow(int eventUID, int round, string playerName) {
+        public IdleRow AddRow(int round, string playerName) {
             var row = this.NewRow();
 
             row[COL.ROUND] = round;
             row[COL.NAME] = playerName;
 
             this.Rows.Add(row);
-            return row;
+            return new(this.League, row);
         }
 
-        public DataRow? GetRow(int eventDirUID, int round, string playerName) {
+        public DataRow? GetRow(int round, string playerName) {
             var rows = this.AsEnumerable()
                            .Where(row => row.Field<int>(COL.ROUND) == round)
                            .Where(row => row.Field<string>(COL.NAME) == playerName)
@@ -82,4 +82,3 @@ namespace Model.Tables {
         }
     }
 }
-

@@ -1,26 +1,17 @@
 ﻿using Model.Tables;
-using System.Collections;
 using System.Data;
 
 namespace Model.Views {
     public class MatchCollection(MatchTable matchTable, int roundUID) 
-        : CustomRowList<MatchRow, MatchTable>(roundUID, matchTable) {
+        : ReflectedRowList<MatchRow, MatchTable>(roundUID, matchTable) {
 
-        internal override MatchRow[] Rows {
-            get {
-                string query = $"{MatchTable.COL.ROUND} = {this.parentUID}";
-
-                return this.table.Select(query)
-                    .Select(dataRow => new MatchRow(this.table.League, dataRow))
-                    .ToArray();
-            }
-        }
+        internal override string ForeignKeyName { get => MatchTable.COL.ROUND; }
 
         public bool Contains(int lane) {
-            string query = $"{MatchTable.COL.ROUND} = {this.parentUID} AND"
+            string query = $"{MatchTable.COL.ROUND} = {this.foreignKeyValue} AND"
                          + $"{MatchTable.COL.LANE} = {lane}";
 
-            DataRow[] result = this.table.Select(query);
+            DataRow[] result = this.sourceTable.Select(query);
             return result.Length > 0;
         }     
     }
