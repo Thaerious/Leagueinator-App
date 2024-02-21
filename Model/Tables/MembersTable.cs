@@ -35,8 +35,8 @@ namespace Model.Tables {
             return new(this.League, row);
         }
 
-        public ForeignKeyConstraint FKTeam { private set; get; }
-        public ForeignKeyConstraint FKPlayer { private set; get; }
+        public ForeignKeyConstraint? FKTeam { private set; get; }
+        public ForeignKeyConstraint? FKPlayer { private set; get; }
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {

@@ -1,6 +1,5 @@
 ﻿using Model.Tables;
 using System.Data;
-using Leagueinator.Utility;
 
 namespace Model {
     public class League : DataSet {
@@ -16,29 +15,29 @@ namespace Model {
         public IdleTable IdleTable { init; get; }
 
         public League() {
-            PlayersTable  = new(this);
-            this.Tables.Add(PlayersTable);
+            this.PlayersTable = new(this);
+            this.Tables.Add(this.PlayersTable);
 
-            EventTable    = new(this);
-            this.Tables.Add(EventTable);
+            this.EventTable = new(this);
+            this.Tables.Add(this.EventTable);
 
-            RoundsTable   = new(this);
-            this.Tables.Add(RoundsTable);
+            this.RoundsTable = new(this);
+            this.Tables.Add(this.RoundsTable);
 
-            MatchTable    = new(this);
-            this.Tables.Add(MatchTable);
+            this.MatchTable = new(this);
+            this.Tables.Add(this.MatchTable);
 
-            TeamTable     = new(this);
-            this.Tables.Add(TeamTable);
+            this.TeamTable = new(this);
+            this.Tables.Add(this.TeamTable);
 
-            SettingsTable = new(this);
-            this.Tables.Add(SettingsTable);
+            this.SettingsTable = new(this);
+            this.Tables.Add(this.SettingsTable);
 
-            MembersTable  = new(this);
-            this.Tables.Add(MembersTable);
+            this.MembersTable = new(this);
+            this.Tables.Add(this.MembersTable);
 
-            IdleTable     = new(this);
-            this.Tables.Add(IdleTable);
+            this.IdleTable = new(this);
+            this.Tables.Add(this.IdleTable);
 
             this.PlayersTable.BuildColumns();
             this.EventTable.BuildColumns();
@@ -57,11 +56,11 @@ namespace Model {
         }
 
         public string PrettyPrint() {
-            return MatchTable.PrettyPrint() + "\n" +
-                TeamTable.PrettyPrint() + "\n" +
-                IdleTable.PrettyPrint() + "\n" +
-                EventTable.PrettyPrint() + "\n" +
-                SettingsTable.PrettyPrint();
+            return this.MatchTable.PrettyPrint() + "\n" +
+                this.TeamTable.PrettyPrint() + "\n" +
+                this.IdleTable.PrettyPrint() + "\n" +
+                this.EventTable.PrettyPrint() + "\n" +
+                this.SettingsTable.PrettyPrint();
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace Model.Tables {
     public class CustomRow(League league, DataRow row) {
@@ -12,7 +7,7 @@ namespace Model.Tables {
     }
 
     public class InvalidTableException : Exception {
-        public InvalidTableException(string? message) : base(message) {}
+        public InvalidTableException(string? message) : base(message) { }
 
         public static void CheckTable<T>(DataRow row) {
             if (typeof(T) != row.Table.GetType()) {

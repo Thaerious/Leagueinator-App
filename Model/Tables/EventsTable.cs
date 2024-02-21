@@ -1,7 +1,5 @@
 ﻿using Model.Views;
 using System.Data;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace Model.Tables {
 
@@ -10,10 +8,11 @@ namespace Model.Tables {
         public readonly ReflectedRowTable<string, string> Settings;
 
         public EventRow(League league, DataRow row) : base(league, row) {
+            ArgumentNullException.ThrowIfNull(this.League.RoundsTable.FKEvent);
             this.Rounds = new(this.League.RoundsTable.FKEvent, this.UID);
 
-            var column 
-                = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT] 
+            var column
+                = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT]
                 ?? throw new NullReferenceException("Column is null");
 
             this.Settings = new(this.League.SettingsTable, column, this.UID);
@@ -33,7 +32,7 @@ namespace Model.Tables {
         public string Date {
             get => (string)this.DataRow[EventsTable.COL.DATE];
             set => this.DataRow[EventsTable.COL.DATE] = value;
-        }                             
+        }
     }
 
     public class EventsTable(League league) : CustomTable(league, "events") {
@@ -52,7 +51,7 @@ namespace Model.Tables {
             row[COL.DATE] = date;
 
             this.Rows.Add(row);
-            return new EventRow(League, row);
+            return new EventRow(this.League, row);
         }
 
         public EventRow GetRow(string eventName) {

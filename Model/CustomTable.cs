@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace Model.Tables {
     public abstract class CustomTable : DataTable {
@@ -14,5 +9,5 @@ namespace Model.Tables {
         }
 
         abstract public void BuildColumns();
-    }    
+    }
 }

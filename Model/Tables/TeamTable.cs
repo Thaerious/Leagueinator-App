@@ -8,6 +8,7 @@ namespace Model.Tables {
         public readonly ReflectedRowList<MemberRow, MembersTable, int> Members;
 
         public TeamRow(League league, DataRow row) : base(league, row) {
+            ArgumentNullException.ThrowIfNull(league.MembersTable.FKTeam);
             InvalidTableException.CheckTable<TeamTable>(row);
             this.Members = new(league.MembersTable.FKTeam, this);
         }
@@ -42,6 +43,8 @@ namespace Model.Tables {
             public static readonly string TIE = "tie";
         }
 
+        public ForeignKeyConstraint? FKMatch { private set; get; }
+
         public TeamRow AddRow(int match) {
             var row = this.NewRow();
             row[COL.MATCH] = match;
@@ -55,10 +58,8 @@ namespace Model.Tables {
                            .ToList();
 
             if (rows.Count == 0) throw new KeyNotFoundException($"{COL.UID} == {eventUID}");
-            return new(League, rows[0]);
+            return new(this.League, rows[0]);
         }
-
-        public ForeignKeyConstraint FKMatch { private set; get; }
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {

@@ -1,5 +1,4 @@
-﻿using Model.Tables;
-using System.Data;
+﻿using System.Data;
 
 namespace Model.Views {
 
@@ -18,7 +17,7 @@ namespace Model.Views {
         internal readonly DataTable souceTable;
         internal readonly DataColumn keyCol; // key column
         internal readonly DataColumn valCol; // value column
-        
+
 
         public ReflectedRowTable(DataTable sourceTable, DataColumn fkCol, object fkVal) {
             this.view = new DataView(sourceTable);
@@ -64,21 +63,21 @@ namespace Model.Views {
             return (V?)this.view
                 .ToTable()
                 .AsEnumerable()
-                .Where(row => row[keyCol.ColumnName].Equals(key))
-                .First()[valCol.ColumnName];
+                .Where(row => row[this.keyCol.ColumnName].Equals(key))
+                .First()[this.valCol.ColumnName];
         }
 
         public bool HasKey(K key) {
             return this.view
                 .ToTable()
                 .AsEnumerable()
-                .Where(row => row[keyCol.ColumnName].Equals(key))
+                .Where(row => row[this.keyCol.ColumnName].Equals(key))
                 .Any();
         }
 
         public bool Delete(K key) {
             foreach (DataRowView rowView in this.view) {
-                if (rowView[keyCol.ColumnName].Equals(key)) {
+                if (rowView[this.keyCol.ColumnName].Equals(key)) {
                     rowView.Delete();
                     return true;
                 }
@@ -95,18 +94,18 @@ namespace Model.Views {
 
             if (this.HasKey(key)) {
                 foreach (DataRowView rowView in this.view) {
-                    if (rowView[keyCol.ColumnName].Equals(key)) {
-                        rowView[valCol.ColumnName] = value;
+                    if (rowView[this.keyCol.ColumnName].Equals(key)) {
+                        rowView[this.valCol.ColumnName] = value;
                         return;
                     }
                 }
             }
-            else {                
+            else {
                 if (this.view.Table is null) throw new NullReferenceException("Table is null in view.");
                 DataRow row = this.view.Table.NewRow();
                 row[this.fkCol] = this.fkVal;
-                row[keyCol] = key;
-                row[valCol] = value;
+                row[this.keyCol] = key;
+                row[this.valCol] = value;
                 this.view.Table.Rows.Add(row);
             }
         }

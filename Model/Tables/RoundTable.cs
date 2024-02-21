@@ -8,6 +8,9 @@ namespace Model.Tables {
         public readonly ReflectedRowList<MatchRow, MatchTable, int> Matches;
 
         public RoundRow(League league, DataRow row) : base(league, row) {
+            ArgumentNullException.ThrowIfNull(this.League.IdleTable.FKRound);
+            ArgumentNullException.ThrowIfNull(this.League.MatchTable.FKRound);
+
             this.IdlePlayers = new(this.League.IdleTable.FKRound, this.UID);
             this.Matches = new(this.League.MatchTable.FKRound, this.UID);
         }
@@ -29,13 +32,13 @@ namespace Model.Tables {
             public static readonly string EVENT = "event_uid";
         }
 
-        internal ForeignKeyConstraint FKEvent { set; get; }
+        internal ForeignKeyConstraint? FKEvent { private set; get; }
 
         public RoundRow AddRow(int eventUID) {
             var row = this.NewRow();
             row[COL.EVENT] = eventUID;
             this.Rows.Add(row);
-            return new(League, row);
+            return new(this.League, row);
         }
 
         public override void BuildColumns() {

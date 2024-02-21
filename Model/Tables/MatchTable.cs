@@ -7,6 +7,7 @@ namespace Model.Tables {
         public readonly ReflectedRowList<TeamRow, TeamTable, int> Teams;
 
         public MatchRow(League league, DataRow row) : base(league, row) {
+            ArgumentNullException.ThrowIfNull(this.League.TeamTable.FKMatch);
             this.Teams = new(this.League.TeamTable.FKMatch, this.UID);
         }
 
@@ -34,8 +35,8 @@ namespace Model.Tables {
     public class MatchTable(League league) : CustomTable(league, "matches") {
         public static class COL {
             public static readonly string UID = "uid";
-            public static readonly string ROUND = "round";        
-            public static readonly string LANE = "lane";          
+            public static readonly string ROUND = "round";
+            public static readonly string LANE = "lane";
             public static readonly string ENDS = "ends";
         }
 
@@ -68,7 +69,7 @@ namespace Model.Tables {
             return rows[0];
         }
 
-        public ForeignKeyConstraint FKRound => (ForeignKeyConstraint)this.Constraints["FK_Round_Match"]!;
+        public ForeignKeyConstraint? FKRound { private set; get; }
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
@@ -99,16 +100,16 @@ namespace Model.Tables {
                 this.Columns[COL.LANE]!
             ]));
 
-            ForeignKeyConstraint fkConstraint = new ForeignKeyConstraint(
+            this.FKRound = new ForeignKeyConstraint(
                 "FK_Round_Match",
                 this.League.RoundsTable.Columns[RoundTable.COL.UID]!,  // Parent column
-                this.Columns[COL.ROUND]!                              // Child column
-            );
+                this.Columns[COL.ROUND]!                               // Child column
+            ) {
+                UpdateRule = Rule.Cascade,
+                DeleteRule = Rule.Cascade
+            };
 
-            fkConstraint.UpdateRule = Rule.Cascade;
-            fkConstraint.DeleteRule = Rule.Cascade;
-
-            this.Constraints.Add(fkConstraint);
+            this.Constraints.Add(this.FKRound);
         }
-    }
+}
 }

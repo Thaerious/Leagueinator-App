@@ -2,7 +2,7 @@
 using System.Data;
 
 namespace Model.Views {
-    public class PlayerCollection(MembersTable playerTable, int teamUID) 
+    public class PlayerCollection(MembersTable playerTable, int teamUID)
         : ReflectedRowList<MemberRow, MembersTable, int>(MembersTable.COL.TEAM, teamUID, playerTable) {
 
         public bool Contains(string name) {

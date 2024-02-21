@@ -1,7 +1,4 @@
-﻿using Model.Views;
-using System.Data;
-using System.Diagnostics;
-using System.Xml.Linq;
+﻿using System.Data;
 
 namespace Model.Tables {
 
@@ -64,8 +61,8 @@ namespace Model.Tables {
             }
         }
 
-        public ForeignKeyConstraint FKRound => (ForeignKeyConstraint)this.Constraints["FK_Idle_Round"]!;
-        public ForeignKeyConstraint FKPlayer => (ForeignKeyConstraint)this.Constraints["FK_Idle_Player"]!;
+        public ForeignKeyConstraint? FKRound { private set; get; }
+        public ForeignKeyConstraint? FKPlayer { private set; get; }
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
@@ -88,23 +85,26 @@ namespace Model.Tables {
                 this.Columns[COL.PLAYER]!
             ]));
 
-            this.Constraints.Add(new ForeignKeyConstraint(
+            this.FKRound = new ForeignKeyConstraint(
                 "FK_Idle_Round",
                 this.League.RoundsTable.Columns[RoundTable.COL.UID]!, // Parent column
                 this.Columns[COL.ROUND]!                              // Child column
             ) {
                 UpdateRule = Rule.Cascade,
                 DeleteRule = Rule.Cascade
-            });
+            };
 
-            this.Constraints.Add(new ForeignKeyConstraint(
+            this.FKPlayer = new ForeignKeyConstraint(
                 "FK_Idle_Player",
                 this.League.PlayersTable.Columns[PlayersTable.COL.NAME]!, // Parent column
                 this.Columns[COL.PLAYER]!                                 // Child column
             ) {
                 UpdateRule = Rule.Cascade,
                 DeleteRule = Rule.Cascade
-            });
+            };
+
+            this.Constraints.Add(this.FKRound);
+            this.Constraints.Add(this.FKPlayer);
         }
     }
 }

@@ -2,7 +2,6 @@
 using Model.Tables;
 using System.Collections;
 using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Model.Views {
@@ -29,21 +28,19 @@ namespace Model.Views {
         /// <param name="fkValue">The value shared between the child and reference tables.</param>
         /// <param name="childTable">The child table that the view is targeting.</param>
         public ReflectedRowList(string fkName, F fkValue, T childTable) {
+            if (typeof(F) != typeof(string) && typeof(F) != typeof(int)) {
+                throw new ArgumentException("Generic type of foreign key must be either string or int.");
+            }
+
+            ArgumentNullException.ThrowIfNull(fkValue);
+
             this.ForeignKeyValue = fkValue;
             this.ChildTable = childTable;
             this.ForeignKeyName = fkName;
         }
 
-        public ReflectedRowList(ForeignKeyConstraint fkConstraint, F fValue) {
-            ArgumentNullException.ThrowIfNull(fkConstraint);
-
-            this.ForeignKeyValue = fValue;
-            this.ForeignKeyName = fkConstraint.Columns[0].ColumnName;
-            if (this.ForeignKeyName is null) throw new NullReferenceException();
-
-            if (fkConstraint.Table is null) throw new NullReferenceException();
-            this.ChildTable = (T)fkConstraint.Table;
-        }
+        public ReflectedRowList(ForeignKeyConstraint fkConstraint, F fkValue)
+            : this(fkConstraint.Columns[0].ColumnName, fkValue, childTable: (T)fkConstraint.Table!) { }
 
         public List<C> Cast<C>() {
             var list = new List<C>();
@@ -78,7 +75,7 @@ namespace Model.Views {
         }
 
         public int Count {
-            get => Rows.Length;
+            get => this.Rows.Length;
         }
 
         public R this[int index] {
@@ -96,7 +93,7 @@ namespace Model.Views {
         /// <exception cref="InvalidOperationException"></exception>
         public R Add(params object[] args) {
             List<object> argList = new List<object>(args);
-            argList.Insert(0, this.ForeignKeyValue);
+            argList.Insert(0, this.ForeignKeyValue!);
 
             Type tableType = typeof(T);
             List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
@@ -142,14 +139,14 @@ namespace Model.Views {
 
         public bool Has<TYPE>(string column, TYPE value) {
             return this.ChildTable.AsEnumerable()
-                .Where(row => row[ForeignKeyName].Equals(this.ForeignKeyValue))
+                .Where(row => row[this.ForeignKeyName].Equals(this.ForeignKeyValue))
                 .Where(row => row[column].Equals(value))
                 .Any();
         }
 
         public DataRow Get<TYPE>(string column, TYPE value) {
             return this.ChildTable.AsEnumerable()
-                .Where(row => row[ForeignKeyName].Equals(this.ForeignKeyValue))
+                .Where(row => row[this.ForeignKeyName].Equals(this.ForeignKeyValue))
                 .Where(row => row[column].Equals(value))
                 .First();
         }
@@ -176,7 +173,7 @@ namespace Model.Views {
         public R Current {
             get {
                 try {
-                    return items[pos];
+                    return this.items[this.pos];
                 }
                 catch (IndexOutOfRangeException) {
                     throw new InvalidOperationException();
@@ -187,7 +184,7 @@ namespace Model.Views {
         object? IEnumerator.Current {
             get {
                 try {
-                    return items[pos];
+                    return this.items[this.pos];
                 }
                 catch (IndexOutOfRangeException) {
                     throw new InvalidOperationException();
@@ -198,11 +195,11 @@ namespace Model.Views {
         public void Dispose() { }
 
         public bool MoveNext() {
-            return (++pos < items.Length);
+            return (++this.pos < this.items.Length);
         }
 
         public void Reset() {
-            pos = -1;
+            this.pos = -1;
         }
     }
 }
