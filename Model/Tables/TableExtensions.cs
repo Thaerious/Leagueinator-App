@@ -7,6 +7,12 @@ namespace Model.Tables {
 
     public static class TableExtensions {
 
+        public static bool Has<TYPE>(this DataTable table, string column, TYPE value) {
+            return table.AsEnumerable()
+                .Where(row => row[column].Equals(value))
+                .Any();
+        }
+
         public static void CopyTo(this CustomRow source, DataRow target) {
             source.DataRow.CopyTo(target);
         }

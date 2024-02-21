@@ -24,6 +24,10 @@ namespace Model.Tables {
         }
 
         public MemberRow AddRow(int team, string name) {
+            if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
+                this.League.PlayersTable.AddRow(name);
+            }
+
             var row = this.NewRow();
             row[COL.TEAM] = team;
             row[COL.PLAYER] = name;

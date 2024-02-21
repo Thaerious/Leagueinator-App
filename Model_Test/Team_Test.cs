@@ -42,6 +42,19 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Add_Non_Existant_Player() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+
+            teamRow.Members.Add("Adam");
+
+            Assert.IsNotNull(teamRow);
+        }
+
+        [TestMethod]
         public void Retrieve_Player() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");

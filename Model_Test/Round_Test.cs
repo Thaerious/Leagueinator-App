@@ -80,6 +80,17 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Add_Non_Existant_Player_To_Idle() {
+            League league = new League();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+
+            roundRow.IdlePlayers.Add("Zen");
+
+            Assert.IsTrue(roundRow.IdlePlayers.Has("Player", "Zen"));
+        }
+
+        [TestMethod]
         public void Idle_Remove_Contains() {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");

@@ -1,6 +1,7 @@
 ﻿using Model.Views;
 using System.Data;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace Model.Tables {
 
@@ -26,11 +27,15 @@ namespace Model.Tables {
             public static readonly string PLAYER = "player";
         }
 
-        public IdleRow AddRow(int round, string playerName) {
+        public IdleRow AddRow(int round, string name) {
+            if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
+                this.League.PlayersTable.AddRow(name);
+            }
+
             var row = this.NewRow();
 
             row[COL.ROUND] = round;
-            row[COL.PLAYER] = playerName;
+            row[COL.PLAYER] = name;
 
             this.Rows.Add(row);
             return new(this.League, row);
