@@ -28,7 +28,6 @@
             this.butRemoveRound = new Button();
             this.flowRounds = new FlowLayoutPanel();
             this.flowIdlePlayers = new FlowLayoutPanel();
-            this.matchCardPanel = new MatchCardPanel();
             this.tablePanel = new TableLayoutPanel();
             this.layoutRounds.SuspendLayout();
             this.tablePanel.SuspendLayout();
@@ -86,6 +85,7 @@
             this.flowRounds.Name = "flowRounds";
             this.flowRounds.Size = new Size(286, 630);
             this.flowRounds.TabIndex = 2;
+            this.flowRounds.Paint += this.flowRounds_Paint;
             // 
             // flowIdlePlayers
             // 
@@ -98,18 +98,6 @@
             this.flowIdlePlayers.TabIndex = 1;
             this.flowIdlePlayers.WrapContents = false;
             // 
-            // matchCardPanel
-            // 
-            this.matchCardPanel.AutoScroll = true;
-            this.matchCardPanel.Dock = DockStyle.Fill;
-            this.matchCardPanel.FlowDirection = FlowDirection.TopDown;
-            this.matchCardPanel.Location = new Point(0, 0);
-            this.matchCardPanel.Name = "matchCardPanel";
-            this.matchCardPanel.Round = null;
-            this.matchCardPanel.Size = new Size(698, 939);
-            this.matchCardPanel.TabIndex = 0;
-            this.matchCardPanel.WrapContents = false;
-            // 
             // tablePanel
             // 
             this.tablePanel.ColumnCount = 3;
@@ -118,14 +106,13 @@
             this.tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 500F));
             this.tablePanel.Controls.Add(this.layoutRounds, 0, 0);
             this.tablePanel.Controls.Add(this.flowIdlePlayers, 1, 0);
-            this.tablePanel.Controls.Add(this.matchCardPanel, 2, 0);
             this.tablePanel.Dock = DockStyle.Fill;
             this.tablePanel.Location = new Point(0, 0);
             this.tablePanel.Name = "tablePanel";
             this.tablePanel.RowCount = 1;
             this.tablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             this.tablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            this.tablePanel.Size = new Size(1100, 800);
+            this.tablePanel.Size = new Size(1200, 800);
             this.tablePanel.TabIndex = 1;
             // 
             // EventPanel

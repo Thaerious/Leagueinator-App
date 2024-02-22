@@ -1,19 +1,20 @@
 ﻿using Model;
+using Model.Tables;
 
 namespace Leagueinator.App.Components {
 
     public partial class EventPanel : UserControl {
-
+        private RoundRow? _currentRound = default;
 
         /// <summary>
         /// Retrieve or set the currently selected Round.
         /// </summary>
-        public Round? CurrentRound {
+        public RoundRow? CurrentRound {
             get {
-                return this.matchCardPanel.Round;
+                return this._currentRound;
             }
             private set {
-                this.matchCardPanel.Round = value;
+                this._currentRound = value;
                 this.UpdateIdlePlayers();
             }
         }
@@ -120,6 +121,10 @@ namespace Leagueinator.App.Components {
         }
 
         private LeagueEvent? _currentEvent = null;
+
+        private void flowRounds_Paint(object sender, PaintEventArgs e) {
+
+        }
     }
 
     internal class IdlePlayerTextBox : MemoryTextBox {
