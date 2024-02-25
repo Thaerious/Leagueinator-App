@@ -4,7 +4,8 @@ using System.Data;
 namespace Leagueinator.Components {
     public partial class FormMain : Form {
         public FormMain() {
-            InitializeComponent();           
+            InitializeComponent();
+            this.eventPanel1.Controller = this.modelController;
         }
 
         private void HndMenuViewTeams(object sender, EventArgs e) {
@@ -23,13 +24,6 @@ namespace Leagueinator.Components {
             DataView dataSource = (DataView)this.eventPanel1.matchCard1.membersGrid.DataSource;
             DataTable sourceTable = dataSource.Table;
             MembersTable membersTable = modelController.League.MembersTable;
-
-            Console.WriteLine($"Members Grid Data Source = {dataSource}:{dataSource.GetHashCode()}");
-            Console.WriteLine($"Data Source Parent Table = {sourceTable}:{sourceTable.GetHashCode()}");
-            Console.WriteLine($"League Members Table = {membersTable}:{membersTable.GetHashCode()}");
-
-            Console.WriteLine($"Source Data Set = {sourceTable.DataSet}:{sourceTable.DataSet.GetHashCode()}");
-            Console.WriteLine($"League = {modelController.League}:{modelController.League.GetHashCode()}");
         }
 
         private void HndMenuViewEvents(object sender, EventArgs e) {

@@ -7,7 +7,6 @@ namespace Leagueinator {
     public class Controller : Component {
         public delegate void UpdateMatch(MatchRow matchRow);
         public delegate void UpdateTeam(TeamRow teamRow);
-
         public readonly League League = new MockModel();
 
         public event UpdateTeam OnUpdateTeam {
@@ -20,14 +19,14 @@ namespace Leagueinator {
                     _onUpdateTeam.Invoke(teamRow);
                 };
             }
-            remove {
+            remove {                
                 if (value is null) return;
                 this._onUpdateTeam -= value;
             }
         }
 
-        public event UpdateMatch OnUpdateMatch {
-            add {
+        public event UpdateMatch OnUpdateMatch {            
+            add {                
                 if (value is null) return;
                 this._onUpdateMatch += value;
 

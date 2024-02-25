@@ -41,8 +41,6 @@ namespace Model.Tables {
         }
 
         private int NextIndex(int match) {
-            Console.WriteLine(this.PrettyPrint("NextIndex"));
-
             return this.AsEnumerable()
                 .Select(row => new TeamRow(row))
                 .Where((TeamRow row) => row.Match == match)
@@ -55,7 +53,6 @@ namespace Model.Tables {
             var row = this.NewRow();
             row[COL.MATCH] = match;
             row[COL.INDEX] = this.NextIndex(match);
-            Console.WriteLine("index " + row[COL.INDEX]);
             this.Rows.Add(row);
             return new(row);
         }

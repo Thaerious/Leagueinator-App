@@ -10,8 +10,7 @@ namespace Model_Test {
         [TestMethod]
         public void Sanity() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            Debug.WriteLine(league.PrettyPrint());           
+            EventRow eventRow = league.EventTable.AddRow("my_event");     
             Assert.IsNotNull(eventRow);
         }
 
@@ -41,7 +40,6 @@ namespace Model_Test {
             League league = new();
             EventRow eventRowIn = league.EventTable.AddRow("my_event");
             EventRow eventRowOut = league.EventTable.GetRow("my_event");
-            Debug.WriteLine(league.PrettyPrint());
             Assert.IsNotNull(eventRowOut);
             Assert.AreEqual(eventRowIn.Name, eventRowOut.Name);
         }

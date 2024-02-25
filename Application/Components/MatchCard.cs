@@ -1,8 +1,6 @@
-﻿using Leagueinator.Utility;
-using Model.Tables;
+﻿using Model.Tables;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Forms;
+using static Model.Tables.TeamTable;
 
 namespace Leagueinator.Components {
     public partial class MatchCard : UserControl {
@@ -30,8 +28,8 @@ namespace Leagueinator.Components {
             this.membersGrid.DataSource = matchRow.Members;
             this.teamsGrid.DataSource = matchRow.Teams;
 
-            this.teamsGrid.Columns[TeamTable.COL.MATCH].Visible = false;
-            this.teamsGrid.Columns[TeamTable.COL.UID].HeaderText = "team";
+            this.teamsGrid.Columns[COL.MATCH].Visible = false;
+            this.teamsGrid.Columns[COL.INDEX].HeaderText = "team";
         }
 
         private void OnUpdateTeam(TeamRow teamRow) {
@@ -44,8 +42,5 @@ namespace Leagueinator.Components {
         }
 
         private Controller? _controller;
-
-        private void LayoutEventHandler(object sender, LayoutEventArgs e) {
-        }
     }
 }

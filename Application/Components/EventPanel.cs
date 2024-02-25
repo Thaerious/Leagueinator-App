@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
 namespace Leagueinator.Components {
     public partial class EventPanel : UserControl {
@@ -35,10 +27,6 @@ namespace Leagueinator.Components {
                             - this.flowLayoutPanel1.Padding.Horizontal
                             - child.Margin.Horizontal;
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e) {
-
         }
     }
 }

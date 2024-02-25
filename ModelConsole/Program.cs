@@ -3,7 +3,6 @@
 using Model;
 using Model.Tables;
 
-Console.WriteLine("Team_Test.Team()");
 League league = new();
 EventRow eventRow = league.EventTable.AddRow("my_event");
 RoundRow roundRow = eventRow.Rounds.Add();

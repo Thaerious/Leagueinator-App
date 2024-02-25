@@ -52,7 +52,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new Size(726, 279);
             this.tableLayoutPanel1.TabIndex = 0;
-            this.tableLayoutPanel1.Layout += this.LayoutEventHandler;
             // 
             // membersGrid
             // 

@@ -1,9 +1,6 @@
 ﻿using Leagueinator.Utility;
 using Model.Tables;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -51,7 +48,6 @@ namespace Model.Views {
                 }
                 if (i < fkCol.Length - 1) sb.Append(" AND ");
             }
-            Console.Write(sb.ToString() + "\n");
             return sb.ToString();
         }
 
