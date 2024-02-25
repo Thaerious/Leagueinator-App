@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Leagueinator_App\Leagueinator_App.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 

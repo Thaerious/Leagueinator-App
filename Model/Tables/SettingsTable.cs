@@ -1,7 +1,7 @@
 ﻿using System.Data;
 
 namespace Model.Tables {
-    public class SettingsTable(League league) : CustomTable(league, "settings") {
+    public class SettingsTable() : LeagueTable<CustomRow>("settings") {
         public static class COL {
             public static readonly string EVENT = "event_uid";
             public static readonly string KEY = "key";

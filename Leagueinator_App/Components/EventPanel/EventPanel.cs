@@ -46,25 +46,11 @@ namespace Leagueinator.App.Components {
             this.InitializeComponent();
         }
 
-        public LeagueEvent? LeagueEvent {
-            get => this._currentEvent;
-            set {
-                if (value == this.LeagueEvent) return;
-                this._currentEvent = value;
-                if (value == null) return;
-
-                this.flowRounds.Controls.Clear();
-
-                foreach (Round round in value.Rounds) this.AddRoundButton(round);
-                this.SelectLastRoundButton();
-            }
-        }
-
         /// <summary>
-        /// AddChild a Round to this panel.<br>
+        /// Add a Button coupled to a RoundRow.
         /// </summary>
         /// <param TagName="Round"></param>
-        private RoundButton AddRoundButton(Round round) {
+        public void AddRoundButton(RoundRow round) {
             var button = new RoundButton(round) {
                 Text = $"Round #{this.flowRounds.Controls.Count + 1}",
                 Width = (int)(this.flowRounds.Width * 0.9),
@@ -74,36 +60,8 @@ namespace Leagueinator.App.Components {
 
             this.flowRounds.Controls.Add(button);
             button.Click += (sender, args) => this.SelectRoundButton(button);
-            return button;
         }
-
-        public void HndAddRound(object _, EventArgs __) {
-            if (this.LeagueEvent is null) throw new AppStateException();
-            var round = this.LeagueEvent.NewRound();
-
-            this.CurrentRound = round;
-            var button = this.AddRoundButton(round);
-        }
-
-        public void HndDeleteRound(object _, EventArgs __) {
-            if (this.LeagueEvent is null) throw new AppStateException();
-            if (this.CurrentRound is null) throw new AppStateException();
-            this.CurrentRound.Delete();
-
-            int index = 1;
-            foreach (var button in this.flowRounds.Controls.OfType<RoundButton>()) {
-                if (button.Round == this.CurrentRound) {
-                    this.flowRounds.Controls.Remove(button);
-                    break;
-                }
-            }
-
-            foreach (var button in this.flowRounds.Controls.OfType<RoundButton>()) {
-                button.Text = $"Round #{index++}";
-            }
-
-            this.SelectLastRoundButton();
-        }
+                
 
         private void SelectLastRoundButton() {
             var buttons = this.flowRounds.Controls.OfType<RoundButton>().ToList();
@@ -118,12 +76,6 @@ namespace Leagueinator.App.Components {
 
             this.CurrentRound = button.Round;
             button.BackColor = Color.LightGreen;
-        }
-
-        private LeagueEvent? _currentEvent = null;
-
-        private void flowRounds_Paint(object sender, PaintEventArgs e) {
-
         }
     }
 

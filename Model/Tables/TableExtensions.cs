@@ -11,6 +11,20 @@ namespace Model.Tables {
                 .Any();
         }
 
+        public static bool Has<TYPE>(this DataView view, string column, TYPE value) {
+            foreach (DataRowView row in view) {
+                if (row[column].Equals(value)) return true;
+            }
+            return false;
+        }
+
+        public static DataRow? Get<TYPE>(this DataView view, string column, TYPE value) {
+            foreach (DataRowView row in view) {
+                if (row[column].Equals(value)) return row.Row;
+            }
+            return null;
+        }
+
         public static void CopyTo(this CustomRow source, DataRow target) {
             source.DataRow.CopyTo(target);
         }
@@ -32,7 +46,15 @@ namespace Model.Tables {
             return dest;
         }
 
-        public static List<T> ToList<T>(this DataTable table, string column) {
+        /// <summary>
+        /// Extract a specific column as a list of values.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public static List<T> ColValues<T>(this DataTable table, string column) {
             if (!table.Columns.Contains(column)) throw new KeyNotFoundException(column);
 
             var list = new List<T>();
@@ -44,7 +66,15 @@ namespace Model.Tables {
             return list;
         }
 
-        public static List<T> ToList<T>(this DataView view, string column) {
+        /// <summary>
+        /// Extract a specific column as a list of values.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public static List<T> ColValues<T>(this DataView view, string column) {
             if (view.Table == null) throw new NullReferenceException();
             if (!view.Table.Columns.Contains(column)) throw new KeyNotFoundException(column);
 

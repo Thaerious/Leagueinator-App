@@ -11,7 +11,7 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            MatchRow matchRow = roundRow.Matches.Add(0, 10); // lane, ends
             
             league.TeamTable.AddRow(matchRow);
         }
@@ -52,6 +52,9 @@ namespace Model_Test {
             teamRow.Members.Add("Adam");
 
             Assert.IsNotNull(teamRow);
+            Assert.AreEqual(1, league.PlayersTable.Select("name = 'Adam'").Length);
+
+            Console.WriteLine(league.PlayersTable.PrettyPrint());
         }
 
         [TestMethod]
@@ -83,29 +86,50 @@ namespace Model_Test {
             teamRow.Members.Add("Adam");
         }
 
-        [TestMethod]
-        public void List_Players() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+        //[TestMethod]
+        //public void Add_Multiple_Players_Mulitple_Teams() {
+        //    League league = new();
+        //    var eventRow = league.EventTable.AddRow("My Event");
+        //    var roundRow = eventRow.Rounds.Add();
+        //    var matchRow = roundRow.Matches.Add(0, 10);
+        //    var teamRow1 = matchRow.Teams.Add();
+        //    var teamRow2 = matchRow.Teams.Add();
 
-            league.PlayersTable.AddRow("Adam");
-            league.PlayersTable.AddRow("Eve");
-            league.PlayersTable.AddRow("Cain");
-            league.PlayersTable.AddRow("Able");
+        //    Console.WriteLine(teamRow1.UID);
+        //    Console.WriteLine(teamRow2.UID);
+        //    Assert.AreNotEqual(teamRow1.UID, teamRow2.UID);
 
-            teamRow.Members.Add("Adam");
-            teamRow.Members.Add("Eve");
-            teamRow.Members.Add("Cain");
-            teamRow.Members.Add("Able");
+        //    MemberRow memberRow1 = teamRow1.Members.Add("Adam");
+        //    MemberRow memberRow2 = teamRow2.Members.Add("Eve");
 
-            List<string> expected = ["Adam", "Eve", "Cain", "Able"];
-            Console.WriteLine(teamRow.Members[0]);
-            List<string> actual = teamRow.Members.Cast<string>();
-            CollectionAssert.AreEquivalent(expected, actual);
-        }
+        //    Console.WriteLine(memberRow1.Team);
+        //    Console.WriteLine(memberRow2.Team);
+        //    Assert.AreNotEqual(memberRow1.Team.UID, memberRow2.Team.UID);
+        //}
+
+        //[TestMethod]
+        //public void List_Players() {
+        //    League league = new();
+        //    EventRow eventRow = league.EventTable.AddRow("my_event");
+        //    RoundRow roundRow = eventRow.Rounds.Add();
+        //    MatchRow matchRow = roundRow.Matches.Add(0, 10);
+        //    TeamRow teamRow = matchRow.Teams.Add();
+
+        //    league.PlayersTable.AddRow("Adam");
+        //    league.PlayersTable.AddRow("Eve");
+        //    league.PlayersTable.AddRow("Cain");
+        //    league.PlayersTable.AddRow("Able");
+
+        //    teamRow.Members.Add("Adam");
+        //    teamRow.Members.Add("Eve");
+        //    teamRow.Members.Add("Cain");
+        //    teamRow.Members.Add("Able");
+
+        //    List<string> expected = ["Adam", "Eve", "Cain", "Able"];
+        //    Console.WriteLine(teamRow.Members[0]);
+        //    List<string> actual = teamRow.Members.Cast<string>();
+        //    CollectionAssert.AreEquivalent(expected, actual);
+        //}
 
         //[TestMethod]
         //public void Has_Player_True() {

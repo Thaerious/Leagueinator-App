@@ -1,11 +1,21 @@
 ﻿using System.Data;
+using System.Xml.Linq;
 
 namespace Model.Tables {
 
-    public class MemberRow(League league, DataRow row) : CustomRow(league, row) {
+    public class MemberRow(DataRow dataRow) : CustomRow(dataRow) {
 
         public TeamRow Team {
-            get => this.League.TeamTable.GetRow((int)this.DataRow[MembersTable.COL.TEAM]);
+            get => this.League.TeamTable.GetRow(this.Match, this.Index);
+        }
+
+        public int Index {
+            get => (int)this.DataRow[MembersTable.COL.INDEX];
+        }
+
+
+        public int Match {
+            get => (int)this.DataRow[MembersTable.COL.MATCH];
         }
 
         public string Name {
@@ -16,32 +26,43 @@ namespace Model.Tables {
         public static implicit operator string(MemberRow playerRow) => playerRow.Name;
     }
 
-    public class MembersTable(League league) : CustomTable(league, "members") {
+    public class MembersTable : LeagueTable<MemberRow> {
 
         public static class COL {
-            public static readonly string TEAM = "team";
+            public static readonly string MATCH = "match";
+            public static readonly string INDEX = "index";
             public static readonly string PLAYER = "player";
         }
 
-        public MemberRow AddRow(int team, string name) {
-            if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
-                this.League.PlayersTable.AddRow(name);
-            }
-
+        public MemberRow AddRow(int match, int index, string name) {
             var row = this.NewRow();
-            row[COL.TEAM] = team;
+            row[COL.MATCH] = match;
+            row[COL.INDEX] = index;
             row[COL.PLAYER] = name;
             this.Rows.Add(row);
-            return new(this.League, row);
+            return new(row);
         }
 
-        public ForeignKeyConstraint? FKTeam { private set; get; }
-        public ForeignKeyConstraint? FKPlayer { private set; get; }
+        public MembersTable() : base("members") {
+            this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
+                string name = (string)e.Row[COL.PLAYER];
+                if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
+                    this.League.PlayersTable.AddRow(name);
+                }
+            };
+        }
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.TEAM,
+                ColumnName = COL.MATCH,
+                Unique = false,
+                AutoIncrement = false
+            });
+
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.INDEX,
                 Unique = false,
                 AutoIncrement = false
             });
@@ -55,30 +76,10 @@ namespace Model.Tables {
 
             this.Constraints.Add(
                 new UniqueConstraint("UniqueConstraint", [
-                this.Columns[COL.TEAM]!,
+                this.Columns[COL.MATCH]!,
+                this.Columns[COL.INDEX]!,
                 this.Columns[COL.PLAYER]!
             ]));
-
-            this.FKTeam = new ForeignKeyConstraint(
-                "FK_Member_Team",
-                this.League.TeamTable.Columns[TeamTable.COL.UID]!, // Parent column
-                this.Columns[COL.TEAM]!                              // Child column
-            ) {
-                UpdateRule = Rule.Cascade,
-                DeleteRule = Rule.Cascade
-            };
-
-            this.FKPlayer = new ForeignKeyConstraint(
-                "FK_Member_Player",
-                this.League.PlayersTable.Columns[PlayersTable.COL.NAME]!, // Parent column
-                this.Columns[COL.PLAYER]!                               // Child column
-            ) {
-                UpdateRule = Rule.Cascade,
-                DeleteRule = Rule.Cascade
-            };
-
-            this.Constraints.Add(this.FKPlayer);
-            this.Constraints.Add(this.FKTeam);
         }
     }
 }

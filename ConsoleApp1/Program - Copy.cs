@@ -100,7 +100,7 @@
 //                       .Where(row => row.Field<int>(COL.EVENT) == eventDirUID)
 //                       .Where(row => row.Field<int>(COL.ROUND) == Round)
 //                       .Where(row => row.Field<string>(COL.PLAYER) == playerName)
-//                       .ToList();
+//                       .ColValues();
 
 //        if (rows.Count == 0) return null;
 //        return rows[0];
@@ -112,7 +112,7 @@
 //                           .Where(row => row.Field<int>(COL.EVENT) == eventUID)
 //                           .Where(row => row.Field<int>(COL.ROUND) == Round)
 //                           .Where(row => row.Field<string>(COL.PLAYER) == playerName)
-//                           .ToList()
+//                           .ColValues()
 //                           ;
 
 //        foreach (DataRow row in rowsToDelete) {

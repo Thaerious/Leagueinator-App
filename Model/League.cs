@@ -15,28 +15,28 @@ namespace Model {
         public IdleTable IdleTable { init; get; }
 
         public League() {
-            this.PlayersTable = new(this);
+            this.PlayersTable = new();
             this.Tables.Add(this.PlayersTable);
 
-            this.EventTable = new(this);
+            this.EventTable = new();
             this.Tables.Add(this.EventTable);
 
-            this.RoundsTable = new(this);
+            this.RoundsTable = new();
             this.Tables.Add(this.RoundsTable);
 
-            this.MatchTable = new(this);
+            this.MatchTable = new();
             this.Tables.Add(this.MatchTable);
 
-            this.TeamTable = new(this);
+            this.TeamTable = new();
             this.Tables.Add(this.TeamTable);
 
-            this.SettingsTable = new(this);
+            this.SettingsTable = new();
             this.Tables.Add(this.SettingsTable);
 
-            this.MembersTable = new(this);
+            this.MembersTable = new();
             this.Tables.Add(this.MembersTable);
 
-            this.IdleTable = new(this);
+            this.IdleTable = new();
             this.Tables.Add(this.IdleTable);
 
             this.PlayersTable.BuildColumns();
@@ -48,11 +48,13 @@ namespace Model {
             this.IdleTable.BuildColumns();
             this.MembersTable.BuildColumns();
 
-            foreach (DataTable table in this.Tables) {
-                table.RowChanged += (s, e) => {
-                    this.RowChanged.Invoke(s, e);
-                };
-            }
+            this.MembersTable.Constraints.Add(
+                new ForeignKeyConstraint(
+                    "FK_Member_Team",
+                    [this.TeamTable.Columns[TeamTable.COL.MATCH]!, this.TeamTable.Columns[TeamTable.COL.INDEX]!],
+                    [this.MembersTable.Columns[MembersTable.COL.MATCH]!, this.MembersTable.Columns[MembersTable.COL.INDEX]!]
+                )
+            );
         }
 
         public string PrettyPrint() {

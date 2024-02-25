@@ -1,6 +1,5 @@
 ﻿using Model;
 using Model.Tables;
-using System.Data;
 
 namespace Model_Test {
     [TestClass]

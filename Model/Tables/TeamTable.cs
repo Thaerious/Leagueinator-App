@@ -1,26 +1,23 @@
 ﻿using Model.Views;
 using System.Data;
+using static Model.Tables.MembersTable.COL;
 
 namespace Model.Tables {
 
     public class TeamRow : CustomRow {
 
-        public readonly ReflectedRowList<MemberRow, MembersTable, int> Members;
+        public readonly RowBoundView<MemberRow> Members;
 
-        public TeamRow(League league, DataRow row) : base(league, row) {
-            ArgumentNullException.ThrowIfNull(league.MembersTable.FKTeam);
-            InvalidTableException.CheckTable<TeamTable>(row);
-            this.Members = new(league.MembersTable.FKTeam, this);
+        public TeamRow(DataRow dataRow) : base(dataRow) {
+            this.Members = new(this.League.MembersTable, [MATCH, INDEX], [this.Match.UID, this.Index]);
         }
-
-        public int UID {
-            get => (int)this.DataRow[TeamTable.COL.UID];
-        }
-
-        public static implicit operator int(TeamRow teamRow) => teamRow.UID;
 
         public MatchRow Match {
             get => this.League.MatchTable.GetRow((int)this.DataRow[TeamTable.COL.MATCH]);
+        }
+
+        public int Index {
+            get => (int)this.DataRow[TeamTable.COL.INDEX];
         }
 
         public int Bowls {
@@ -34,41 +31,44 @@ namespace Model.Tables {
         }
     }
 
-    public class TeamTable(League league) : CustomTable(league, "teams") {
+    public class TeamTable() : LeagueTable<TeamRow>("teams") {
 
         public static class COL {
-            public static readonly string UID = "uid";
             public static readonly string MATCH = "match_uid";
+            public static readonly string INDEX = "index";
             public static readonly string BOWLS = "bowls";
             public static readonly string TIE = "tie";
         }
 
-        public ForeignKeyConstraint? FKMatch { private set; get; }
+        private int NextIndex(int match) {
+            Console.WriteLine(this.PrettyPrint("NextIndex"));
+
+            return this.AsEnumerable()
+                .Select(row => new TeamRow(row))
+                .Where((TeamRow row) => row.Match == match)
+                .Select(row => row.Index)
+                .DefaultIfEmpty(0)
+                .Max() + 1;
+        }
 
         public TeamRow AddRow(int match) {
             var row = this.NewRow();
             row[COL.MATCH] = match;
+            row[COL.INDEX] = this.NextIndex(match);
+            Console.WriteLine("index " + row[COL.INDEX]);
             this.Rows.Add(row);
-            return new(this.League, row);
+            return new(row);
         }
 
-        public TeamRow GetRow(int eventUID) {
-            var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.UID) == eventUID)
-                           .ToList();
-
-            if (rows.Count == 0) throw new KeyNotFoundException($"{COL.UID} == {eventUID}");
-            return new(this.League, rows[0]);
+        public TeamRow GetRow(int match, int index) {
+            return this.AsEnumerable()
+                       .Select(row => new TeamRow(row))
+                       .Where(row => row.Match == match)
+                       .Where(row => row.Index == index)
+                       .First();
         }
 
         public override void BuildColumns() {
-            this.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = COL.UID,
-                Unique = true,
-                AutoIncrement = true
-            });
-
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.MATCH,
@@ -92,16 +92,17 @@ namespace Model.Tables {
                 DefaultValue = 0
             });
 
-            this.FKMatch = new ForeignKeyConstraint(
-                "FK_Match_Team",
-                this.League.MatchTable.Columns[MatchTable.COL.UID]!, // Parent column
-                this.Columns[COL.MATCH]!                             // Child column
-            ) {
-                UpdateRule = Rule.Cascade,
-                DeleteRule = Rule.Cascade
-            };
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.INDEX,
+                Unique = false,
+                AutoIncrement = false
+            });
 
-            this.Constraints.Add(this.FKMatch);
+            this.Constraints.Add(new UniqueConstraint(
+                [this.Columns[COL.MATCH]!, this.Columns[COL.INDEX]!]
+                , true
+            ));
         }
     }
 }

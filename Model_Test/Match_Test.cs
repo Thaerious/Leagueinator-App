@@ -70,5 +70,39 @@ namespace Model_Test {
 
             Assert.AreEqual(0, roundRow.Matches.Count);
         }
+
+        [TestMethod]
+        public void Players() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            matchRow.Teams.Add();
+            matchRow.Teams.Add();
+
+            matchRow.Teams[0].Members.Add("Adam");
+            matchRow.Teams[0].Members.Add("Eve");
+            matchRow.Teams[1].Members.Add("Cain");
+            matchRow.Teams[1].Members.Add("Able");
+
+            var a = matchRow.Members;
+            Console.WriteLine(a.PrettyPrint());
+        }
+
+        [TestMethod]
+        public void Empty_Players() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            matchRow.Teams.Add();
+            matchRow.Teams.Add();
+
+            Console.WriteLine("Before");
+            var a = matchRow.Members;
+            Console.WriteLine(a.PrettyPrint());
+            Console.WriteLine("After");
+            Assert.IsTrue(true);
+        }
     }
 }

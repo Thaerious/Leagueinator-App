@@ -1,14 +1,25 @@
-﻿using Model.Views;
+﻿using Leagueinator.Utility;
+using Model.Views;
 using System.Data;
+using System.Diagnostics;
 
 namespace Model.Tables {
 
-    public class MatchRow : CustomRow {
-        public readonly ReflectedRowList<TeamRow, TeamTable, int> Teams;
+    public class MatchRow(DataRow dataRow) : CustomRow(dataRow) {
 
-        public MatchRow(League league, DataRow row) : base(league, row) {
-            ArgumentNullException.ThrowIfNull(this.League.TeamTable.FKMatch);
-            this.Teams = new(this.League.TeamTable.FKMatch, this.UID);
+        public DataView Members {
+            get {
+                DataView players = new DataView(this.League.MembersTable) {
+                    RowFilter = $"{MembersTable.COL.MATCH} = {this.UID}"
+                };
+                return players;
+            }
+        }
+
+        public RowBoundView<TeamRow> Teams {
+            get {
+                return new(this.League.TeamTable, TeamTable.COL.MATCH, this.UID);
+            }
         }
 
         public int UID {
@@ -32,7 +43,7 @@ namespace Model.Tables {
         }
     }
 
-    public class MatchTable(League league) : CustomTable(league, "matches") {
+    public class MatchTable() : LeagueTable<MatchRow>("matches") {
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string ROUND = "round";
@@ -46,7 +57,7 @@ namespace Model.Tables {
             row[COL.LANE] = lane;
             row[COL.ENDS] = ends;
             this.Rows.Add(row);
-            return new(this.League, row);
+            return new(row);
         }
 
         public MatchRow GetRow(int matchUID) {
@@ -55,7 +66,7 @@ namespace Model.Tables {
                            .ToList();
 
             if (rows.Count == 0) throw new KeyNotFoundException($"{COL.UID} == {matchUID}");
-            return new(this.League, rows[0]);
+            return new(rows[0]);
         }
 
         public DataRow GetRow(int eventUID, int round, int lane) {
@@ -111,5 +122,5 @@ namespace Model.Tables {
 
             this.Constraints.Add(this.FKRound);
         }
-}
+    }
 }

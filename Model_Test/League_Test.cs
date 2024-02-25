@@ -8,7 +8,7 @@ namespace Model_Test {
     public class League_Test {
 
         [TestMethod]
-        public void Sanity_Check() {
+        public void Sanity() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             Debug.WriteLine(league.PrettyPrint());           

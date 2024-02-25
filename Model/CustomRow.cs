@@ -1,9 +1,15 @@
 ﻿using System.Data;
 
 namespace Model.Tables {
-    public class CustomRow(League league, DataRow row) {
-        public readonly League League = league;
-        public readonly DataRow DataRow = row;
+    public class CustomRow(DataRow dataRow) {
+        public League League {
+            get => (League)this.DataRow.Table.DataSet!;
+        }
+        public DataRow DataRow = dataRow;
+
+        public static implicit operator DataRow?(CustomRow customRow) {
+            return customRow.DataRow;
+        }
     }
 
     public class InvalidTableException : Exception {

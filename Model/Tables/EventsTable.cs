@@ -4,12 +4,12 @@ using System.Data;
 namespace Model.Tables {
 
     public class EventRow : CustomRow {
-        public readonly ReflectedRowList<RoundRow, RoundTable, int> Rounds;
+        public readonly RowBoundView<RoundRow> Rounds;
         public readonly ReflectedRowTable<string, string> Settings;
 
-        public EventRow(League league, DataRow row) : base(league, row) {
+        public EventRow(DataRow dataRow) : base(dataRow) {
             ArgumentNullException.ThrowIfNull(this.League.RoundsTable.FKEvent);
-            this.Rounds = new(this.League.RoundsTable.FKEvent, this.UID);
+            this.Rounds = new(this.League.RoundsTable, RoundTable.COL.EVENT, this.UID);
 
             var column
                 = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT]
@@ -35,7 +35,7 @@ namespace Model.Tables {
         }
     }
 
-    public class EventsTable(League league) : CustomTable(league, "events") {
+    public class EventsTable() : LeagueTable<EventRow>("events") {
 
         public static class COL {
             public static readonly string UID = "uid";
@@ -49,21 +49,21 @@ namespace Model.Tables {
 
             row[COL.NAME] = eventName;
             row[COL.DATE] = date;
-
             this.Rows.Add(row);
-            return new EventRow(this.League, row);
+
+            return new EventRow(row);
         }
 
         public EventRow GetRow(string eventName) {
             DataRow[] foundRows = this.Select($"{COL.NAME} = '{eventName}'");
             if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.NAME} == {eventName}");
-            return new(this.League, foundRows[0]);
+            return new EventRow(foundRows[0]);
         }
 
         public EventRow GetRow(int eventUID) {
             DataRow[] foundRows = this.Select($"{COL.UID} = {eventUID}");
             if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {eventUID}");
-            return new(this.League, foundRows[0]);
+            return new EventRow(foundRows[0]);
         }
 
         public override void BuildColumns() {

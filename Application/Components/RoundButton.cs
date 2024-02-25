@@ -1,7 +1,7 @@
 ﻿using Model;
 using Model.Tables;
 
-namespace Leagueinator.App.Components {
+namespace Leagueinator.Components {
 
     /// <summary>
     /// A forms Button coupled with a RoundRow

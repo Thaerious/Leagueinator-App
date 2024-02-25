@@ -14,7 +14,7 @@ Console.ReadKey();
 void Part5() {
     Debug.WriteLine("Part 5");
     League league = new();
-    LeagueEvent leagueEvent = league.NewLeagueEvent("myEvent");
+    LeagueEvent leagueEvent = league.EventTable.AddRow("myEvent");
     var row1 = league.IdleTable.NewRow();
     row1["event_dir_uid"] = 0;
     row1["round"] = 0;

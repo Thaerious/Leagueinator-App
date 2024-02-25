@@ -4,15 +4,15 @@ using System.Data;
 namespace Model.Tables {
 
     public class RoundRow : CustomRow {
-        public readonly ReflectedRowList<IdleRow, IdleTable, int> IdlePlayers;
-        public readonly ReflectedRowList<MatchRow, MatchTable, int> Matches;
+        public readonly RowBoundView<IdleRow> IdlePlayers;
+        public readonly RowBoundView<MatchRow> Matches;
 
-        public RoundRow(League league, DataRow row) : base(league, row) {
+        public RoundRow(DataRow dataRow) : base(dataRow) {
             ArgumentNullException.ThrowIfNull(this.League.IdleTable.FKRound);
             ArgumentNullException.ThrowIfNull(this.League.MatchTable.FKRound);
 
-            this.IdlePlayers = new(this.League.IdleTable.FKRound, this.UID);
-            this.Matches = new(this.League.MatchTable.FKRound, this.UID);
+            this.IdlePlayers = new(this.League.IdleTable, IdleTable.COL.ROUND, this.UID);
+            this.Matches = new(this.League.MatchTable, MatchTable.COL.ROUND, this.UID);
         }
 
         public int UID {
@@ -26,7 +26,7 @@ namespace Model.Tables {
         }
     }
 
-    public class RoundTable(League league) : CustomTable(league, "rounds") {
+    public class RoundTable() : LeagueTable<RoundRow>("rounds") {
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string EVENT = "event_uid";
@@ -38,7 +38,7 @@ namespace Model.Tables {
             var row = this.NewRow();
             row[COL.EVENT] = eventUID;
             this.Rows.Add(row);
-            return new(this.League, row);
+            return new(row);
         }
 
         public override void BuildColumns() {
@@ -70,7 +70,7 @@ namespace Model.Tables {
         internal RoundRow GetRow(int roundUID) {
             DataRow[] foundRows = this.Select($"{COL.UID} = {roundUID}");
             if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {roundUID}");
-            return new(this.League, foundRows[0]);
+            return new(foundRows[0]);
         }
     }
 }

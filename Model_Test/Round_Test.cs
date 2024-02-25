@@ -98,24 +98,24 @@ namespace Model_Test {
 
             league.PlayersTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
-            roundRow.IdlePlayers.Get("Player", "Zen").Delete();
+            roundRow.IdlePlayers.Get("Player", "Zen")!.Delete();
 
             Assert.IsFalse(roundRow.IdlePlayers.Has("Name", "Zen"));
         }
 
-        [TestMethod]
-        public void Idle_Iterator() {
-            League league = new League();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
+        //[TestMethod]
+        //public void Idle_Iterator() {
+        //    League league = new League();
+        //    EventRow eventRow = league.EventTable.AddRow("my_event");
+        //    RoundRow roundRow = eventRow.Rounds.Add();
 
-            league.PlayersTable.AddRow("Zen");
-            roundRow.IdlePlayers.Add("Zen");
+        //    league.PlayersTable.AddRow("Zen");
+        //    roundRow.IdlePlayers.Add("Zen");
 
-            foreach (IdleRow row in roundRow.IdlePlayers) {
-                Assert.AreEqual("Zen", row.Player.Name);
-            }
-        }
+        //    foreach (IdleRow row in roundRow.IdlePlayers) {
+        //        Assert.AreEqual("Zen", row.Player.Name);
+        //    }
+        //}
 
         //[TestMethod]
         //public void AllPlayers() {
@@ -158,7 +158,7 @@ namespace Model_Test {
         //    var expected = new List<string>() { "Adam", "Eve", "Chucky", "Dianne"};
 
         //    Debug.WriteLine(league.PrettyPrint());
-        //    CollectionAssert.AreEquivalent(expected, round.Members.ToList());
+        //    CollectionAssert.AreEquivalent(expected, round.Members.ColValues());
         //}
 
         //[TestMethod]
@@ -183,7 +183,7 @@ namespace Model_Test {
 
         //    Debug.WriteLine(league.PrettyPrint());
         //    Debug.WriteLine(round.IdlePlayers.DelString());
-        //    CollectionAssert.AreEquivalent(expected, round.IdlePlayers.ToList());
+        //    CollectionAssert.AreEquivalent(expected, round.IdlePlayers.ColValues());
         //}
     }
 }

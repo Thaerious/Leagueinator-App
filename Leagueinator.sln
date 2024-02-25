@@ -5,11 +5,6 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_Utility", "Leagueinator_Utility\Leagueinator_Utility.csproj", "{843B1448-8BFD-48C5-8013-55565631A750}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator_App", "Leagueinator_App\Leagueinator_App.csproj", "{553E6015-35F0-42B9-8666-59B46C924D39}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6240048D-BFBC-41A7-84DD-0329D064DE74} = {6240048D-BFBC-41A7-84DD-0329D064DE74}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Printer", "Printer\Printer.csproj", "{80487A98-7BA7-4F7A-99FC-B17F3D41330F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterTestForm", "PrinterTestForm\PrinterTestForm.csproj", "{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}"
@@ -17,8 +12,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterTestForm", "PrinterT
 		{2B76CD12-B058-441B-B2C5-4C90B2DCD710} = {2B76CD12-B058-441B-B2C5-4C90B2DCD710}
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F} = {80487A98-7BA7-4F7A-99FC-B17F3D41330F}
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "ConsoleApp1\Console.csproj", "{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterComponents", "PrinterComponents\PrinterComponents.csproj", "{2B76CD12-B058-441B-B2C5-4C90B2DCD710}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -29,9 +22,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_Model", "Model_Test\Test_Model.csproj", "{7AFA2A9E-1CEC-46CD-BD24-61EE606942E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_App", "Test_App\Test_App.csproj", "{5F99F34C-1DFE-4E14-9241-87935D193A7B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Printer_Dev_Form", "Printer_Dev_Form\Printer_Dev_Form.csproj", "{FD81E93E-5433-4DC9-8CBB-FBCC2B06CBB3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainApplication", "Application\MainApplication.csproj", "{9CA85741-E6B9-4852-A9B1-7D19D0DECD80}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6240048D-BFBC-41A7-84DD-0329D064DE74} = {6240048D-BFBC-41A7-84DD-0329D064DE74}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelConsole", "ModelConsole\ModelConsole.csproj", "{A10E04FF-2CBE-4576-8504-4CF95B97964F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +41,6 @@ Global
 		{843B1448-8BFD-48C5-8013-55565631A750}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{843B1448-8BFD-48C5-8013-55565631A750}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{843B1448-8BFD-48C5-8013-55565631A750}.Release|Any CPU.Build.0 = Release|Any CPU
-		{553E6015-35F0-42B9-8666-59B46C924D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{553E6015-35F0-42B9-8666-59B46C924D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{553E6015-35F0-42B9-8666-59B46C924D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{553E6015-35F0-42B9-8666-59B46C924D39}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,10 +49,6 @@ Global
 		{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFFCD72F-89A5-4A46-8D21-9C3BA1C38D35}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,14 +61,18 @@ Global
 		{7AFA2A9E-1CEC-46CD-BD24-61EE606942E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AFA2A9E-1CEC-46CD-BD24-61EE606942E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AFA2A9E-1CEC-46CD-BD24-61EE606942E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F99F34C-1DFE-4E14-9241-87935D193A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F99F34C-1DFE-4E14-9241-87935D193A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F99F34C-1DFE-4E14-9241-87935D193A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F99F34C-1DFE-4E14-9241-87935D193A7B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD81E93E-5433-4DC9-8CBB-FBCC2B06CBB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FD81E93E-5433-4DC9-8CBB-FBCC2B06CBB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD81E93E-5433-4DC9-8CBB-FBCC2B06CBB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD81E93E-5433-4DC9-8CBB-FBCC2B06CBB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CA85741-E6B9-4852-A9B1-7D19D0DECD80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CA85741-E6B9-4852-A9B1-7D19D0DECD80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CA85741-E6B9-4852-A9B1-7D19D0DECD80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CA85741-E6B9-4852-A9B1-7D19D0DECD80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A10E04FF-2CBE-4576-8504-4CF95B97964F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A10E04FF-2CBE-4576-8504-4CF95B97964F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A10E04FF-2CBE-4576-8504-4CF95B97964F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A10E04FF-2CBE-4576-8504-4CF95B97964F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
