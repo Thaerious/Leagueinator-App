@@ -34,7 +34,7 @@ namespace Model.Tables {
     public class TeamTable() : LeagueTable<TeamRow>("teams") {
 
         public static class COL {
-            public static readonly string MATCH = "match_uid";
+            public static readonly string MATCH = "match";
             public static readonly string INDEX = "index";
             public static readonly string BOWLS = "bowls";
             public static readonly string TIE = "tie";
@@ -75,6 +75,13 @@ namespace Model.Tables {
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
+                ColumnName = COL.INDEX,
+                Unique = false,
+                AutoIncrement = false
+            });
+
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
                 ColumnName = COL.BOWLS,
                 Unique = false,
                 AutoIncrement = false,
@@ -87,13 +94,6 @@ namespace Model.Tables {
                 Unique = false,
                 AutoIncrement = false,
                 DefaultValue = 0
-            });
-
-            this.Columns.Add(new DataColumn {
-                DataType = typeof(int),
-                ColumnName = COL.INDEX,
-                Unique = false,
-                AutoIncrement = false
             });
 
             this.Constraints.Add(new UniqueConstraint(

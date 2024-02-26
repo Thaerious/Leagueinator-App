@@ -31,6 +31,7 @@
             this.flowRounds = new FlowLayoutPanel();
             this.flowLayoutPanel1 = new FlowLayoutPanel();
             this.matchCard1 = new MatchCard();
+            this.matchCard2 = new MatchCard();
             this.rootLayout.SuspendLayout();
             this.layoutRounds.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -119,6 +120,7 @@
             // 
             this.flowLayoutPanel1.BackColor = Color.FromArgb(255, 192, 192);
             this.flowLayoutPanel1.Controls.Add(this.matchCard1);
+            this.flowLayoutPanel1.Controls.Add(this.matchCard2);
             this.flowLayoutPanel1.Dock = DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new Point(627, 3);
@@ -129,11 +131,21 @@
             // 
             // matchCard1
             // 
+            this.matchCard1.Controller = null;
             this.matchCard1.Lane = 0;
             this.matchCard1.Location = new Point(3, 3);
             this.matchCard1.Name = "matchCard1";
             this.matchCard1.Size = new Size(931, 171);
             this.matchCard1.TabIndex = 0;
+            // 
+            // matchCard2
+            // 
+            this.matchCard2.Controller = null;
+            this.matchCard2.Lane = 1;
+            this.matchCard2.Location = new Point(3, 180);
+            this.matchCard2.Name = "matchCard2";
+            this.matchCard2.Size = new Size(931, 171);
+            this.matchCard2.TabIndex = 1;
             // 
             // EventPanel
             // 
@@ -158,5 +170,6 @@
         private FlowLayoutPanel flowIdlePlayers;
         private FlowLayoutPanel flowLayoutPanel1;
         public MatchCard matchCard1;
+        public MatchCard matchCard2;
     }
 }
