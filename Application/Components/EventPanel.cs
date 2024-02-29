@@ -1,11 +1,13 @@
-﻿using Model.Tables;
+﻿using Leagueinator.Utility;
+using Model;
+using Model.Tables;
 using System;
 using System.ComponentModel;
 using System.Numerics;
 
 namespace Leagueinator.Components {
     public partial class EventPanel : UserControl {
-        private Controller? _controller;
+        private EventRow? _eventRow;
         private RoundRow? currentRound;
 
         public EventPanel() {
@@ -31,16 +33,25 @@ namespace Leagueinator.Components {
         }
 
         [Category("Custom Properties")]
-        [Description("Model Controller.")]
-        public Controller? Controller {
-            get => _controller;
+        public EventRow? EventRow {
+            get => _eventRow;
             set {
-                if (_controller == value) return;
-                _controller = value;
+                if (_eventRow == value) return;
+                _eventRow = value;
                 if (value == null) return;
 
-                value.OnAddRound += this.OnAddRound;
+                foreach (RoundRow roundRow in value.Rounds) {
+                    this.OnAddRound(roundRow);
+                }
+
+                this.EventRow.League.RoundTable.RowChanged += this.RoundTable_RowChanged;
             }
+        }
+
+        private void RoundTable_RowChanged(object sender, System.Data.DataRowChangeEventArgs e) {
+            if (this.EventRow is null) return;
+            if ((int)e.Row[RoundTable.COL.EVENT] != this.EventRow.UID) return;
+            this.OnAddRound(new RoundRow(e.Row));
         }
 
         private void OnAddRound(RoundRow roundRow) {
@@ -51,14 +62,13 @@ namespace Leagueinator.Components {
             button.Height = 35;
             button.Width = 280;
 
-            button.Click += this.RoundButtonClick;           
+            button.Click += this.RoundButtonClick;
         }
 
         private void RoundButtonClick(object? sender, EventArgs e) {
             if (sender is null) return;
             RoundRow roundRow = (sender as RoundButton)!.Round;
-            Console.WriteLine(roundRow.Matches.PrettyPrint());
-
+            
             this.currentRound = roundRow;
             this.SetIdlePlayers(roundRow);
 
@@ -67,9 +77,9 @@ namespace Leagueinator.Components {
             }
 
             foreach (MatchRow matchRow in roundRow.Matches) {
-                this.GetControls<MatchCard>("Lane", matchRow.Lane)
-                .First()
-                .MatchRow = matchRow;
+                Console.WriteLine(matchRow.DataRow.PrettyPrint());
+                var controls = this.GetControls<MatchCard>("Lane", matchRow.Lane).ToList();
+                if (controls.IsNotEmpty()) controls[0].MatchRow = matchRow;
             }
         }
 
@@ -84,6 +94,12 @@ namespace Leagueinator.Components {
                             - this.flowLayoutPanel1.Padding.Horizontal
                             - child.Margin.Horizontal;
             }
+        }
+
+        private void AddRound_Click(object sender, EventArgs e) {
+            if (this.EventRow is null) return;            
+            RoundRow row = this.EventRow.Rounds.Add();
+            row.PopulateMatches();
         }
     }
 }

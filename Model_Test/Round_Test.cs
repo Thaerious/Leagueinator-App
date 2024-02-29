@@ -25,6 +25,35 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Populate_Matches() {
+            League league = new League();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+
+            eventRow.Settings["ends"] = "15";
+            eventRow.Settings["matches"] = "8";
+            Console.WriteLine(league.SettingsTable.PrettyPrint());
+            roundRow.PopulateMatches();
+
+            Assert.AreEqual(8, roundRow.Matches.Count);
+
+            Console.WriteLine(league.MatchTable.PrettyPrint());
+        }
+
+        [TestMethod]
+        public void Populate_Matches_Default_Ends() {
+            League league = new League();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+
+            Console.WriteLine(league.SettingsTable.PrettyPrint());
+            roundRow.PopulateMatches();
+
+            Assert.AreEqual(8, roundRow.Matches.Count);
+            Console.WriteLine(league.MatchTable.PrettyPrint());
+        }
+
+        [TestMethod]
         public void Empty_Round_Get_Matches() {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");

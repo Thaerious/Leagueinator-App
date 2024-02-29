@@ -21,6 +21,32 @@ namespace Model.Tables {
         public EventRow Event {
             get => this.League.EventTable.GetRow((int)this.DataRow[RoundTable.COL.EVENT]);
         }
+
+        public RoundRow PopulateMatches() {
+            int matchCount = int.Parse(this.Event.Settings["match_count"] ?? "8");
+
+            while (this.Matches.Count <= matchCount) {
+                int ends = int.Parse(this.Event.Settings["ends"] ?? "10");
+                this.Matches.Add(this.NextLane(), ends);
+            }
+
+            return this;
+        }
+        
+        /// <summary>
+        /// Return a 1-indexed value for the next lane.
+        /// The next lane is one larger than the largest lane value.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
+        private int NextLane() {
+            int next = 0;
+            foreach (MatchRow matchRow in this.Matches) {
+                if (next <= matchRow.Lane) next = matchRow.Lane + 1;
+            }
+
+            return next;
+        }
     }
 
     public class RoundTable() : LeagueTable<RoundRow>("rounds") {

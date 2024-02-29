@@ -5,7 +5,7 @@ namespace Model.Tables {
 
     public class EventRow : CustomRow {
         public readonly RowBoundView<RoundRow> Rounds;
-        public readonly ReflectedRowTable<string, string> Settings;
+        public readonly ReflectedRowTable Settings;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
             this.Rounds = new(this.League.RoundTable, RoundTable.COL.EVENT, this.UID);

@@ -1,49 +1,48 @@
-﻿using Model.Tables;
+﻿using Model;
+using Model.Tables;
 using System.Data;
 
 namespace Leagueinator.Components {
     public partial class FormMain : Form {
+
+        private League model;
+
         public FormMain() {
             InitializeComponent();
-            this.eventPanel1.Controller = this.modelController;
+            this.model = new MockModel();
+            this.eventPanel1.EventRow = model.EventTable.GetRow(0);
         }
 
         private void HndMenuViewTeams(object sender, EventArgs e) {
-            new FormViewTable().Show("Teams", this.modelController.League.TeamTable);
+            new FormViewTable().Show("Teams", this.model.TeamTable);
         }
 
         private void HndMenuViewPlayers(object sender, EventArgs e) {
-            new FormViewTable().Show("Players", this.modelController.League.PlayerTable);
+            new FormViewTable().Show("Players", this.model.PlayerTable);
         }
 
         private void HndMenuViewMembers(object sender, EventArgs e) {
-            new FormViewTable().Show("Members", this.modelController.League.MemberTable);
-        }
-
-        private void matchTableToolStripMenuItem_Click(object sender, EventArgs e) {
-            DataView dataSource = (DataView)this.eventPanel1.matchCard1.membersGrid.DataSource;
-            DataTable sourceTable = dataSource.Table;
-            MemberTable membersTable = modelController.League.MemberTable;
+            new FormViewTable().Show("Members", this.model.MemberTable);
         }
 
         private void HndMenuViewEvents(object sender, EventArgs e) {
-            new FormViewTable().Show("Events", this.modelController.League.EventTable);
+            new FormViewTable().Show("Events", this.model.EventTable);
         }
 
         private void HndMenuViewRounds(object sender, EventArgs e) {
-            new FormViewTable().Show("Rounds", this.modelController.League.RoundTable);
+            new FormViewTable().Show("Rounds", this.model.RoundTable);
         }
 
         private void HndMenuViewMatches(object sender, EventArgs e) {
-            new FormViewTable().Show("Matches", this.modelController.League.MatchTable);
+            new FormViewTable().Show("Matches", this.model.MatchTable);
         }
 
         private void HndMenuViewIdle(object sender, EventArgs e) {
-            new FormViewTable().Show("Idle Players", this.modelController.League.IdleTable);
+            new FormViewTable().Show("Idle Players", this.model.IdleTable);
         }
 
         private void HndMenuViewSettings(object sender, EventArgs e) {
-            new FormViewTable().Show("Settings", this.modelController.League.SettingsTable);
+            new FormViewTable().Show("Settings", this.model.SettingsTable);
         }
     }
 }

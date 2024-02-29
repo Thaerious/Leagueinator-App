@@ -10,7 +10,7 @@ namespace Model.Views {
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="V"></typeparam>
-    public class ReflectedRowTable<K, V> {
+    public class ReflectedRowTable {
         internal readonly DataView view;
         private readonly DataColumn fkCol;
         private readonly object fkVal;
@@ -52,22 +52,22 @@ namespace Model.Views {
             return new(_keyCol, _valCol);
         }
 
-        public V? this[K key] {
+        public string this[string key] {
             get => this.Get(key);
             set => this.Set(key, value);
         }
 
-        private V? Get(K key) {
+        private string Get(string key) {
             if (!this.HasKey(key)) return default;
 
-            return (V?)this.view
+            return (string)this.view
                 .ToTable()
                 .AsEnumerable()
                 .Where(row => row[this.keyCol.ColumnName].Equals(key))
                 .First()[this.valCol.ColumnName];
         }
 
-        public bool HasKey(K key) {
+        public bool HasKey(string key) {
             return this.view
                 .ToTable()
                 .AsEnumerable()
@@ -75,7 +75,7 @@ namespace Model.Views {
                 .Any();
         }
 
-        public bool Delete(K key) {
+        public bool Delete(string key) {
             foreach (DataRowView rowView in this.view) {
                 if (rowView[this.keyCol.ColumnName].Equals(key)) {
                     rowView.Delete();
@@ -86,7 +86,7 @@ namespace Model.Views {
             return false;
         }
 
-        private void Set(K key, V? value) {
+        private void Set(string key, string value) {
             if (value == null) {
                 this.Delete(key);
                 return;

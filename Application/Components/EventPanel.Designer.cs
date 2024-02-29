@@ -87,6 +87,7 @@
             this.butAddRound.TabIndex = 0;
             this.butAddRound.Text = "Add Round";
             this.butAddRound.UseVisualStyleBackColor = true;
+            this.butAddRound.Click += this.AddRound_Click;
             // 
             // butRemoveRound
             // 
@@ -127,6 +128,7 @@
             // 
             this.matchCard1.Lane = 0;
             this.matchCard1.Location = new Point(3, 3);
+            this.matchCard1.MatchRow = null;
             this.matchCard1.Name = "matchCard1";
             this.matchCard1.Size = new Size(931, 171);
             this.matchCard1.TabIndex = 0;
@@ -135,6 +137,7 @@
             // 
             this.matchCard2.Lane = 1;
             this.matchCard2.Location = new Point(3, 180);
+            this.matchCard2.MatchRow = null;
             this.matchCard2.Name = "matchCard2";
             this.matchCard2.Size = new Size(931, 171);
             this.matchCard2.TabIndex = 1;
@@ -143,6 +146,7 @@
             // 
             this.matchCard3.Lane = 2;
             this.matchCard3.Location = new Point(3, 357);
+            this.matchCard3.MatchRow = null;
             this.matchCard3.Name = "matchCard3";
             this.matchCard3.Size = new Size(931, 171);
             this.matchCard3.TabIndex = 2;
@@ -151,6 +155,7 @@
             // 
             this.matchCard4.Lane = 3;
             this.matchCard4.Location = new Point(3, 534);
+            this.matchCard4.MatchRow = null;
             this.matchCard4.Name = "matchCard4";
             this.matchCard4.Size = new Size(931, 171);
             this.matchCard4.TabIndex = 3;
@@ -160,7 +165,7 @@
             this.idleDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.idleDataGrid.Dock = DockStyle.Fill;
             this.idleDataGrid.Location = new Point(303, 3);
-            this.idleDataGrid.Name = "dataGridIdle";
+            this.idleDataGrid.Name = "idleDataGrid";
             this.idleDataGrid.RowHeadersWidth = 62;
             this.idleDataGrid.Size = new Size(310, 890);
             this.idleDataGrid.TabIndex = 4;

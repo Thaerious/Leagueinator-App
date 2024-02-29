@@ -36,13 +36,11 @@
             this.settingsToolStripMenuItem = new ToolStripMenuItem();
             this.debugToolStripMenuItem = new ToolStripMenuItem();
             this.matchTableToolStripMenuItem = new ToolStripMenuItem();
-            this.modelController = new Controller();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // eventPanel1
             // 
-            this.eventPanel1.Controller = null;
             this.eventPanel1.Dock = DockStyle.Fill;
             this.eventPanel1.Location = new Point(0, 33);
             this.eventPanel1.Name = "eventPanel1";
@@ -134,7 +132,7 @@
             this.matchTableToolStripMenuItem.Name = "matchTableToolStripMenuItem";
             this.matchTableToolStripMenuItem.Size = new Size(203, 34);
             this.matchTableToolStripMenuItem.Text = "MatchTable";
-            this.matchTableToolStripMenuItem.Click += this.matchTableToolStripMenuItem_Click;
+            this.matchTableToolStripMenuItem.Click += this.HndMenuViewMatches;
             // 
             // FormMain
             // 
@@ -167,6 +165,5 @@
         private ToolStripMenuItem matchesToolStripMenuItem;
         private ToolStripMenuItem idleToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
-        private Controller modelController;
     }
 }
