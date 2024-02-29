@@ -8,9 +8,6 @@ namespace Model.Tables {
         public readonly RowBoundView<MatchRow> Matches;
 
         public RoundRow(DataRow dataRow) : base(dataRow) {
-            ArgumentNullException.ThrowIfNull(this.League.IdleTable.FKRound);
-            ArgumentNullException.ThrowIfNull(this.League.MatchTable.FKRound);
-
             this.IdlePlayers = new(this.League.IdleTable, IdleTable.COL.ROUND, this.UID);
             this.Matches = new(this.League.MatchTable, MatchTable.COL.ROUND, this.UID);
         }
@@ -27,12 +24,16 @@ namespace Model.Tables {
     }
 
     public class RoundTable() : LeagueTable<RoundRow>("rounds") {
+        public IEnumerable<RoundRow> Rounds {
+            get {
+                return this.AsEnumerable().Select(row => new RoundRow(row));
+            }
+        }
+
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string EVENT = "event_uid";
         }
-
-        internal ForeignKeyConstraint? FKEvent { private set; get; }
 
         public RoundRow AddRow(int eventUID) {
             var row = this.NewRow();
@@ -54,17 +55,6 @@ namespace Model.Tables {
                 ColumnName = COL.EVENT,
                 Unique = false
             });
-
-            this.FKEvent = new ForeignKeyConstraint(
-                "FK_Event_Round",
-                this.League.EventTable.Columns[EventsTable.COL.UID]!, // Parent column
-                this.Columns[COL.EVENT]!                              // Child column
-            ) {
-                UpdateRule = Rule.Cascade,
-                DeleteRule = Rule.Cascade
-            };
-
-            this.Constraints.Add(this.FKEvent);
         }
 
         internal RoundRow GetRow(int roundUID) {

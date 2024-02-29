@@ -10,23 +10,23 @@ namespace Model.Tables {
         }
 
         public int Index {
-            get => (int)this.DataRow[MembersTable.COL.INDEX];
+            get => (int)this.DataRow[MemberTable.COL.INDEX];
         }
 
 
         public int Match {
-            get => (int)this.DataRow[MembersTable.COL.MATCH];
+            get => (int)this.DataRow[MemberTable.COL.MATCH];
         }
 
-        public string Name {
-            get => (string)this.DataRow[MembersTable.COL.PLAYER];
-            set => this.DataRow[MembersTable.COL.PLAYER] = value;
+        public string Player {
+            get => (string)this.DataRow[MemberTable.COL.PLAYER];
+            set => this.DataRow[MemberTable.COL.PLAYER] = value;
         }
 
-        public static implicit operator string(MemberRow playerRow) => playerRow.Name;
+        public static implicit operator string(MemberRow playerRow) => playerRow.Player;
     }
 
-    public class MembersTable : LeagueTable<MemberRow> {
+    public class MemberTable : LeagueTable<MemberRow> {
 
         public static class COL {
             public static readonly string MATCH = "match";
@@ -39,15 +39,18 @@ namespace Model.Tables {
             row[COL.MATCH] = match;
             row[COL.INDEX] = index;
             row[COL.PLAYER] = name;
+
+            this.League.EnforceConstraints = false;
             this.Rows.Add(row);
+            this.League.EnforceConstraints = true;
             return new(row);
         }
 
-        public MembersTable() : base("members") {
+        public MemberTable() : base("members") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
-                if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
-                    this.League.PlayersTable.AddRow(name);
+                if (!this.League.PlayerTable.Has(PlayerTable.COL.NAME, name)) {
+                    this.League.PlayerTable.AddRow(name);
                 }
             };
         }

@@ -5,10 +5,45 @@ namespace Model.Tables {
 
     public static class TableExtensions {
 
+        public static string BuildRowFilter(DataColumn[] fkCol, object[] fkVal) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < fkCol.Length; i++) {
+                if (fkVal.GetType() == typeof(string)) {
+                    sb.Append($"{fkCol[i].ColumnName} = '{fkVal[i]}' ");
+                }
+                else {
+                    sb.Append($"{fkCol[i].ColumnName} = {fkVal[i]} ");
+                }
+                if (i < fkCol.Length - 1) sb.Append(" AND ");
+            }
+            return sb.ToString();
+        }
+
+        public static string BuildRowFilter(string[] fkCol, object[] fkVal) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < fkCol.Length; i++) {
+                if (fkVal.GetType() == typeof(string)) {
+                    sb.Append($"{fkCol[i]} = '{fkVal[i]}' ");
+                }
+                else {
+                    sb.Append($"{fkCol[i]} = {fkVal[i]} ");
+                }
+                if (i < fkCol.Length - 1) sb.Append(" AND ");
+            }
+            return sb.ToString();
+        }
+
         public static bool Has<TYPE>(this DataTable table, string column, TYPE value) {
             return table.AsEnumerable()
                 .Where(row => row[column].Equals(value))
                 .Any();
+        }
+
+        public static bool Has(this DataTable table, string[] column, object[] value) {
+            DataView dataView = new DataView(table) {
+                RowFilter = TableExtensions.BuildRowFilter(column, value)
+            };
+            return dataView.Count > 0;            
         }
 
         public static bool Has<TYPE>(this DataView view, string column, TYPE value) {

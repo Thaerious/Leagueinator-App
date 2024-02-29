@@ -35,10 +35,27 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
 
-            league.PlayersTable.AddRow("Adam");
+            league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
 
             Assert.IsNotNull(teamRow);
+        }
+
+        [TestMethod]
+        public void Rename_Player() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+
+            MemberRow memberRow = teamRow.Members.Add("Adam");
+            league.PlayerTable.GetRow("Adam").Name = "Able";
+
+            Assert.AreEqual("Able", memberRow.Player);
+
+            Console.WriteLine(league.PlayerTable.PrettyPrint());
+            Console.WriteLine(league.MemberTable.PrettyPrint());
         }
 
         [TestMethod]
@@ -52,9 +69,9 @@ namespace Model_Test {
             teamRow.Members.Add("Adam");
 
             Assert.IsNotNull(teamRow);
-            Assert.AreEqual(1, league.PlayersTable.Select("name = 'Adam'").Length);
+            Assert.AreEqual(1, league.PlayerTable.Select("name = 'Adam'").Length);
 
-            Console.WriteLine(league.PlayersTable.PrettyPrint());
+            Console.WriteLine(league.PlayerTable.PrettyPrint());
         }
 
         [TestMethod]
@@ -65,10 +82,10 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
 
-            league.PlayersTable.AddRow("Adam");
+            league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
 
-            Assert.AreEqual("Adam", teamRow.Members[0].Name);
+            Assert.AreEqual("Adam", teamRow.Members[0].Player);
         }
 
         [TestMethod]
@@ -80,7 +97,7 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
 
-            league.PlayersTable.AddRow("Adam");
+            league.PlayerTable.AddRow("Adam");
 
             teamRow.Members.Add("Adam");
             teamRow.Members.Add("Adam");
@@ -115,10 +132,10 @@ namespace Model_Test {
         //    MatchRow matchRow = roundRow.Matches.Add(0, 10);
         //    TeamRow teamRow = matchRow.Teams.Add();
 
-        //    league.PlayersTable.AddRow("Adam");
-        //    league.PlayersTable.AddRow("Eve");
-        //    league.PlayersTable.AddRow("Cain");
-        //    league.PlayersTable.AddRow("Able");
+        //    league.PlayerTable.AddRow("Adam");
+        //    league.PlayerTable.AddRow("Eve");
+        //    league.PlayerTable.AddRow("Cain");
+        //    league.PlayerTable.AddRow("Able");
 
         //    teamRow.Members.Add("Adam");
         //    teamRow.Members.Add("Eve");

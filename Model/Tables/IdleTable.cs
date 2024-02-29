@@ -9,7 +9,7 @@ namespace Model.Tables {
         }
 
         public PlayerRow Player {
-            get => this.League.PlayersTable.GetRow((string)this.DataRow[IdleTable.COL.PLAYER]);
+            get => this.League.PlayerTable.GetRow((string)this.DataRow[IdleTable.COL.PLAYER]);
         }
 
         public int Round {
@@ -25,16 +25,14 @@ namespace Model.Tables {
         }
 
         public IdleRow AddRow(int round, string name) {
-            if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
-                this.League.PlayersTable.AddRow(name);
-            }
-
             var row = this.NewRow();
 
             row[COL.ROUND] = round;
             row[COL.PLAYER] = name;
 
+            this.League.EnforceConstraints = false;
             this.Rows.Add(row);
+            this.League.EnforceConstraints = true;
             return new(row);
         }
 
@@ -60,14 +58,12 @@ namespace Model.Tables {
                 this.Rows.Remove(row);
             }
         }
-
-        public ForeignKeyConstraint? FKRound { private set; get; }
-
+        
         public IdleTable() : base("idle_players") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
-                if (!this.League.PlayersTable.Has(PlayersTable.COL.NAME, name)) {
-                    this.League.PlayersTable.AddRow(name);
+                if (!this.League.PlayerTable.Has(PlayerTable.COL.NAME, name)) {
+                    this.League.PlayerTable.AddRow(name);
                 }
             };
         }
@@ -92,17 +88,6 @@ namespace Model.Tables {
                 this.Columns[COL.ROUND]!,
                 this.Columns[COL.PLAYER]!
             ]));
-
-            this.FKRound = new ForeignKeyConstraint(
-                "FK_Idle_Round",
-                this.League.RoundsTable.Columns[RoundTable.COL.UID]!, // Parent column
-                this.Columns[COL.ROUND]!                              // Child column
-            ) {
-                UpdateRule = Rule.Cascade,
-                DeleteRule = Rule.Cascade
-            };
-
-            this.Constraints.Add(this.FKRound);
         }
     }
 }

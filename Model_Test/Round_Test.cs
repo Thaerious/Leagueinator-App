@@ -73,7 +73,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            league.PlayersTable.AddRow("Zen");
+            league.PlayerTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
 
             Assert.IsTrue(roundRow.IdlePlayers.Has("Player", "Zen"));
@@ -96,7 +96,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            league.PlayersTable.AddRow("Zen");
+            league.PlayerTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
             roundRow.IdlePlayers.Get("Player", "Zen")!.Delete();
 
@@ -109,11 +109,11 @@ namespace Model_Test {
         //    EventRow eventRow = league.EventTable.AddRow("my_event");
         //    RoundRow roundRow = eventRow.Rounds.Add();
 
-        //    league.PlayersTable.AddRow("Zen");
+        //    league.PlayerTable.AddRow("Zen");
         //    roundRow.IdlePlayers.Add("Zen");
 
         //    foreach (IdleRow row in roundRow.IdlePlayers) {
-        //        Assert.AreEqual("Zen", row.Player.Name);
+        //        Assert.AreEqual("Zen", row.Player.Player);
         //    }
         //}
 

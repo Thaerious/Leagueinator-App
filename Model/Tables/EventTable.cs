@@ -8,8 +8,7 @@ namespace Model.Tables {
         public readonly ReflectedRowTable<string, string> Settings;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
-            ArgumentNullException.ThrowIfNull(this.League.RoundsTable.FKEvent);
-            this.Rounds = new(this.League.RoundsTable, RoundTable.COL.EVENT, this.UID);
+            this.Rounds = new(this.League.RoundTable, RoundTable.COL.EVENT, this.UID);
 
             var column
                 = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT]
@@ -19,23 +18,23 @@ namespace Model.Tables {
         }
 
         public int UID {
-            get => (int)this.DataRow[EventsTable.COL.UID];
+            get => (int)this.DataRow[EventTable.COL.UID];
         }
 
         public static implicit operator int(EventRow eventRow) => eventRow.UID;
 
         public string Name {
-            get => (string)this.DataRow[EventsTable.COL.NAME];
-            set => this.DataRow[EventsTable.COL.NAME] = value;
+            get => (string)this.DataRow[EventTable.COL.NAME];
+            set => this.DataRow[EventTable.COL.NAME] = value;
         }
 
         public string Date {
-            get => (string)this.DataRow[EventsTable.COL.DATE];
-            set => this.DataRow[EventsTable.COL.DATE] = value;
+            get => (string)this.DataRow[EventTable.COL.DATE];
+            set => this.DataRow[EventTable.COL.DATE] = value;
         }
     }
 
-    public class EventsTable() : LeagueTable<EventRow>("events") {
+    public class EventTable() : LeagueTable<EventRow>("events") {
 
         public static class COL {
             public static readonly string UID = "uid";

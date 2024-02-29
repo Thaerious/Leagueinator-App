@@ -9,8 +9,8 @@ namespace Model.Tables {
 
         public DataView Members {
             get {
-                DataView players = new DataView(this.League.MembersTable) {
-                    RowFilter = $"{MembersTable.COL.MATCH} = {this.UID}"
+                DataView players = new DataView(this.League.MemberTable) {
+                    RowFilter = $"{MemberTable.COL.MATCH} = {this.UID}"
                 };
                 return players;
             }
@@ -29,7 +29,7 @@ namespace Model.Tables {
         public static implicit operator int(MatchRow matchRow) => matchRow.UID;
 
         public RoundRow Round {
-            get => this.League.RoundsTable.GetRow((int)this.DataRow[MatchTable.COL.ROUND]);
+            get => this.League.RoundTable.GetRow((int)this.DataRow[MatchTable.COL.ROUND]);
         }
 
         public int Lane {
@@ -80,8 +80,6 @@ namespace Model.Tables {
             return rows[0];
         }
 
-        public ForeignKeyConstraint? FKRound { private set; get; }
-
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
@@ -110,17 +108,6 @@ namespace Model.Tables {
                 this.Columns[COL.ROUND]!,
                 this.Columns[COL.LANE]!
             ]));
-
-            this.FKRound = new ForeignKeyConstraint(
-                "FK_Round_Match",
-                this.League.RoundsTable.Columns[RoundTable.COL.UID]!,  // Parent column
-                this.Columns[COL.ROUND]!                               // Child column
-            ) {
-                UpdateRule = Rule.Cascade,
-                DeleteRule = Rule.Cascade
-            };
-
-            this.Constraints.Add(this.FKRound);
         }
     }
 }

@@ -5,6 +5,9 @@ using System.Data;
 
 namespace Leagueinator {
     public class Controller : Component {
+        public delegate void AddRound(RoundRow roundRow);
+        public delegate void RemoveRound(RoundRow roundRow);
+
         public delegate void UpdateMatch(MatchRow matchRow);
         public delegate void UpdateTeam(TeamRow teamRow);
         public readonly League League = new MockModel();
@@ -41,7 +44,23 @@ namespace Leagueinator {
             }
         }
 
+        public event AddRound OnAddRound {
+            add {
+                if (value is null) return;
+                this._onAddRound += value;
+
+                foreach (RoundRow roundRow in this.League.RoundTable.Rounds) {                   
+                    _onAddRound.Invoke(roundRow);
+                };
+            }
+            remove {
+                if (value is null) return;
+                this._onAddRound -= value;
+            }
+        }
+
         private UpdateMatch _onUpdateMatch = delegate { };
         private UpdateTeam _onUpdateTeam = delegate { };
+        private AddRound _onAddRound = delegate { };        
     }
 }

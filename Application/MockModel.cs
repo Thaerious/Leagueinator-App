@@ -10,6 +10,7 @@ namespace Leagueinator {
             count++;
 
             var eventRow = this.EventTable.AddRow("My Event");
+            eventRow.Rounds.Add();
             var roundRow = eventRow.Rounds.Add();
             var matchRow = roundRow.Matches.Add(0, 10);
             var teamRow1 = matchRow.Teams.Add();

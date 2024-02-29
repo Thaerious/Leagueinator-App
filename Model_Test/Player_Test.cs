@@ -8,7 +8,7 @@ namespace Model_Test {
         [TestMethod]
         public void PlayerRow() {
             League league = new();
-            PlayerRow playerRow = league.PlayersTable.AddRow("Zen");
+            PlayerRow playerRow = league.PlayerTable.AddRow("Zen");
 
             Assert.IsNotNull(playerRow);
         }
@@ -16,7 +16,7 @@ namespace Model_Test {
         [TestMethod]
         public void Cast_PlayerRow_String() {
             League league = new();
-            PlayerRow playerRow = league.PlayersTable.AddRow("Zen");
+            PlayerRow playerRow = league.PlayerTable.AddRow("Zen");
             string asString = (string)playerRow;
 
             Assert.IsTrue(asString is string);

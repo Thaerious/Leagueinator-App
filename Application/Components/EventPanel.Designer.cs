@@ -24,7 +24,6 @@
         /// </summary>
         private void InitializeComponent() {
             this.rootLayout = new TableLayoutPanel();
-            this.flowIdlePlayers = new FlowLayoutPanel();
             this.layoutRounds = new TableLayoutPanel();
             this.butAddRound = new Button();
             this.butRemoveRound = new Button();
@@ -32,20 +31,24 @@
             this.flowLayoutPanel1 = new FlowLayoutPanel();
             this.matchCard1 = new MatchCard();
             this.matchCard2 = new MatchCard();
+            this.matchCard3 = new MatchCard();
+            this.matchCard4 = new MatchCard();
+            this.dataGridIdle = new DataGridView();
             this.rootLayout.SuspendLayout();
             this.layoutRounds.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)this.dataGridIdle).BeginInit();
             this.SuspendLayout();
             // 
             // rootLayout
             // 
             this.rootLayout.ColumnCount = 3;
-            this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-            this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-            this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
-            this.rootLayout.Controls.Add(this.flowIdlePlayers, 0, 0);
+            this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300F));
+            this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+            this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 75F));
             this.rootLayout.Controls.Add(this.layoutRounds, 0, 0);
             this.rootLayout.Controls.Add(this.flowLayoutPanel1, 2, 0);
+            this.rootLayout.Controls.Add(this.dataGridIdle, 1, 0);
             this.rootLayout.Dock = DockStyle.Fill;
             this.rootLayout.Location = new Point(0, 0);
             this.rootLayout.Name = "rootLayout";
@@ -53,17 +56,6 @@
             this.rootLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             this.rootLayout.Size = new Size(1564, 896);
             this.rootLayout.TabIndex = 0;
-            // 
-            // flowIdlePlayers
-            // 
-            this.flowIdlePlayers.AutoScroll = true;
-            this.flowIdlePlayers.Dock = DockStyle.Fill;
-            this.flowIdlePlayers.FlowDirection = FlowDirection.TopDown;
-            this.flowIdlePlayers.Location = new Point(315, 3);
-            this.flowIdlePlayers.Name = "flowIdlePlayers";
-            this.flowIdlePlayers.Size = new Size(306, 890);
-            this.flowIdlePlayers.TabIndex = 2;
-            this.flowIdlePlayers.WrapContents = false;
             // 
             // layoutRounds
             // 
@@ -82,7 +74,7 @@
             this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
             this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
             this.layoutRounds.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-            this.layoutRounds.Size = new Size(306, 888);
+            this.layoutRounds.Size = new Size(294, 888);
             this.layoutRounds.TabIndex = 1;
             // 
             // butAddRound
@@ -91,7 +83,7 @@
             this.butAddRound.Location = new Point(4, 740);
             this.butAddRound.Margin = new Padding(3, 4, 3, 4);
             this.butAddRound.Name = "butAddRound";
-            this.butAddRound.Size = new Size(298, 54);
+            this.butAddRound.Size = new Size(286, 54);
             this.butAddRound.TabIndex = 0;
             this.butAddRound.Text = "Add Round";
             this.butAddRound.UseVisualStyleBackColor = true;
@@ -102,7 +94,7 @@
             this.butRemoveRound.Location = new Point(4, 803);
             this.butRemoveRound.Margin = new Padding(3, 4, 3, 4);
             this.butRemoveRound.Name = "butRemoveRound";
-            this.butRemoveRound.Size = new Size(298, 54);
+            this.butRemoveRound.Size = new Size(286, 54);
             this.butRemoveRound.TabIndex = 1;
             this.butRemoveRound.Text = "Remove";
             this.butRemoveRound.UseVisualStyleBackColor = true;
@@ -113,7 +105,7 @@
             this.flowRounds.Location = new Point(4, 5);
             this.flowRounds.Margin = new Padding(3, 4, 3, 4);
             this.flowRounds.Name = "flowRounds";
-            this.flowRounds.Size = new Size(298, 726);
+            this.flowRounds.Size = new Size(286, 726);
             this.flowRounds.TabIndex = 2;
             // 
             // flowLayoutPanel1
@@ -121,11 +113,13 @@
             this.flowLayoutPanel1.BackColor = Color.FromArgb(255, 192, 192);
             this.flowLayoutPanel1.Controls.Add(this.matchCard1);
             this.flowLayoutPanel1.Controls.Add(this.matchCard2);
+            this.flowLayoutPanel1.Controls.Add(this.matchCard3);
+            this.flowLayoutPanel1.Controls.Add(this.matchCard4);
             this.flowLayoutPanel1.Dock = DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new Point(627, 3);
+            this.flowLayoutPanel1.Location = new Point(619, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new Size(934, 890);
+            this.flowLayoutPanel1.Size = new Size(942, 890);
             this.flowLayoutPanel1.TabIndex = 3;
             this.flowLayoutPanel1.Layout += this.LayoutEventHander;
             // 
@@ -147,6 +141,34 @@
             this.matchCard2.Size = new Size(931, 171);
             this.matchCard2.TabIndex = 1;
             // 
+            // matchCard3
+            // 
+            this.matchCard3.Controller = null;
+            this.matchCard3.Lane = 2;
+            this.matchCard3.Location = new Point(3, 357);
+            this.matchCard3.Name = "matchCard3";
+            this.matchCard3.Size = new Size(931, 171);
+            this.matchCard3.TabIndex = 2;
+            // 
+            // matchCard4
+            // 
+            this.matchCard4.Controller = null;
+            this.matchCard4.Lane = 3;
+            this.matchCard4.Location = new Point(3, 534);
+            this.matchCard4.Name = "matchCard4";
+            this.matchCard4.Size = new Size(931, 171);
+            this.matchCard4.TabIndex = 3;
+            // 
+            // dataGridIdle
+            // 
+            this.dataGridIdle.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridIdle.Dock = DockStyle.Fill;
+            this.dataGridIdle.Location = new Point(303, 3);
+            this.dataGridIdle.Name = "dataGridIdle";
+            this.dataGridIdle.RowHeadersWidth = 62;
+            this.dataGridIdle.Size = new Size(310, 890);
+            this.dataGridIdle.TabIndex = 4;
+            // 
             // EventPanel
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
@@ -157,6 +179,7 @@
             this.rootLayout.ResumeLayout(false);
             this.layoutRounds.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)this.dataGridIdle).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -167,9 +190,11 @@
         private Button butAddRound;
         private Button butRemoveRound;
         private FlowLayoutPanel flowRounds;
-        private FlowLayoutPanel flowIdlePlayers;
         private FlowLayoutPanel flowLayoutPanel1;
         public MatchCard matchCard1;
         public MatchCard matchCard2;
+        public MatchCard matchCard3;
+        public MatchCard matchCard4;
+        private DataGridView dataGridIdle;
     }
 }

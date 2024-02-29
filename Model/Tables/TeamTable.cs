@@ -1,6 +1,6 @@
 ﻿using Model.Views;
 using System.Data;
-using static Model.Tables.MembersTable.COL;
+using static Model.Tables.MemberTable.COL;
 
 namespace Model.Tables {
 
@@ -9,7 +9,7 @@ namespace Model.Tables {
         public readonly RowBoundView<MemberRow> Members;
 
         public TeamRow(DataRow dataRow) : base(dataRow) {
-            this.Members = new(this.League.MembersTable, [MATCH, INDEX], [this.Match.UID, this.Index]);
+            this.Members = new(this.League.MemberTable, [MATCH, INDEX], [this.Match.UID, this.Index]);
         }
 
         public MatchRow Match {

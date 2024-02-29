@@ -4,18 +4,20 @@ namespace Model.Tables {
     public class PlayerRow(DataRow dataRow) : CustomRow(dataRow) {
 
         public string Name {
-            get => (string)this.DataRow[PlayersTable.COL.NAME];
-            set => this.DataRow[PlayersTable.COL.NAME] = value;
+            get => (string)this.DataRow[PlayerTable.COL.NAME];
+            set => this.DataRow[PlayerTable.COL.NAME] = value;
         }
 
         public static implicit operator string(PlayerRow playerRow) => playerRow.Name;
     }
 
-    public class PlayersTable() : LeagueTable<PlayerRow>("players") {
+    public class PlayerTable() : LeagueTable<PlayerRow>("players") {
 
         public static class COL {
             public static readonly string NAME = "name";
         }
+
+
 
         public PlayerRow AddRow(string name) {
             var row = this.NewRow();

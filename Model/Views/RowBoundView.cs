@@ -3,7 +3,6 @@ using Model.Tables;
 using System.Data;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Text;
 
 namespace Model.Views {
     /// <summary>
@@ -32,24 +31,12 @@ namespace Model.Views {
             : this(childTable, [fkCol], [fkVal]) {}
 
         public RowBoundView(LeagueTable<R> childTable, DataColumn[] fkCol, object[] fkVal) : base(childTable) {
-            this.RowFilter = this.BuildRowFilter(fkCol, fkVal);            
+            this.RowFilter = TableExtensions.BuildRowFilter(fkCol, fkVal);            
             this.ForeignKeyColumn = fkCol;
             this.ForeignKeyValue = fkVal;
         }
 
-        private string BuildRowFilter(DataColumn[] fkCol, object[] fkVal) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < fkCol.Length; i++) {
-                if (fkVal.GetType() == typeof(string)) {
-                    sb.Append($"{fkCol[i].ColumnName} = '{fkVal[i]}' ");
-                }
-                else {
-                    sb.Append($"{fkCol[i].ColumnName} = {fkVal[i]} ");
-                }
-                if (i < fkCol.Length - 1) sb.Append(" AND ");
-            }
-            return sb.ToString();
-        }
+
 
         public new R this[int index] {
             get => this.Get(index);
