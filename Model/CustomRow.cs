@@ -10,6 +10,8 @@ namespace Model.Tables {
         public static implicit operator DataRow?(CustomRow customRow) {
             return customRow.DataRow;
         }
+
+        public void Delete() => this.DataRow.Delete();
     }
 
     public class InvalidTableException : Exception {

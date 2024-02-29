@@ -24,11 +24,11 @@ namespace Model.Tables {
             public static readonly string PLAYER = "player";
         }
 
-        public IdleRow AddRow(int round, string name) {
+        public IdleRow AddRow(int round, string playerName) {
             var row = this.NewRow();
 
             row[COL.ROUND] = round;
-            row[COL.PLAYER] = name;
+            row[COL.PLAYER] = playerName;
 
             this.League.EnforceConstraints = false;
             this.Rows.Add(row);
@@ -36,17 +36,15 @@ namespace Model.Tables {
             return new(row);
         }
 
-        public DataRow? GetRow(int round, string playerName) {
-            var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.ROUND) == round)
-                           .Where(row => row.Field<string>(COL.PLAYER) == playerName)
-                           .ToList();
-
-            if (rows.Count == 0) return null;
-            return rows[0];
+        public List<IdleRow> GetRows(int round, string playerName) {
+            return this.AsEnumerable()
+                       .Where(row => row.Field<int>(COL.ROUND) == round)
+                       .Where(row => row.Field<string>(COL.PLAYER) == playerName)
+                       .Select(row => new IdleRow(row))
+                       .ToList();
         }
 
-        public void RemoveRows(int eventUID, int round, string playerName) {
+        public void RemoveRows(int round, string playerName) {
 
             var rowsToDelete = this.AsEnumerable()
                                .Where(row => row.Field<int>(COL.ROUND) == round)
@@ -61,10 +59,23 @@ namespace Model.Tables {
         
         public IdleTable() : base("idle_players") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
+                // Add name to players table if it is not already there.
                 string name = (string)e.Row[COL.PLAYER];
                 if (!this.League.PlayerTable.Has(PlayerTable.COL.NAME, name)) {
                     this.League.PlayerTable.AddRow(name);
                 }
+
+                // Remove the name from the teams table
+                int roundUID = (int)e.Row[COL.ROUND];
+                RoundRow roundRow = this.League.RoundTable.GetRow(roundUID);
+
+                foreach (MatchRow matchRow in roundRow.Matches) {
+                    foreach (TeamRow teamRow in matchRow.Teams) {
+                        foreach (MemberRow memberRow in teamRow.Members) {
+                            if (memberRow.Player == name) memberRow.Delete();
+                        }
+                    }
+                }               
             };
         }
 

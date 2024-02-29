@@ -33,11 +33,11 @@
             this.matchCard2 = new MatchCard();
             this.matchCard3 = new MatchCard();
             this.matchCard4 = new MatchCard();
-            this.dataGridIdle = new DataGridView();
+            this.idleDataGrid = new DataGridView();
             this.rootLayout.SuspendLayout();
             this.layoutRounds.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)this.dataGridIdle).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.idleDataGrid).BeginInit();
             this.SuspendLayout();
             // 
             // rootLayout
@@ -48,7 +48,7 @@
             this.rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 75F));
             this.rootLayout.Controls.Add(this.layoutRounds, 0, 0);
             this.rootLayout.Controls.Add(this.flowLayoutPanel1, 2, 0);
-            this.rootLayout.Controls.Add(this.dataGridIdle, 1, 0);
+            this.rootLayout.Controls.Add(this.idleDataGrid, 1, 0);
             this.rootLayout.Dock = DockStyle.Fill;
             this.rootLayout.Location = new Point(0, 0);
             this.rootLayout.Name = "rootLayout";
@@ -125,7 +125,6 @@
             // 
             // matchCard1
             // 
-            this.matchCard1.Controller = null;
             this.matchCard1.Lane = 0;
             this.matchCard1.Location = new Point(3, 3);
             this.matchCard1.Name = "matchCard1";
@@ -134,7 +133,6 @@
             // 
             // matchCard2
             // 
-            this.matchCard2.Controller = null;
             this.matchCard2.Lane = 1;
             this.matchCard2.Location = new Point(3, 180);
             this.matchCard2.Name = "matchCard2";
@@ -143,7 +141,6 @@
             // 
             // matchCard3
             // 
-            this.matchCard3.Controller = null;
             this.matchCard3.Lane = 2;
             this.matchCard3.Location = new Point(3, 357);
             this.matchCard3.Name = "matchCard3";
@@ -152,22 +149,21 @@
             // 
             // matchCard4
             // 
-            this.matchCard4.Controller = null;
             this.matchCard4.Lane = 3;
             this.matchCard4.Location = new Point(3, 534);
             this.matchCard4.Name = "matchCard4";
             this.matchCard4.Size = new Size(931, 171);
             this.matchCard4.TabIndex = 3;
             // 
-            // dataGridIdle
+            // idleDataGrid
             // 
-            this.dataGridIdle.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridIdle.Dock = DockStyle.Fill;
-            this.dataGridIdle.Location = new Point(303, 3);
-            this.dataGridIdle.Name = "dataGridIdle";
-            this.dataGridIdle.RowHeadersWidth = 62;
-            this.dataGridIdle.Size = new Size(310, 890);
-            this.dataGridIdle.TabIndex = 4;
+            this.idleDataGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.idleDataGrid.Dock = DockStyle.Fill;
+            this.idleDataGrid.Location = new Point(303, 3);
+            this.idleDataGrid.Name = "dataGridIdle";
+            this.idleDataGrid.RowHeadersWidth = 62;
+            this.idleDataGrid.Size = new Size(310, 890);
+            this.idleDataGrid.TabIndex = 4;
             // 
             // EventPanel
             // 
@@ -179,7 +175,7 @@
             this.rootLayout.ResumeLayout(false);
             this.layoutRounds.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)this.dataGridIdle).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.idleDataGrid).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -195,6 +191,6 @@
         public MatchCard matchCard2;
         public MatchCard matchCard3;
         public MatchCard matchCard4;
-        private DataGridView dataGridIdle;
+        private DataGridView idleDataGrid;
     }
 }

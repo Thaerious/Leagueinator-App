@@ -3,8 +3,41 @@ using System.ComponentModel;
 
 namespace Leagueinator.Components {
     public partial class MatchCard : UserControl {
+        [Category("Custom Properties")]
+        [Description("Defines the lane index for this control.")]
+        public int Lane { get; set; } = -1;
 
-        public MatchRow MatchRow { get; private set; }
+        public MatchRow? MatchRow { 
+            get => this._matchRow;
+
+            set {
+                this._matchRow = value;
+
+                if (value == null) {
+                    this.txtEnds.Text = "";
+                    this.membersGrid.DataSource = null;
+                    this.teamsGrid.DataSource = null;
+                    return;
+                }
+
+                if (value.Lane != this.Lane) return;
+
+                this.txtEnds.Text = value.Ends.ToString();
+
+                this.membersGrid.DataSource = value.Members;
+                this.teamsGrid.DataSource = value.Teams;
+
+                this.membersGrid.Columns[MemberTable.COL.MATCH].Visible = false;
+                this.membersGrid.Columns[MemberTable.COL.INDEX].HeaderText = "team";
+
+                this.teamsGrid.Columns[TeamTable.COL.MATCH].Visible = false;
+                this.teamsGrid.Columns[TeamTable.COL.INDEX].HeaderText = "team";
+
+                this.teamsGrid.Columns[TeamTable.COL.INDEX].DisplayIndex = 0;
+                this.teamsGrid.Columns[TeamTable.COL.BOWLS].DisplayIndex = 1;
+                this.teamsGrid.Columns[TeamTable.COL.TIE].DisplayIndex = 2;
+            }
+        }
 
         public MatchCard() {
             InitializeComponent();
@@ -13,7 +46,9 @@ namespace Leagueinator.Components {
         }
 
         private void MembersGrid_RowValidating(object? sender, DataGridViewCellCancelEventArgs e) {
-            Console.WriteLine($"Row Validating {this.Lane} {e.RowIndex}");
+            Console.WriteLine("MembersGrid_RowValidating");
+            if (this.MatchRow is null) return;
+
             var row = this.membersGrid.Rows[e.RowIndex];
             var index = row.Cells[MemberTable.COL.INDEX].Value;
             var player = row.Cells[MemberTable.COL.PLAYER].Value;
@@ -38,6 +73,8 @@ namespace Leagueinator.Components {
         }
 
         private void TeamsGrid_RowValidating(object? sender, DataGridViewCellCancelEventArgs e) {
+            if (this.MatchRow is null) return;
+
             var row = this.teamsGrid.Rows[e.RowIndex];
             var index = row.Cells[TeamTable.COL.INDEX].Value;
 
@@ -47,46 +84,6 @@ namespace Leagueinator.Components {
             row.Cells[TeamTable.COL.MATCH].Value = this.MatchRow.UID;
         }
 
-        [Category("Custom Properties")]
-        [Description("Defines the lane index for this control.")]
-        public int Lane { get; set; } = -1;
-
-        public Controller? Controller {
-            get => _controller;
-            set {
-                if (_controller == value) return;
-                _controller = value;
-                if (value == null) return;
-
-                value.OnUpdateTeam += this.OnUpdateTeam;
-                value.OnUpdateMatch += this.OnUpdateMatch;
-            }
-        }
-
-        private void OnUpdateMatch(MatchRow matchRow) {
-            if (matchRow.Lane != this.Lane) return;
-
-            this.MatchRow = matchRow;            
-
-            this.membersGrid.DataSource = matchRow.Members;
-            this.teamsGrid.DataSource = matchRow.Teams;
-
-            this.membersGrid.Columns[MemberTable.COL.MATCH].Visible = false;
-            this.membersGrid.Columns[MemberTable.COL.INDEX].HeaderText = "team";
-
-            this.teamsGrid.Columns[TeamTable.COL.MATCH].Visible = false;
-            this.teamsGrid.Columns[TeamTable.COL.INDEX].HeaderText = "team";
-
-            this.teamsGrid.Columns[TeamTable.COL.INDEX].DisplayIndex = 0;
-            this.teamsGrid.Columns[TeamTable.COL.BOWLS].DisplayIndex = 1;
-            this.teamsGrid.Columns[TeamTable.COL.TIE].DisplayIndex = 2;
-        }
-
-        private void OnUpdateTeam(TeamRow teamRow) {
-            if (teamRow.Match.Lane != Lane) return;
-            this.txtEnds.Text = teamRow.Match.Ends.ToString();
-        }
-
-        private Controller? _controller;
+        private MatchRow? _matchRow;
     }
 }

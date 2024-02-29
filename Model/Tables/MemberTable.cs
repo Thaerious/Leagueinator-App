@@ -48,9 +48,19 @@ namespace Model.Tables {
 
         public MemberTable() : base("members") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
+                // Add name to players table if it is not already there.
                 string name = (string)e.Row[COL.PLAYER];
                 if (!this.League.PlayerTable.Has(PlayerTable.COL.NAME, name)) {
                     this.League.PlayerTable.AddRow(name);
+                }
+
+                // Remove name from idle if it exists there
+                int matchUID = (int)e.Row[COL.MATCH];
+                MatchRow matchRow = this.League.MatchTable.GetRow(matchUID);
+                RoundRow roundRow = matchRow.Round;
+
+                foreach (IdleRow row in this.League.IdleTable.GetRows(roundRow, name)) {
+                    row.DataRow.Delete();
                 }
             };
         }

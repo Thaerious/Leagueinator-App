@@ -59,6 +59,37 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Add_Player_To_Idle_From_Team() {
+            League league = new League();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+
+            teamRow.Members.Add("Adam");
+            roundRow.IdlePlayers.Add("Adam");
+
+            Assert.AreEqual(0, teamRow.Members.Count);
+        }
+
+        [TestMethod]
+        public void Add_Player_From_Idle() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow = matchRow.Teams.Add();
+
+            roundRow.IdlePlayers.Add("Adam");
+            teamRow.Members.Add("Adam");
+
+            Assert.AreEqual(1, league.PlayerTable.Select("name = 'Adam'").Length);
+            Assert.AreEqual(0, league.IdleTable.Select("player = 'Adam'").Length);
+
+            Console.WriteLine(league.PlayerTable.PrettyPrint());
+        }
+
+        [TestMethod]
         public void Add_Non_Existant_Player() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");

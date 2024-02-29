@@ -10,7 +10,7 @@ namespace Model.Views {
     /// </summary>
     /// <typeparam name="R">Child row type.</typeparam>
     /// <typeparam name="T">Foreign key type.</typeparam>
-    public class RowBoundView<R> : DataView where R : CustomRow {
+    public class RowBoundView<R> : DataView, IEnumerable<R> where R : CustomRow {
         public object[] ForeignKeyValue { get; }
         public DataColumn[] ForeignKeyColumn { get; }
 
@@ -35,8 +35,6 @@ namespace Model.Views {
             this.ForeignKeyColumn = fkCol;
             this.ForeignKeyValue = fkVal;
         }
-
-
 
         public new R this[int index] {
             get => this.Get(index);
@@ -77,5 +75,10 @@ namespace Model.Views {
             }
         }
 
+        public new IEnumerator<R> GetEnumerator() {
+            for (int i = 0; i < this.Count; i++) {
+                yield return this[i];
+            }
+        }
     }
 }

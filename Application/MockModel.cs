@@ -11,7 +11,11 @@ namespace Leagueinator {
 
             var eventRow = this.EventTable.AddRow("My Event");
             eventRow.Rounds.Add();
+
             var roundRow = eventRow.Rounds.Add();
+            roundRow.IdlePlayers.Add("Zed");
+            roundRow.IdlePlayers.Add("Yyvonne");
+
             var matchRow = roundRow.Matches.Add(0, 10);
             var teamRow1 = matchRow.Teams.Add();
             var teamRow2 = matchRow.Teams.Add();
