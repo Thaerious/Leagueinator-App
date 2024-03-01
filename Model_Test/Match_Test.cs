@@ -80,6 +80,11 @@ namespace Model_Test {
             matchRow.Teams.Add();
             matchRow.Teams.Add();
 
+            league.PlayerTable.AddRow("Adam");
+            league.PlayerTable.AddRow("Eve");
+            league.PlayerTable.AddRow("Cain");
+            league.PlayerTable.AddRow("Able");
+
             matchRow.Teams[0].Members.Add("Adam");
             matchRow.Teams[0].Members.Add("Eve");
             matchRow.Teams[1].Members.Add("Cain");

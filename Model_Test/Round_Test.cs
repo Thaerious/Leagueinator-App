@@ -1,5 +1,6 @@
 ﻿using Model;
 using Model.Tables;
+using System.Data;
 using System.Diagnostics;
 
 namespace Model_Test {
@@ -109,6 +110,7 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ConstraintException))]
         public void Add_Non_Existant_Player_To_Idle() {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");

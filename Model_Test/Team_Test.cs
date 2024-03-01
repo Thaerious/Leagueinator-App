@@ -49,6 +49,8 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
 
+            league.PlayerTable.AddRow("Adam");
+
             MemberRow memberRow = teamRow.Members.Add("Adam");
             league.PlayerTable.GetRow("Adam").Name = "Able";
 
@@ -66,6 +68,7 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
 
+            league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
             roundRow.IdlePlayers.Add("Adam");
 
@@ -80,6 +83,7 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add();
 
+            league.PlayerTable.AddRow("Adam");
             roundRow.IdlePlayers.Add("Adam");
             teamRow.Members.Add("Adam");
 
@@ -90,6 +94,7 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ConstraintException))]
         public void Add_Non_Existant_Player() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");

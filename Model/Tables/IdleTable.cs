@@ -59,11 +59,7 @@ namespace Model.Tables {
         
         public IdleTable() : base("idle_players") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
-                // Add name to players table if it is not already there.
                 string name = (string)e.Row[COL.PLAYER];
-                if (!this.League.PlayerTable.Has(PlayerTable.COL.NAME, name)) {
-                    this.League.PlayerTable.AddRow(name);
-                }
 
                 // Remove the name from the teams table
                 int roundUID = (int)e.Row[COL.ROUND];

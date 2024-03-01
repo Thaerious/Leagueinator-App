@@ -10,6 +10,11 @@ namespace Leagueinator {
             eventRow.Rounds.Add().PopulateMatches();
             var roundRow = eventRow.Rounds.Add().PopulateMatches();
 
+            this.PlayerTable.AddRow("Zed");
+            this.PlayerTable.AddRow("Yyvonne");
+            this.PlayerTable.AddRow("Adam");
+            this.PlayerTable.AddRow("Eve");
+
             roundRow.IdlePlayers.Add("Zed");
             roundRow.IdlePlayers.Add("Yyvonne");
 
