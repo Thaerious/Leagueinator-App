@@ -3,7 +3,9 @@ using Model;
 using Model.Tables;
 using System;
 using System.ComponentModel;
+using System.Data;
 using System.Numerics;
+using System.Xml.Linq;
 
 namespace Leagueinator.Components {
     public partial class EventPanel : UserControl {
@@ -36,7 +38,13 @@ namespace Leagueinator.Components {
             var player = row.Cells[MemberTable.COL.PLAYER].Value;
             if (player is DBNull || player.Equals("")) return;
 
-            //// make sure player is in player table            
+            // remove values from members table
+            this.currentRound.Members
+                .Where(memberRow => memberRow.Player == (string)player)
+                .ToList()
+                .ForEach(memberRow => memberRow.Delete());
+
+            // make sure player is in player table            
             PlayerTable playerTable = this.currentRound.League.PlayerTable;
             if (!playerTable.Has(PlayerTable.COL.NAME, player)) {
                 playerTable.AddRow((string)player);
@@ -79,14 +87,14 @@ namespace Leagueinator.Components {
         private void RoundButtonClick(object? sender, EventArgs e) {
             if (sender is null) return;
             RoundRow roundRow = (sender as RoundButton)!.Round;
-            
+
             this.currentRound = roundRow;
             this.SetIdlePlayers(roundRow);
 
             foreach (MatchCard card in this.GetControls<MatchCard>()) {
                 card.MatchRow = null;
             }
-            
+
             foreach (MatchRow matchRow in roundRow.Matches) {
                 var controls = this.GetControls<MatchCard>("Lane", matchRow.Lane).ToList();
                 if (controls.IsNotEmpty()) controls[0].MatchRow = matchRow;
@@ -109,7 +117,7 @@ namespace Leagueinator.Components {
         }
 
         private void AddRound_Click(object sender, EventArgs e) {
-            if (this.EventRow is null) return;            
+            if (this.EventRow is null) return;
             RoundRow row = this.EventRow.Rounds.Add();
             row.PopulateMatches();
         }

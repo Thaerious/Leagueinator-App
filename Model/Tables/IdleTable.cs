@@ -36,6 +36,14 @@ namespace Model.Tables {
             return new(row);
         }
 
+        public bool HasRow(int round, string playerName) {
+            return this.AsEnumerable()
+                       .Where(row => row.Field<int>(COL.ROUND) == round)
+                       .Where(row => row.Field<string>(COL.PLAYER) == playerName)
+                       .Select(row => new IdleRow(row))
+                       .Any();
+        }
+
         public List<IdleRow> GetRows(int round, string playerName) {
             return this.AsEnumerable()
                        .Where(row => row.Field<int>(COL.ROUND) == round)
@@ -68,7 +76,13 @@ namespace Model.Tables {
                 foreach (MatchRow matchRow in roundRow.Matches) {
                     foreach (TeamRow teamRow in matchRow.Teams) {
                         foreach (MemberRow memberRow in teamRow.Members) {
-                            if (memberRow.Player == name) memberRow.Delete();
+                            if (memberRow.Player == name) {
+                                throw new ConstraintException(
+                                    $"Player can not be shared between " +
+                                    $"table '{this.League.IdleTable.TableName}' and table '{this.League.MemberTable.TableName}' " +
+                                    $"for a given round."
+                                );
+                            }
                         }
                     }
                 }               

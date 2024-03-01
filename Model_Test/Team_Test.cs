@@ -61,6 +61,7 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ConstraintException))]
         public void Add_Player_To_Idle_From_Team() {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");
@@ -76,6 +77,7 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ConstraintException))]
         public void Add_Player_From_Idle() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");

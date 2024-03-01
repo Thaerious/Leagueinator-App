@@ -22,6 +22,18 @@ namespace Model.Tables {
             get => this.League.EventTable.GetRow((int)this.DataRow[RoundTable.COL.EVENT]);
         }
 
+        public IEnumerable<TeamRow> Teams {
+            get {
+                return this.Matches.SelectMany(matchRow => matchRow.Teams);
+            }
+        }
+
+        public IEnumerable<MemberRow> Members {
+            get {
+                return this.Teams.SelectMany(teamRow => teamRow.Members);
+            }
+        }
+
         public RoundRow PopulateMatches() {
             int matchCount = int.Parse(this.Event.Settings["match_count"] ?? "8");
 
@@ -32,7 +44,7 @@ namespace Model.Tables {
 
             return this;
         }
-        
+
         /// <summary>
         /// Return a 1-indexed value for the next lane.
         /// The next lane is one larger than the largest lane value.

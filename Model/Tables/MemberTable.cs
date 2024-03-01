@@ -55,8 +55,12 @@ namespace Model.Tables {
                 MatchRow matchRow = this.League.MatchTable.GetRow(matchUID);
                 RoundRow roundRow = matchRow.Round;
 
-                foreach (IdleRow row in this.League.IdleTable.GetRows(roundRow, name)) {
-                    row.DataRow.Delete();
+                if (this.League.IdleTable.HasRow(roundRow, name)) {
+                    throw new ConstraintException(
+                        $"Player can not be shared between " +
+                        $"table '{this.League.IdleTable.TableName}' and table '{this.League.MemberTable.TableName}' " +
+                        $"for a given round."
+                    );
                 }
             };
         }

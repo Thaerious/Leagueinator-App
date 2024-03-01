@@ -55,14 +55,17 @@ namespace Leagueinator.Components {
 
             if (player is DBNull) return;
 
+            // remove values from idle table
+            var idleTable = this.MatchRow.League.IdleTable;
+            if (idleTable.HasRow(this.MatchRow.Round, (string)player)) {
+                idleTable.RemoveRows(this.MatchRow.Round, (string)player);
+            }
+
             // default team value
             if (index is DBNull) {
                 index = this.MatchRow.League.TeamTable.LastIndex(MatchRow);
                 if ((int)index == 0) index = 1;
                 gridRow.Cells[MemberTable.COL.INDEX].Value = index;
-                //Console.WriteLine($"Before {index} {index.GetType()} {(int)index == 0}");
-                //if ((int)index == 0) index = 1;
-                //Console.WriteLine($"After {index} {index.GetType()} {(int)index == 0}");
             }
 
             // insert the UID into the gridRow
