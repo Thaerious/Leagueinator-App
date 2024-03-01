@@ -13,9 +13,8 @@ namespace Model.Tables {
             get => (int)this.DataRow[MemberTable.COL.INDEX];
         }
 
-
-        public int Match {
-            get => (int)this.DataRow[MemberTable.COL.MATCH];
+        public MatchRow Match {
+            get => this.League.MatchTable.GetRow((int)this.DataRow[MemberTable.COL.MATCH]);
         }
 
         public string Player {
@@ -48,18 +47,29 @@ namespace Model.Tables {
 
         public MemberTable() : base("members") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
-                string name = (string)e.Row[COL.PLAYER];
+                Console.WriteLine(e.Row.PrettyPrint());
+                Console.WriteLine($"Row Changing {e.Row.RowState}");
 
-                // Remove name from idle if it exists there
+                MemberRow memberRow = new(e.Row);
+
+                // Check for name in idle table
                 int matchUID = (int)e.Row[COL.MATCH];
                 MatchRow matchRow = this.League.MatchTable.GetRow(matchUID);
                 RoundRow roundRow = matchRow.Round;
 
-                if (this.League.IdleTable.HasRow(roundRow, name)) {
+                if (this.League.IdleTable.HasRow(roundRow, memberRow.Player)) {
                     throw new ConstraintException(
                         $"Player can not be shared between " +
                         $"table '{this.League.IdleTable.TableName}' and table '{this.League.MemberTable.TableName}' " +
                         $"for a given round."
+                    );
+                }
+
+                bool hasPlayer = memberRow.Match.Round.Members.Where(row => row.Player == memberRow.Player).Any();
+
+                if (hasPlayer && e.Row.RowState == DataRowState.Detached) {
+                    throw new ConstraintException(
+                        $"Each round can only have a given player once in table '{this.League.MemberTable.TableName}'"
                     );
                 }
             };
@@ -93,6 +103,14 @@ namespace Model.Tables {
                 this.Columns[COL.INDEX]!,
                 this.Columns[COL.PLAYER]!
             ]));
+
+            this.Constraints.Add(new UniqueConstraint(
+                [
+                    this.Columns[COL.MATCH]!, 
+                    this.Columns[COL.PLAYER]!
+                ]
+                , true
+            ));
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Model.Tables {
         public RoundRow PopulateMatches() {
             int matchCount = int.Parse(this.Event.Settings["match_count"] ?? "8");
 
-            while (this.Matches.Count <= matchCount) {
+            while (this.Matches.Count < matchCount) {
                 int ends = int.Parse(this.Event.Settings["ends"] ?? "10");
                 this.Matches.Add(this.NextLane(), ends);
             }
