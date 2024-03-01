@@ -19,11 +19,11 @@ namespace Leagueinator {
             roundRow.IdlePlayers.Add("Yyvonne");
 
             var matchRow = roundRow.Matches[0];
-            var teamRow1 = matchRow.Teams.Add();
-            var teamRow2 = matchRow.Teams.Add();
+            var teamRow1 = matchRow.Teams.Add(1);
+            var teamRow2 = matchRow.Teams.Add(2);
             
-            roundRow.Matches[1].Teams.Add();
-            roundRow.Matches[1].Teams.Add();
+            roundRow.Matches[1].Teams.Add(1);
+            roundRow.Matches[1].Teams.Add(2);
 
             teamRow1.Members.Add("Adam");
             teamRow2.Members.Add("Eve");

@@ -13,7 +13,7 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10); // lane, ends
             
-            league.TeamTable.AddRow(matchRow);
+            league.TeamTable.AddRow(matchRow, 1);
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             Assert.IsNotNull(teamRow);
         }
@@ -33,7 +33,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
@@ -47,7 +47,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
 
@@ -66,7 +66,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
@@ -81,7 +81,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
             roundRow.IdlePlayers.Add("Adam");
@@ -100,7 +100,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             teamRow.Members.Add("Adam");
 
@@ -116,7 +116,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
@@ -131,7 +131,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
 

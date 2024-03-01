@@ -49,14 +49,24 @@ namespace Leagueinator.Components {
             Console.WriteLine("MembersGrid_RowValidating");
             if (this.MatchRow is null) return;
 
-            var row = this.membersGrid.Rows[e.RowIndex];
-            var index = row.Cells[MemberTable.COL.INDEX].Value;
-            var player = row.Cells[MemberTable.COL.PLAYER].Value;
+            DataGridViewRow gridRow = this.membersGrid.Rows[e.RowIndex];
+            var index = gridRow.Cells[MemberTable.COL.INDEX].Value;
+            var player = gridRow.Cells[MemberTable.COL.PLAYER].Value;
 
-            if (index is DBNull || player is DBNull) return;
+            if (player is DBNull) return;
 
-            // insert the UID into the row
-            row.Cells[MemberTable.COL.MATCH].Value = this.MatchRow.UID;
+            // default team value
+            if (index is DBNull) {
+                index = this.MatchRow.League.TeamTable.LastIndex(MatchRow);
+                if ((int)index == 0) index = 1;
+                gridRow.Cells[MemberTable.COL.INDEX].Value = index;
+                //Console.WriteLine($"Before {index} {index.GetType()} {(int)index == 0}");
+                //if ((int)index == 0) index = 1;
+                //Console.WriteLine($"After {index} {index.GetType()} {(int)index == 0}");
+            }
+
+            // insert the UID into the gridRow
+            gridRow.Cells[MemberTable.COL.MATCH].Value = this.MatchRow.UID;
 
             // make sure player is in player table
             PlayerTable playerTable = this.MatchRow.League.PlayerTable;
@@ -67,8 +77,7 @@ namespace Leagueinator.Components {
             // make sure {match, index} is in team table
             TeamTable teamTable = this.MatchRow.League.TeamTable;
             if (!teamTable.Has([TeamTable.COL.MATCH, TeamTable.COL.INDEX], [this.MatchRow.UID, (int)index])) {
-                TeamRow teamRow = MatchRow.Teams.Add();
-                row.Cells[MemberTable.COL.INDEX].Value = teamRow.Index;
+                TeamRow teamRow = MatchRow.Teams.Add((int)index);                
             }
         }
 
@@ -80,7 +89,7 @@ namespace Leagueinator.Components {
 
             if (index is DBNull) return;
 
-            // insert the UID into the row
+            // insert the UID into the gridRow
             row.Cells[TeamTable.COL.MATCH].Value = this.MatchRow.UID;
         }
 

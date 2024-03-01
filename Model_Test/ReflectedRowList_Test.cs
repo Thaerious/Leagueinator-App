@@ -15,7 +15,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add();
+            TeamRow teamRow = matchRow.Teams.Add(0);
 
             league.PlayerTable.AddRow("Adam");
             league.PlayerTable.AddRow("Eve");

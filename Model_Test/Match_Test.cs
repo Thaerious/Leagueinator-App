@@ -77,8 +77,8 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            matchRow.Teams.Add();
-            matchRow.Teams.Add();
+            matchRow.Teams.Add(0);
+            matchRow.Teams.Add(1);
 
             league.PlayerTable.AddRow("Adam");
             league.PlayerTable.AddRow("Eve");
@@ -100,8 +100,8 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            matchRow.Teams.Add();
-            matchRow.Teams.Add();
+            matchRow.Teams.Add(0);
+            matchRow.Teams.Add(1);
 
             Console.WriteLine("Before");
             var a = matchRow.Members;

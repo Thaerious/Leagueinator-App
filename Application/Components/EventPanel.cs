@@ -13,21 +13,14 @@ namespace Leagueinator.Components {
         public EventPanel() {
             InitializeComponent();
             this.idleDataGrid.RowEnter += this.IdleDataGrid_RowEnter;
-            this.idleDataGrid.UserAddedRow += this.IdleDataGrid_UserAddedRow;
             this.idleDataGrid.RowValidating += this.DataGridIdle_RowValidating;
             this.idleDataGrid.DefaultValuesNeeded += this.IdleDataGrid_DefaultValuesNeeded;
         }
 
         private void IdleDataGrid_DefaultValuesNeeded(object? sender, DataGridViewRowEventArgs e) {
             Console.WriteLine($"IdleDataGrid_DefaultValuesNeeded");
+            if (this.currentRound is null) return;
             e.Row.Cells[IdleTable.COL.ROUND].Value = this.currentRound.UID;
-        }
-
-        private void IdleDataGrid_UserAddedRow(object? sender, DataGridViewRowEventArgs e) {
-            Console.WriteLine($"IdleDataGrid_UserAddedRow");
-            DataGridViewRow dgvr = e.Row;
-            var item = dgvr.DataBoundItem;
-            Console.WriteLine($"'{item}'");
         }
 
         private void IdleDataGrid_RowEnter(object? sender, DataGridViewCellEventArgs e) {

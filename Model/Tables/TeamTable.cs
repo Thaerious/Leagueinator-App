@@ -40,19 +40,19 @@ namespace Model.Tables {
             public static readonly string TIE = "tie";
         }
 
-        private int NextIndex(int match) {
+        public int LastIndex(int match) {
             return this.AsEnumerable()
                 .Select(row => new TeamRow(row))
                 .Where((TeamRow row) => row.Match == match)
                 .Select(row => row.Index)
                 .DefaultIfEmpty(0)
-                .Max() + 1;
+                .Max();
         }
 
-        public TeamRow AddRow(int match) {
+        public TeamRow AddRow(int match, int index) {
             var row = this.NewRow();
             row[COL.MATCH] = match;
-            row[COL.INDEX] = this.NextIndex(match);
+            row[COL.INDEX] = index;
             this.Rows.Add(row);
             return new(row);
         }
@@ -63,6 +63,14 @@ namespace Model.Tables {
                        .Where(row => row.Match == match)
                        .Where(row => row.Index == index)
                        .First();
+        }
+
+        public bool HasRow(int match, int index) {
+            return this.AsEnumerable()
+                       .Select(row => new TeamRow(row))
+                       .Where(row => row.Match == match)
+                       .Where(row => row.Index == index)
+                       .Any();
         }
 
         public override void BuildColumns() {
