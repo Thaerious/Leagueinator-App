@@ -12,20 +12,38 @@ namespace Leagueinator.Components {
 
         public EventPanel() {
             InitializeComponent();
+            this.idleDataGrid.RowEnter += this.IdleDataGrid_RowEnter;
+            this.idleDataGrid.UserAddedRow += this.IdleDataGrid_UserAddedRow;
             this.idleDataGrid.RowValidating += this.DataGridIdle_RowValidating;
+            this.idleDataGrid.DefaultValuesNeeded += this.IdleDataGrid_DefaultValuesNeeded;
+        }
+
+        private void IdleDataGrid_DefaultValuesNeeded(object? sender, DataGridViewRowEventArgs e) {
+            Console.WriteLine($"IdleDataGrid_DefaultValuesNeeded");
+            e.Row.Cells[IdleTable.COL.ROUND].Value = this.currentRound.UID;
+        }
+
+        private void IdleDataGrid_UserAddedRow(object? sender, DataGridViewRowEventArgs e) {
+            Console.WriteLine($"IdleDataGrid_UserAddedRow");
+            DataGridViewRow dgvr = e.Row;
+            var item = dgvr.DataBoundItem;
+            Console.WriteLine($"'{item}'");
+        }
+
+        private void IdleDataGrid_RowEnter(object? sender, DataGridViewCellEventArgs e) {
+            Console.WriteLine($"IdleDataGrid_RowEnters: {e.RowIndex}");
         }
 
         private void DataGridIdle_RowValidating(object? sender, DataGridViewCellCancelEventArgs e) {
             if (this.currentRound is null) return;
+            DataGridViewRow row = this.idleDataGrid.Rows[e.RowIndex];
 
-            var row = this.idleDataGrid.Rows[e.RowIndex];
+            Console.WriteLine($"DataGridIdle_RowValidating: {e.RowIndex} '{row.Cells[MemberTable.COL.PLAYER].Value}'");
+
             var player = row.Cells[MemberTable.COL.PLAYER].Value;
-            if (player is DBNull) return;
+            if (player is DBNull || player.Equals("")) return;
 
-            // insert the Round UID into the row
-            row.Cells[IdleTable.COL.ROUND].Value = this.currentRound.UID;
-
-            // make sure player is in player table            
+            //// make sure player is in player table            
             PlayerTable playerTable = this.currentRound.League.PlayerTable;
             if (!playerTable.Has(PlayerTable.COL.NAME, player)) {
                 playerTable.AddRow((string)player);
@@ -75,15 +93,16 @@ namespace Leagueinator.Components {
             foreach (MatchCard card in this.GetControls<MatchCard>()) {
                 card.MatchRow = null;
             }
-
+            
             foreach (MatchRow matchRow in roundRow.Matches) {
-                Console.WriteLine(matchRow.DataRow.PrettyPrint());
                 var controls = this.GetControls<MatchCard>("Lane", matchRow.Lane).ToList();
                 if (controls.IsNotEmpty()) controls[0].MatchRow = matchRow;
             }
         }
 
         private void SetIdlePlayers(RoundRow roundRow) {
+            this.idleDataGrid.ClearSelection();
+            this.idleDataGrid.DataSource = null;
             this.idleDataGrid.DataSource = roundRow.IdlePlayers;
             this.idleDataGrid.Columns[IdleTable.COL.ROUND].Visible = false;
         }
