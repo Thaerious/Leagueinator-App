@@ -92,6 +92,7 @@
             this.txtEnds.Name = "txtEnds";
             this.txtEnds.Size = new Size(136, 31);
             this.txtEnds.TabIndex = 1;
+            this.txtEnds.TextChanged += this.TxtEndsChangedHnd;
             // 
             // teamsGrid
             // 

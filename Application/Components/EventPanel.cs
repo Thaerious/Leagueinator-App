@@ -4,7 +4,9 @@ using Model.Tables;
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Numerics;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace Leagueinator.Components {
@@ -12,39 +14,36 @@ namespace Leagueinator.Components {
         private EventRow? _eventRow;
         private RoundRow? currentRound;
 
+        private Dictionary<string, object> previousCellValues = new Dictionary<string, object>();
+
         public EventPanel() {
             InitializeComponent();
-            this.idleDataGrid.RowEnter += this.IdleDataGrid_RowEnter;
             this.idleDataGrid.RowValidating += this.DataGridIdle_RowValidating;
-            this.idleDataGrid.DefaultValuesNeeded += this.IdleDataGrid_DefaultValuesNeeded;
+            this.idleDataGrid.DataError += this.DataErrorHnd;
         }
 
-        private void IdleDataGrid_DefaultValuesNeeded(object? sender, DataGridViewRowEventArgs e) {
-            Console.WriteLine($"IdleDataGrid_DefaultValuesNeeded");
-            if (this.currentRound is null) return;
-            e.Row.Cells[IdleTable.COL.ROUND].Value = this.currentRound.UID;
-        }
-
-        private void IdleDataGrid_RowEnter(object? sender, DataGridViewCellEventArgs e) {
-            Console.WriteLine($"IdleDataGrid_RowEnters: {e.RowIndex}");
+        private void DataErrorHnd(object? sender, DataGridViewDataErrorEventArgs e) {
+            MessageBox.Show("Data input error: " + e.Exception.Message);
+            e.ThrowException = false;
         }
 
         private void DataGridIdle_RowValidating(object? sender, DataGridViewCellCancelEventArgs e) {
             if (this.currentRound is null) return;
-            DataGridViewRow row = this.idleDataGrid.Rows[e.RowIndex];
 
-            Console.WriteLine($"DataGridIdle_RowValidating: {e.RowIndex} '{row.Cells[MemberTable.COL.PLAYER].Value}'");
+            DataGridViewRow gridRow = this.idleDataGrid.Rows[e.RowIndex];
+            var player = gridRow.Cells[MemberTable.COL.PLAYER].Value;
+            if (player is DBNull || player is null) return;
 
-            var player = row.Cells[MemberTable.COL.PLAYER].Value;
-            if (player is DBNull || player.Equals("")) return;
-
-            // remove values from members table
+            //remove values from members table
             this.currentRound.Members
                 .Where(memberRow => memberRow.Player == (string)player)
                 .ToList()
                 .ForEach(memberRow => memberRow.Delete());
 
-            // make sure player is in player table            
+            // Set the UID
+            gridRow.Cells[IdleTable.COL.ROUND].Value = this.currentRound.UID;
+
+            //make sure player is in player table
             PlayerTable playerTable = this.currentRound.League.PlayerTable;
             if (!playerTable.Has(PlayerTable.COL.NAME, player)) {
                 playerTable.AddRow((string)player);
@@ -74,13 +73,13 @@ namespace Leagueinator.Components {
         }
 
         private void OnAddRound(RoundRow roundRow) {
-            RoundButton button = new RoundButton(roundRow);
-            button.Text = $"Round {this.flowRounds.Controls.Count + 1}";
+            RoundButton button = new RoundButton(roundRow) {
+                Text = $"Round {this.flowRounds.Controls.Count + 1}",
+                Height = 35,
+                Width = 280,
+            };
+
             this.flowRounds.Controls.Add(button);
-
-            button.Height = 35;
-            button.Width = 280;
-
             button.Click += this.RoundButtonClick;
         }
 

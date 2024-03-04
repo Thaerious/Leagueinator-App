@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Xml.Linq;
 
 namespace Model.Tables {
 
@@ -47,9 +46,6 @@ namespace Model.Tables {
 
         public MemberTable() : base("members") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
-                Console.WriteLine(e.Row.PrettyPrint());
-                Console.WriteLine($"Row Changing {e.Row.RowState}");
-
                 MemberRow memberRow = new(e.Row);
 
                 // Check for name in idle table

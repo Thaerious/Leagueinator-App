@@ -7,7 +7,7 @@ namespace Leagueinator.Components {
         [Description("Defines the lane index for this control.")]
         public int Lane { get; set; } = -1;
 
-        public MatchRow? MatchRow { 
+        public MatchRow? MatchRow {
             get => this._matchRow;
 
             set {
@@ -43,17 +43,23 @@ namespace Leagueinator.Components {
             InitializeComponent();
             this.membersGrid.RowValidating += this.MembersGrid_RowValidating;
             this.teamsGrid.RowValidating += this.TeamsGrid_RowValidating;
+            this.membersGrid.DataError += this.DataErrorHnd;
+            this.teamsGrid.DataError += this.DataErrorHnd;
+        }
+
+        private void DataErrorHnd(object? sender, DataGridViewDataErrorEventArgs e) {
+            MessageBox.Show("Data input error: " + e.Exception.Message);
+            e.ThrowException = false;
         }
 
         private void MembersGrid_RowValidating(object? sender, DataGridViewCellCancelEventArgs e) {
-            Console.WriteLine("MembersGrid_RowValidating");
             if (this.MatchRow is null) return;
 
             DataGridViewRow gridRow = this.membersGrid.Rows[e.RowIndex];
             var index = gridRow.Cells[MemberTable.COL.INDEX].Value;
             var player = gridRow.Cells[MemberTable.COL.PLAYER].Value;
 
-            if (player is DBNull) return;
+            if (player is DBNull || player is null) return;
 
             // remove values from idle table
             var idleTable = this.MatchRow.League.IdleTable;
@@ -80,7 +86,7 @@ namespace Leagueinator.Components {
             // make sure {match, index} is in team table
             TeamTable teamTable = this.MatchRow.League.TeamTable;
             if (!teamTable.Has([TeamTable.COL.MATCH, TeamTable.COL.INDEX], [this.MatchRow.UID, (int)index])) {
-                TeamRow teamRow = MatchRow.Teams.Add((int)index);                
+                TeamRow teamRow = MatchRow.Teams.Add((int)index);
             }
         }
 
@@ -97,5 +103,12 @@ namespace Leagueinator.Components {
         }
 
         private MatchRow? _matchRow;
+
+        private void TxtEndsChangedHnd(object sender, EventArgs e) {
+            Console.WriteLine(txtEnds.Text);
+            int ends = int.Parse(txtEnds.Text);
+            if (this.MatchRow is null) return;
+            if (ends > 0) this.MatchRow.Ends = ends;
+        }
     }
 }
