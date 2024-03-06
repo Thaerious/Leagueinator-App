@@ -16,10 +16,8 @@ namespace Leagueinator.PrinterComponents {
             get => this._rootElement;
             set {
                 this._rootElement = value;
-
-                if (this._rootElement != null) {
-                    this._rootElement.ContainerProvider = new ContentRectProvider(() => new(0, 0, this.Width, this.Height));
-                }
+                if (this._rootElement == null) return;
+                this._rootElement.ContainerRect = new(0, 0, this.Width, this.Height);
             }
         }
 

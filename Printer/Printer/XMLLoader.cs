@@ -31,7 +31,7 @@ namespace Leagueinator.Printer {
 
         /// <summary>
         /// Using the loaded style sheet, apply styles to root and all child nodes
-        /// recursivly.  Replaces the current style on the element.
+        /// recursivly.  Replaces the current style on the xChild.
         /// </summary>
         public void ApplyStyles(Element root) {
             Queue<Element> queue = new();
@@ -92,30 +92,38 @@ namespace Leagueinator.Printer {
             XElement xElement = xml.Root;
 
             Element rootElement = new(xElement.Attributes()) {
-                TagName = xElement.Name.ToString()
+                TagName = xElement.Name.ToString(),
+                Parent = null,
             };
 
             Stack<XElement> xmlStack = new Stack<XElement>();
-            Stack<Element> printStack = new Stack<Element>();
+            Stack<Element> eleStack = new Stack<Element>();
             xmlStack.Push(xElement);
-            printStack.Push(rootElement);
+            eleStack.Push(rootElement);
 
             while (xmlStack.Count > 0) {
                 XElement xmlCurrent = xmlStack.Pop();
-                Element printCurrent = printStack.Pop();
+                Element eleCurrent = eleStack.Pop();
 
                 foreach (var xmlChild in xmlCurrent.Nodes().ToList()) {
                     if (xmlChild is null) continue;
 
-                    if (xmlChild is XElement element) {
-                        var printChild = printCurrent.AddChild(new Element(element.Attributes()) {
-                            TagName = element.Name.ToString()
-                        });
-                        xmlStack.Push(element);
-                        printStack.Push(printChild);
+                    if (xmlChild is XElement xChild) {
+                        Element childElement = new Element(xChild.Attributes()) {
+                            TagName = xChild.Name.ToString(),
+                            Parent = eleCurrent
+                        };
+
+                        eleCurrent.AddChild(childElement);
+                        xmlStack.Push(xChild);
+                        eleStack.Push(childElement);
                     }
-                    else if (xmlChild is XText text) {
-                        printCurrent.AddChild(new TextElement(text.Value));
+                    else if (xmlChild is XText xText) {
+                        Element childElement = new TextElement(xText.Value) {
+                            Parent = eleCurrent
+                        };
+
+                        eleCurrent.AddChild(childElement);
                     }
                 }
             }

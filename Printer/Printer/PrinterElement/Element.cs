@@ -17,6 +17,8 @@ namespace Leagueinator.Printer {
 
         public PrinterElementList Children => new(this._children);
 
+        public Element? Parent { get; internal set; }
+
         public List<string> ClassList {
             get {
                 if (this.Attributes.TryGetValue("class", out string? value)) {
@@ -68,15 +70,10 @@ namespace Leagueinator.Printer {
             }
         }
 
-        /// <summary>
-        /// Set the size of the parent container used for layout.
-        /// </summary>
-        public HasContentRect ContainerProvider { private get; set; } = new ContentRectProvider(
-            () => new()
-        );
-
+        private RectangleF? _containerRect = null;
         public RectangleF ContainerRect {
-            get => this.ContainerProvider.ContentRect;
+            get => this._containerRect is null ? this.Parent.ContentRect : (RectangleF)this._containerRect;
+            set => this._containerRect = value;
         }
 
         /// <summary>
@@ -169,12 +166,9 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="classes"></param>
-        public Element(string name, params string[] classes) {
+        public Element(string name) {
             this.Style = new Flex();
             this.TagName = name;
-            foreach (string className in classes) {
-                this.ClassList.Add(className);
-            }
         }
 
         /// <summary>

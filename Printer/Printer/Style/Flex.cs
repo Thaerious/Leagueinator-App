@@ -50,10 +50,6 @@ namespace Leagueinator.Printer {
             element.OuterSize = new SizeF(outerWidth, outerHeight);
             element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
-
-            foreach (Element child in element.Children) {
-                child.ContainerProvider = element;
-            }
         }
 
         void SetDefaultSize(Element element) {
