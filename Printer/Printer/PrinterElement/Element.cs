@@ -7,101 +7,8 @@ using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
 
-    public class PrinterElementList : List<PrinterElement> {
-
-        public PrinterElementList this[string id] => this.QueryAll(id);
-
-        public PrinterElementList() { }
-
-        public PrinterElementList(IEnumerable<PrinterElement> collection) : base(collection) { }
-
-        public PrinterElementList QueryAll(string query) {
-            PrinterElementList result = new();
-            Queue<PrinterElementList> queue = new();
-            queue.Enqueue(this);
-
-            while (queue.Count > 0) {
-                PrinterElementList current = queue.Dequeue();
-
-                if (query == "*") {
-                    result.AddRange(current);
-                }
-                else if (query.StartsWith(".")) {
-                    foreach (PrinterElement element in current) {
-                        if (element.ClassList.Contains(query[1..])) result.Add(element);
-                    }
-                }
-                else if (query.StartsWith("#")) {
-                    foreach (PrinterElement element in current) {
-                        if (element.Attributes.ContainsKey("id")) {
-                            if (element.Attributes["id"].Equals(query[1..])) result.Add(element);
-                        }
-                    }
-                }
-                else {
-                    foreach (PrinterElement element in current) {
-                        if (element.TagName == query) result.Add(element);
-                    }
-                }
-
-                foreach (PrinterElement child in current) {
-                    queue.Enqueue(child.Children);
-                }
-            }
-            return result;
-        }
-
-        public PrinterElement? Query(string query) {
-            Queue<PrinterElementList> queue = new();
-            queue.Enqueue(this);
-
-            while (queue.Count > 0) {
-                PrinterElementList current = queue.Dequeue();
-
-                if (query.StartsWith(".")) {
-                    foreach (PrinterElement element in current) {
-                        if (element.ClassList.Contains(query[1..])) return element;
-                    }
-                }
-                if (query.StartsWith("#")) {
-                    foreach (PrinterElement element in current) {
-                        if (element.Attributes.ContainsKey("id")) {
-                            if (element.Attributes["id"].Equals(query[1..])) return element;
-                        }
-                    }
-                }
-                else {
-                    foreach (PrinterElement element in current) {
-                        if (element.TagName == query) return element;
-                    }
-                }
-
-                foreach (PrinterElement child in current) {
-                    queue.Enqueue(child.Children);
-                }
-            }
-
-            return null;
-        }
-    }
-
-    public interface HasContentRect {
-        public RectangleF ContentRect { get; }
-    }
-
-    public class ContentRectProvider : HasContentRect {
-        public delegate RectangleF ProvideRectangle();
-        private ProvideRectangle source;
-        
-        public ContentRectProvider(ProvideRectangle source) {
-            this.source = source;
-        }
-
-        public RectangleF ContentRect => source();
-    }
-
-    public class PrinterElement : HasContentRect {
-        public delegate void DrawDelegate(Graphics g, PrinterElement ele);
+    public class Element : HasContentRect {
+        public delegate void DrawDelegate(Graphics g, Element ele); // TODO remove element?
         public event DrawDelegate OnDraw = delegate { };
 
         public string TagName { get; init; } = "";
@@ -127,7 +34,7 @@ namespace Leagueinator.Printer {
             }
         }
 
-        public PrinterElement this[int index] {
+        public Element this[int index] {
             get {
                 return this.Children[index];
             }
@@ -136,17 +43,17 @@ namespace Leagueinator.Printer {
         public string? InnerText {
             get {
                 if (this.Children.Count == 0) return null;
-                Queue<PrinterElement> queue = new();
+                Queue<Element> queue = new();
                 queue.Enqueue(this);
 
                 StringBuilder sb = new();
                 while (queue.Count > 0) {
-                    PrinterElement current = queue.Dequeue();
+                    Element current = queue.Dequeue();
                     foreach (var child in current.Children) {
                         if (child is TextElement textElement) {
                             sb.Append(textElement.Text);
                         }
-                        if (child is PrinterElement element) {
+                        if (child is Element element) {
                             queue.Enqueue(element);
                         }
                     }
@@ -251,7 +158,7 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// Create a new printer child with a default name and classlist.
         /// </summary>
-        public PrinterElement(IEnumerable<XAttribute> attributes) : base() {
+        public Element(IEnumerable<XAttribute> attributes) : base() {
             foreach (XAttribute xattr in attributes) {
                 this.Attributes[xattr.Name.ToString()] = xattr.Value;
             }
@@ -262,7 +169,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="classes"></param>
-        public PrinterElement(string name, params string[] classes) {
+        public Element(string name, params string[] classes) {
             this.Style = new Flex();
             this.TagName = name;
             foreach (string className in classes) {
@@ -274,38 +181,30 @@ namespace Leagueinator.Printer {
         /// Create a new child with the name and currentStyles of this child.
         /// </summary>
         /// <returns></returns>
-        public virtual PrinterElement Clone() {
-            PrinterElement clone = new(this.TagName) {
+        public virtual Element Clone() {
+            Element clone = new(this.TagName) {
                 Style = this.Style,
                 Attributes = new(this.Attributes)
             };
 
             clone.ClassList.AddRange(this.ClassList);
 
-            foreach (PrinterElement child in this.Children) {
+            foreach (Element child in this.Children) {
                 clone.AddChild(child.Clone());
             }
             return clone;
         }
 
         /// <summary>
-        /// Perform all size and layout opertions for this child's style.
-        /// </summary>
-        public void Update() {
-            this.Style.DoSize(this);
-            this.Style.DoLayout(this);
-        }
-
-        /// <summary>
         /// Dray this child in the graphsics object.
         /// Draws occur in the following order:
-        /// 1) Call the style DoDraw method
+        /// 1) Call the style Draw method
         /// 2) Invoke all OnDraw event listeners
         /// 3) Call the Draw method for all child elements
         /// </summary>
         /// <param name="g"></param>
         public virtual void Draw(Graphics g) {
-            this.Style.DoDraw(this, g);
+            this.Style.Draw(this, g);
             this.OnDraw.Invoke(g, this);
             this.Children.ForEach(child => child.Draw(g));
         }
@@ -318,7 +217,7 @@ namespace Leagueinator.Printer {
         /// <param name="children"></param>
         /// <returns></returns>
         public PrinterElementList AddChildren(PrinterElementList children, bool applyStyle = true) {
-            foreach (PrinterElement child in children) {
+            foreach (Element child in children) {
                 this.AddChild(child, applyStyle);
             }
             return children;
@@ -330,7 +229,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
-        public PrinterElement AddChild(PrinterElement child, bool applyStyle = true) {
+        public Element AddChild(Element child, bool applyStyle = true) {
             if (this._children.Contains(child)) return child;
             this._children.Add(child);
             return child;
@@ -340,7 +239,7 @@ namespace Leagueinator.Printer {
         /// Remove all child nodes from this child.
         /// </summary>
         public void ClearChildren() {
-            foreach (PrinterElement child in this.Children) {
+            foreach (Element child in this.Children) {
                 this.RemoveChild(child);
             }
         }
@@ -350,7 +249,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="child"></param>
         /// <exception cref="Exception">If the child does not belong to this parent.</exception>
-        public void RemoveChild(PrinterElement child) {
+        public void RemoveChild(Element child) {
             this._children.Remove(child);
         }
 
@@ -366,17 +265,19 @@ namespace Leagueinator.Printer {
             return $"[\"{this.TagName}\", {{{this.ClassList.DelString(".")}}}, {this.OuterRect}, {this.Children.Count}]";
         }
 
-        public virtual XMLStringBuilder ToXML() {
+        public virtual XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
+            action ??= (element, xml) => { };
             XMLStringBuilder xml = new();
 
             xml.OpenTag(this.TagName);
+            action(this, xml);
 
             foreach (string attr in this.Attributes.Keys) {
                 xml.Attribute(attr, this.Attributes[attr]);
             }
 
-            foreach (PrinterElement child in this.Children) {
-                xml.AppendXML(child.ToXML());
+            foreach (Element child in this.Children) {
+                xml.AppendXML(child.ToXML(action));
             }
             xml.CloseTag();
 

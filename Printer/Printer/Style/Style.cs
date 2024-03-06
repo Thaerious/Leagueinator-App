@@ -82,9 +82,9 @@ namespace Leagueinator.Printer {
             LineAlignment = StringAlignment.Center
         };
 
-        public virtual void DoSize(PrinterElement element) { }
-        public virtual void DoLayout(PrinterElement element) { }
-        public virtual void DoDraw(PrinterElement element, Graphics g) { }
+        public virtual void DoSize(Element element) { }
+        public virtual void DoPos(Element element) { }
+        public virtual void Draw(Element element, Graphics g) { }
 
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace Leagueinator.Printer {
             this.LoadStyle(styleText);
         }
 
-        public PrinterElement LoadXMLResource(Assembly assembly, string resourceName) {
+        public Element LoadXMLResource(Assembly assembly, string resourceName) {
             using Stream? xmlStream = assembly.GetManifestResourceStream(resourceName) ?? throw new NullReferenceException($"Resource Not Found: {resourceName}");
             using StreamReader xmlReader = new StreamReader(xmlStream);
             string xmlText = xmlReader.ReadToEnd();
@@ -33,12 +33,12 @@ namespace Leagueinator.Printer {
         /// Using the loaded style sheet, apply styles to root and all child nodes
         /// recursivly.  Replaces the current style on the element.
         /// </summary>
-        public void ApplyStyles(PrinterElement root) {
-            Queue<PrinterElement> queue = new();
+        public void ApplyStyles(Element root) {
+            Queue<Element> queue = new();
             queue.Enqueue(root);
 
             while (queue.Count > 0) {
-                PrinterElement current = queue.Dequeue();
+                Element current = queue.Dequeue();
                 var nullableStyle = new NullableStyle();
 
                 this.ApplyNameStyles(current, nullableStyle);
@@ -50,13 +50,13 @@ namespace Leagueinator.Printer {
 
                 current.Style = nullableStyle.ToStyle<Flex>();
 
-                foreach (PrinterElement child in current.Children) {
+                foreach (Element child in current.Children) {
                     queue.Enqueue(child);
                 }
             }
         }
 
-        internal void ApplyClassStyles(PrinterElement current, NullableStyle nStyle) {
+        internal void ApplyClassStyles(Element current, NullableStyle nStyle) {
             foreach (var className in current.ClassList) {
                 if (loadedStyles.ContainsKey("." + className)) {
                     NullableStyle.MergeCSS(nStyle, loadedStyles["." + className]);
@@ -64,7 +64,7 @@ namespace Leagueinator.Printer {
             }
         }
 
-        internal void ApplyIDStyles(PrinterElement current, NullableStyle nStyle) {
+        internal void ApplyIDStyles(Element current, NullableStyle nStyle) {
             if (current.Attributes.ContainsKey("id")) {
                 var selector = "#" + current.Attributes["id"];
                 if (loadedStyles.ContainsKey(selector)) {
@@ -73,42 +73,42 @@ namespace Leagueinator.Printer {
             }
         }
 
-        internal void ApplyNameStyles(PrinterElement current, NullableStyle nStyle) {
+        internal void ApplyNameStyles(Element current, NullableStyle nStyle) {
             if (this.loadedStyles.ContainsKey(current.TagName)) {
                 NullableStyle.MergeCSS(nStyle, loadedStyles[current.TagName]);
             }
         }
 
-        internal void ApplyWildcardStyles(PrinterElement current, NullableStyle nStyle) {
+        internal void ApplyWildcardStyles(Element current, NullableStyle nStyle) {
             if (this.loadedStyles.ContainsKey("*")) {
                 NullableStyle.MergeCSS(nStyle, loadedStyles["*"]);
             }
         }
 
-        public PrinterElement LoadXML(string xmlString) {
+        public Element LoadXML(string xmlString) {
             XDocument xml = XDocument.Parse(xmlString);
 
             if (xml.Root == null) throw new NullReferenceException();
             XElement xElement = xml.Root;
 
-            PrinterElement rootElement = new(xElement.Attributes()) {
+            Element rootElement = new(xElement.Attributes()) {
                 TagName = xElement.Name.ToString()
             };
 
             Stack<XElement> xmlStack = new Stack<XElement>();
-            Stack<PrinterElement> printStack = new Stack<PrinterElement>();
+            Stack<Element> printStack = new Stack<Element>();
             xmlStack.Push(xElement);
             printStack.Push(rootElement);
 
             while (xmlStack.Count > 0) {
                 XElement xmlCurrent = xmlStack.Pop();
-                PrinterElement printCurrent = printStack.Pop();
+                Element printCurrent = printStack.Pop();
 
                 foreach (var xmlChild in xmlCurrent.Nodes().ToList()) {
                     if (xmlChild is null) continue;
 
                     if (xmlChild is XElement element) {
-                        var printChild = printCurrent.AddChild(new PrinterElement(element.Attributes()) {
+                        var printChild = printCurrent.AddChild(new Element(element.Attributes()) {
                             TagName = element.Name.ToString()
                         });
                         xmlStack.Push(element);

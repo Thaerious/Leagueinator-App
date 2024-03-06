@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows7.0</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Leagueinator_Utility\Leagueinator_Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Printer\Components\PrinterCanvas.cs" />
   </ItemGroup>
 
 </Project>

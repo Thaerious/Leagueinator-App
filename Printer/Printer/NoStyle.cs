@@ -3,21 +3,21 @@ using System.Drawing;
 
 namespace Leagueinator.Printer {
     internal class NoStyle : Style {
-        public override void DoSize(PrinterElement element) {
-            foreach (PrinterElement child in element.Children) {
+        public override void DoSize(Element element) {
+            foreach (Element child in element.Children) {
                 child.Style.DoSize(child);
             }
         }
 
-        public override void DoLayout(PrinterElement element) {
-            foreach (PrinterElement child in element.Children) {
-                child.Style.DoLayout(child);
+        public override void DoPos(Element element) {
+            foreach (Element child in element.Children) {
+                child.Style.DoPos(child);
             }
         }
 
-        public override void DoDraw(PrinterElement element, Graphics g) {
-            foreach (PrinterElement child in element.Children) {
-                child.Style.DoDraw(child, g);
+        public override void Draw(Element element, Graphics g) {
+            foreach (Element child in element.Children) {
+                child.Style.Draw(child, g);
             }
         }
     }

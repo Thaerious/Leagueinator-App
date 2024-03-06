@@ -4,11 +4,11 @@ using System.Drawing;
 
 namespace Leagueinator.Printer
 {
-    public class TextElement : PrinterElement
+    public class TextElement : Element
     {
         public string Text = "";
 
-        public override PrinterElement Clone() {
+        public override Element Clone() {
             TextElement clone = new(this.Text) {
                 Style = this.Style,
                 TagName = this.TagName
@@ -16,7 +16,7 @@ namespace Leagueinator.Printer
 
             clone.ClassList.AddRange(this.ClassList);
 
-            foreach (PrinterElement child in this.Children) {
+            foreach (Element child in this.Children) {
                 clone.AddChild(child.Clone());
             }
             return clone;
@@ -41,16 +41,14 @@ namespace Leagueinator.Printer
             this.Text = text.Trim();
         }
 
-        public override XMLStringBuilder ToXML() {
+        public override XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
             XMLStringBuilder xml = new();
-
             xml.AppendLine(this.Text);
-
             return xml;
         }
 
         public override void Draw(Graphics g) {
-            this.Style.DoDraw(this, g);            
+            this.Style.Draw(this, g);            
             using Brush brush = new SolidBrush(Color.Black);
             g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }

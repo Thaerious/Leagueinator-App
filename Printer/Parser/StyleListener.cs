@@ -12,6 +12,10 @@ namespace Leagueinator.CSSParser {
         public readonly Dictionary<string, NullableStyle> Styles = new();
         private readonly List<NullableStyle> currentStyles = new();
 
+        /// <summary>
+        /// Treat the style selector as a commas seperated list and extract each style name.
+        /// </summary>
+        /// <param name="context"></param>
         public override void EnterStyle([NotNull] StyleParser.StyleContext context) {
             var selectors = context.selectors().GetText();
 

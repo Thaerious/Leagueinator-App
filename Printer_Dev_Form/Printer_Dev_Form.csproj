@@ -27,11 +27,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\PrinterComponents\PrinterComponents.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Mock.cs">
+    <Compile Update="MockModel.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>

@@ -7,15 +7,16 @@ namespace Leagueinator.Printer {
 
         public Flex() { }
 
-        public override void DoSize(PrinterElement element) {
+        public override void DoSize(Element element) {
             this.SetDefaultSize(element);
 
+            // reset parent (this) width.
             float maxWidth = 0f;
             float maxHeight = 0f;
             float sumWidth = 0f;
             float sumHeight = 0f;
 
-            foreach (PrinterElement child in element.Children) {
+            foreach (Element child in element.Children) {
                 child.Style.DoSize(child);
                 maxWidth = child.OuterSize.Width > maxWidth ? maxWidth = child.OuterSize.Width : maxWidth;
                 maxHeight = child.OuterSize.Height > maxHeight ? maxHeight = child.OuterSize.Height : maxHeight;
@@ -50,18 +51,18 @@ namespace Leagueinator.Printer {
             element.BorderSize = new SizeF(borderWidth, borderHeight);
             element.ContentSize = new SizeF(contentWidth, contentHeight);
 
-            foreach (PrinterElement child in element.Children) {
+            foreach (Element child in element.Children) {
                 child.ContainerProvider = element;
             }
         }
 
-        void SetDefaultSize(PrinterElement element) {
+        void SetDefaultSize(Element element) {
             this.Width.Factor = element.ContainerRect.Width;
             this.Height.Factor = element.ContainerRect.Height;
             element.ContentSize = new SizeF(this.Width, this.Height);
         }
 
-        public override void DoLayout(PrinterElement element) {
+        public override void DoPos(Element element) {
             var children = this.CollectChildren(element);
             if (children.Count == 0) return;
 
@@ -69,23 +70,23 @@ namespace Leagueinator.Printer {
             this.JustifyContent(element, children);
             this.AlignItems(element, children);
 
-            foreach (PrinterElement child in element.Children) {
-                child.Style.DoLayout(child);
+            foreach (Element child in element.Children) {
+                child.Style.DoPos(child);
             }
         }
 
-        public override void DoDraw(PrinterElement element, Graphics g) {
+        public override void Draw(Element element, Graphics g) {
             this.DoDrawBackground(element, g);
             this.DoDrawBorders(element, g);
         }
 
-        public void DoDrawBackground(PrinterElement element, Graphics g) {
+        public void DoDrawBackground(Element element, Graphics g) {
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }
         }
 
-        public void DoDrawBorders(PrinterElement element, Graphics g) {
+        public void DoDrawBorders(Element element, Graphics g) {
             if (this.BorderColor is null) return;
 
             if (this.BorderColor.Top != default) {
@@ -134,8 +135,8 @@ namespace Leagueinator.Printer {
             }
         }
 
-        private void ResetTranslates(List<PrinterElement> children) {
-            foreach (PrinterElement child in children) {
+        private void ResetTranslates(List<Element> children) {
+            foreach (Element child in children) {
                 if (child.Style.Position == Position.Static) {
                     child.Translation = new PointF(0, 0);
                 }
@@ -150,13 +151,13 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        private List<PrinterElement> CollectChildren(PrinterElement element) {
+        private List<Element> CollectChildren(Element element) {
             var children = element.Children.Where(c => c.Style.Position != Position.Fixed).ToList();
             if (this.Flex_Major_Direction == Direction.Reverse) children.Reverse();
             return children;
         }
 
-        private void LayoutChildren(List<PrinterElement> children, PointF from) {
+        private void LayoutChildren(List<Element> children, PointF from) {
             PointF vector;
             if (this.Flex_Major == Flex_Direction.Column) {
                 vector = new(0, 1);
@@ -166,7 +167,7 @@ namespace Leagueinator.Printer {
             }
 
             PointF current = from;
-            foreach (PrinterElement child in children) {
+            foreach (Element child in children) {
                 child.Translate(current);
                 var diff = new PointF(child.OuterSize.Width, child.OuterSize.Height).Scale(vector);
                 current = current.Translate(diff);
@@ -178,16 +179,16 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <param name="children"></param>
-        private void JustifyContent(PrinterElement element, List<PrinterElement> children) {
+        private void JustifyContent(Element element, List<Element> children) {
             float widthRemaining = element.ContentSize.Width;
 
-            foreach (PrinterElement child in children) {
+            foreach (Element child in children) {
                 widthRemaining -= child.OuterSize.Width;
             }
 
 
             float heightRemaining = element.ContentSize.Height;
-            foreach (PrinterElement child in children) {
+            foreach (Element child in children) {
                 heightRemaining -= child.OuterSize.Height;
             }
 
@@ -311,7 +312,7 @@ namespace Leagueinator.Printer {
                     }
             }
         }
-        private void AlignItems(PrinterElement element, List<PrinterElement> children) {
+        private void AlignItems(Element element, List<Element> children) {
             switch (this.Flex_Major) {
                 case Flex_Direction.Row:
                     switch (this.Align_Items) {

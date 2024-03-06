@@ -9,12 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Printer", "Printer\Printer.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterTestForm", "PrinterTestForm\PrinterTestForm.csproj", "{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}"
 	ProjectSection(ProjectDependencies) = postProject
-		{2B76CD12-B058-441B-B2C5-4C90B2DCD710} = {2B76CD12-B058-441B-B2C5-4C90B2DCD710}
-		{80487A98-7BA7-4F7A-99FC-B17F3D41330F} = {80487A98-7BA7-4F7A-99FC-B17F3D41330F}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrinterComponents", "PrinterComponents\PrinterComponents.csproj", "{2B76CD12-B058-441B-B2C5-4C90B2DCD710}"
-	ProjectSection(ProjectDependencies) = postProject
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F} = {80487A98-7BA7-4F7A-99FC-B17F3D41330F}
 	EndProjectSection
 EndProject
@@ -29,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainApplication", "Applicat
 		{6240048D-BFBC-41A7-84DD-0329D064DE74} = {6240048D-BFBC-41A7-84DD-0329D064DE74}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelConsole", "ModelConsole\ModelConsole.csproj", "{A10E04FF-2CBE-4576-8504-4CF95B97964F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelConsole", "ModelConsole\ModelConsole.csproj", "{A10E04FF-2CBE-4576-8504-4CF95B97964F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +43,6 @@ Global
 		{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99F6F2B2-4953-49A6-BA3A-7E985C2108BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B76CD12-B058-441B-B2C5-4C90B2DCD710}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6240048D-BFBC-41A7-84DD-0329D064DE74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6240048D-BFBC-41A7-84DD-0329D064DE74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6240048D-BFBC-41A7-84DD-0329D064DE74}.Release|Any CPU.ActiveCfg = Release|Any CPU

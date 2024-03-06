@@ -4,7 +4,7 @@ using System.Data;
 namespace Leagueinator.Printer {
     public static class PrinterElementExtensions {
 
-        public static int ApplyRow(this PrinterElement element, DataRow row, Action<PrinterElement, string, object> action) {
+        public static int ApplyRow(this Element element, DataRow row, Action<Element, string, object> action) {
             int count = 0;
 
             foreach (DataColumn col in row.Table.Columns) {
@@ -25,7 +25,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <param name="row"></param>
-        public static int ApplyRowAsText(this PrinterElement element, DataRow row) {
+        public static int ApplyRowAsText(this Element element, DataRow row) {
             int count = 0;
 
             element.ApplyRow(row, (element, col, value) => {
@@ -38,7 +38,7 @@ namespace Leagueinator.Printer {
             return count;
         }
 
-        public static XMLStringBuilder LocXML(this PrinterElement ele) {
+        public static XMLStringBuilder LocXML(this Element ele) {
             XMLStringBuilder xml = new();
 
             xml.OpenTag(ele.TagName);
@@ -57,7 +57,7 @@ namespace Leagueinator.Printer {
             xml.Attribute("y", ele.ContentRect.Y);
             xml.CloseTag();
 
-            foreach (PrinterElement child in ele.Children) {
+            foreach (Element child in ele.Children) {
                 xml.AppendXML(child.LocXML());
             }
 

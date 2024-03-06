@@ -41,6 +41,7 @@ namespace Leagueinator.Printer {
         /// <summary>
         /// Copy all CSS sourceProperties and sourceFields from source to target.
         /// Will only overwrite sourceFields on target source are null.
+        /// Used to create inhereited style properties.
         /// </summary>
         /// <param name="source"></param>
         internal static void MergeCSS(object target, object source) {
@@ -105,6 +106,13 @@ namespace Leagueinator.Printer {
             }
         }
 
+        /// <summary>
+        /// Create a new style from this style.
+        /// Copies all properties to the new style.
+        /// Used to create a specific style after the source has been read.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T ToStyle<T>() where T : Style, new(){
             T target = new();
 

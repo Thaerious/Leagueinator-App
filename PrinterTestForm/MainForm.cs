@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Printer;
-using Leagueinator.Utility;
 using System.Diagnostics;
 
 namespace PrinterTestForm
@@ -48,9 +47,12 @@ namespace PrinterTestForm
 
                 var xmlLoader = new XMLLoader();
                 xmlLoader.LoadStyle(styleString);
-                PrinterElement root = xmlLoader.LoadXML(xmlString);
+                Element root = xmlLoader.LoadXML(xmlString);
 
                 this.printerCanvas.RootElement = root;
+                root.Style.DoSize(root);
+                root.Style.DoPos(root);
+
                 this.printerCanvas.Invalidate();
             }
             catch (Exception ex) {
@@ -60,11 +62,11 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.RootElement.ToXML());
-
-            Debug.WriteLine(this.printerCanvas.RootElement["team"][0]["row"][0]);
-            Debug.WriteLine(this.printerCanvas.RootElement["team"][0]["row"][1]);
-            Debug.WriteLine(this.printerCanvas.RootElement["team"][0]["row"][2]);
+            Debug.WriteLine(this.printerCanvas.RootElement.ToXML(
+                (element, xml) => {
+                    xml.InnerText(element.ContainerRect.ToString());
+                }
+            ));
         }
 
         private void TXT_KeyPress(object sender, KeyPressEventArgs e) {
