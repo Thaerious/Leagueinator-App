@@ -47,8 +47,8 @@ namespace Leagueinator.Printer
             return xml;
         }
 
-        public override void Draw(Graphics g) {
-            this.Style.Draw(this, g);            
+        public override void Draw(Graphics g, int page) {
+            this.Style.Draw(this, g, page);            
             using Brush brush = new SolidBrush(Color.Black);
             g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }

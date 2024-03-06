@@ -15,9 +15,9 @@ namespace Leagueinator.Printer {
             }
         }
 
-        public override void Draw(Element element, Graphics g) {
+        public override void Draw(Element element, Graphics g, int page) {
             foreach (Element child in element.Children) {
-                child.Style.Draw(child, g);
+                child.Style.Draw(child, g, page);
             }
         }
     }

@@ -62,11 +62,7 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.RootElement.ToXML(
-                (element, xml) => {
-                    xml.InnerText(element.ContainerRect.ToString());
-                }
-            ));
+            Debug.WriteLine(this.printerCanvas.RootElement.ToXML());
         }
 
         private void TXT_KeyPress(object sender, KeyPressEventArgs e) {
@@ -84,17 +80,34 @@ namespace PrinterTestForm
         }
 
         private void ToolPrintCSS_Click(object sender, EventArgs e) {
-            var target = this.printerCanvas.RootElement["inner"][0];
-            Debug.WriteLine(target);
-            Debug.WriteLine(target.Style);
-
-            var text = target["@text"][0];
-            Debug.WriteLine(text);
-            Debug.WriteLine(text.Style);
+            Debug.WriteLine(this.printerCanvas.RootElement.ToXML(
+                (element, xml) => {
+                    xml.InnerText(element.Style.ToString());
+                }
+            ));
         }
 
         private void ToolPrintLocXML(object sender, EventArgs e) {
-            Debug.WriteLine(this.printerCanvas.RootElement?.LocXML());
+            Debug.WriteLine(this.printerCanvas.RootElement.ToXML(
+                (element, xml) => {
+                    xml.InnerText(element.ContainerRect.ToString());
+                }
+            ));
+        }
+
+        private void butPrevClick(object sender, EventArgs e) {
+            int page = int.Parse(this.lblPage.Text);
+            if (--page < 0) page = 0;
+            this.lblPage.Text = $"{page}";
+            this.printerCanvas.Page = page;
+            this.printerCanvas.Invalidate();
+        }
+
+        private void butNextClick(object sender, EventArgs e) {
+            int page = int.Parse(this.lblPage.Text);
+            this.lblPage.Text = $"{++page}";
+            this.printerCanvas.Page = page;
+            this.printerCanvas.Invalidate();
         }
     }
 }

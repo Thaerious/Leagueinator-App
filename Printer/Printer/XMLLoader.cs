@@ -26,6 +26,7 @@ namespace Leagueinator.Printer {
 
             foreach (var keyPair in style) {
                 this.loadedStyles[keyPair.Key] = keyPair.Value;
+                Debug.WriteLine($"{keyPair.Key}\n{keyPair.Value}");
             }
         }
 

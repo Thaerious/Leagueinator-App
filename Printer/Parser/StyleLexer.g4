@@ -7,7 +7,7 @@ STAR  : '*'                             ;
 COMMA : ','                             ;
 AT    : '@'                             ;
 
-STRING     : [a-zA-Z_-]+                ;
+STRING     : [a-zA-Z]?[a-zA-Z0-9_-]+    ;
 WS         : [ \t\r\n]+ -> skip         ;
  
 mode KEY_MODE;

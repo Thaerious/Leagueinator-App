@@ -54,6 +54,7 @@ namespace Leagueinator.Printer {
         [CSS] public UnitFloat Width = UnitFloat.Default;
         [CSS] public UnitFloat Height = UnitFloat.Default;
         [CSS] public Color? BackgroundColor = null;
+        [CSS] public int? Page = default;
 
         [CSS] public Box Margin = Box.Default;
         [CSS] public Box Padding = Box.Default;
@@ -84,7 +85,7 @@ namespace Leagueinator.Printer {
 
         public virtual void DoSize(Element element) { }
         public virtual void DoPos(Element element) { }
-        public virtual void Draw(Element element, Graphics g) { }
+        public virtual void Draw(Element element, Graphics g, int page) { }
 
 
         /// <summary>

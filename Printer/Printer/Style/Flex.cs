@@ -71,9 +71,11 @@ namespace Leagueinator.Printer {
             }
         }
 
-        public override void Draw(Element element, Graphics g) {
-            this.DoDrawBackground(element, g);
-            this.DoDrawBorders(element, g);
+        public override void Draw(Element element, Graphics g, int page) {
+            if (this.Page == page) {
+                this.DoDrawBackground(element, g);
+                this.DoDrawBorders(element, g);
+            }
         }
 
         public void DoDrawBackground(Element element, Graphics g) {

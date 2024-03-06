@@ -11,6 +11,8 @@ namespace Leagueinator.PrinterComponents {
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        public int Page { get; set; } = 0;
+
         private Element? _rootElement = null;
         public Element? RootElement {
             get => this._rootElement;
@@ -48,7 +50,7 @@ namespace Leagueinator.PrinterComponents {
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
-            this.RootElement?.Draw(e.Graphics);
+            this.RootElement?.Draw(e.Graphics, this.Page);
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);
         }
 

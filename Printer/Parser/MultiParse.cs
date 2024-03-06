@@ -36,6 +36,7 @@ namespace Leagueinator.CSSParser {
             Type? underlyingType = Nullable.GetUnderlyingType(type);
             Type targetType = underlyingType ?? type;
 
+            if (ParseInteger(source, targetType, ref target)) return true;
             if (ParseString(source, targetType, ref target)) return true;
             if (ParseStaticMethod(source, targetType, ref target)) return true;
             if (ParseEnum(source, targetType, ref target)) return true;
@@ -43,6 +44,12 @@ namespace Leagueinator.CSSParser {
             if (ParseSpecialCase(source, targetType, ref target)) return true;
            
             return false;
+        }
+
+        private static bool ParseInteger(string source, Type type, ref object? target) {
+            if (!int.TryParse(source, out int value)) return false;
+            target = value;
+            return true;
         }
 
         private static bool ParseString(string source, Type type, ref object? target) {

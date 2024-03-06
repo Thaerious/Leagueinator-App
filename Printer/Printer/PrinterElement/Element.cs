@@ -22,9 +22,9 @@ namespace Leagueinator.Printer {
         public List<string> ClassList {
             get {
                 if (this.Attributes.TryGetValue("class", out string? value)) {
-                    return value.Split().ToList();
+                    return [.. value.Split()];
                 }
-                return new();
+                return [];
             }
         }
 
@@ -33,12 +33,6 @@ namespace Leagueinator.Printer {
         public PrinterElementList this[string query] {
             get {
                 return this.Children.QueryAll(query);
-            }
-        }
-
-        public Element this[int index] {
-            get {
-                return this.Children[index];
             }
         }
 
@@ -70,18 +64,20 @@ namespace Leagueinator.Printer {
             }
         }
 
-        private RectangleF? _containerRect = null;
         public RectangleF ContainerRect {
             get => this._containerRect is null ? this.Parent.ContentRect : (RectangleF)this._containerRect;
             set => this._containerRect = value;
         }
 
         /// <summary>
-        /// The (x,y) translation of this child relative to it's TargetElement.
+        /// The (x,y) translation of this element relative to it's parent element.
         /// </summary>
-        public PointF Translation {
-            get; set;
-        } = new();
+        public PointF Translation {get; set;} = new();
+
+        /// <summary>
+        /// The (x,y) translation of this element to account for paging.
+        /// </summary>
+        public PointF PageOffset { get; set; } = new();
 
         /// <summary>
         /// The rectangle print actions will take place in.
@@ -147,9 +143,12 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// The screen location of this child.
+        /// The screen location of this element.
         /// </summary>
-        public virtual PointF Location => new(this.ContainerRect.X + this.Translation.X, this.ContainerRect.Y + this.Translation.Y);
+        public virtual PointF Location => new(
+            this.ContainerRect.X + this.Translation.X + this.PageOffset.X, 
+            this.ContainerRect.Y + this.Translation.Y + this.PageOffset.Y
+        );
 
 
         /// <summary>
@@ -190,17 +189,19 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Dray this child in the graphsics object.
+        /// Draw this child in the graphics object.
         /// Draws occur in the following order:
         /// 1) Call the style Draw method
         /// 2) Invoke all OnDraw event listeners
         /// 3) Call the Draw method for all child elements
         /// </summary>
         /// <param name="g"></param>
-        public virtual void Draw(Graphics g) {
-            this.Style.Draw(this, g);
-            this.OnDraw.Invoke(g, this);
-            this.Children.ForEach(child => child.Draw(g));
+        public virtual void Draw(Graphics g, int page) {
+            if (!this.Style.Page.HasValue || this.Style.Page == page) {
+                this.Style.Draw(this, g, page);
+                this.OnDraw.Invoke(g, this);
+                this.Children.ForEach(child => child.Draw(g, page));
+            }
         }
 
         /// <summary>
@@ -295,5 +296,6 @@ namespace Leagueinator.Printer {
         }
 
         private readonly PrinterElementList _children = new();
+        private RectangleF? _containerRect = null;
     }
 }

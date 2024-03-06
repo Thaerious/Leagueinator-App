@@ -15,6 +15,8 @@ namespace Leagueinator.Printer {
         [CSS] public UnitFloat? Width = null;
         [CSS] public UnitFloat? Height = null;
         [CSS] public Color? BackgroundColor = null;
+        [CSS] public int? Page = null;
+
 
         [CSS] public Box? Margin = null;
         [CSS] public Box? Padding = null;

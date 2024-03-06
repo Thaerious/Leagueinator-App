@@ -1,13 +1,11 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.CSSParser {
-
     internal class StyleListener : StyleParserBaseListener {
         public readonly Dictionary<string, NullableStyle> Styles = new();
         private readonly List<NullableStyle> currentStyles = new();
@@ -47,9 +45,11 @@ namespace Leagueinator.CSSParser {
             var val = context.children[2].GetText();
 
             try {
+                Debug.WriteLine($"Enter Property {key} {Style.Fields.ContainsKey(key)} {Style.Properties.ContainsKey(key)}");
                 if (Style.Fields.ContainsKey(key)) {
                     var field = NullableStyle.Fields[key];
                     var r = MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
+                    Debug.WriteLine($" : result {r} {newObject}");
                     SetStyleField(field, newObject);
                 }
                 else if (Style.Properties.ContainsKey(key)) {
@@ -77,25 +77,6 @@ namespace Leagueinator.CSSParser {
                 Debug.WriteLine("\n");
                 throw new Exception(msg);
             }            
-        }
-    }
-
-    public static class StyleLoader {
-
-        internal static Dictionary<string, NullableStyle> Load(string text) {
-            var inputStream = new AntlrInputStream(text);
-            var lexer = new StyleLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new StyleParser(tokenStream);
-
-            parser.AddErrorListener(new CustomErrorListener());
-
-            var tree = parser.styles(); // Parse; start at the 'expr' rule
-            var walker = new ParseTreeWalker();
-            var listener = new StyleListener();
-            walker.Walk(listener, tree); // Walk the tree with the listener
-
-            return listener.Styles;
         }
     }
 
