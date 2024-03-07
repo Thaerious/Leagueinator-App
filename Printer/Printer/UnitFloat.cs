@@ -1,20 +1,18 @@
 ﻿
 namespace Leagueinator.Printer {
-    public class UnitFloat : IHasValue{
+    public class UnitFloat{
         public static readonly UnitFloat Default = new();
 
         public float Value { get; set; } = 0f;
         public string Unit { get; set; } = "px";
-        public bool HasValue { get; private set; } = false;
 
-        public float Factor { get; set; } = 0f; // used when getting the value in a % case
+        public float Factor { get; set; } = 0f; // set to parent value in a % case
 
         public UnitFloat() { }
 
         public UnitFloat(float value, string unit) {
             this.Value = value;
             this.Unit = unit;
-            this.HasValue = true;
         }
 
         public static implicit operator float(UnitFloat m) {

@@ -1,26 +1,10 @@
 ﻿using Leagueinator.Utility;
-using Printer.Printer;
-using System.Drawing;
 
 namespace Leagueinator.Printer
 {
     public class TextElement : Element
     {
         public string Text = "";
-
-        public override Element Clone() {
-            TextElement clone = new(this.Text) {
-                Style = this.Style,
-                TagName = this.TagName
-            };
-
-            clone.ClassList.AddRange(this.ClassList);
-
-            foreach (Element child in this.Children) {
-                clone.AddChild(child.Clone());
-            }
-            return clone;
-        }
 
         internal override SizeF ContentSize => Size();
 
@@ -42,13 +26,16 @@ namespace Leagueinator.Printer
         }
 
         public override XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
-            XMLStringBuilder xml = new();
-            xml.AppendLine(this.Text);
-            return xml;
+            action ??= (element, xml) => { };
+
+            return base.ToXML((e, xml)=> {
+                action(this, xml);
+                xml.AppendLine(this.Text);
+            });
         }
 
-        public override void Draw(Graphics g, int page) {
-            this.Style.Draw(this, g, page);            
+        public override void Draw(Graphics g) {
+            base.Draw(g);    
             using Brush brush = new SolidBrush(Color.Black);
             g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }

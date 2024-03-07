@@ -1,19 +1,19 @@
 ﻿namespace Leagueinator.Printer {
-    public class PrinterElementList : List<Element> {
+    public class ElementList : List<Element> {
 
-        public PrinterElementList this[string id] => this.QueryAll(id);
+        public ElementList this[string id] => this.QueryAll(id);
 
-        public PrinterElementList() { }
+        public ElementList() { }
 
-        public PrinterElementList(IEnumerable<Element> collection) : base(collection) { }
+        public ElementList(IEnumerable<Element> collection) : base(collection) { }
 
-        public PrinterElementList QueryAll(string query) {
-            PrinterElementList result = new();
-            Queue<PrinterElementList> queue = new();
+        public ElementList QueryAll(string query) {
+            ElementList result = new();
+            Queue<ElementList> queue = new();
             queue.Enqueue(this);
 
             while (queue.Count > 0) {
-                PrinterElementList current = queue.Dequeue();
+                ElementList current = queue.Dequeue();
 
                 if (query == "*") {
                     result.AddRange(current);
@@ -44,11 +44,11 @@
         }
 
         public Element? Query(string query) {
-            Queue<PrinterElementList> queue = new();
+            Queue<ElementList> queue = new();
             queue.Enqueue(this);
 
             while (queue.Count > 0) {
-                PrinterElementList current = queue.Dequeue();
+                ElementList current = queue.Dequeue();
 
                 if (query.StartsWith(".")) {
                     foreach (Element element in current) {

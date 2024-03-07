@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Utility;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -58,6 +59,13 @@ namespace Leagueinator.CSSParser {
             return true;
         }
 
+        /// <summary>
+        /// Use a static method called TryParse on type.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="type"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         private static bool ParseStaticMethod(string source, Type type, ref object? target) {
             var method = type.GetMethod(
                 "TryParse",

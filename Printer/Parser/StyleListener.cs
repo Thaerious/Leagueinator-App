@@ -7,24 +7,24 @@ using System.Reflection;
 
 namespace Leagueinator.CSSParser {
     internal class StyleListener : StyleParserBaseListener {
-        public readonly Dictionary<string, NullableStyle> Styles = new();
-        private readonly List<NullableStyle> currentStyles = new();
+        public readonly LoadedStyles Styles = new();
+        private readonly List<Style> currentStyles = new();
 
         /// <summary>
         /// Treat the style selector as a commas seperated list and extract each style name.
         /// </summary>
         /// <param name="context"></param>
-        public override void EnterStyle([NotNull] StyleParser.StyleContext context) {
+        public override void EnterStyle([NotNull] global::StyleParser.StyleContext context) {
             var selectors = context.selectors().GetText();
 
             foreach (var selector in selectors.Split(",")) {
-                if (!Styles.ContainsKey(selector)) Styles[selector] = new NullableStyle(selector);
+                if (!Styles.ContainsKey(selector)) Styles[selector] = new Style(selector);
                 var style = Styles[selector];
                 currentStyles.Add(style);
             }
         }
 
-        public override void ExitStyle([NotNull] StyleParser.StyleContext context) {
+        public override void ExitStyle([NotNull] global::StyleParser.StyleContext context) {
             currentStyles.Clear();
         }
 
@@ -42,20 +42,26 @@ namespace Leagueinator.CSSParser {
 
         public override void EnterProperty([NotNull] StyleParser.PropertyContext context) {
             var key = context.children[0].GetText().ToFlatCase();
-            var val = context.children[2].GetText();
+            var val = context.children[2].GetText().Trim();
 
             try {
-                Debug.WriteLine($"Enter Property {key} {Style.Fields.ContainsKey(key)} {Style.Properties.ContainsKey(key)}");
                 if (Style.Fields.ContainsKey(key)) {
-                    var field = NullableStyle.Fields[key];
-                    var r = MultiParse.TryParse(val.Trim(), field.FieldType, out object? newObject);
-                    Debug.WriteLine($" : result {r} {newObject}");
-                    SetStyleField(field, newObject);
+                    var field = Style.Fields[key];
+                    CSS? css = field.GetCustomAttribute<CSS>();
+                    if (css is null) return;
+
+                    foreach (var style in currentStyles) {
+                        css.TryParse(style, val, field);
+                    }
                 }
                 else if (Style.Properties.ContainsKey(key)) {
-                    var prop = NullableStyle.Properties[key];
-                    MultiParse.TryParse(val.Trim(), prop.PropertyType, out object? newObject);
-                    SetStyleProperty(prop, newObject);
+                    var prop = Style.Properties[key];
+                    CSS? css = prop.GetCustomAttribute<CSS>();
+                    if (css is null) return;
+
+                    foreach (var style in currentStyles) {
+                        css.TryParse(style, val, prop);
+                    }
                 }
             }
             catch (TargetInvocationException ex) {

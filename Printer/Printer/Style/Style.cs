@@ -1,80 +1,42 @@
 ﻿using Leagueinator.CSSParser;
-using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Drawing.Drawing2D;
+using Leagueinator.Printer.Enums;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer {
-    public enum Flex_Direction { Default, Row, Row_reverse, Column, Column_reverse };
-    public enum Justify_Content { Default, Flex_start, Flex_end, Center, Space_between, Space_around, Space_evenly }
-    public enum Align_Items { Default, Flex_start, Flex_end, Center }
-    public enum Display { Flex, Absolute }
-    public enum Direction { Forward, Reverse }
-    public enum Position { Static, Relative, Fixed }
+    public partial class Style {
+        [CSS("flex")] public Display? Display = null;
+        [CSS] public Position? Position = null;
 
-    public class BorderColor : Cardinal<Color> {
-        public static readonly BorderColor Default = new(Color.Black);
-
-        public BorderColor(Color value) : base(value) { }
-        public BorderColor(Color top, Color right, Color bottom, Color left) : base(top, right, bottom, left) { }
-
-        public static bool TryParse(string source, out BorderColor target) {
-            if (TryParse(source, out Cardinal<Color> tc)) {
-                target = new(tc.Top, tc.Right, tc.Bottom, tc.Left);
-                return true;
-            }
-
-            target = Default;
-            return false;
-        }
-    }
-
-    public class Box : Cardinal<UnitFloat> {
-        public static readonly Box Default = new(new());
-
-        public Box(UnitFloat value) : base(value) { }
-        public Box(UnitFloat top, UnitFloat right, UnitFloat bottom, UnitFloat left) : base(top, right, bottom, left) { }
-
-        public static bool TryParse(string source, out Box target) {
-            if (TryParse(source, out Cardinal<UnitFloat> tc)) {
-                target = new(tc.Top, tc.Right, tc.Bottom, tc.Left);
-                return true;
-            }
-
-            target = Default;
-            return false;
-        }
-    }
-
-    public class Style {
-        [CSS] public Display Display = Display.Flex;
-        [CSS] public Position Position = Position.Static;
-
-        [CSS] public PointF Location = new();
-        [CSS] public UnitFloat Width = UnitFloat.Default;
-        [CSS] public UnitFloat Height = UnitFloat.Default;
+        [CSS("0, 0", "SetLocation")] public PointF? Location = null;
+        [CSS] public UnitFloat? Width = null;
+        [CSS] public UnitFloat? Height = null;
         [CSS] public Color? BackgroundColor = null;
-        [CSS] public int? Page = default;
 
         [CSS] public Box Margin = Box.Default;
         [CSS] public Box Padding = Box.Default;
 
         [CSS] public Cardinal<Color>? BorderColor = null;
-        [CSS] public Cardinal<UnitFloat> BorderSize = new(new(0, "px"));
-        [CSS] public Cardinal<DashStyle> BorderStyle = new(DashStyle.Solid);
+        [CSS] public Cardinal<UnitFloat>? BorderSize = new(new(0, "px"));
+        [CSS] public Cardinal<DashStyle>? BorderStyle = new(DashStyle.Solid);
         [CSS] public string Border { set => this.SetBorder(value); }
 
-        [CSS] public Flex_Direction Flex_Direction = Flex_Direction.Default;
-        [CSS] public Justify_Content Justify_Content = Justify_Content.Default;
-        [CSS] public Align_Items Align_Items = Align_Items.Default;
+        [CSS] public Flex_Direction? Flex_Direction = null;
+        [CSS] public Justify_Content? Justify_Content = null;
+        [CSS] public Align_Items? Align_Items = null;
 
-        [CSS(true)] public string FontFamily = "Arial";
-        [CSS(true)] public UnitFloat FontSize = new(12, "px");
-        [CSS(true)] public FontStyle FontStyle = FontStyle.Regular;
+        [CSS][Inherited] public string? FontFamily = null;
+        [CSS][Inherited] public UnitFloat? FontSize = null;
+        [CSS][Inherited] public FontStyle? FontStyle = null;
 
         public Font Font {
             get {
-                return new(this.FontFamily, this.FontSize, this.FontStyle, GraphicsUnit.Point);
+                string fontFamily = this.FontFamily ?? "Arial";
+                float fontSize = this.FontSize ?? new(12, "px");
+                FontStyle fontStyle = this.FontStyle ?? System.Drawing.FontStyle.Regular;
+                return new(fontFamily, fontSize, fontStyle);
             }
         }
 
@@ -83,72 +45,130 @@ namespace Leagueinator.Printer {
             LineAlignment = StringAlignment.Center
         };
 
+        public string Selector { get; internal set; }
+
+        public Style(string selector = "") {
+            this.Selector = selector;
+        }
+
+        public virtual void DoLayout(Element element) {
+            this.DoSize(element);
+            foreach (Element child in element.Children) child.Style.DoSize(child);
+
+            this.DoPos(element);
+            foreach (Element child in element.Children) child.Style.DoPos(child);
+
+            this.AssignInvokes(element);
+            foreach (Element child in element.Children) child.Style.AssignInvokes(child);
+        }
+
         public virtual void DoSize(Element element) { }
         public virtual void DoPos(Element element) { }
-        public virtual void Draw(Element element, Graphics g, int page) { }
+        public virtual void AssignInvokes(Element element) { }
+        public virtual void Draw(Graphics g, Element element) { }
+        public virtual void DrawPage(Graphics g, Element element, int page) { }
 
+        public Enums.Flex_Direction Flex_Major {
+            get {
+                switch (Flex_Direction) {
+                    case Enums.Flex_Direction.Default:
+                    case Enums.Flex_Direction.Row:
+                    case Enums.Flex_Direction.Row_reverse:
+                        return Enums.Flex_Direction.Row;
+                    default:
+                        return Enums.Flex_Direction.Column;
+                }
+            }
+        }
+
+        public Enums.Direction Flex_Major_Direction {
+            get {
+                switch (Flex_Direction) {
+                    case Enums.Flex_Direction.Default:
+                    case Enums.Flex_Direction.Row:
+                    case Enums.Flex_Direction.Column:
+                        return Enums.Direction.Forward;
+                    default:
+                        return Enums.Direction.Reverse;
+                }
+            }
+        }
 
         /// <summary>
-        /// Copy from source to this.
-        /// Copy all non-null sourceFields and sourceProperties marked with CSS and
-        /// inherited is flagged as true.
+        /// Copy all CSS properties and fields from source to target.
+        /// Will only overwrite null fields on target.
+        /// Used to create inhereited style properties.
         /// </summary>
         /// <param name="source"></param>
-        public Style MergeInheritedWith(Style source) {
-            PropertyInfo[] properties = this.GetType().GetProperties();
-            FieldInfo[] fields = this.GetType().GetFields();
+        internal static void MergeStyles(Style target, Style source) {
+            PropertyInfo[] properties = source.GetType().GetProperties();
+            FieldInfo[] fields = source.GetType().GetFields();
+
+            target.Selector += " " + source.Selector;
 
             foreach (var property in properties) {
-                CSS? css = property.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                if (css.Inherited == false) continue;
-
+                if (property.GetCustomAttribute<CSS>() == null) continue;
                 if (property.CanWrite && property.CanRead) {
                     var sourceValue = property.GetValue(source);
-                    if (sourceValue is null) continue;
-                    if (property.GetValue(this) is not null) continue;
-                    property.SetValue(this, sourceValue);
+                    var targetValue = property.GetValue(target);
+                    if (sourceValue == null || targetValue != null) continue;
+                    property.SetValue(target, sourceValue);
                 }
             }
 
             foreach (var field in fields) {
-                CSS? css = field.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                if (css.Inherited == false) continue;
-
+                if (field.GetCustomAttribute<CSS>() == null) continue;
                 var sourceValue = field.GetValue(source);
+                var targetValue = field.GetValue(target);
+                if (sourceValue == null || targetValue != null) continue;
+                field.SetValue(target, sourceValue);
+            }
+        }
+
+        /// <summary>
+        /// Create a new style from this style.
+        /// Copies all properties to the new style.
+        /// Used to create a specific style after the source has been read.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T ToStyle<T>() where T : Style, new(){
+            T target = new();
+
+            foreach (var propName in Style.Properties.Keys) {
+                var sourceProp = Style.Properties[propName];                
+
+                if (sourceProp.GetCustomAttribute<CSS>() == null) continue;
+                var targetProp = Style.Properties[propName];
+
+                if (sourceProp.CanRead && targetProp.CanWrite) {
+                    var sourceValue = sourceProp.GetValue(this);
+                    if (sourceValue == null) continue;
+                    targetProp.SetValue(target, sourceValue);
+                }
+            }
+
+            foreach (var fieldName in Style.Fields.Keys) {
+                var sourceField = Style.Fields[fieldName];                
+
+                if (sourceField.GetCustomAttribute<CSS>() == null) continue;
+                var targetField = Style.Fields[fieldName];
+
+                var sourceValue = sourceField.GetValue(this);
                 if (sourceValue == null) continue;
-                if (field.GetValue(this) is not null) continue;
-                field.SetValue(this, sourceValue);
-            }
+                targetField.SetValue(target, sourceValue);
+            }                     
 
-            return this;
+            return target;
         }
 
-        public Flex_Direction Flex_Major {
-            get {
-                switch (Flex_Direction) {
-                    case Flex_Direction.Default:
-                    case Flex_Direction.Row:
-                    case Flex_Direction.Row_reverse:
-                        return Flex_Direction.Row;
-                    default:
-                        return Flex_Direction.Column;
-                }
-            }
-        }
+        public bool SetLocation(string source) {
+            var args = source.Split(',')
+                             .Select(s => int.Parse(s))
+                             .ToArray();
 
-        public Direction Flex_Major_Direction {
-            get {
-                switch (Flex_Direction) {
-                    case Flex_Direction.Default:
-                    case Flex_Direction.Row:
-                    case Flex_Direction.Column:
-                        return Direction.Forward;
-                    default:
-                        return Direction.Reverse;
-                }
-            }
+            this.Location = new Point(args[0], args[1]);
+            return true;
         }
 
         private void SetBorder(string source) {
@@ -175,34 +195,38 @@ namespace Leagueinator.Printer {
             this.BorderSize ??= new(new(1, "px"));
         }
 
-        public override string ToString() {
-            StringBuilder sb = new StringBuilder();
-            PropertyInfo[] properties = this.GetType().GetProperties();
-            FieldInfo[] fields = this.GetType().GetFields();
-
-            sb.AppendLine($"Class : {this.GetType()}");
-
-            foreach (var property in properties) {
-                CSS? css = property.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                if (property.CanRead == false) continue;
-                sb.AppendLine($"{property.Name} : {property.GetValue(this)}");
-            }
-
-            foreach (var field in fields) {
-                CSS? css = field.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                sb.AppendLine($"{field.Name} : {field.GetValue(this)}");
-            }
-            return sb.ToString();
-        }
-
         public static IReadOnlyDictionary<string, FieldInfo> Fields { get; private set; }
         public static IReadOnlyDictionary<string, PropertyInfo> Properties { get; private set; }
 
         static Style() {
             Fields = typeof(Style).GetFields().ToDictionary();
             Properties = typeof(Style).GetProperties().ToDictionary();
+        }
+
+        public override string ToString() {
+            StringBuilder sb = new StringBuilder();
+            PropertyInfo[] properties = this.GetType().GetProperties();
+            FieldInfo[] fields = this.GetType().GetFields();
+
+            sb.AppendLine($"Class : {this.GetType()}");
+            sb.AppendLine($"Selector : {this.Selector}");
+            sb.AppendLine($"Properties : [");
+
+            foreach (var property in properties) {
+                CSS? css = property.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                if (property.CanRead == false) continue;
+                sb.AppendLine($"\t{property.Name} : {property.GetValue(this)}");
+            }
+
+            foreach (var field in fields) {
+                CSS? css = field.GetCustomAttribute<CSS>();
+                if (css == null) continue;
+                sb.AppendLine($"\t{field.Name} : {field.GetValue(this)}");
+            }
+
+            sb.AppendLine($"]");
+            return sb.ToString();
         }
     }
 }

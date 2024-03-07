@@ -1,5 +1,4 @@
-﻿using Leagueinator.Utility;
-using System.Data;
+﻿using System.Data;
 
 namespace Leagueinator.Printer {
     public static class PrinterElementExtensions {
@@ -36,34 +35,6 @@ namespace Leagueinator.Printer {
             });
 
             return count;
-        }
-
-        public static XMLStringBuilder LocXML(this Element ele) {
-            XMLStringBuilder xml = new();
-
-            xml.OpenTag(ele.TagName);
-
-            xml.InlineTag("Container");
-            xml.Attribute("w", ele.ContainerRect.Width);
-            xml.Attribute("h", ele.ContainerRect.Height);
-            xml.Attribute("x", ele.ContainerRect.X);
-            xml.Attribute("y", ele.ContainerRect.Y);
-            xml.CloseTag();
-
-            xml.InlineTag("Content");
-            xml.Attribute("w", ele.ContentRect.Width);
-            xml.Attribute("h", ele.ContentRect.Height);
-            xml.Attribute("x", ele.ContentRect.X);
-            xml.Attribute("y", ele.ContentRect.Y);
-            xml.CloseTag();
-
-            foreach (Element child in ele.Children) {
-                xml.AppendXML(child.LocXML());
-            }
-
-            xml.CloseTag();
-
-            return xml;
         }
     }
 }

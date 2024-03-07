@@ -42,15 +42,14 @@ namespace Leagueinator.PrinterComponents {
             base.OnResize(e);
 
             if (this.RootElement != null) {
-                this.RootElement.Style.DoSize(this.RootElement);
-                this.RootElement.Style.DoPos(this.RootElement);
+                this.RootElement.Style.DoLayout(this.RootElement);
             }
         }
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
-            this.RootElement?.Draw(e.Graphics, this.Page);
+            this.RootElement?.Style.Draw(e.Graphics, this.RootElement);
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);
         }
 

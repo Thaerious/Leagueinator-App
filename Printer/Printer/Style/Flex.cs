@@ -1,12 +1,8 @@
 ﻿using Printer.Printer;
 using System.Diagnostics;
-using System.Drawing;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
-
-        public Flex() { }
-
         public override void DoSize(Element element) {
             this.SetDefaultSize(element);
 
@@ -27,14 +23,14 @@ namespace Leagueinator.Printer {
             float contentWidth = 0f, contentHeight = 0f;
 
             switch (this.Flex_Major) {
-                case Flex_Direction.Default:
-                case Flex_Direction.Row:
-                    contentWidth = this.Width.HasValue ? this.Width : sumWidth;
-                    contentHeight = this.Height.HasValue ? this.Height : maxHeight;
+                case Enums.Flex_Direction.Default:
+                case Enums.Flex_Direction.Row:
+                    contentWidth = this.Width ?? sumWidth;
+                    contentHeight = this.Height ?? maxHeight;
                     break;
-                case Flex_Direction.Column:
-                    contentWidth = this.Width.HasValue ? this.Width : maxWidth;
-                    contentHeight = this.Height.HasValue ? this.Height : sumHeight;
+                case Enums.Flex_Direction.Column:
+                    contentWidth = this.Width ?? maxWidth;
+                    contentHeight = this.Height ?? sumHeight;
                     break;
             }
 
@@ -53,9 +49,9 @@ namespace Leagueinator.Printer {
         }
 
         void SetDefaultSize(Element element) {
-            this.Width.Factor = element.ContainerRect.Width;
-            this.Height.Factor = element.ContainerRect.Height;
-            element.ContentSize = new SizeF(this.Width, this.Height);
+            if (this.Width != null) this.Width.Factor = element.ContainerRect.Width;
+            if (this.Height != null) this.Height.Factor = element.ContainerRect.Height;
+            element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
         }
 
         public override void DoPos(Element element) {
@@ -65,26 +61,44 @@ namespace Leagueinator.Printer {
             this.ResetTranslates(children);
             this.JustifyContent(element, children);
             this.AlignItems(element, children);
+        }
 
-            foreach (Element child in element.Children) {
-                child.Style.DoPos(child);
+        public override void AssignInvokes(Element element) {
+            element.ResetDraw();
+            element.OnDraw += this.DoDrawBackground;
+            element.OnDraw += this.DoDrawBorders;
+        }
+
+        public override void Draw(Graphics g, Element root) {            
+            Stack<Element> stack = [];
+            stack.Push(root);
+
+            while (stack.Count > 0) {
+                Element element = stack.Pop();
+                element.Draw(g);
+                foreach (Element child in element.Children) stack.Push(child);
             }
         }
 
-        public override void Draw(Element element, Graphics g, int page) {
-            if (this.Page == page) {
-                this.DoDrawBackground(element, g);
-                this.DoDrawBorders(element, g);
+        public override void DrawPage(Graphics g, Element root, int page) {
+            int currentPage = 0;
+            foreach (Element child in root.Children) {
+                if (child.OuterRect.Bottom > root.OuterRect.Bottom) {
+                    currentPage++;
+                }
+                else {
+                    child.Style.Draw(g, child);
+                }
             }
         }
 
-        public void DoDrawBackground(Element element, Graphics g) {
+        public void DoDrawBackground(Graphics g, Element element) {
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }
         }
 
-        public void DoDrawBorders(Element element, Graphics g) {
+        public void DoDrawBorders(Graphics g, Element element) {
             if (this.BorderColor is null) return;
 
             if (this.BorderColor.Top != default) {
@@ -135,11 +149,11 @@ namespace Leagueinator.Printer {
 
         private void ResetTranslates(List<Element> children) {
             foreach (Element child in children) {
-                if (child.Style.Position == Position.Static) {
+                if (child.Style.Position == Enums.Position.Static) {
                     child.Translation = new PointF(0, 0);
                 }
                 else {
-                    child.Translation = child.Style.Location;
+                    child.Translation = (PointF)child.Style.Location;
                 }
             }
         }
@@ -150,14 +164,14 @@ namespace Leagueinator.Printer {
         /// <param name="element"></param>
         /// <returns></returns>
         private List<Element> CollectChildren(Element element) {
-            var children = element.Children.Where(c => c.Style.Position != Position.Fixed).ToList();
-            if (this.Flex_Major_Direction == Direction.Reverse) children.Reverse();
+            var children = element.Children.Where(c => c.Style.Position != Enums.Position.Fixed).ToList();
+            if (this.Flex_Major_Direction == Enums.Direction.Reverse) children.Reverse();
             return children;
         }
 
         private void LayoutChildren(List<Element> children, PointF from) {
             PointF vector;
-            if (this.Flex_Major == Flex_Direction.Column) {
+            if (this.Flex_Major == Enums.Flex_Direction.Column) {
                 vector = new(0, 1);
             }
             else {
@@ -184,24 +198,23 @@ namespace Leagueinator.Printer {
                 widthRemaining -= child.OuterSize.Width;
             }
 
-
             float heightRemaining = element.ContentSize.Height;
             foreach (Element child in children) {
                 heightRemaining -= child.OuterSize.Height;
             }
 
-            if (this.Flex_Major_Direction == Direction.Reverse) children.Reverse();
+            if (this.Flex_Major_Direction == Enums.Direction.Reverse) children.Reverse();
             int count = children.Count;
 
             switch (this.Justify_Content) {
-                case Justify_Content.Default:
-                case Justify_Content.Flex_start: {
+                case Enums.Justify_Content.Default:
+                case Enums.Justify_Content.Flex_start: {
                         PointF from;
 
-                        if (this.Flex_Major_Direction == Direction.Forward) {
+                        if (this.Flex_Major_Direction == Enums.Direction.Forward) {
                             from = new PointF(0, 0);
                         }
-                        else if (this.Flex_Major == Flex_Direction.Row) {
+                        else if (this.Flex_Major == Enums.Flex_Direction.Row) {
                             from = new PointF(widthRemaining, 0);
                         }
                         else {
@@ -212,13 +225,13 @@ namespace Leagueinator.Printer {
                         break;
                     }
 
-                case Justify_Content.Flex_end: {
+                case Enums.Justify_Content.Flex_end: {
                         PointF from;
 
-                        if (this.Flex_Major_Direction == Direction.Reverse) {
+                        if (this.Flex_Major_Direction == Enums.Direction.Reverse) {
                             from = new PointF(0, 0);
                         }
-                        else if (this.Flex_Major == Flex_Direction.Row) {
+                        else if (this.Flex_Major == Enums.Flex_Direction.Row) {
                             from = new PointF(widthRemaining, 0);
                         }
                         else {
@@ -229,10 +242,10 @@ namespace Leagueinator.Printer {
                         break;
                     }
 
-                case Justify_Content.Center: {
+                case Enums.Justify_Content.Center: {
                         PointF from;
 
-                        if (this.Flex_Major == Flex_Direction.Row) {
+                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
                             from = new PointF(widthRemaining / 2, 0);
                         }
                         else {
@@ -243,8 +256,8 @@ namespace Leagueinator.Printer {
                         break;
                     }
 
-                case Justify_Content.Space_evenly: {
-                        if (this.Flex_Major == Flex_Direction.Row) {
+                case Enums.Justify_Content.Space_evenly: {
+                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
                             float spaceBetween = widthRemaining / (count + 1);
                             float dx = spaceBetween;
 
@@ -265,8 +278,8 @@ namespace Leagueinator.Printer {
                         break;
                     }
 
-                case Justify_Content.Space_between: {
-                        if (this.Flex_Major == Flex_Direction.Row) {
+                case Enums.Justify_Content.Space_between: {
+                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
                             float spaceBetween = widthRemaining / (count - 1);
                             float dx = 0;
 
@@ -287,8 +300,8 @@ namespace Leagueinator.Printer {
                         break;
                     }
 
-                case Justify_Content.Space_around: {
-                        if (this.Flex_Major == Flex_Direction.Row) {
+                case Enums.Justify_Content.Space_around: {
+                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
                             float spaceAround = widthRemaining / (count * 2);
                             float dx = spaceAround;
 
@@ -312,28 +325,28 @@ namespace Leagueinator.Printer {
         }
         private void AlignItems(Element element, List<Element> children) {
             switch (this.Flex_Major) {
-                case Flex_Direction.Row:
+                case Enums.Flex_Direction.Row:
                     switch (this.Align_Items) {
-                        case Align_Items.Default:
-                        case Align_Items.Flex_start:
+                        case Enums.Align_Items.Default:
+                        case Enums.Align_Items.Flex_start:
                             break;
-                        case Align_Items.Flex_end:
+                        case Enums.Align_Items.Flex_end:
                             children.ForEach(c => c.Translate(0, element.ContentRect.Height - c.OuterSize.Height));
                             break;
-                        case Align_Items.Center:
+                        case Enums.Align_Items.Center:
                             children.ForEach(c => c.Translate(0, (element.ContentRect.Height / 2) - (c.OuterSize.Height / 2)));
                             break;
                     }
                     break;
-                case Flex_Direction.Column:
+                case Enums.Flex_Direction.Column:
                     switch (this.Align_Items) {
-                        case Align_Items.Default:
-                        case Align_Items.Flex_start:
+                        case Enums.Align_Items.Default:
+                        case Enums.Align_Items.Flex_start:
                             break;
-                        case Align_Items.Flex_end:
+                        case Enums.Align_Items.Flex_end:
                             children.ForEach(c => c.Translate(element.ContentRect.Width - c.OuterSize.Width, 0));
                             break;
-                        case Align_Items.Center:
+                        case Enums.Align_Items.Center:
                             children.ForEach(c => c.Translate((element.ContentRect.Width / 2) - (c.OuterSize.Width / 2), 0));
                             break;
                     }

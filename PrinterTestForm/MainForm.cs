@@ -1,4 +1,5 @@
-﻿using Leagueinator.Printer;
+﻿using Leagueinator.CSSParser;
+using Leagueinator.Printer;
 using System.Diagnostics;
 
 namespace PrinterTestForm
@@ -45,13 +46,12 @@ namespace PrinterTestForm
                 File.WriteAllText(this.xmlPath, xmlString);
                 File.WriteAllText(this.stylePath, styleString);
 
-                var xmlLoader = new XMLLoader();
-                xmlLoader.LoadStyle(styleString);
-                Element root = xmlLoader.LoadXML(xmlString);
+                LoadedStyles styles = StyleLoader.Load(styleString);
+                Element root = XMLLoader.Load(xmlString);
+                styles.ApplyTo(root);
 
                 this.printerCanvas.RootElement = root;
-                root.Style.DoSize(root);
-                root.Style.DoPos(root);
+                root.Style.DoLayout(root);
 
                 this.printerCanvas.Invalidate();
             }
@@ -90,7 +90,7 @@ namespace PrinterTestForm
         private void ToolPrintLocXML(object sender, EventArgs e) {
             Debug.WriteLine(this.printerCanvas.RootElement.ToXML(
                 (element, xml) => {
-                    xml.InnerText(element.ContainerRect.ToString());
+                    xml.InnerText(element.ContentRect.ToString());
                 }
             ));
         }
