@@ -32,9 +32,10 @@ java -jar D:\lib\antlr.jar -o generated -Dlanguage=CSharp .\StyleParser.g4
 
 # Styles
 
-Flex_Direction { Default, Row, Row_reverse, Column, Column_reverse }
+Flex_Axis { Default, Row, Column}
 Justify_Content { Default, Flex_start, Flex_end, Center, Space_between, Space_around, Space_evenly }
 Align_Items { Default, Flex_start, Flex_end, Center }
+Flex_Direction { Forward, Reverse }
 
 # Implementation Details
 

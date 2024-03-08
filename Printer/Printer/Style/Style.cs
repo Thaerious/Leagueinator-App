@@ -24,6 +24,7 @@ namespace Leagueinator.Printer {
         [CSS("Default")] public Flex_Axis? Flex_Axis = null;
         [CSS("Default")] public Justify_Content? Justify_Content = null;
         [CSS("Default")] public Align_Items? Align_Items = null;
+        [CSS("Forward")] public Direction? Flex_Direction = null;
 
         [CSS][Inherited] public string? FontFamily = null;
         [CSS][Inherited] public UnitFloat? FontSize = null;
@@ -60,19 +61,6 @@ namespace Leagueinator.Printer {
         public virtual void AssignInvokes(Element element) { }
         public virtual void Draw(Graphics g, Element element) { }
         public virtual void DrawPage(Graphics g, Element element, int page) { }
-
-        public Enums.Flex_Axis Flex_Major {
-            get {
-                switch (Flex_Axis) {
-                    case Enums.Flex_Axis.Default:
-                    case Enums.Flex_Axis.Row:
-                    case Enums.Flex_Axis.Row_reverse:
-                        return Enums.Flex_Axis.Row;
-                    default:
-                        return Enums.Flex_Axis.Column;
-                }
-            }
-        }
 
         public Enums.Direction Flex_Major_Direction {
             get {
