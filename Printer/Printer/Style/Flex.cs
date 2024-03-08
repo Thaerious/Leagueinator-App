@@ -1,5 +1,6 @@
 ﻿using Printer.Printer;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
@@ -23,12 +24,12 @@ namespace Leagueinator.Printer {
             float contentWidth = 0f, contentHeight = 0f;
 
             switch (this.Flex_Major) {
-                case Enums.Flex_Direction.Default:
-                case Enums.Flex_Direction.Row:
+                case Enums.Flex_Axis.Default:
+                case Enums.Flex_Axis.Row:
                     contentWidth = this.Width ?? sumWidth;
                     contentHeight = this.Height ?? maxHeight;
                     break;
-                case Enums.Flex_Direction.Column:
+                case Enums.Flex_Axis.Column:
                     contentWidth = this.Width ?? maxWidth;
                     contentHeight = this.Height ?? sumHeight;
                     break;
@@ -49,8 +50,8 @@ namespace Leagueinator.Printer {
         }
 
         void SetDefaultSize(Element element) {
-            if (this.Width != null) this.Width.Factor = element.ContainerRect.Width;
-            if (this.Height != null) this.Height.Factor = element.ContainerRect.Height;
+            if (this.Width != null) this.Width.Factor = element.Parent.ContentRect.Width;
+            if (this.Height != null) this.Height.Factor = element.Parent.ContentRect.Height;
             element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
         }
 
@@ -58,18 +59,168 @@ namespace Leagueinator.Printer {
             var children = this.CollectChildren(element);
             if (children.Count == 0) return;
 
-            this.ResetTranslates(children);
+
+            foreach (Element child in children) {
+                var loc = child.Parent?.ContentRect.TopLeft() ?? new();
+                child.Translation = loc;
+            }
+
             this.JustifyContent(element, children);
             this.AlignItems(element, children);
+
+            foreach (Element child in children) {
+                var loc = child.Style.Location ?? new();
+                child.Translate(loc);
+                child.Style.DoPos(child);
+            }
+        }
+
+        /// <summary>
+        /// Layout all child nodes without taking into account alignment.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="children"></param>
+        private void JustifyContent(Element element, List<Element> children) {
+            float widthRemaining = element.ContentSize.Width;
+
+            foreach (Element child in children) {
+                widthRemaining -= child.OuterSize.Width;
+            }
+
+            float heightRemaining = element.ContentSize.Height;
+            foreach (Element child in children) {
+                heightRemaining -= child.OuterSize.Height;
+            }
+
+            if (this.Flex_Major_Direction == Enums.Direction.Reverse) children.Reverse();
+            int count = children.Count;
+
+            switch (this.Justify_Content) {
+                case Enums.Justify_Content.Default:
+                case Enums.Justify_Content.Flex_start: {
+                        PointF from;
+
+                        if (this.Flex_Major_Direction == Enums.Direction.Forward) {
+                            from = new PointF(0, 0);
+                        }
+                        else if (this.Flex_Major == Enums.Flex_Axis.Row) {
+                            from = new PointF(widthRemaining, 0);
+                        }
+                        else {
+                            from = new PointF(0, heightRemaining);
+                        }
+
+                        LayoutChildren(children, from);
+                        break;
+                    }
+
+                case Enums.Justify_Content.Flex_end: {
+                        PointF from;
+
+                        if (this.Flex_Major_Direction == Enums.Direction.Reverse) {
+                            from = new PointF(0, 0);
+                        }
+                        else if (this.Flex_Major == Enums.Flex_Axis.Row) {
+                            from = new PointF(widthRemaining, 0);
+                        }
+                        else {
+                            from = new PointF(0, heightRemaining);
+                        }
+
+                        LayoutChildren(children, from);
+                        break;
+                    }
+
+                case Enums.Justify_Content.Center: {
+                        PointF from;
+
+                        if (this.Flex_Major == Enums.Flex_Axis.Row) {
+                            from = new PointF(widthRemaining / 2, 0);
+                        }
+                        else {
+                            from = new PointF(0, heightRemaining / 2);
+                        }
+
+                        LayoutChildren(children, from);
+                        break;
+                    }
+
+                case Enums.Justify_Content.Space_evenly: {
+                        if (this.Flex_Major == Enums.Flex_Axis.Row) {
+                            float spaceBetween = widthRemaining / (count + 1);
+                            float dx = spaceBetween;
+
+                            foreach (var child in children) {
+                                child.Translation = new(dx, child.Translation.Y);
+                                dx = dx + spaceBetween + child.OuterRect.Width;
+                            }
+                        }
+                        else {
+                            float spaceBetween = heightRemaining / (count + 1);
+                            float dy = spaceBetween;
+
+                            foreach (var child in children) {
+                                child.Translation = new(child.Translation.X, dy);
+                                dy = dy + spaceBetween + child.OuterRect.Height;
+                            }
+                        }
+                        break;
+                    }
+
+                case Enums.Justify_Content.Space_between: {
+                        if (this.Flex_Major == Enums.Flex_Axis.Row) {
+                            float spaceBetween = widthRemaining / (count - 1);
+                            float dx = 0;
+
+                            foreach (var child in children) {
+                                child.Translation = new(dx, child.Translation.Y);
+                                dx = dx + spaceBetween + child.OuterRect.Width;
+                            }
+                        }
+                        else {
+                            float spaceBetween = heightRemaining / (count - 1);
+                            float dy = 0;
+
+                            foreach (var child in children) {
+                                child.Translation = new(child.Translation.X, dy);
+                                dy = dy + spaceBetween + child.OuterRect.Height;
+                            }
+                        }
+                        break;
+                    }
+
+                case Enums.Justify_Content.Space_around: {
+                        if (this.Flex_Major == Enums.Flex_Axis.Row) {
+                            float spaceAround = widthRemaining / (count * 2);
+                            float dx = spaceAround;
+
+                            foreach (var child in children) {
+                                child.Translation = new(dx, child.Translation.Y);
+                                dx = dx + (2 * spaceAround) + child.OuterRect.Width;
+                            }
+                        }
+                        else {
+                            float spaceAround = heightRemaining / (count * 2);
+                            float dy = spaceAround;
+
+                            foreach (var child in children) {
+                                child.Translation = new(child.Translation.X, dy);
+                                dy = dy + (2 * spaceAround) + child.OuterRect.Height;
+                            }
+                        }
+                        break;
+                    }
+            }
         }
 
         public override void AssignInvokes(Element element) {
-            element.ResetDraw();
             element.OnDraw += this.DoDrawBackground;
             element.OnDraw += this.DoDrawBorders;
+
+            foreach (Element child in element.Children) child.Style.AssignInvokes(child);
         }
 
-        public override void Draw(Graphics g, Element root) {            
+        public override void Draw(Graphics g, Element root) {
             Stack<Element> stack = [];
             stack.Push(root);
 
@@ -147,31 +298,23 @@ namespace Leagueinator.Printer {
             }
         }
 
-        private void ResetTranslates(List<Element> children) {
-            foreach (Element child in children) {
-                if (child.Style.Position == Enums.Position.Static) {
-                    child.Translation = new PointF(0, 0);
-                }
-                else {
-                    child.Translation = (PointF)child.Style.Location;
-                }
-            }
-        }
-
         /// <summary>
         /// Collect all child nodes that don't have fixed position.
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
         private List<Element> CollectChildren(Element element) {
-            var children = element.Children.Where(c => c.Style.Position != Enums.Position.Fixed).ToList();
-            if (this.Flex_Major_Direction == Enums.Direction.Reverse) children.Reverse();
+            var children = element.Children;
+            if (this.Flex_Major_Direction == Enums.Direction.Reverse) {
+                Debug.WriteLine("REVERSE");
+                children.Reverse();
+            }
             return children;
         }
 
         private void LayoutChildren(List<Element> children, PointF from) {
             PointF vector;
-            if (this.Flex_Major == Enums.Flex_Direction.Column) {
+            if (this.Flex_Major == Enums.Flex_Axis.Column) {
                 vector = new(0, 1);
             }
             else {
@@ -186,146 +329,9 @@ namespace Leagueinator.Printer {
             }
         }
 
-        /// <summary>
-        /// Layout all child nodes without taking into account alignment.
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="children"></param>
-        private void JustifyContent(Element element, List<Element> children) {
-            float widthRemaining = element.ContentSize.Width;
-
-            foreach (Element child in children) {
-                widthRemaining -= child.OuterSize.Width;
-            }
-
-            float heightRemaining = element.ContentSize.Height;
-            foreach (Element child in children) {
-                heightRemaining -= child.OuterSize.Height;
-            }
-
-            if (this.Flex_Major_Direction == Enums.Direction.Reverse) children.Reverse();
-            int count = children.Count;
-
-            switch (this.Justify_Content) {
-                case Enums.Justify_Content.Default:
-                case Enums.Justify_Content.Flex_start: {
-                        PointF from;
-
-                        if (this.Flex_Major_Direction == Enums.Direction.Forward) {
-                            from = new PointF(0, 0);
-                        }
-                        else if (this.Flex_Major == Enums.Flex_Direction.Row) {
-                            from = new PointF(widthRemaining, 0);
-                        }
-                        else {
-                            from = new PointF(0, heightRemaining);
-                        }
-
-                        LayoutChildren(children, from);
-                        break;
-                    }
-
-                case Enums.Justify_Content.Flex_end: {
-                        PointF from;
-
-                        if (this.Flex_Major_Direction == Enums.Direction.Reverse) {
-                            from = new PointF(0, 0);
-                        }
-                        else if (this.Flex_Major == Enums.Flex_Direction.Row) {
-                            from = new PointF(widthRemaining, 0);
-                        }
-                        else {
-                            from = new PointF(0, heightRemaining);
-                        }
-
-                        LayoutChildren(children, from);
-                        break;
-                    }
-
-                case Enums.Justify_Content.Center: {
-                        PointF from;
-
-                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
-                            from = new PointF(widthRemaining / 2, 0);
-                        }
-                        else {
-                            from = new PointF(0, heightRemaining / 2);
-                        }
-
-                        LayoutChildren(children, from);
-                        break;
-                    }
-
-                case Enums.Justify_Content.Space_evenly: {
-                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
-                            float spaceBetween = widthRemaining / (count + 1);
-                            float dx = spaceBetween;
-
-                            foreach (var child in children) {
-                                child.Translation = new(dx, child.Translation.Y);
-                                dx = dx + spaceBetween + child.OuterRect.Width;
-                            }
-                        }
-                        else {
-                            float spaceBetween = heightRemaining / (count + 1);
-                            float dy = spaceBetween;
-
-                            foreach (var child in children) {
-                                child.Translation = new(child.Translation.X, dy);
-                                dy = dy + spaceBetween + child.OuterRect.Height;
-                            }
-                        }
-                        break;
-                    }
-
-                case Enums.Justify_Content.Space_between: {
-                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
-                            float spaceBetween = widthRemaining / (count - 1);
-                            float dx = 0;
-
-                            foreach (var child in children) {
-                                child.Translation = new(dx, child.Translation.Y);
-                                dx = dx + spaceBetween + child.OuterRect.Width;
-                            }
-                        }
-                        else {
-                            float spaceBetween = heightRemaining / (count - 1);
-                            float dy = 0;
-
-                            foreach (var child in children) {
-                                child.Translation = new(child.Translation.X, dy);
-                                dy = dy + spaceBetween + child.OuterRect.Height;
-                            }
-                        }
-                        break;
-                    }
-
-                case Enums.Justify_Content.Space_around: {
-                        if (this.Flex_Major == Enums.Flex_Direction.Row) {
-                            float spaceAround = widthRemaining / (count * 2);
-                            float dx = spaceAround;
-
-                            foreach (var child in children) {
-                                child.Translation = new(dx, child.Translation.Y);
-                                dx = dx + (2 * spaceAround) + child.OuterRect.Width;
-                            }
-                        }
-                        else {
-                            float spaceAround = heightRemaining / (count * 2);
-                            float dy = spaceAround;
-
-                            foreach (var child in children) {
-                                child.Translation = new(child.Translation.X, dy);
-                                dy = dy + (2 * spaceAround) + child.OuterRect.Height;
-                            }
-                        }
-                        break;
-                    }
-            }
-        }
         private void AlignItems(Element element, List<Element> children) {
             switch (this.Flex_Major) {
-                case Enums.Flex_Direction.Row:
+                case Enums.Flex_Axis.Row:
                     switch (this.Align_Items) {
                         case Enums.Align_Items.Default:
                         case Enums.Align_Items.Flex_start:
@@ -338,7 +344,7 @@ namespace Leagueinator.Printer {
                             break;
                     }
                     break;
-                case Enums.Flex_Direction.Column:
+                case Enums.Flex_Axis.Column:
                     switch (this.Align_Items) {
                         case Enums.Align_Items.Default:
                         case Enums.Align_Items.Flex_start:

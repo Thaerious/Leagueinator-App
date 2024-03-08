@@ -1,6 +1,7 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
 using System.Diagnostics;
+using static Leagueinator.Printer.Element;
 
 namespace PrinterTestForm
 {
@@ -53,12 +54,22 @@ namespace PrinterTestForm
                 this.printerCanvas.RootElement = root;
                 root.Style.DoLayout(root);
 
+                foreach (Element ele in root["*"]) {
+                    ele.OnDraw += this.EleOnDraw;
+                }
                 this.printerCanvas.Invalidate();
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Debug.WriteLine(ex);
             }
+        }
+
+        private void EleOnDraw(Graphics g, Element element) {
+            Debug.WriteLine($"Drawing {element.Identifier}");
+            Debug.WriteLine($" - content {element.ContentRect}");
+            Debug.WriteLine($" - border {element.BorderRect}");
+            Debug.WriteLine($" - outer {element.OuterRect}");
         }
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {

@@ -7,7 +7,20 @@ namespace Leagueinator.Printer {
 
     public partial class Element {
         public delegate void DrawDelegate(Graphics g, Element element);
-        public event DrawDelegate OnDraw = delegate { };
+
+        private DrawDelegate _onDraw = delegate{};
+        public event DrawDelegate OnDraw {
+            add {
+                foreach (Delegate hnd in _onDraw.GetInvocationList()) {
+                    if (hnd.Equals(value)) return;
+                }
+
+                _onDraw += value;
+            }
+            remove {
+                _onDraw -= value;
+            }
+        }
 
         /// <summary>
         /// Create a new element with a default name and classlist.
@@ -72,7 +85,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="g"></param>
         public virtual void Draw(Graphics g) {
-            this.OnDraw.Invoke(g, this);
+            this._onDraw.Invoke(g, this);
         }
 
         /// <summary>
@@ -129,10 +142,6 @@ namespace Leagueinator.Printer {
             xml.CloseTag();
 
             return xml;
-        }
-
-        internal void ResetDraw() {
-            this.OnDraw = delegate { };
         }
 
         private readonly ElementList _children = new();

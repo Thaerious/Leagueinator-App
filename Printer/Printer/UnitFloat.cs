@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 namespace Leagueinator.Printer {
     public class UnitFloat{
         public static readonly UnitFloat Default = new();
@@ -16,7 +18,10 @@ namespace Leagueinator.Printer {
         }
 
         public static implicit operator float(UnitFloat m) {
-            if (m.Unit == "%") return m.Value * m.Factor / 100;
+            if (m.Unit == "%") {
+                Debug.WriteLine($"{m.Unit} {m.Value} {m.Factor}");
+                return m.Value * m.Factor / 100;
+            }
             return m.Value;
         }
 

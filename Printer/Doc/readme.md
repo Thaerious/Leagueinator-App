@@ -40,21 +40,16 @@ Align_Items { Default, Flex_start, Flex_end, Center }
 
 All child components are drawn relative to their parent's content box.
 
-xmlLoader.LoadStyle(string)
-       |--> Load styles values into dictionary: selector -> style_object
-       |--> Create style object 
-       |--> Perform layout
-          |--> DoSize() -- set the size of each element
-          |--> DoPos() -- set the position of each element
+|--> Perform layout
+    |--> DoSize() -> Set content box width & height to the sum of child widths unless specified in style sheet.
+        |    FlexMajor is Row -> content = {sumWidth x maxHeight}
+        |    FlexMajor is Col -> content = {maxWidth x sumHeight}
+        |    Width/Height is %, size set proportional to parent
+        |    Width/Height is px, size set to absolute value
+    |--> DoPos() -- set the position of each element
+        |--> Setting the location position's the element relative to the parent
+
 
 Draw() |--> Invoke the Style.Draw() abstract method.
        |--> Invoke any OnDraw delegates.
-       |--> Ivoke Draw() method on each child element.
-
-Flex.DoSize()
-       |--> DoSize() for each child element.
-       |--> Set content box width & height to the sum of child widths unless specified in style sheet.
-       |    FlexMajor is Row -> content = {sumWidth x maxHeight}
-       |    FlexMajor is Col -> content = {maxWidth x sumHeight}
-
-Flex.DoPos()
+       |--> Invoke Draw() method on each child element.

@@ -3,12 +3,10 @@ using System.Reflection;
 using System.Text;
 using System.Drawing.Drawing2D;
 using Leagueinator.Printer.Enums;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer {
     public partial class Style {
         [CSS("flex")] public Display? Display = null;
-        [CSS] public Position? Position = null;
 
         [CSS("0, 0", "SetLocation")] public PointF? Location = null;
         [CSS] public UnitFloat? Width = null;
@@ -23,9 +21,9 @@ namespace Leagueinator.Printer {
         [CSS] public Cardinal<DashStyle>? BorderStyle = new(DashStyle.Solid);
         [CSS] public string Border { set => this.SetBorder(value); }
 
-        [CSS] public Flex_Direction? Flex_Direction = null;
-        [CSS] public Justify_Content? Justify_Content = null;
-        [CSS] public Align_Items? Align_Items = null;
+        [CSS("Default")] public Flex_Axis? Flex_Axis = null;
+        [CSS("Default")] public Justify_Content? Justify_Content = null;
+        [CSS("Default")] public Align_Items? Align_Items = null;
 
         [CSS][Inherited] public string? FontFamily = null;
         [CSS][Inherited] public UnitFloat? FontSize = null;
@@ -53,13 +51,8 @@ namespace Leagueinator.Printer {
 
         public virtual void DoLayout(Element element) {
             this.DoSize(element);
-            foreach (Element child in element.Children) child.Style.DoSize(child);
-
             this.DoPos(element);
-            foreach (Element child in element.Children) child.Style.DoPos(child);
-
             this.AssignInvokes(element);
-            foreach (Element child in element.Children) child.Style.AssignInvokes(child);
         }
 
         public virtual void DoSize(Element element) { }
@@ -68,25 +61,25 @@ namespace Leagueinator.Printer {
         public virtual void Draw(Graphics g, Element element) { }
         public virtual void DrawPage(Graphics g, Element element, int page) { }
 
-        public Enums.Flex_Direction Flex_Major {
+        public Enums.Flex_Axis Flex_Major {
             get {
-                switch (Flex_Direction) {
-                    case Enums.Flex_Direction.Default:
-                    case Enums.Flex_Direction.Row:
-                    case Enums.Flex_Direction.Row_reverse:
-                        return Enums.Flex_Direction.Row;
+                switch (Flex_Axis) {
+                    case Enums.Flex_Axis.Default:
+                    case Enums.Flex_Axis.Row:
+                    case Enums.Flex_Axis.Row_reverse:
+                        return Enums.Flex_Axis.Row;
                     default:
-                        return Enums.Flex_Direction.Column;
+                        return Enums.Flex_Axis.Column;
                 }
             }
         }
 
         public Enums.Direction Flex_Major_Direction {
             get {
-                switch (Flex_Direction) {
-                    case Enums.Flex_Direction.Default:
-                    case Enums.Flex_Direction.Row:
-                    case Enums.Flex_Direction.Column:
+                switch (Flex_Axis) {
+                    case Enums.Flex_Axis.Default:
+                    case Enums.Flex_Axis.Row:
+                    case Enums.Flex_Axis.Column:
                         return Enums.Direction.Forward;
                     default:
                         return Enums.Direction.Reverse;
