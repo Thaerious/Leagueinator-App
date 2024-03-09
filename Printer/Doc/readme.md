@@ -54,3 +54,10 @@ All child components are drawn relative to their parent's content box.
 Draw() |--> Invoke the Style.Draw() abstract method.
        |--> Invoke any OnDraw delegates.
        |--> Invoke Draw() method on each child element.
+
+## Paging
+
+The draw method get's called with a page number.  
+When the style sheet property "overflow" is set to "paged" all child elements that do no fit within
+the content box of the parent get printed on the next page.  Styling acts as if only the elements on 
+the given page are in the parent.

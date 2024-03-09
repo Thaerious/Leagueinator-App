@@ -4,4 +4,5 @@
     public enum Align_Items { Default, Flex_start, Flex_end, Center }
     public enum Display { Flex, Absolute }
     public enum Direction { Forward, Reverse }
+    public enum Overflow { Visible, Paged }
 }

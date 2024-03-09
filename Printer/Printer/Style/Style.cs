@@ -6,7 +6,8 @@ using Leagueinator.Printer.Enums;
 
 namespace Leagueinator.Printer {
     public partial class Style {
-        [CSS("flex")] public Display? Display = null;
+        [CSS("Flex")] public Display? Display = null;
+        [CSS("Visible")] public Overflow? Overflow = null;
 
         [CSS("0, 0", "SetLocation")] public PointF? Location = null;
         [CSS] public UnitFloat? Width = null;
