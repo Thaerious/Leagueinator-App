@@ -34,8 +34,8 @@ namespace Leagueinator.Printer
             });
         }
 
-        public override void Draw(Graphics g) {
-            base.Draw(g);    
+        public override void InvokeDrawHandlers(Graphics g, int page) {
+            base.InvokeDrawHandlers(g, page);    
             using Brush brush = new SolidBrush(Color.Black);
             g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }

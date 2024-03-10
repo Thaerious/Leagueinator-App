@@ -61,3 +61,6 @@ The draw method get's called with a page number.
 When the style sheet property "overflow" is set to "paged" all child elements that do no fit within
 the content box of the parent get printed on the next page.  Styling acts as if only the elements on 
 the given page are in the parent.
+
+The root element is always drawn, because overflow effects child elements.  Each page will be assigned
+at least one element even if it overflows.

@@ -57,6 +57,8 @@ namespace PrinterTestForm
                 foreach (Element ele in root["*"]) {
                     ele.OnDraw += this.EleOnDraw;
                 }
+
+                Debug.WriteLine("----------------------------");
                 this.printerCanvas.Invalidate();
             }
             catch (Exception ex) {
@@ -65,11 +67,11 @@ namespace PrinterTestForm
             }
         }
 
-        private void EleOnDraw(Graphics g, Element element) {
-            Debug.WriteLine($"Drawing {element.Identifier}");
-            Debug.WriteLine($" - content {element.ContentRect}");
-            Debug.WriteLine($" - border {element.BorderRect}");
-            Debug.WriteLine($" - outer {element.OuterRect}");
+        private void EleOnDraw(Graphics g, Element element, int page) {
+            //Debug.WriteLine($"Drawing {element.Identifier} {element.Style.Page}");
+            //Debug.WriteLine($" - content {element.ContentRect}");
+            //Debug.WriteLine($" - border {element.BorderRect}");
+            //Debug.WriteLine($" - outer {element.OuterRect}");
         }
 
         private void ToolPrintXML_Click(object sender, EventArgs e) {
@@ -111,6 +113,7 @@ namespace PrinterTestForm
             if (--page < 0) page = 0;
             this.lblPage.Text = $"{page}";
             this.printerCanvas.Page = page;
+            Debug.WriteLine("----------------------------");
             this.printerCanvas.Invalidate();
         }
 
@@ -118,6 +121,7 @@ namespace PrinterTestForm
             int page = int.Parse(this.lblPage.Text);
             this.lblPage.Text = $"{++page}";
             this.printerCanvas.Page = page;
+            Debug.WriteLine("----------------------------");
             this.printerCanvas.Invalidate();
         }
     }

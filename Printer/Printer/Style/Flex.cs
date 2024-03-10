@@ -56,8 +56,8 @@ namespace Leagueinator.Printer {
             element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
         }
 
-        public override void DoPos(Element element) {
-            var children = this.CollectChildren(element);
+        private void DoPosPage(Element element, int page) {
+            var children = this.CollectChildren(element, page);
             if (children.Count == 0) return;
 
             foreach (Element child in children) {
@@ -74,6 +74,36 @@ namespace Leagueinator.Printer {
             }
         }
 
+        private void DoPosAbsolute(Element element) {
+            element.Children
+                   .Where(child => child.Style.Position == Enums.Position.Absolute)
+                   .ToList()
+                   .ForEach(child => {
+                       child.Translation = child.Parent?.ContentRect.TopLeft() ?? new();
+                       child.Translate(child.Style.Location ?? new());
+                       child.Style.DoPos(child);
+                   });
+        }
+
+        private void DoPosFixed(Element element) {
+            element.Children
+                   .Where(child => child.Style.Position == Enums.Position.Fixed)
+                   .ToList()
+                   .ForEach(child => {
+                       child.Translate(child.Style.Location ?? new());
+                       child.Style.DoPos(child);
+                   });
+        }
+
+        public override void DoPos(Element element) {
+            int pageCount = this.AssignPages(element);
+            for (int page = 0; page < pageCount; page++) {
+                this.DoPosPage(element, page);
+            }
+            this.DoPosAbsolute(element);
+            this.DoPosFixed(element);
+        }
+
         /// <summary>
         /// Layout all child nodes without taking into account alignment.
         /// </summary>
@@ -86,8 +116,7 @@ namespace Leagueinator.Printer {
                 default:
                 case Enums.Justify_Content.Default:
                 case Enums.Justify_Content.Flex_start: {
-                        PointF from = new PointF(0, 0);
-                        LayoutChildren(children, from);
+                        LayoutChildren(children, new PointF(0, 0));
                         break;
                     }
 
@@ -120,24 +149,24 @@ namespace Leagueinator.Printer {
                     }
 
                 case Enums.Justify_Content.Space_evenly:
-                    this.SpaceEvenly(element);
+                    this.SpaceEvenly(children, element);
                     break;
                 case Enums.Justify_Content.Space_between:
-                    this.SpaceBetween(element);
+                    this.SpaceBetween(children, element);
                     break;
 
                 case Enums.Justify_Content.Space_around:
-                    this.SpaceAround(element);
+                    this.SpaceAround(children, element);
                     break;
             }
         }
 
-        private void SpaceEvenly(Element element) {
+        private void SpaceEvenly(List<Element> children, Element element) {
             if (this.Flex_Axis == Enums.Flex_Axis.Column) {
                 float spaceBetween = element.HeightRemaining() / (element.Children.Count + 1);
                 float dy = spaceBetween;
 
-                foreach (var child in CollectChildren(element)) {
+                foreach (var child in children) {
                     child.Translation = new(0, dy);
                     dy = dy + spaceBetween + child.OuterRect.Height;
                 }
@@ -146,19 +175,19 @@ namespace Leagueinator.Printer {
                 float spaceBetween = element.WidthRemaining() / (element.Children.Count + 1);
                 float dx = spaceBetween;
 
-                foreach (var child in CollectChildren(element)) {
+                foreach (var child in children) {
                     child.Translation = new(dx, 0);
                     dx = dx + spaceBetween + child.OuterRect.Width;
                 }
             }
         }
 
-        private void SpaceBetween(Element element) {
+        private void SpaceBetween(List<Element> children, Element element) {
             if (this.Flex_Axis == Enums.Flex_Axis.Row) {
                 float spaceBetween = element.WidthRemaining() / (element.Children.Count - 1);
                 float dx = 0;
 
-                foreach (var child in CollectChildren(element)) {
+                foreach (var child in children) {
                     child.Translation = new(dx, child.Translation.Y);
                     dx = dx + spaceBetween + child.OuterRect.Width;
                 }
@@ -167,19 +196,19 @@ namespace Leagueinator.Printer {
                 float spaceBetween = element.HeightRemaining() / (element.Children.Count - 1);
                 float dy = 0;
 
-                foreach (var child in CollectChildren(element)) {
+                foreach (var child in children) {
                     child.Translation = new(child.Translation.X, dy);
                     dy = dy + spaceBetween + child.OuterRect.Height;
                 }
             }
         }
 
-        private void SpaceAround(Element element) {
+        private void SpaceAround(List<Element> children, Element element) {
             if (this.Flex_Axis == Enums.Flex_Axis.Row) {
                 float spaceAround = element.WidthRemaining() / (element.Children.Count * 2);
                 float dx = spaceAround;
 
-                foreach (var child in CollectChildren(element)) {
+                foreach (var child in children) {
                     child.Translation = new(dx, child.Translation.Y);
                     dx = dx + (2 * spaceAround) + child.OuterRect.Width;
                 }
@@ -188,7 +217,7 @@ namespace Leagueinator.Printer {
                 float spaceAround = element.HeightRemaining() / (element.Children.Count * 2);
                 float dy = spaceAround;
 
-                foreach (var child in CollectChildren(element)) {
+                foreach (var child in children) {
                     child.Translation = new(child.Translation.X, dy);
                     dy = dy + (2 * spaceAround) + child.OuterRect.Height;
                 }
@@ -202,36 +231,33 @@ namespace Leagueinator.Printer {
             foreach (Element child in element.Children) child.Style.AssignInvokes(child);
         }
 
-        public override void Draw(Graphics g, Element root) {
+        public override void Draw(Graphics g, Element root, int page) {
             Stack<Element> stack = [];
             stack.Push(root);
 
             while (stack.Count > 0) {
                 Element element = stack.Pop();
-                element.Draw(g);
-                foreach (Element child in element.Children) stack.Push(child);
-            }
-        }
+                element.InvokeDrawHandlers(g, page);
 
-        public override void DrawPage(Graphics g, Element root, int page) {
-            int currentPage = 0;
-            foreach (Element child in root.Children) {
-                if (child.OuterRect.Bottom > root.OuterRect.Bottom) {
-                    currentPage++;
+                if (element.Style.Overflow == Enums.Overflow.Visible) {
+                    foreach (Element child in element.Children) stack.Push(child);
                 }
-                else {
-                    child.Style.Draw(g, child);
+                else if (element.Style.Overflow == Enums.Overflow.Paged) {
+                    foreach (Element child in element.Children) {
+                        if (child.Style.Position != Enums.Position.Absolute) stack.Push(child);
+                        else if (child.Style.Page == page) stack.Push(child);
+                    }
                 }
             }
         }
 
-        public void DoDrawBackground(Graphics g, Element element) {
+        public void DoDrawBackground(Graphics g, Element element, int page) {
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), element.BorderRect);
             }
         }
 
-        public void DoDrawBorders(Graphics g, Element element) {
+        public void DoDrawBorders(Graphics g, Element element, int page) {
             if (this.BorderColor is null) return;
 
             if (this.BorderColor.Top != default) {
@@ -281,15 +307,20 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Collect all child nodes that don't have fixed position.
+        /// Collect all child nodes with a flex position and the specified page.
         /// </summary>
         /// <param name = "element" ></ param >
         /// <returns></returns>
-        private List<Element> CollectChildren(Element element) {
-            var children = element.Children;
+        private List<Element> CollectChildren(Element element, int page) {
+            var children = element.Children
+                                  .Where(ele => ele.Style.Position == Enums.Position.Flex)
+                                  .Where(ele => ele.Style.Page == page)
+                                  .ToList();
+
             if (this.Flex_Direction == Enums.Direction.Reverse) {
                 children.Reverse();
             }
+
             return children;
         }
 
@@ -340,6 +371,36 @@ namespace Leagueinator.Printer {
                     break;
             }
         }
+
+        /// <summary>
+        /// Calculates and assigns page numbers to child elements of a given parent element based on the 
+        /// parent's content size and the heights of the children. Returns the total page count for 
+        /// the parent element.
+        /// </summary>
+        /// <param name="element">The parent element.</param>
+        /// <returns>Total page count for all child elements.</returns>
+        private int AssignPages(Element element) {
+            if (element.Style.Overflow != Enums.Overflow.Paged) return 1;
+            Queue<Element> children = new(element.Children);
+
+            int page = -1;
+
+            while (children.Count > 0) {
+                page++;
+                float heightRemaining = element.ContentSize.Height;
+                var child = children.Dequeue();
+                heightRemaining -= child.OuterSize.Height;
+                child.Style.Page = page;
+
+                while (children.Count > 0 && heightRemaining - children.Peek().OuterSize.Height > 0) {
+                    child = children.Dequeue();
+                    heightRemaining -= child.OuterSize.Height;
+                    child.Style.Page = page;
+                }
+            }
+
+            return page + 1;
+        }
     }
 
     public static class FlexElememntExtensions {
@@ -349,10 +410,11 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static float WidthRemaining(this Element element) {
+        public static float WidthRemaining(this Element element, List<Element> children = null) {
+            children ??= element.Children;
             float widthRemaining = element.ContentSize.Width;
 
-            foreach (Element child in element.Children) {
+            foreach (Element child in children) {
                 widthRemaining -= child.OuterSize.Width;
             }
 
@@ -364,16 +426,16 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static float HeightRemaining(this Element element) {
+        public static float HeightRemaining(this Element element, List<Element> children = null) {
+            children ??= element.Children;
             float heightRemaining = element.ContentSize.Height;
 
-            foreach (Element child in element.Children) {
+            foreach (Element child in children) {
                 heightRemaining -= child.OuterSize.Height;
             }
 
             return heightRemaining;
         }
-
     }
 
 }

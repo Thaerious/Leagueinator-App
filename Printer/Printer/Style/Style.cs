@@ -6,7 +6,7 @@ using Leagueinator.Printer.Enums;
 
 namespace Leagueinator.Printer {
     public partial class Style {
-        [CSS("Flex")] public Display? Display = null;
+        [CSS("Flex")] public Position? Position = null;
         [CSS("Visible")] public Overflow? Overflow = null;
 
         [CSS("0, 0", "SetLocation")] public PointF? Location = null;
@@ -30,6 +30,8 @@ namespace Leagueinator.Printer {
         [CSS][Inherited] public string? FontFamily = null;
         [CSS][Inherited] public UnitFloat? FontSize = null;
         [CSS][Inherited] public FontStyle? FontStyle = null;
+
+        public int Page { get; internal set; } = 0;
 
         public Font Font {
             get {
@@ -60,8 +62,7 @@ namespace Leagueinator.Printer {
         public virtual void DoSize(Element element) { }
         public virtual void DoPos(Element element) { }
         public virtual void AssignInvokes(Element element) { }
-        public virtual void Draw(Graphics g, Element element) { }
-        public virtual void DrawPage(Graphics g, Element element, int page) { }
+        public virtual void Draw(Graphics g, Element element, int page) { }
 
         public Enums.Direction Flex_Major_Direction {
             get {

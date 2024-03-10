@@ -49,7 +49,7 @@ namespace Leagueinator.PrinterComponents {
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
-            this.RootElement?.Style.Draw(e.Graphics, this.RootElement);
+            this.RootElement?.Style.Draw(e.Graphics, this.RootElement, this.Page);
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);
         }
 

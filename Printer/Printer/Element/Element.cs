@@ -6,7 +6,7 @@ using System.Xml.Linq;
 namespace Leagueinator.Printer {
 
     public partial class Element {
-        public delegate void DrawDelegate(Graphics g, Element element);
+        public delegate void DrawDelegate(Graphics g, Element element, int page);
 
         private DrawDelegate _onDraw = delegate{};
         public event DrawDelegate OnDraw {
@@ -79,13 +79,10 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Draw this element in the graphics object.
-        /// Draws occur in the following order:
-        /// 1) Invoke all OnDraw event listeners
         /// </summary>
         /// <param name="g"></param>
-        public virtual void Draw(Graphics g) {
-            this._onDraw.Invoke(g, this);
+        public virtual void InvokeDrawHandlers(Graphics g, int page) {
+            this._onDraw.Invoke(g, this, page);
         }
 
         /// <summary>
