@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
 
 namespace Leagueinator.Utility {
 
@@ -20,20 +19,20 @@ namespace Leagueinator.Utility {
         }
     }
 
-    internal class InlineTag : Tag{
+    internal class InlineTag : Tag {
         public string Text = "";
 
-        public InlineTag(string name) : base(name) {}
+        public InlineTag(string name) : base(name) { }
 
         public override string ToString() {
-            if (Text == "") {
-                if (Attributes.Count > 0) return $"<{this.Name} {Attributes.DelString(" ")}/>";
+            if (this.Text == "") {
+                if (this.Attributes.Count > 0) return $"<{this.Name} {this.Attributes.DelString(" ")}/>";
                 return $"<{this.Name}/>";
             }
             else {
                 var s = "";
-                if (Attributes.Count > 0) s += $"<{this.Name} {Attributes.DelString(" ")}>";
-                s += Text;
+                if (this.Attributes.Count > 0) s += $"<{this.Name} {this.Attributes.DelString(" ")}>";
+                s += this.Text;
                 s += $"</{this.Name}>";
                 return s;
             }
@@ -41,10 +40,10 @@ namespace Leagueinator.Utility {
     }
 
     internal class OpenTag : Tag {
-        public OpenTag(string name) : base(name) {}
+        public OpenTag(string name) : base(name) { }
 
         public override string ToString() {
-            if (Attributes.Count > 0) return $"<{this.Name} {Attributes.DelString(" ")}>";
+            if (this.Attributes.Count > 0) return $"<{this.Name} {this.Attributes.DelString(" ")}>";
             return $"<{this.Name}>";
         }
     }
@@ -102,11 +101,11 @@ namespace Leagueinator.Utility {
         }
 
         public XMLStringBuilder InlineTag(string tagname) {
-            InlineTag inlineTag = new(tagname);            
+            InlineTag inlineTag = new(tagname);
             this.CurrentTag.Push(inlineTag);
             return this;
         }
- 
+
         public XMLStringBuilder CloseTag() {
             var tag = this.CurrentTag.Pop();
 
@@ -120,7 +119,7 @@ namespace Leagueinator.Utility {
 
             return this;
 
-        }           
+        }
 
         public XMLStringBuilder AppendXML(XMLStringBuilder xsb) {
             this.lines.AddRange(xsb.lines);

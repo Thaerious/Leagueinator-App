@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace Leagueinator.Components {
+﻿namespace Leagueinator.Components {
     internal static class Program {
         /// <summary>
         ///  The main entry point for the application.

@@ -1,13 +1,8 @@
 ﻿using Leagueinator.Utility;
-using Model;
 using Model.Tables;
-using System;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
-using System.Numerics;
-using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace Leagueinator.Components {
     public partial class EventPanel : UserControl {
@@ -17,7 +12,7 @@ namespace Leagueinator.Components {
         private Dictionary<string, object> previousCellValues = new Dictionary<string, object>();
 
         public EventPanel() {
-            InitializeComponent();
+            this.InitializeComponent();
             this.idleDataGrid.RowValidating += this.DataGridIdle_RowValidating;
             this.idleDataGrid.DataError += this.DataErrorHnd;
         }
@@ -52,27 +47,28 @@ namespace Leagueinator.Components {
 
         [Category("Custom Properties")]
         public EventRow? EventRow {
-            get => _eventRow;
-            set {
-                if (_eventRow == value) return;
-                _eventRow = value;
-                if (value == null) return;
+            get => this._eventRow;
+            set => this.SetEvent(value);
+        }
 
-                foreach (RoundRow roundRow in value.Rounds) {
-                    this.OnAddRound(roundRow);
-                }
+        private void SetEvent(EventRow? eventRow) {
+            ArgumentNullException.ThrowIfNull(eventRow);
+            this._eventRow = eventRow;
 
-                this.EventRow.League.RoundTable.RowChanged += this.RoundTable_RowChanged;
+            foreach (RoundRow roundRow in eventRow.Rounds) {
+                this.AddRound(roundRow);
             }
+
+            this._eventRow.League.RoundTable.RowChanged += this.HndRoundTableRow;
         }
 
-        private void RoundTable_RowChanged(object sender, System.Data.DataRowChangeEventArgs e) {
-            if (this.EventRow is null) return;
-            if ((int)e.Row[RoundTable.COL.EVENT] != this.EventRow.UID) return;
-            this.OnAddRound(new RoundRow(e.Row));
+        private void HndRoundTableRow(object sender, System.Data.DataRowChangeEventArgs e) {
+            if ((int)e.Row[RoundTable.COL.EVENT] != this.EventRow!.UID) return;
+            RoundRow roundRow = new RoundRow(e.Row);
+            this.AddRound(roundRow);
         }
 
-        private void OnAddRound(RoundRow roundRow) {
+        private void AddRound(RoundRow roundRow) {
             RoundButton button = new RoundButton(roundRow) {
                 Text = $"Round {this.flowRounds.Controls.Count + 1}",
                 Height = 35,
@@ -81,10 +77,11 @@ namespace Leagueinator.Components {
 
             this.flowRounds.Controls.Add(button);
             button.Click += this.RoundButtonClick;
+            this.RoundButtonClick(button, null);
         }
 
-        private void RoundButtonClick(object? sender, EventArgs e) {
-            if (sender is null) return;
+        private void RoundButtonClick(object? sender, EventArgs? _) {
+            Console.WriteLine("Round Button Click");
             RoundRow roundRow = (sender as RoundButton)!.Round;
 
             this.currentRound = roundRow;
@@ -97,6 +94,12 @@ namespace Leagueinator.Components {
             foreach (MatchRow matchRow in roundRow.Matches) {
                 var controls = this.GetControls<MatchCard>("Lane", matchRow.Lane).ToList();
                 if (controls.IsNotEmpty()) controls[0].MatchRow = matchRow;
+            }
+
+            if (sender is RoundButton button) {
+                this.GetControls<RoundButton>().ToList().ForEach(b => b.BackColor = Color.White);
+                BackColor = Color.White;
+                button.BackColor = Color.LightYellow;
             }
         }
 

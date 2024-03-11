@@ -80,12 +80,12 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
         }
 
         public void ReplaceValue(V replace, V with) {
-            int key = ReverseLookup(replace);
+            int key = this.ReverseLookup(replace);
             this[key] = with;
         }
 
         public int ReverseLookup(V value) {
-            foreach(var kv in this.inner) {
+            foreach (var kv in this.inner) {
                 if (kv.Value is null) continue;
                 if (kv.Value.Equals(value)) return kv.Key;
             }

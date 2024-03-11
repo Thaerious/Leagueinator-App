@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Leagueinator.Utility.ObservableDiscreteCollection {
     [Serializable]
-    public class DiscreteList<V> : IEnumerable<V>{
+    public class DiscreteList<V> : IEnumerable<V> {
         public delegate void CollectionChangedHnd(DiscreteList<V> source, Args args);
         public event CollectionChangedHnd CollectionChanged = delegate { };
         [JsonProperty] public readonly int MaxSize;
@@ -61,7 +61,7 @@ namespace Leagueinator.Utility.ObservableDiscreteCollection {
         }
 
         public void ReplaceValue(V replace, V with) {
-            int key = ReverseLookup(replace);
+            int key = this.ReverseLookup(replace);
             this[key] = with;
         }
 

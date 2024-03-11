@@ -12,21 +12,21 @@ namespace Leagueinator_Utility.Utility {
 
         public T2 this[T1 key] {
             get {
-                return _map[key];
+                return this._map[key];
             }
             set {
                 if (key == null) throw new ArgumentNullException(nameof(key));
                 if (value == null) throw new ArgumentNullException(nameof(value));
-                _map[key] = value;
-                _mirror[value] = key;
+                this._map[key] = value;
+                this._mirror[value] = key;
             }
         }
 
-        public ICollection<T1> Keys => _map.Keys;
+        public ICollection<T1> Keys => this._map.Keys;
 
-        public ICollection<T2> Values => _map.Values;
+        public ICollection<T2> Values => this._map.Values;
 
-        public int Count => _map.Count;
+        public int Count => this._map.Count;
 
         public bool IsReadOnly => throw new NotImplementedException();
 
@@ -46,31 +46,31 @@ namespace Leagueinator_Utility.Utility {
             this._mirror.Clear();
         }
         public bool Contains(KeyValuePair<T1, T2> item) {
-            if (!_map.ContainsKey(item.Key)) return false;
-            if (!_mirror.ContainsKey(item.Value)) return false;
+            if (!this._map.ContainsKey(item.Key)) return false;
+            if (!this._mirror.ContainsKey(item.Value)) return false;
             if (this._map[item.Key]!.Equals(item.Value)) return true;
             return false;
         }
 
-        public bool ContainsKey(T1 key) => _map.ContainsKey(key);
+        public bool ContainsKey(T1 key) => this._map.ContainsKey(key);
 
         public void CopyTo(KeyValuePair<T1, T2>[] array, int arrayIndex) {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<KeyValuePair<T1, T2>> GetEnumerator() => _map.GetEnumerator();
+        public IEnumerator<KeyValuePair<T1, T2>> GetEnumerator() => this._map.GetEnumerator();
 
         public bool Remove(T1 key) {
-            if (!_map.ContainsKey((T1)key)) return false;
-            _mirror.Remove(_map[key]);
-            _map.Remove(key);
+            if (!this._map.ContainsKey(key)) return false;
+            this._mirror.Remove(this._map[key]);
+            this._map.Remove(key);
             return true;
         }
 
         public bool Remove(KeyValuePair<T1, T2> item) {
-            if (!_map.ContainsKey((T1)item.Key)) return false;
-            _mirror.Remove(_map[item.Key]);
-            _map.Remove(item.Key);
+            if (!this._map.ContainsKey(item.Key)) return false;
+            this._mirror.Remove(this._map[item.Key]);
+            this._map.Remove(item.Key);
             return true;
         }
 
@@ -85,8 +85,8 @@ namespace Leagueinator_Utility.Utility {
             };
         }
 
-        public bool TryGetValue(T1 key, [MaybeNullWhen(false)] out T2 value) => _map.TryGetValue(key, out value);
+        public bool TryGetValue(T1 key, [MaybeNullWhen(false)] out T2 value) => this._map.TryGetValue(key, out value);
 
-        IEnumerator IEnumerable.GetEnumerator() => _map.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => this._map.GetEnumerator();
     }
 }

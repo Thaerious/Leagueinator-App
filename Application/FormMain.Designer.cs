@@ -23,7 +23,7 @@
         ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.eventPanel1 = new EventPanel();
+            this.eventPanel = new EventPanel();
             this.menuStrip1 = new MenuStrip();
             this.viewTableToolStripMenuItem = new ToolStripMenuItem();
             this.eventsToolStripMenuItem = new ToolStripMenuItem();
@@ -39,13 +39,13 @@
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // eventPanel1
+            // eventPanel
             // 
-            this.eventPanel1.Dock = DockStyle.Fill;
-            this.eventPanel1.Location = new Point(0, 33);
-            this.eventPanel1.Name = "eventPanel1";
-            this.eventPanel1.Size = new Size(1199, 762);
-            this.eventPanel1.TabIndex = 0;
+            this.eventPanel.Dock = DockStyle.Fill;
+            this.eventPanel.Location = new Point(0, 33);
+            this.eventPanel.Name = "eventPanel1";
+            this.eventPanel.Size = new Size(1896, 762);
+            this.eventPanel.TabIndex = 0;
             // 
             // menuStrip1
             // 
@@ -53,7 +53,7 @@
             this.menuStrip1.Items.AddRange(new ToolStripItem[] { this.viewTableToolStripMenuItem, this.debugToolStripMenuItem });
             this.menuStrip1.Location = new Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new Size(1199, 33);
+            this.menuStrip1.Size = new Size(1896, 33);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -138,8 +138,8 @@
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(1199, 795);
-            this.Controls.Add(this.eventPanel1);
+            this.ClientSize = new Size(1896, 795);
+            this.Controls.Add(this.eventPanel);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
@@ -152,7 +152,7 @@
 
         #endregion
 
-        private Components.EventPanel eventPanel1;
+        private Components.EventPanel eventPanel;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem viewTableToolStripMenuItem;
         private ToolStripMenuItem teamsToolStripMenuItem;

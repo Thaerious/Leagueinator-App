@@ -14,7 +14,7 @@ namespace Leagueinator.Components {
                 this._matchRow = value;
 
                 if (value == null) {
-                    this.txtEnds.Text = "";
+                    this.txtEnds.Text = "0";
                     this.membersGrid.DataSource = null;
                     this.teamsGrid.DataSource = null;
                     return;
@@ -40,7 +40,7 @@ namespace Leagueinator.Components {
         }
 
         public MatchCard() {
-            InitializeComponent();
+            this.InitializeComponent();
             this.membersGrid.RowValidating += this.MembersGrid_RowValidating;
             this.teamsGrid.RowValidating += this.TeamsGrid_RowValidating;
             this.membersGrid.DataError += this.DataErrorHnd;
@@ -69,7 +69,7 @@ namespace Leagueinator.Components {
 
             // default team value
             if (index is DBNull) {
-                index = this.MatchRow.League.TeamTable.LastIndex(MatchRow);
+                index = this.MatchRow.League.TeamTable.LastIndex(this.MatchRow);
                 if ((int)index == 0) index = 1;
                 gridRow.Cells[MemberTable.COL.INDEX].Value = index;
             }
@@ -86,7 +86,7 @@ namespace Leagueinator.Components {
             // make sure {match, index} is in team table
             TeamTable teamTable = this.MatchRow.League.TeamTable;
             if (!teamTable.Has([TeamTable.COL.MATCH, TeamTable.COL.INDEX], [this.MatchRow.UID, (int)index])) {
-                TeamRow teamRow = MatchRow.Teams.Add((int)index);
+                TeamRow teamRow = this.MatchRow.Teams.Add((int)index);
             }
         }
 
@@ -105,8 +105,8 @@ namespace Leagueinator.Components {
         private MatchRow? _matchRow;
 
         private void TxtEndsChangedHnd(object sender, EventArgs e) {
-            Console.WriteLine(txtEnds.Text);
-            int ends = int.Parse(txtEnds.Text);
+            Console.WriteLine(this.txtEnds.Text);
+            int ends = int.Parse(this.txtEnds.Text);
             if (this.MatchRow is null) return;
             if (ends > 0) this.MatchRow.Ends = ends;
         }

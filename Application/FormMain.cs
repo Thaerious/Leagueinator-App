@@ -1,48 +1,45 @@
 ﻿using Model;
-using Model.Tables;
-using System.Data;
 
 namespace Leagueinator.Components {
     public partial class FormMain : Form {
-
-        private League model;
+        private League Model;
 
         public FormMain() {
-            InitializeComponent();
-            this.model = new MockModel();
-            this.eventPanel1.EventRow = model.EventTable.GetRow(0);
+            this.InitializeComponent();
+            this.Model = new MockModel();
+            this.eventPanel.EventRow = this.Model.EventTable.GetRow(0);
         }
 
         private void HndMenuViewTeams(object sender, EventArgs e) {
-            new FormViewTable().Show("Teams", this.model.TeamTable);
+            new FormViewTable().Show("Teams", this.Model.TeamTable);
         }
 
         private void HndMenuViewPlayers(object sender, EventArgs e) {
-            new FormViewTable().Show("Players", this.model.PlayerTable);
+            new FormViewTable().Show("Players", this.Model.PlayerTable);
         }
 
         private void HndMenuViewMembers(object sender, EventArgs e) {
-            new FormViewTable().Show("Members", this.model.MemberTable);
+            new FormViewTable().Show("Members", this.Model.MemberTable);
         }
 
         private void HndMenuViewEvents(object sender, EventArgs e) {
-            new FormViewTable().Show("Events", this.model.EventTable);
+            new FormViewTable().Show("Events", this.Model.EventTable);
         }
 
         private void HndMenuViewRounds(object sender, EventArgs e) {
-            new FormViewTable().Show("Rounds", this.model.RoundTable);
+            new FormViewTable().Show("Rounds", this.Model.RoundTable);
         }
 
         private void HndMenuViewMatches(object sender, EventArgs e) {
-            new FormViewTable().Show("Matches", this.model.MatchTable);
+            new FormViewTable().Show("Matches", this.Model.MatchTable);
         }
 
         private void HndMenuViewIdle(object sender, EventArgs e) {
-            new FormViewTable().Show("Idle Players", this.model.IdleTable);
+            new FormViewTable().Show("Idle Players", this.Model.IdleTable);
         }
 
         private void HndMenuViewSettings(object sender, EventArgs e) {
-            new FormViewTable().Show("Settings", this.model.SettingsTable);
+            new FormViewTable().Show("Settings", this.Model.SettingsTable);
         }
     }
 }

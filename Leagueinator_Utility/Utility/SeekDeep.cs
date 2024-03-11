@@ -26,7 +26,7 @@ namespace Leagueinator.Utility.Seek {
                 }
                 return list;
             }
-            
+
             // If target is of type, add target to the result
             if (target.GetType() == typeof(T)) {
                 if (list.Contains(target)) return list;

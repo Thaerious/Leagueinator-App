@@ -1,5 +1,4 @@
-﻿using Model;
-using Model.Tables;
+﻿using Model.Tables;
 
 namespace Leagueinator.Components {
 

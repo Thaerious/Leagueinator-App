@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Windows.Forms;
 
 namespace Leagueinator.Components {
     public static class ControlExtensions {
