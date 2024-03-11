@@ -1,8 +1,4 @@
 ﻿using Leagueinator.Utility;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Diagnostics;
-using System.Drawing;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -43,7 +39,7 @@ namespace Leagueinator.CSSParser {
             if (ParseEnum(source, targetType, ref target)) return true;
             if (ParsePublicProperty(source, targetType, ref target)) return true;
             if (ParseSpecialCase(source, targetType, ref target)) return true;
-           
+
             return false;
         }
 

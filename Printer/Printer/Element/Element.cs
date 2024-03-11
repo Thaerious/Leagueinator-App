@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Text;
 using System.Xml.Linq;
 
@@ -8,17 +7,17 @@ namespace Leagueinator.Printer {
     public partial class Element {
         public delegate void DrawDelegate(Graphics g, Element element, int page);
 
-        private DrawDelegate _onDraw = delegate{};
+        private DrawDelegate _onDraw = delegate { };
         public event DrawDelegate OnDraw {
             add {
-                foreach (Delegate hnd in _onDraw.GetInvocationList()) {
+                foreach (Delegate hnd in this._onDraw.GetInvocationList()) {
                     if (hnd.Equals(value)) return;
                 }
 
-                _onDraw += value;
+                this._onDraw += value;
             }
             remove {
-                _onDraw -= value;
+                this._onDraw -= value;
             }
         }
 
@@ -121,7 +120,7 @@ namespace Leagueinator.Printer {
             return this.Identifier;
         }
 
-        public virtual XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {           
+        public virtual XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
             action ??= (element, xml) => { };
             XMLStringBuilder xml = new();
 

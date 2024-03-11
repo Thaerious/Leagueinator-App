@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Printer.Printer {
+﻿namespace Printer.Printer {
     public static class RectExt {
 
         public static PointF BottomLeft(this RectangleF rect) {

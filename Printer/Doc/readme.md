@@ -37,6 +37,8 @@ Justify_Content { Default, Flex_start, Flex_end, Center, Space_between, Space_ar
 Align_Items { Default, Flex_start, Flex_end, Center }
 Flex_Direction { Forward, Reverse }
 
+The relative location Left, Right, Top, Bottom only apply in absolute positioning.
+
 # Implementation Details
 
 All child components are drawn relative to their parent's content box.

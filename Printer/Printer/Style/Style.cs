@@ -1,8 +1,8 @@
 ﻿using Leagueinator.CSSParser;
+using Leagueinator.Printer.Enums;
+using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Text;
-using System.Drawing.Drawing2D;
-using Leagueinator.Printer.Enums;
 
 namespace Leagueinator.Printer {
     public partial class Style {
@@ -10,16 +10,20 @@ namespace Leagueinator.Printer {
         [CSS("Visible")] public Overflow? Overflow = null;
 
         [CSS("0, 0", "SetLocation")] public PointF? Location = null;
+        [CSS] public UnitFloat? Left = null;
+        [CSS] public UnitFloat? Right = null;
+        [CSS] public UnitFloat? Top = null;
+        [CSS] public UnitFloat? Bottom = null;
         [CSS] public UnitFloat? Width = null;
         [CSS] public UnitFloat? Height = null;
         [CSS] public Color? BackgroundColor = null;
 
-        [CSS] public Box Margin = Box.Default;
-        [CSS] public Box Padding = Box.Default;
+        [CSS("0px")] public Cardinal<UnitFloat>? Margin = null;
+        [CSS("0px")] public Cardinal<UnitFloat>? Padding = null;
 
         [CSS] public Cardinal<Color>? BorderColor = null;
-        [CSS] public Cardinal<UnitFloat>? BorderSize = new(new(0, "px"));
-        [CSS] public Cardinal<DashStyle>? BorderStyle = new(DashStyle.Solid);
+        [CSS("0px")] public Cardinal<UnitFloat>? BorderSize;
+        [CSS("Solid")] public Cardinal<DashStyle>? BorderStyle;
         [CSS] public string Border { set => this.SetBorder(value); }
 
         [CSS("Default")] public Flex_Axis? Flex_Axis = null;
@@ -66,7 +70,7 @@ namespace Leagueinator.Printer {
 
         public Enums.Direction Flex_Major_Direction {
             get {
-                switch (Flex_Axis) {
+                switch (this.Flex_Axis) {
                     case Enums.Flex_Axis.Default:
                     case Enums.Flex_Axis.Row:
                     case Enums.Flex_Axis.Column:
@@ -115,11 +119,11 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T ToStyle<T>() where T : Style, new(){
+        public T ToStyle<T>() where T : Style, new() {
             T target = new();
 
             foreach (var propName in Style.Properties.Keys) {
-                var sourceProp = Style.Properties[propName];                
+                var sourceProp = Style.Properties[propName];
 
                 if (sourceProp.GetCustomAttribute<CSS>() == null) continue;
                 var targetProp = Style.Properties[propName];
@@ -132,7 +136,7 @@ namespace Leagueinator.Printer {
             }
 
             foreach (var fieldName in Style.Fields.Keys) {
-                var sourceField = Style.Fields[fieldName];                
+                var sourceField = Style.Fields[fieldName];
 
                 if (sourceField.GetCustomAttribute<CSS>() == null) continue;
                 var targetField = Style.Fields[fieldName];
@@ -140,7 +144,7 @@ namespace Leagueinator.Printer {
                 var sourceValue = sourceField.GetValue(this);
                 if (sourceValue == null) continue;
                 targetField.SetValue(target, sourceValue);
-            }                     
+            }
 
             return target;
         }

@@ -1,14 +1,7 @@
-﻿using Leagueinator.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leagueinator.Printer {
+﻿namespace Leagueinator.Printer {
     public partial class Element {
-        
-        public Style Style { get; internal set; } 
+
+        public Style Style { get; internal set; }
 
         public ElementList Children => new(this._children);
 

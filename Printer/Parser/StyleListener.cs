@@ -18,24 +18,24 @@ namespace Leagueinator.CSSParser {
             var selectors = context.selectors().GetText();
 
             foreach (var selector in selectors.Split(",")) {
-                if (!Styles.ContainsKey(selector)) Styles[selector] = new Style(selector);
-                var style = Styles[selector];
-                currentStyles.Add(style);
+                if (!this.Styles.ContainsKey(selector)) this.Styles[selector] = new Style(selector);
+                var style = this.Styles[selector];
+                this.currentStyles.Add(style);
             }
         }
 
         public override void ExitStyle([NotNull] global::StyleParser.StyleContext context) {
-            currentStyles.Clear();
+            this.currentStyles.Clear();
         }
 
         private void SetStyleField(FieldInfo field, object? newObject) {
-            foreach (var style in currentStyles) {
+            foreach (var style in this.currentStyles) {
                 field.SetValue(style, newObject);
             }
         }
 
         private void SetStyleProperty(PropertyInfo prop, object? newObject) {
-            foreach (var style in currentStyles) {
+            foreach (var style in this.currentStyles) {
                 prop.SetValue(style, newObject);
             }
         }
@@ -50,7 +50,7 @@ namespace Leagueinator.CSSParser {
                     CSS? css = field.GetCustomAttribute<CSS>();
                     if (css is null) return;
 
-                    foreach (var style in currentStyles) {
+                    foreach (var style in this.currentStyles) {
                         css.TryParse(style, val, field);
                     }
                 }
@@ -59,7 +59,7 @@ namespace Leagueinator.CSSParser {
                     CSS? css = prop.GetCustomAttribute<CSS>();
                     if (css is null) return;
 
-                    foreach (var style in currentStyles) {
+                    foreach (var style in this.currentStyles) {
                         css.TryParse(style, val, prop);
                     }
                 }
@@ -82,7 +82,7 @@ namespace Leagueinator.CSSParser {
                 Debug.WriteLine(ex);
                 Debug.WriteLine("\n");
                 throw new Exception(msg);
-            }            
+            }
         }
     }
 

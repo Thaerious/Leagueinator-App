@@ -1,9 +1,8 @@
 ﻿using Leagueinator.Printer;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.CSSParser {
-    public class LoadedStyles : Dictionary<string, Style>{
+    public class LoadedStyles : Dictionary<string, Style> {
 
         /// <summary>
         /// Using the loaded styles sheet, apply styles to root and all child nodes
@@ -16,12 +15,12 @@ namespace Leagueinator.CSSParser {
             while (queue.Count > 0) {
                 Element current = queue.Dequeue();
 
-                ApplyNameStyles(current, current.Style);
-                ApplyClassStyles(current, current.Style);
-                ApplyIDStyles(current, current.Style);
-                ApplyWildcardStyles(current, current.Style);
-                ApplyParentStyles(current, current.Style);
-                ApplyDefaultValues(current.Style);
+                this.ApplyNameStyles(current, current.Style);
+                this.ApplyClassStyles(current, current.Style);
+                this.ApplyIDStyles(current, current.Style);
+                this.ApplyWildcardStyles(current, current.Style);
+                this.ApplyParentStyles(current, current.Style);
+                this.ApplyDefaultValues(current.Style);
 
                 foreach (Element child in current.Children) {
                     queue.Enqueue(child);

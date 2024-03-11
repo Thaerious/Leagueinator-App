@@ -1,8 +1,5 @@
-﻿
-using System.Diagnostics;
-
-namespace Leagueinator.Printer {
-    public class UnitFloat{
+﻿namespace Leagueinator.Printer {
+    public class UnitFloat {
         public static readonly UnitFloat Default = new();
 
         public float Value { get; set; } = 0f;

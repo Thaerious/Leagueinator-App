@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Printer;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace Leagueinator.PrinterComponents {
 
@@ -9,7 +8,7 @@ namespace Leagueinator.PrinterComponents {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private System.ComponentModel.IContainer? components = null;
 
         public int Page { get; set; } = 0;
 
@@ -83,8 +82,8 @@ namespace Leagueinator.PrinterComponents {
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing) {
-            if (disposing && (components != null)) {
-                components.Dispose();
+            if (disposing && (this.components != null)) {
+                this.components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -95,7 +94,7 @@ namespace Leagueinator.PrinterComponents {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            components = new System.ComponentModel.Container();
+            this.components = new System.ComponentModel.Container();
         }
     }
 }

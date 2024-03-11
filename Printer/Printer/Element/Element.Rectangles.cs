@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Leagueinator.Printer {
+﻿namespace Leagueinator.Printer {
     public partial class Element {
         /// <summary>
         /// The (x,y) translation of this element relative to it's parent element.
@@ -32,7 +26,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         internal virtual SizeF OuterSize { get; set; } = new();
 
-        
+
         /// <summary>
         /// The parent element's content rectangle.
         /// Setting this property overrides the getter and returns the set value.
@@ -43,9 +37,9 @@ namespace Leagueinator.Printer {
                 if (this.Parent is null && this._containerRect is null) {
                     throw new NullReferenceException($"On element {this.Identifier} neither parent nor container is set.");
                 }
-                
+
                 if (this._containerRect is not null) return (RectangleF)this._containerRect;
-                return this.Parent!.ContainerRect;  
+                return this.Parent!.ContainerRect;
             }
             set => this._containerRect = value;
         }

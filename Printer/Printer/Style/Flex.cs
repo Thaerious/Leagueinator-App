@@ -1,7 +1,5 @@
-﻿using Leagueinator.Printer.Enums;
-using Printer.Printer;
-using System.Diagnostics;
-using System.Xml.Linq;
+﻿using Printer.Printer;
+using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer {
     public class Flex : Style {
@@ -36,6 +34,10 @@ namespace Leagueinator.Printer {
                     break;
             }
 
+            this.BorderSize ??= new();
+            this.Padding ??= new();
+            this.Margin ??= new();
+
             var paddingWidth = contentWidth + this.Padding.Left + this.Padding.Right;
             var paddingHeight = contentHeight + this.Padding.Top + this.Padding.Bottom;
 
@@ -51,8 +53,8 @@ namespace Leagueinator.Printer {
         }
 
         void SetDefaultSize(Element element) {
-            if (this.Width != null) this.Width.Factor = element.Parent.ContentRect.Width;
-            if (this.Height != null) this.Height.Factor = element.Parent.ContentRect.Height;
+            if (this.Width != null) this.Width.Factor = element.Parent?.ContentRect.Width ?? 0f;
+            if (this.Height != null) this.Height.Factor = element.Parent?.ContentRect.Height ?? 0f;
             element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
         }
 
@@ -79,8 +81,29 @@ namespace Leagueinator.Printer {
                    .Where(child => child.Style.Position == Enums.Position.Absolute)
                    .ToList()
                    .ForEach(child => {
+                       float x = 0f, y = 0f;
+                       var cStyle = child.Style;
+
+                       if (cStyle.Left != null) {
+                           cStyle.Left.Factor = element.ContentRect.Width;
+                           x = cStyle.Left;
+                       }
+                       if (cStyle.Right != null) {
+                           cStyle.Right.Factor = element.ContentRect.Width;
+                           x = element.ContentRect.Width - child.OuterSize.Width - cStyle.Right;
+                       }
+                       if (cStyle.Top != null) {
+                           cStyle.Top.Factor = element.ContentRect.Height;
+                           y = cStyle.Top;
+                       }
+                       if (cStyle.Bottom != null) {
+                           cStyle.Bottom.Factor = element.ContentRect.Height;
+                           y = element.ContentRect.Height - child.OuterSize.Height - cStyle.Bottom;
+                       }
+
                        child.Translation = child.Parent?.ContentRect.TopLeft() ?? new();
-                       child.Translate(child.Style.Location ?? new());
+                       child.Translate(new(x, y));
+                       child.Translate(cStyle.Location ?? new());
                        child.Style.DoPos(child);
                    });
         }
@@ -116,7 +139,7 @@ namespace Leagueinator.Printer {
                 default:
                 case Enums.Justify_Content.Default:
                 case Enums.Justify_Content.Flex_start: {
-                        LayoutChildren(children, new PointF(0, 0));
+                        this.LayoutChildren(children, new PointF(0, 0));
                         break;
                     }
 
@@ -124,13 +147,13 @@ namespace Leagueinator.Printer {
                         PointF from;
 
                         if (this.Flex_Axis == Enums.Flex_Axis.Row) {
-                            from = new PointF(element.WidthRemaining(), 0);
+                            from = new PointF(element.WidthRemaining(children), 0);
                         }
                         else {
-                            from = new PointF(0, element.HeightRemaining());
+                            from = new PointF(0, element.HeightRemaining(children));
                         }
 
-                        LayoutChildren(children, from);
+                        this.LayoutChildren(children, from);
                         break;
                     }
 
@@ -138,13 +161,13 @@ namespace Leagueinator.Printer {
                         PointF from;
 
                         if (this.Flex_Axis == Enums.Flex_Axis.Row) {
-                            from = new PointF(element.WidthRemaining() / 2, 0);
+                            from = new PointF(element.WidthRemaining(children) / 2, 0);
                         }
                         else {
-                            from = new PointF(0, element.HeightRemaining() / 2);
+                            from = new PointF(0, element.HeightRemaining(children) / 2);
                         }
 
-                        LayoutChildren(children, from);
+                        this.LayoutChildren(children, from);
                         break;
                     }
 
@@ -163,7 +186,7 @@ namespace Leagueinator.Printer {
 
         private void SpaceEvenly(List<Element> children, Element element) {
             if (this.Flex_Axis == Enums.Flex_Axis.Column) {
-                float spaceBetween = element.HeightRemaining() / (element.Children.Count + 1);
+                float spaceBetween = element.HeightRemaining(children) / (children.Count + 1);
                 float dy = spaceBetween;
 
                 foreach (var child in children) {
@@ -172,7 +195,7 @@ namespace Leagueinator.Printer {
                 }
             }
             else {
-                float spaceBetween = element.WidthRemaining() / (element.Children.Count + 1);
+                float spaceBetween = element.WidthRemaining(children) / (children.Count + 1);
                 float dx = spaceBetween;
 
                 foreach (var child in children) {
@@ -184,7 +207,7 @@ namespace Leagueinator.Printer {
 
         private void SpaceBetween(List<Element> children, Element element) {
             if (this.Flex_Axis == Enums.Flex_Axis.Row) {
-                float spaceBetween = element.WidthRemaining() / (element.Children.Count - 1);
+                float spaceBetween = element.WidthRemaining(children) / (children.Count - 1);
                 float dx = 0;
 
                 foreach (var child in children) {
@@ -193,7 +216,7 @@ namespace Leagueinator.Printer {
                 }
             }
             else {
-                float spaceBetween = element.HeightRemaining() / (element.Children.Count - 1);
+                float spaceBetween = element.HeightRemaining(children) / (children.Count - 1);
                 float dy = 0;
 
                 foreach (var child in children) {
@@ -205,7 +228,7 @@ namespace Leagueinator.Printer {
 
         private void SpaceAround(List<Element> children, Element element) {
             if (this.Flex_Axis == Enums.Flex_Axis.Row) {
-                float spaceAround = element.WidthRemaining() / (element.Children.Count * 2);
+                float spaceAround = element.WidthRemaining(children) / (children.Count * 2);
                 float dx = spaceAround;
 
                 foreach (var child in children) {
@@ -214,7 +237,7 @@ namespace Leagueinator.Printer {
                 }
             }
             else {
-                float spaceAround = element.HeightRemaining() / (element.Children.Count * 2);
+                float spaceAround = element.HeightRemaining(children) / (children.Count * 2);
                 float dy = spaceAround;
 
                 foreach (var child in children) {
@@ -244,7 +267,8 @@ namespace Leagueinator.Printer {
                 }
                 else if (element.Style.Overflow == Enums.Overflow.Paged) {
                     foreach (Element child in element.Children) {
-                        if (child.Style.Position != Enums.Position.Absolute) stack.Push(child);
+                        if (child.Style.Position == Enums.Position.Absolute) stack.Push(child);
+                        else if (child.Style.Position == Enums.Position.Fixed) stack.Push(child);
                         else if (child.Style.Page == page) stack.Push(child);
                     }
                 }
@@ -259,6 +283,8 @@ namespace Leagueinator.Printer {
 
         public void DoDrawBorders(Graphics g, Element element, int page) {
             if (this.BorderColor is null) return;
+            this.BorderSize ??= new();
+            this.BorderStyle ??= new(DashStyle.Solid);
 
             if (this.BorderColor.Top != default) {
                 using Pen pen = new Pen(this.BorderColor.Top);
@@ -410,7 +436,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static float WidthRemaining(this Element element, List<Element> children = null) {
+        public static float WidthRemaining(this Element element, List<Element> children) {
             children ??= element.Children;
             float widthRemaining = element.ContentSize.Width;
 
@@ -426,7 +452,7 @@ namespace Leagueinator.Printer {
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        public static float HeightRemaining(this Element element, List<Element> children = null) {
+        public static float HeightRemaining(this Element element, List<Element> children) {
             children ??= element.Children;
             float heightRemaining = element.ContentSize.Height;
 

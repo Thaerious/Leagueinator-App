@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Printer;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.CSSParser {
@@ -10,7 +9,7 @@ namespace Leagueinator.CSSParser {
 
         public string SetMethod { get; init; } = "";
 
-        public CSS() {}
+        public CSS() { }
 
         public CSS(string defVal) {
             this.DefVal = defVal;
