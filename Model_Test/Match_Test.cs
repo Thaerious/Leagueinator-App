@@ -1,7 +1,6 @@
 ﻿using Model;
 using Model.Tables;
 using System.Data;
-using System.Diagnostics;
 
 namespace Model_Test {
     [TestClass]
@@ -33,7 +32,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            
+
             Assert.AreEqual(1, roundRow.Matches.Count);
         }
 

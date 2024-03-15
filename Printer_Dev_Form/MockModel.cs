@@ -1,7 +1,7 @@
 ﻿using Model;
 
 namespace Leagueinator {
-    internal class MockModel : League{
+    internal class MockModel : League {
 
         public MockModel() {
             var eventRow = this.EventTable.AddRow("My Event");
@@ -21,7 +21,7 @@ namespace Leagueinator {
             var matchRow = roundRow.Matches[0];
             var teamRow1 = matchRow.Teams.Add(1);
             var teamRow2 = matchRow.Teams.Add(2);
-            
+
             roundRow.Matches[1].Teams.Add(1);
             roundRow.Matches[1].Teams.Add(2);
 

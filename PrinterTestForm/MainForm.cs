@@ -2,8 +2,7 @@
 using Leagueinator.Printer;
 using System.Diagnostics;
 
-namespace PrinterTestForm
-{
+namespace PrinterTestForm {
     public partial class MainForm : Form {
         private static readonly string AppPath = "PrinterTestForm";
         private readonly string xmlPath;
@@ -11,6 +10,9 @@ namespace PrinterTestForm
 
         public MainForm() {
             this.InitializeComponent();
+            this.printerCanvas.OnRepaintTime += (double ms) => {
+                this.lblTimer.Text = ms + " ms";
+            };
 
             var menuItem = new ToolStripMenuItem {
                 ShortcutKeys = Keys.Control | Keys.S // Set your desired shortcut key
@@ -53,7 +55,7 @@ namespace PrinterTestForm
                 this.printerCanvas.RootElement = root;
                 root.Style.DoLayout(root);
 
-                this.printerCanvas.Invalidate();
+                this.printerCanvas.Invalidate(true);
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -107,61 +109,30 @@ namespace PrinterTestForm
             if (--page < 0) page = 0;
             this.lblPage.Text = $"{page}";
             this.printerCanvas.Page = page;
-            this.printerCanvas.Invalidate();
+            this.printerCanvas.Invalidate(true);
         }
 
         private void butNextClick(object sender, EventArgs e) {
             int page = int.Parse(this.lblPage.Text);
             this.lblPage.Text = $"{++page}";
             this.printerCanvas.Page = page;
-            this.printerCanvas.Invalidate();
+            this.printerCanvas.Invalidate(true);
         }
 
         private void menuLandscapeClick(object sender, EventArgs e) {
-            var parent = this.printerCanvas.Parent;
-            double pRatio = (double)parent.Height / (double)parent.Width;
-            this.printerCanvas.Dock = DockStyle.None;
-
-            if (pRatio > 8.5 / 11.0) {
-                this.printerCanvas.Width = parent.Width;
-                this.printerCanvas.Height = (int)((double)parent.Width * (8.5 / 11.0));
-                var top = (parent.Height - this.printerCanvas.Height) / 2;
-                this.printerCanvas.Location = new Point(0, top);
-            }
-            else {
-                this.printerCanvas.Height = parent.Height;
-                this.printerCanvas.Width = (int)((double)parent.Height * (11.0 / 8.5));
-                var left = (parent.Width - this.printerCanvas.Width) / 2;
-                this.printerCanvas.Location = new Point(left, 0);
-            }
+            this.printerCanvas.SetDims(11.0f, 8.5f);
         }
 
         private void menuPortaitClick(object sender, EventArgs e) {
-            var parent = this.printerCanvas.Parent;
-            double pRatio = (double)parent.Height / (double)parent.Width;
-            this.printerCanvas.Dock = DockStyle.None;
-
-            if (pRatio > 11.0 / 8.5) {
-                // pin to width
-                this.printerCanvas.Width = parent.Width;
-                this.printerCanvas.Height = (int)((double)parent.Width * (11.0 / 8.5));
-                var top = (parent.Height - this.printerCanvas.Height) / 2;
-                this.printerCanvas.Location = new Point(0, top);
-            }
-            else {
-                // pin to height
-                this.printerCanvas.Height = parent.Height;
-                this.printerCanvas.Width = (int)((double)parent.Height * (8.5 / 11.0));
-                var left = (parent.Width - this.printerCanvas.Width) / 2;
-                this.printerCanvas.Location = new Point(left, 0);
-            }
+            this.printerCanvas.SetDims(8.5f, 11.0f);
         }
 
-        private void menuFreeFormClick(object sender, EventArgs e) {            
-            this.printerCanvas.Dock = DockStyle.Fill;
-            Debug.WriteLine(this.printerCanvas.Width);
-            this.printerCanvas.scaleX = 1.0f;
-            this.printerCanvas.scaleY = 0.25f;
+        private void menuFreeFormClick(object sender, EventArgs e) {
+            this.printerCanvas.SetDims(10f, 10f);
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e) {
+            this.printerCanvas.Invalidate(true);
         }
     }
 }

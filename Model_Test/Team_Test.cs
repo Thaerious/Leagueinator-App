@@ -12,7 +12,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10); // lane, ends
-            
+
             league.TeamTable.AddRow(matchRow, 1);
         }
 

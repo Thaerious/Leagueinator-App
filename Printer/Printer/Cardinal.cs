@@ -1,5 +1,4 @@
 ﻿using Leagueinator.CSSParser;
-using Newtonsoft.Json.Linq;
 
 namespace Leagueinator.Printer {
     public class CardinalParseException : Exception {
@@ -12,7 +11,7 @@ namespace Leagueinator.Printer {
         }
     }
 
-    public class Cardinal<T> where T: new() {
+    public class Cardinal<T> where T : new() {
         public readonly T Left, Right, Top, Bottom;
 
         public Cardinal() {

@@ -1,16 +1,6 @@
-﻿using Leagueinator.Printer;
-using Model;
-using Model.Scoring.Plus;
-using Model.Tables;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
+﻿using Model;
 using System.Drawing.Printing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Printer_Dev_Form {
     internal class EventPrinter {
@@ -24,16 +14,16 @@ namespace Printer_Dev_Form {
             Assembly assembly = Assembly.GetExecutingAssembly();
 
             this.xmlLoader = new XMLLoader();
-            xmlLoader.LoadStyleResource(assembly, "Printer_Dev_Form.assets.style.css");
+            this.xmlLoader.LoadStyleResource(assembly, "Printer_Dev_Form.assets.style.css");
 
-            this.documentXML = xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.document.xml");
-            this.teamXML = xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.team.xml");
-            this.roundXML = xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.round.xml");
+            this.documentXML = this.xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.document.xml");
+            this.teamXML = this.xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.team.xml");
+            this.roundXML = this.xmlLoader.LoadXMLResource(assembly, "Printer_Dev_Form.assets.round.xml");
 
             //this.plusScore = new PlusScore(league);
 
             //Debug.WriteLine(plusScore.PrettyPrint());
-            ApplyData();
+            this.ApplyData();
         }
 
         void ApplyData() {

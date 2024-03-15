@@ -64,7 +64,7 @@ namespace Model.Tables {
                 this.Rows.Remove(row);
             }
         }
-        
+
         public IdleTable() : base("idle_players") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
@@ -85,7 +85,7 @@ namespace Model.Tables {
                             }
                         }
                     }
-                }               
+                }
             };
         }
 

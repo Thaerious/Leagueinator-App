@@ -1,7 +1,5 @@
-﻿namespace PrinterTestForm
-{
-    public static class WinFormsExt
-    {
+﻿namespace PrinterTestForm {
+    public static class WinFormsExt {
 
         public static Control? FindControlByName(this Control parent, string name) {
             foreach (Control child in parent.Controls) {

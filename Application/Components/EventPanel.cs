@@ -1,7 +1,5 @@
 ﻿using Leagueinator.Utility;
 using Model.Tables;
-using Newtonsoft.Json.Linq;
-using System.ComponentModel;
 using System.Data;
 
 namespace Leagueinator.Components {
@@ -96,7 +94,7 @@ namespace Leagueinator.Components {
 
             if (sender is RoundButton button) {
                 this.GetControls<RoundButton>().ToList().ForEach(b => b.BackColor = Color.White);
-                BackColor = Color.White;
+                this.BackColor = Color.White;
                 button.BackColor = Color.LightYellow;
             }
         }

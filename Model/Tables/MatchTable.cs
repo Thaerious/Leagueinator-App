@@ -1,7 +1,5 @@
-﻿using Leagueinator.Utility;
-using Model.Views;
+﻿using Model.Views;
 using System.Data;
-using System.Diagnostics;
 
 namespace Model.Tables {
 

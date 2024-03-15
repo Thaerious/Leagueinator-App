@@ -6,7 +6,7 @@ namespace Model.Tables {
             get => (League)this.DataSet!;
         }
 
-        public LeagueTable(string tableName) : base(tableName) {}
+        public LeagueTable(string tableName) : base(tableName) { }
 
         abstract public void BuildColumns();
     }

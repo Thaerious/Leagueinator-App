@@ -43,7 +43,7 @@ namespace Model.Tables {
             DataView dataView = new DataView(table) {
                 RowFilter = TableExtensions.BuildRowFilter(column, value)
             };
-            return dataView.Count > 0;            
+            return dataView.Count > 0;
         }
 
         public static bool Has<TYPE>(this DataView view, string column, TYPE value) {

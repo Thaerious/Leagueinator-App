@@ -1,11 +1,7 @@
-﻿using Leagueinator.PrinterComponents;
-using System.Windows.Forms;
-
-namespace Printer_Dev_Form
-{
+﻿namespace Printer_Dev_Form {
     public partial class Form1 : Form {
         public Form1() {
-            InitializeComponent();
+            this.InitializeComponent();
             this.printDocument.PrintPage += this.PrintPage;
             this.printPreviewDialog.Document = this.printDocument;
         }

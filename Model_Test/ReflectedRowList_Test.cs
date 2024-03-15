@@ -1,10 +1,5 @@
-﻿using Model.Tables;
-using Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Model;
+using Model.Tables;
 
 namespace Model_Test {
     [TestClass]
@@ -22,7 +17,7 @@ namespace Model_Test {
             league.PlayerTable.AddRow("Cain");
 
             teamRow.Members.Add("Adam");
-            teamRow.Members.Add("Eve"); 
+            teamRow.Members.Add("Eve");
             teamRow.Members.Add("Cain");
 
             // it's just it's own view now

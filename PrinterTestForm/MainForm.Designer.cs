@@ -28,9 +28,9 @@ namespace PrinterTestForm {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer = new SplitContainer();
             this.tableLayoutPanel1 = new TableLayoutPanel();
-            this.canvasPanel = new Panel();
             this.printerCanvas = new PrinterCanvas();
             this.pagePanel = new Panel();
+            this.lblTimer = new Label();
             this.lblPage = new Label();
             this.butNext = new Button();
             this.butPrev = new Button();
@@ -39,6 +39,7 @@ namespace PrinterTestForm {
             this.toolPrintXML = new ToolStripButton();
             this.toolStripButton1 = new ToolStripButton();
             this.toolStripButton2 = new ToolStripButton();
+            this.toolStripButton3 = new ToolStripButton();
             this.tabSource = new TabControl();
             this.tabXML = new TabPage();
             this.txtXML = new TextBox();
@@ -55,7 +56,6 @@ namespace PrinterTestForm {
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.canvasPanel.SuspendLayout();
             this.pagePanel.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.tabSource.SuspendLayout();
@@ -86,7 +86,7 @@ namespace PrinterTestForm {
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.canvasPanel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.printerCanvas, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.pagePanel, 0, 1);
             this.tableLayoutPanel1.Dock = DockStyle.Fill;
             this.tableLayoutPanel1.Location = new Point(0, 34);
@@ -98,31 +98,24 @@ namespace PrinterTestForm {
             this.tableLayoutPanel1.Size = new Size(843, 830);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
-            // canvasPanel
-            // 
-            this.canvasPanel.Controls.Add(this.printerCanvas);
-            this.canvasPanel.Dock = DockStyle.Fill;
-            this.canvasPanel.Location = new Point(3, 3);
-            this.canvasPanel.Name = "canvasPanel";
-            this.canvasPanel.Size = new Size(837, 744);
-            this.canvasPanel.TabIndex = 1;
-            // 
             // printerCanvas
             // 
             this.printerCanvas.Dock = DockStyle.Fill;
             this.printerCanvas.GridSize = 100;
+            this.printerCanvas.InnerBorder = BorderStyle.FixedSingle;
             this.printerCanvas.Location = new Point(0, 0);
             this.printerCanvas.Margin = new Padding(0);
             this.printerCanvas.Name = "printerCanvas";
             this.printerCanvas.Page = 0;
             this.printerCanvas.RootElement = null;
-            this.printerCanvas.Size = new Size(837, 744);
+            this.printerCanvas.Size = new Size(843, 750);
             this.printerCanvas.SubGridSize = 25;
             this.printerCanvas.TabIndex = 1;
             this.printerCanvas.ToBack = false;
             // 
             // pagePanel
             // 
+            this.pagePanel.Controls.Add(this.lblTimer);
             this.pagePanel.Controls.Add(this.lblPage);
             this.pagePanel.Controls.Add(this.butNext);
             this.pagePanel.Controls.Add(this.butPrev);
@@ -131,6 +124,15 @@ namespace PrinterTestForm {
             this.pagePanel.Name = "pagePanel";
             this.pagePanel.Size = new Size(837, 54);
             this.pagePanel.TabIndex = 1;
+            // 
+            // lblTimer
+            // 
+            this.lblTimer.AutoSize = true;
+            this.lblTimer.Location = new Point(699, 16);
+            this.lblTimer.Name = "lblTimer";
+            this.lblTimer.Size = new Size(51, 25);
+            this.lblTimer.TabIndex = 3;
+            this.lblTimer.Text = "0 ms";
             // 
             // lblPage
             // 
@@ -164,7 +166,7 @@ namespace PrinterTestForm {
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new Size(24, 24);
-            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolPrintXML, this.toolStripButton1, this.toolStripButton2 });
+            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolPrintXML, this.toolStripButton1, this.toolStripButton2, this.toolStripButton3 });
             this.toolStrip1.Location = new Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new Size(843, 34);
@@ -210,6 +212,16 @@ namespace PrinterTestForm {
             this.toolStripButton2.Size = new Size(83, 29);
             this.toolStripButton2.Text = "Loc XML";
             this.toolStripButton2.Click += this.ToolPrintLocXML;
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            this.toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
+            this.toolStripButton3.ImageTransparentColor = Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new Size(92, 29);
+            this.toolStripButton3.Text = "Invalidate";
+            this.toolStripButton3.Click += this.toolStripButton3_Click;
             // 
             // tabSource
             // 
@@ -312,7 +324,7 @@ namespace PrinterTestForm {
             // 
             this.freeFormToolStripMenuItem.Name = "freeFormToolStripMenuItem";
             this.freeFormToolStripMenuItem.Size = new Size(197, 34);
-            this.freeFormToolStripMenuItem.Text = "FreeForm";
+            this.freeFormToolStripMenuItem.Text = "Square";
             this.freeFormToolStripMenuItem.Click += this.menuFreeFormClick;
             // 
             // MainForm
@@ -331,7 +343,6 @@ namespace PrinterTestForm {
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.canvasPanel.ResumeLayout(false);
             this.pagePanel.ResumeLayout(false);
             this.pagePanel.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -372,6 +383,7 @@ namespace PrinterTestForm {
         private ToolStripMenuItem landscapeToolStripMenuItem;
         private ToolStripMenuItem portaitToolStripMenuItem;
         private ToolStripMenuItem freeFormToolStripMenuItem;
-        private Panel canvasPanel;
+        private ToolStripButton toolStripButton3;
+        private Label lblTimer;
     }
 }

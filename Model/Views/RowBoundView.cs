@@ -24,14 +24,14 @@ namespace Model.Views {
         public RowBoundView(LeagueTable<R> childTable, string[] fkCol, object[] fkVal)
             : this(childTable, fkCol.Select(colName => childTable.Columns[colName]!).ToArray(), fkVal) { }
 
-        public RowBoundView(LeagueTable<R> childTable, string fkCol, object fkVal) 
+        public RowBoundView(LeagueTable<R> childTable, string fkCol, object fkVal)
             : this(childTable, [fkCol], [fkVal]) { }
 
-        public RowBoundView(LeagueTable<R> childTable, DataColumn fkCol, object fkVal) 
-            : this(childTable, [fkCol], [fkVal]) {}
+        public RowBoundView(LeagueTable<R> childTable, DataColumn fkCol, object fkVal)
+            : this(childTable, [fkCol], [fkVal]) { }
 
         public RowBoundView(LeagueTable<R> childTable, DataColumn[] fkCol, object[] fkVal) : base(childTable) {
-            this.RowFilter = TableExtensions.BuildRowFilter(fkCol, fkVal);            
+            this.RowFilter = TableExtensions.BuildRowFilter(fkCol, fkVal);
             this.ForeignKeyColumn = fkCol;
             this.ForeignKeyValue = fkVal;
         }

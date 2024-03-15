@@ -30,9 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="MockModel.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="MockModel.cs" />
   </ItemGroup>
 
 </Project>

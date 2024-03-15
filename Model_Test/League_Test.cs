@@ -1,7 +1,6 @@
 ﻿using Model;
 using Model.Tables;
 using System.Data;
-using System.Diagnostics;
 
 namespace Model_Test {
     [TestClass]
@@ -10,7 +9,7 @@ namespace Model_Test {
         [TestMethod]
         public void Sanity() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");     
+            EventRow eventRow = league.EventTable.AddRow("my_event");
             Assert.IsNotNull(eventRow);
         }
 

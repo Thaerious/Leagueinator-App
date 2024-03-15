@@ -102,7 +102,7 @@ namespace Model.Tables {
 
             this.Constraints.Add(new UniqueConstraint(
                 [
-                    this.Columns[COL.MATCH]!, 
+                    this.Columns[COL.MATCH]!,
                     this.Columns[COL.PLAYER]!
                 ]
                 , true

@@ -22,7 +22,7 @@ namespace Model.Tables {
         public PlayerRow AddRow(string name) {
             var row = this.NewRow();
             row[COL.NAME] = name;
-            this.Rows.Add(row); 
+            this.Rows.Add(row);
             return new(row);
         }
 

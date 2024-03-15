@@ -57,7 +57,7 @@ namespace Model.Views {
             set => this.Set(key, value);
         }
 
-        private string Get(string key) {
+        private string? Get(string key) {
             if (!this.HasKey(key)) return default;
 
             return (string)this.view

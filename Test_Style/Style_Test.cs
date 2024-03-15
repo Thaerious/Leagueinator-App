@@ -1,7 +1,7 @@
-﻿using System.Drawing;
-using System.Reflection;
-using Leagueinator.CSSParser;
+﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
+using System.Drawing;
+using System.Reflection;
 
 namespace Test_Style {
     [TestClass]
@@ -24,7 +24,7 @@ namespace Test_Style {
         [TestMethod]
         public void Sanity() {
             LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Assert.IsNotNull(styles);   
+            Assert.IsNotNull(styles);
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace Test_Style {
         public void WildCard_Background_Color() {
             LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
             Console.WriteLine(styles["*"]);
-            Assert.AreEqual(System.Drawing.Color.WhiteSmoke,  styles["*"].BackgroundColor);
+            Assert.AreEqual(System.Drawing.Color.WhiteSmoke, styles["*"].BackgroundColor);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Test_Style {
         [TestMethod]
         public void Apply_Styles_WildCard_Only() {
             LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
+            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
             styles.ApplyTo(xml);
 
             Console.WriteLine(styles["*"]);
@@ -73,7 +73,7 @@ namespace Test_Style {
         [TestMethod]
         public void Inherited_Default_Value() {
             LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
+            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
             styles.ApplyTo(xml);
 
             Console.WriteLine(xml.Style);
@@ -87,7 +87,7 @@ namespace Test_Style {
         [TestMethod]
         public void Inherited_Value() {
             LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
+            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
 
             styles.ApplyTo(xml);
 
@@ -104,7 +104,7 @@ namespace Test_Style {
         [TestMethod]
         public void Width_Height() {
             LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
+            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
 
             styles.ApplyTo(xml);
             Console.WriteLine(xml[".child"][0].Style);

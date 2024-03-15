@@ -1,24 +1,37 @@
 ﻿using Leagueinator.Printer;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Leagueinator.PrinterComponents {
 
-    [DesignerCategory("")]
-    public class PrinterCanvas : Panel {
-        private Panel inner = new Panel();
+    class InnerCanvas : Panel {
 
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer? components = null;
-
-        public int Page { get; set; } = 0;
+        public InnerCanvas(PrinterCanvas outer) {
+            this.outer = outer;
+            this.DoubleBuffered = true;
+        }
 
         public float dimX = 8.5f, dimY = 11f;
         public int dpi = 100;
-        public float scaleX = 1.0f, scaleY = 1.0f;
+
+        [Category("Inner")]
+        public int GridSize { get; set; } = 0;
+
+        [Category("Inner")]
+        public int SubGridSize { get; set; } = 0;
+
+        [Category("Inner")]
+        public bool ToBack { get; set; } = false;
+
+        public SizeF GridScale {
+            get; set;
+        } = new(1f, 1f);
+
+        public int Page { get; set; } = 0;
 
         private Element? _rootElement = null;
+        private PrinterCanvas outer;
+
         public Element? RootElement {
             get => this._rootElement;
             set {
@@ -28,37 +41,24 @@ namespace Leagueinator.PrinterComponents {
             }
         }
 
-        [Category("Grid")]
-        public int GridSize { get; set; } = 0;
-
-        [Category("Grid")]
-        public int SubGridSize { get; set; } = 0;
-
-
-        [Category("Grid")]
-        public bool ToBack { get; set; } = false;
-
-
-        public PrinterCanvas() {
-            this.InitializeComponent();
-        }
-
-        protected override void OnResize(EventArgs e) {
-            base.OnResize(e);
-
-            if (this.RootElement != null) {
-                this.RootElement.Style.DoLayout(this.RootElement);
-            }
-        }
+        public TimeSpan RepaintTime { get; private set; }
 
         protected override void OnPaint(PaintEventArgs e) {
-            base.OnPaint(e);
+            var stopwatch = new Stopwatch();
 
-            e.Graphics.ScaleTransform(this.scaleX, this.scaleY);
+            base.OnPaint(e);
+            e.Graphics.Clear(Color.White);
+            e.Graphics.ScaleTransform(this.GridScale.Width, this.GridScale.Height);
 
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
+
+            stopwatch.Start();           
             this.RootElement?.Style.Draw(e.Graphics, this.RootElement, this.Page);
+            stopwatch.Stop();
+
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);
+
+            this.outer.InvokeRepaintTimer(stopwatch.Elapsed.TotalMilliseconds);
         }
 
         private void DrawGrids(Graphics g) {
@@ -73,18 +73,142 @@ namespace Leagueinator.PrinterComponents {
             }
         }
 
-        private void DrawGrid(Graphics g, Pen pen, int size) {
-            for (int x = 0; x < this.Width; x += size) {
+        private void DrawGrid(Graphics g, Pen pen, int size) {         
+            var top = (int)(this.dimY * this.dpi);
+            var right = (int)(this.dimX * this.dpi);
+
+            for (int x = 0; x < this.dimX * this.dpi; x += size) {
                 var p1 = new Point(x, 0);
-                var p2 = new Point(x, this.Height);
+                var p2 = new Point(x, top);
                 g.DrawLine(pen, p1, p2);
             }
-            for (int y = 0; y < this.Height; y += size) {
+            for (int y = 0; y < this.dimY * this.dpi; y += size) {
                 var p1 = new Point(0, y);
-                var p2 = new Point(this.Width, y);
+                var p2 = new Point(right, y);
                 g.DrawLine(pen, p1, p2);
             }
         }
+    }
+
+    [DesignerCategory("")]
+    public class PrinterCanvas : Panel {
+        public delegate void RepaintTimer(double ms);
+        public event RepaintTimer OnRepaintTime = delegate { };
+
+        private InnerCanvas inner;
+
+        public PrinterCanvas() {
+            this.inner = new InnerCanvas(this);
+            this.Controls.Add(this.inner);
+            this.DoubleBuffered = true;
+        }
+
+        internal void InvokeRepaintTimer(double ms) {
+            this.OnRepaintTime.Invoke(ms);
+        }
+
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer? components = null;
+
+        private void ResetDims() {
+            this.SetDims(this.inner.dimX, this.inner.dimY, this.inner.dpi);
+        }
+
+        public void SetDims(float x, float y, int dpi = 100) {
+            this.inner.Dock = DockStyle.None;
+            this.inner.dimX = x;
+            this.inner.dimY = y;
+            this.inner.dpi = dpi;
+
+            if (this.FitWidth().Height <= this.Height) {
+                this.PinWidth();
+            }
+            else {
+                this.PinHeight();
+            }
+
+            var scalex = this.inner.Width / this.inner.dimX / this.inner.dpi;
+            var scaley = this.inner.Height / this.inner.dimY / this.inner.dpi;
+            this.inner.GridScale = new(scalex, scaley);
+
+            this.Invalidate(true);
+        }
+
+        private SizeF FitWidth() {
+            return new(
+                this.Width,
+                (int)((this.Width / this.inner.dimX) * this.inner.dimY)
+            );
+        }
+
+        /// <summary>
+        /// Make the inner width the same as the outer (this) width.
+        /// </summary>
+        private void PinWidth() {
+            this.inner.Width = this.Width;
+            this.inner.Height = (int)((this.Width / this.inner.dimX) * this.inner.dimY);
+            var top = (this.Height - this.inner.Height) / 2;
+            this.inner.Location = new Point(0, top);
+        }
+
+        /// <summary>
+        /// Make the inner height the same as the outer (this) height.
+        /// </summary>
+        private void PinHeight() {
+            this.inner.Height = this.Height;
+            this.inner.Width = (int)((double)this.Height * (this.inner.dimX / this.inner.dimY));
+            var left = (this.Width - this.inner.Width) / 2;
+            this.inner.Location = new Point(left, 0);
+        }
+
+        [Category("Inner")]
+        public int GridSize {
+            get => this.inner.GridSize;
+            set => this.inner.GridSize = value;
+        }
+
+        [Category("Inner")]
+        public int SubGridSize {
+            get => this.inner.SubGridSize;
+            set => this.inner.SubGridSize = value;
+        }
+
+
+        [Category("Inner")]
+        public bool ToBack {
+            get => this.inner.ToBack;
+            set => this.inner.ToBack = value;
+        }
+
+        [Category("Inner")]
+        public BorderStyle InnerBorder {
+            get => this.inner.BorderStyle;
+            set => this.inner.BorderStyle = value;
+        }
+
+
+        public int Page {
+            get => this.inner.Page;
+            set => this.inner.Page = value;
+        }
+
+        public Element? RootElement {
+            get => this.inner.RootElement;
+            set => this.inner.RootElement = value;
+        }
+        public TimeSpan RepaintTime { get => this.inner.RepaintTime; }
+
+        protected override void OnResize(EventArgs e) {
+            base.OnResize(e);
+            this.ResetDims();
+
+            if (this.RootElement != null) {
+                this.RootElement.Style.DoLayout(this.RootElement);
+            }
+        }
+
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -95,15 +219,6 @@ namespace Leagueinator.PrinterComponents {
                 this.components.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
         }
     }
 }
