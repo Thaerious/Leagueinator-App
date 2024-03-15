@@ -105,7 +105,6 @@ namespace Leagueinator.Components {
         private MatchRow? _matchRow;
 
         private void TxtEndsChangedHnd(object sender, EventArgs e) {
-            Console.WriteLine(this.txtEnds.Text);
             int ends = int.Parse(this.txtEnds.Text);
             if (this.MatchRow is null) return;
             if (ends > 0) this.MatchRow.Ends = ends;

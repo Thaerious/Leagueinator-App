@@ -116,5 +116,52 @@ namespace PrinterTestForm
             this.printerCanvas.Page = page;
             this.printerCanvas.Invalidate();
         }
+
+        private void menuLandscapeClick(object sender, EventArgs e) {
+            var parent = this.printerCanvas.Parent;
+            double pRatio = (double)parent.Height / (double)parent.Width;
+            this.printerCanvas.Dock = DockStyle.None;
+
+            if (pRatio > 8.5 / 11.0) {
+                this.printerCanvas.Width = parent.Width;
+                this.printerCanvas.Height = (int)((double)parent.Width * (8.5 / 11.0));
+                var top = (parent.Height - this.printerCanvas.Height) / 2;
+                this.printerCanvas.Location = new Point(0, top);
+            }
+            else {
+                this.printerCanvas.Height = parent.Height;
+                this.printerCanvas.Width = (int)((double)parent.Height * (11.0 / 8.5));
+                var left = (parent.Width - this.printerCanvas.Width) / 2;
+                this.printerCanvas.Location = new Point(left, 0);
+            }
+        }
+
+        private void menuPortaitClick(object sender, EventArgs e) {
+            var parent = this.printerCanvas.Parent;
+            double pRatio = (double)parent.Height / (double)parent.Width;
+            this.printerCanvas.Dock = DockStyle.None;
+
+            if (pRatio > 11.0 / 8.5) {
+                // pin to width
+                this.printerCanvas.Width = parent.Width;
+                this.printerCanvas.Height = (int)((double)parent.Width * (11.0 / 8.5));
+                var top = (parent.Height - this.printerCanvas.Height) / 2;
+                this.printerCanvas.Location = new Point(0, top);
+            }
+            else {
+                // pin to height
+                this.printerCanvas.Height = parent.Height;
+                this.printerCanvas.Width = (int)((double)parent.Height * (8.5 / 11.0));
+                var left = (parent.Width - this.printerCanvas.Width) / 2;
+                this.printerCanvas.Location = new Point(left, 0);
+            }
+        }
+
+        private void menuFreeFormClick(object sender, EventArgs e) {            
+            this.printerCanvas.Dock = DockStyle.Fill;
+            Debug.WriteLine(this.printerCanvas.Width);
+            this.printerCanvas.scaleX = 1.0f;
+            this.printerCanvas.scaleY = 0.25f;
+        }
     }
 }

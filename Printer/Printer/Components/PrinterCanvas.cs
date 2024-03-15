@@ -4,13 +4,19 @@ using System.ComponentModel;
 namespace Leagueinator.PrinterComponents {
 
     [DesignerCategory("")]
-    public class PrinterCanvas : UserControl {
+    public class PrinterCanvas : Panel {
+        private Panel inner = new Panel();
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer? components = null;
 
         public int Page { get; set; } = 0;
+
+        public float dimX = 8.5f, dimY = 11f;
+        public int dpi = 100;
+        public float scaleX = 1.0f, scaleY = 1.0f;
 
         private Element? _rootElement = null;
         public Element? RootElement {
@@ -47,6 +53,9 @@ namespace Leagueinator.PrinterComponents {
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
+
+            e.Graphics.ScaleTransform(this.scaleX, this.scaleY);
+
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
             this.RootElement?.Style.Draw(e.Graphics, this.RootElement, this.Page);
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);

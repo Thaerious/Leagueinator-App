@@ -45,7 +45,6 @@ namespace Leagueinator.Components {
             }
         }
 
-        [Category("Custom Properties")]
         public EventRow? EventRow {
             get => this._eventRow;
             set => this.SetEvent(value);
@@ -81,7 +80,6 @@ namespace Leagueinator.Components {
         }
 
         private void RoundButtonClick(object? sender, EventArgs? _) {
-            Console.WriteLine("Round Button Click");
             RoundRow roundRow = (sender as RoundButton)!.Round;
 
             this.currentRound = roundRow;

@@ -1,5 +1,5 @@
 ﻿namespace Leagueinator.Components {
-    partial class FormMain : Form{
+    partial class FormMain : Form {
         /// <summary>
         ///  Required designer variable.
         /// </summary>
@@ -26,16 +26,19 @@
             this.eventPanel = new EventPanel();
             this.menuStrip1 = new MenuStrip();
             this.viewTableToolStripMenuItem = new ToolStripMenuItem();
-            this.eventsToolStripMenuItem = new ToolStripMenuItem();
-            this.roundsToolStripMenuItem = new ToolStripMenuItem();
+            this.dataTableToolStripMenuItem = new ToolStripMenuItem();
             this.matchesToolStripMenuItem = new ToolStripMenuItem();
             this.teamsToolStripMenuItem = new ToolStripMenuItem();
             this.membersToolStripMenuItem = new ToolStripMenuItem();
             this.idleToolStripMenuItem = new ToolStripMenuItem();
             this.playersToolStripMenuItem = new ToolStripMenuItem();
             this.settingsToolStripMenuItem = new ToolStripMenuItem();
+            this.eventsToolStripMenuItem = new ToolStripMenuItem();
+            this.roundsToolStripMenuItem = new ToolStripMenuItem();
             this.debugToolStripMenuItem = new ToolStripMenuItem();
             this.matchTableToolStripMenuItem = new ToolStripMenuItem();
+            this.resultsToolStripMenuItem = new ToolStripMenuItem();
+            this.eventToolStripMenuItem = new ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,7 +46,7 @@
             // 
             this.eventPanel.Dock = DockStyle.Fill;
             this.eventPanel.Location = new Point(0, 33);
-            this.eventPanel.Name = "eventPanel1";
+            this.eventPanel.Name = "eventPanel";
             this.eventPanel.Size = new Size(1896, 762);
             this.eventPanel.TabIndex = 0;
             // 
@@ -59,24 +62,17 @@
             // 
             // viewTableToolStripMenuItem
             // 
-            this.viewTableToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.eventsToolStripMenuItem, this.roundsToolStripMenuItem, this.matchesToolStripMenuItem, this.teamsToolStripMenuItem, this.membersToolStripMenuItem, this.idleToolStripMenuItem, this.playersToolStripMenuItem, this.settingsToolStripMenuItem });
+            this.viewTableToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.dataTableToolStripMenuItem, this.resultsToolStripMenuItem });
             this.viewTableToolStripMenuItem.Name = "viewTableToolStripMenuItem";
-            this.viewTableToolStripMenuItem.Size = new Size(110, 29);
-            this.viewTableToolStripMenuItem.Text = "View Table";
+            this.viewTableToolStripMenuItem.Size = new Size(65, 29);
+            this.viewTableToolStripMenuItem.Text = "View";
             // 
-            // eventsToolStripMenuItem
+            // dataTableToolStripMenuItem
             // 
-            this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
-            this.eventsToolStripMenuItem.Size = new Size(189, 34);
-            this.eventsToolStripMenuItem.Text = "Events";
-            this.eventsToolStripMenuItem.Click += this.HndMenuViewEvents;
-            // 
-            // roundsToolStripMenuItem
-            // 
-            this.roundsToolStripMenuItem.Name = "roundsToolStripMenuItem";
-            this.roundsToolStripMenuItem.Size = new Size(189, 34);
-            this.roundsToolStripMenuItem.Text = "Rounds";
-            this.roundsToolStripMenuItem.Click += this.HndMenuViewRounds;
+            this.dataTableToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.matchesToolStripMenuItem, this.teamsToolStripMenuItem, this.membersToolStripMenuItem, this.idleToolStripMenuItem, this.playersToolStripMenuItem, this.settingsToolStripMenuItem, this.eventsToolStripMenuItem, this.roundsToolStripMenuItem });
+            this.dataTableToolStripMenuItem.Name = "dataTableToolStripMenuItem";
+            this.dataTableToolStripMenuItem.Size = new Size(270, 34);
+            this.dataTableToolStripMenuItem.Text = "Data-Table";
             // 
             // matchesToolStripMenuItem
             // 
@@ -120,6 +116,20 @@
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += this.HndMenuViewSettings;
             // 
+            // eventsToolStripMenuItem
+            // 
+            this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
+            this.eventsToolStripMenuItem.Size = new Size(189, 34);
+            this.eventsToolStripMenuItem.Text = "Events";
+            this.eventsToolStripMenuItem.Click += this.HndMenuViewEvents;
+            // 
+            // roundsToolStripMenuItem
+            // 
+            this.roundsToolStripMenuItem.Name = "roundsToolStripMenuItem";
+            this.roundsToolStripMenuItem.Size = new Size(189, 34);
+            this.roundsToolStripMenuItem.Text = "Rounds";
+            this.roundsToolStripMenuItem.Click += this.HndMenuViewRounds;
+            // 
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.matchTableToolStripMenuItem });
@@ -133,6 +143,19 @@
             this.matchTableToolStripMenuItem.Size = new Size(203, 34);
             this.matchTableToolStripMenuItem.Text = "MatchTable";
             this.matchTableToolStripMenuItem.Click += this.HndMenuViewMatches;
+            // 
+            // resultsToolStripMenuItem
+            // 
+            this.resultsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.eventToolStripMenuItem });
+            this.resultsToolStripMenuItem.Name = "resultsToolStripMenuItem";
+            this.resultsToolStripMenuItem.Size = new Size(270, 34);
+            this.resultsToolStripMenuItem.Text = "Results";
+            // 
+            // eventToolStripMenuItem
+            // 
+            this.eventToolStripMenuItem.Name = "eventToolStripMenuItem";
+            this.eventToolStripMenuItem.Size = new Size(270, 34);
+            this.eventToolStripMenuItem.Text = "Event";
             // 
             // FormMain
             // 
@@ -165,5 +188,8 @@
         private ToolStripMenuItem matchesToolStripMenuItem;
         private ToolStripMenuItem idleToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
+        private ToolStripMenuItem dataTableToolStripMenuItem;
+        private ToolStripMenuItem resultsToolStripMenuItem;
+        private ToolStripMenuItem eventToolStripMenuItem;
     }
 }
