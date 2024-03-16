@@ -28,18 +28,6 @@ namespace Leagueinator.CSSParser {
             this.currentStyles.Clear();
         }
 
-        private void SetStyleField(FieldInfo field, object? newObject) {
-            foreach (var style in this.currentStyles) {
-                field.SetValue(style, newObject);
-            }
-        }
-
-        private void SetStyleProperty(PropertyInfo prop, object? newObject) {
-            foreach (var style in this.currentStyles) {
-                prop.SetValue(style, newObject);
-            }
-        }
-
         public override void EnterProperty([NotNull] StyleParser.PropertyContext context) {
             var key = context.children[0].GetText().ToFlatCase();
             var val = context.children[2].GetText().Trim();
@@ -62,6 +50,9 @@ namespace Leagueinator.CSSParser {
                     foreach (var style in this.currentStyles) {
                         css.TryParse(style, val, prop);
                     }
+                }
+                else {
+                    throw new Exception($"Unknown proptery {key}");
                 }
             }
             catch (TargetInvocationException ex) {

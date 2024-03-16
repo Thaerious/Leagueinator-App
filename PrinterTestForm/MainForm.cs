@@ -1,6 +1,8 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
+using Leagueinator.PrinterComponents;
 using System.Diagnostics;
+using System.Drawing.Printing;
 
 namespace PrinterTestForm {
     public partial class MainForm : Form {
@@ -17,7 +19,7 @@ namespace PrinterTestForm {
             var menuItem = new ToolStripMenuItem {
                 ShortcutKeys = Keys.Control | Keys.S // Set your desired shortcut key
             };
-            menuItem.Click += new EventHandler(this.ToolRefresh_Click); // Link to button's event handler
+            menuItem.Click += new EventHandler(this.ToolLayoutClick); // Link to button's event handler
             menuItem.Visible = false; // Hide the menu item if not needed in a menu
             this.toolStrip1.Items.Add(menuItem);
 
@@ -37,10 +39,10 @@ namespace PrinterTestForm {
                 this.txtStyle.Text = File.ReadAllText(this.stylePath);
             }
 
-            this.ToolRefresh_Click(this, new EventArgs());
+            this.ToolLayoutClick(this, new EventArgs());
         }
 
-        private void ToolRefresh_Click(object _, EventArgs __) {
+        private void ToolLayoutClick(object _, EventArgs __) {
             try {
                 string xmlString = this.txtXML.Text;
                 string styleString = this.txtStyle.Text;
@@ -133,6 +135,57 @@ namespace PrinterTestForm {
 
         private void toolStripButton3_Click(object sender, EventArgs e) {
             this.printerCanvas.Invalidate(true);
+        }
+
+        private void menuLoadClick(object sender, EventArgs e) {
+            using (OpenFileDialog dialog = new OpenFileDialog()) {
+                dialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                dialog.Title = "Load Layout and Style";
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    this.txtXML.Text = File.ReadAllText(dialog.FileName);
+                    this.txtStyle.Text = File.ReadAllText(dialog.FileName + ".style");
+                    this.ToolLayoutClick(null, null);
+                }
+            }
+        }
+
+        private void menuSaveClick(object sender, EventArgs e) {
+
+            using (SaveFileDialog dialog = new SaveFileDialog()) {
+                dialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+                dialog.Title = "Save Layout and Style";
+
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    File.WriteAllText(dialog.FileName, this.txtXML.Text);
+                    File.WriteAllText(dialog.FileName + ".style", this.txtStyle.Text);
+                }
+            }
+        }
+
+        private void menuPrintClick(object sender, EventArgs e) {
+            if (this.printerCanvas.RootElement == null) return;
+
+            using (PrintDialog dialog = new PrintDialog()) {
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    PrintDocument printDocument = new PrintDocument();
+                    dialog.Document = new ElementPrintHandler(this.printerCanvas.RootElement);
+
+                    printDocument.Print();
+                }
+            }
+        }
+
+        private void menuPreviewClick(object sender, EventArgs e) {
+            if (this.printerCanvas.RootElement == null) return;
+
+            using (PrintPreviewDialog dialog = new PrintPreviewDialog()) {
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    PrintDocument printDocument = new PrintDocument();
+                    dialog.Document = new ElementPrintHandler(this.printerCanvas.RootElement);
+
+                    printDocument.Print();
+                }
+            }
         }
     }
 }

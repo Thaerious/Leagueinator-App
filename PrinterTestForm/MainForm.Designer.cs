@@ -36,9 +36,6 @@ namespace PrinterTestForm {
             this.butPrev = new Button();
             this.toolStrip1 = new ToolStrip();
             this.toolRefresh = new ToolStripButton();
-            this.toolPrintXML = new ToolStripButton();
-            this.toolStripButton1 = new ToolStripButton();
-            this.toolStripButton2 = new ToolStripButton();
             this.toolStripButton3 = new ToolStripButton();
             this.tabSource = new TabControl();
             this.tabXML = new TabPage();
@@ -47,10 +44,14 @@ namespace PrinterTestForm {
             this.txtStyle = new TextBox();
             this.menuStrip1 = new MenuStrip();
             this.fileToolStripMenuItem = new ToolStripMenuItem();
+            this.loadXMLToolStripMenuItem = new ToolStripMenuItem();
+            this.saveToolStripMenuItem = new ToolStripMenuItem();
+            this.printToolStripMenuItem = new ToolStripMenuItem();
             this.viewToolStripMenuItem = new ToolStripMenuItem();
             this.landscapeToolStripMenuItem = new ToolStripMenuItem();
             this.portaitToolStripMenuItem = new ToolStripMenuItem();
             this.freeFormToolStripMenuItem = new ToolStripMenuItem();
+            this.printPreviewToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -166,7 +167,7 @@ namespace PrinterTestForm {
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new Size(24, 24);
-            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolPrintXML, this.toolStripButton1, this.toolStripButton2, this.toolStripButton3 });
+            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolStripButton3 });
             this.toolStrip1.Location = new Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new Size(843, 34);
@@ -179,39 +180,9 @@ namespace PrinterTestForm {
             this.toolRefresh.Image = (Image)resources.GetObject("toolRefresh.Image");
             this.toolRefresh.ImageTransparentColor = Color.Magenta;
             this.toolRefresh.Name = "toolRefresh";
-            this.toolRefresh.Size = new Size(74, 29);
-            this.toolRefresh.Text = "Refresh";
-            this.toolRefresh.Click += this.ToolRefresh_Click;
-            // 
-            // toolPrintXML
-            // 
-            this.toolPrintXML.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            this.toolPrintXML.Image = (Image)resources.GetObject("toolPrintXML.Image");
-            this.toolPrintXML.ImageTransparentColor = Color.Magenta;
-            this.toolPrintXML.Name = "toolPrintXML";
-            this.toolPrintXML.Size = new Size(92, 29);
-            this.toolPrintXML.Text = "Print XML";
-            this.toolPrintXML.Click += this.ToolPrintXML_Click;
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            this.toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
-            this.toolStripButton1.ImageTransparentColor = Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new Size(88, 29);
-            this.toolStripButton1.Text = "Print CSS";
-            this.toolStripButton1.Click += this.ToolPrintCSS_Click;
-            // 
-            // toolStripButton2
-            // 
-            this.toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            this.toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
-            this.toolStripButton2.ImageTransparentColor = Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new Size(83, 29);
-            this.toolStripButton2.Text = "Loc XML";
-            this.toolStripButton2.Click += this.ToolPrintLocXML;
+            this.toolRefresh.Size = new Size(98, 29);
+            this.toolRefresh.Text = "Do Layout";
+            this.toolRefresh.Click += this.ToolLayoutClick;
             // 
             // toolStripButton3
             // 
@@ -219,8 +190,8 @@ namespace PrinterTestForm {
             this.toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
             this.toolStripButton3.ImageTransparentColor = Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new Size(92, 29);
-            this.toolStripButton3.Text = "Invalidate";
+            this.toolStripButton3.Size = new Size(75, 29);
+            this.toolStripButton3.Text = "Repaint";
             this.toolStripButton3.Click += this.toolStripButton3_Click;
             // 
             // tabSource
@@ -295,9 +266,31 @@ namespace PrinterTestForm {
             // 
             // fileToolStripMenuItem
             // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadXMLToolStripMenuItem, this.saveToolStripMenuItem, this.printToolStripMenuItem, this.printPreviewToolStripMenuItem });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new Size(54, 29);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // loadXMLToolStripMenuItem
+            // 
+            this.loadXMLToolStripMenuItem.Name = "loadXMLToolStripMenuItem";
+            this.loadXMLToolStripMenuItem.Size = new Size(270, 34);
+            this.loadXMLToolStripMenuItem.Text = "Load";
+            this.loadXMLToolStripMenuItem.Click += this.menuLoadClick;
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new Size(270, 34);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += this.menuSaveClick;
+            // 
+            // printToolStripMenuItem
+            // 
+            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
+            this.printToolStripMenuItem.Size = new Size(270, 34);
+            this.printToolStripMenuItem.Text = "Print";
+            this.printToolStripMenuItem.Click += this.menuPrintClick;
             // 
             // viewToolStripMenuItem
             // 
@@ -326,6 +319,13 @@ namespace PrinterTestForm {
             this.freeFormToolStripMenuItem.Size = new Size(197, 34);
             this.freeFormToolStripMenuItem.Text = "Square";
             this.freeFormToolStripMenuItem.Click += this.menuFreeFormClick;
+            // 
+            // printPreviewToolStripMenuItem
+            // 
+            this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
+            this.printPreviewToolStripMenuItem.Size = new Size(270, 34);
+            this.printPreviewToolStripMenuItem.Text = "Print Preview";
+            this.printPreviewToolStripMenuItem.Click += this.menuPreviewClick;
             // 
             // MainForm
             // 
@@ -368,9 +368,6 @@ namespace PrinterTestForm {
         private PrinterCanvas printerCanvas;
         private TextBox txtXML;
         private TextBox txtStyle;
-        public ToolStripButton toolPrintXML;
-        private ToolStripButton toolStripButton1;
-        private ToolStripButton toolStripButton2;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel pagePanel;
         private Label lblPage;
@@ -385,5 +382,9 @@ namespace PrinterTestForm {
         private ToolStripMenuItem freeFormToolStripMenuItem;
         private ToolStripButton toolStripButton3;
         private Label lblTimer;
+        private ToolStripMenuItem loadXMLToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem printToolStripMenuItem;
+        private ToolStripMenuItem printPreviewToolStripMenuItem;
     }
 }

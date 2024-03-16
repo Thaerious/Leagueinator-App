@@ -1,4 +1,5 @@
 ﻿using Printer.Printer;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer {
@@ -23,7 +24,6 @@ namespace Leagueinator.Printer {
             float contentWidth = 0f, contentHeight = 0f;
 
             switch (this.Flex_Axis) {
-                case Enums.Flex_Axis.Default:
                 case Enums.Flex_Axis.Row:
                     contentWidth = this.Width ?? sumWidth;
                     contentHeight = this.Height ?? maxHeight;
@@ -118,13 +118,14 @@ namespace Leagueinator.Printer {
                    });
         }
 
-        public override void DoPos(Element element) {
+        public override int DoPos(Element element) {
             int pageCount = this.AssignPages(element);
             for (int page = 0; page < pageCount; page++) {
                 this.DoPosPage(element, page);
             }
             this.DoPosAbsolute(element);
             this.DoPosFixed(element);
+            return pageCount;
         }
 
         /// <summary>
@@ -137,7 +138,6 @@ namespace Leagueinator.Printer {
 
             switch (this.Justify_Content) {
                 default:
-                case Enums.Justify_Content.Default:
                 case Enums.Justify_Content.Flex_start: {
                         this.LayoutChildren(children, new PointF(0, 0));
                         break;
@@ -368,13 +368,15 @@ namespace Leagueinator.Printer {
         }
 
         private void AlignItems(Element element, List<Element> children) {
+            Debug.WriteLine("AlignItems");
             switch (this.Flex_Axis) {
                 case Enums.Flex_Axis.Row:
+                    Debug.WriteLine("AlignItems Row");
                     switch (this.Align_Items) {
-                        case Enums.Align_Items.Default:
                         case Enums.Align_Items.Flex_start:
                             break;
                         case Enums.Align_Items.Flex_end:
+                            Debug.WriteLine("AlignItems Row End");
                             children.ForEach(c => c.Translate(0, element.ContentRect.Height - c.OuterSize.Height));
                             break;
                         case Enums.Align_Items.Center:
@@ -384,7 +386,6 @@ namespace Leagueinator.Printer {
                     break;
                 case Enums.Flex_Axis.Column:
                     switch (this.Align_Items) {
-                        case Enums.Align_Items.Default:
                         case Enums.Align_Items.Flex_start:
                             break;
                         case Enums.Align_Items.Flex_end:

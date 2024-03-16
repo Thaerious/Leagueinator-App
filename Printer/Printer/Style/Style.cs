@@ -26,9 +26,9 @@ namespace Leagueinator.Printer {
         [CSS("Solid")] public Cardinal<DashStyle>? BorderStyle;
         [CSS] public string Border { set => this.SetBorder(value); }
 
-        [CSS("Default")] public Flex_Axis? Flex_Axis = null;
-        [CSS("Default")] public Justify_Content? Justify_Content = null;
-        [CSS("Default")] public Align_Items? Align_Items = null;
+        [CSS("Row")] public Flex_Axis? Flex_Axis = null;
+        [CSS("Flex_Start")] public Justify_Content? Justify_Content = null;
+        [CSS("Flex_Start")] public Align_Items? Align_Items = null;
         [CSS("Forward")] public Direction? Flex_Direction = null;
 
         [CSS][Inherited] public string? FontFamily = null;
@@ -57,21 +57,22 @@ namespace Leagueinator.Printer {
             this.Selector = selector;
         }
 
-        public virtual void DoLayout(Element element) {
+        public virtual int DoLayout(Element element) {
             this.DoSize(element);
-            this.DoPos(element);
+            int pageCount = this.DoPos(element);
             this.AssignInvokes(element);
+
+            return pageCount;
         }
 
         public virtual void DoSize(Element element) { }
-        public virtual void DoPos(Element element) { }
+        public virtual int DoPos(Element element) { return 0; }
         public virtual void AssignInvokes(Element element) { }
         public virtual void Draw(Graphics g, Element element, int page) { }
 
         public Enums.Direction Flex_Major_Direction {
             get {
                 switch (this.Flex_Axis) {
-                    case Enums.Flex_Axis.Default:
                     case Enums.Flex_Axis.Row:
                     case Enums.Flex_Axis.Column:
                         return Enums.Direction.Forward;
