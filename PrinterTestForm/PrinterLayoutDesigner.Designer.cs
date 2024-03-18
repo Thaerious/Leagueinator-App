@@ -1,7 +1,7 @@
 ﻿using Leagueinator.PrinterComponents;
 
 namespace PrinterTestForm {
-    partial class MainForm {
+    partial class PrinterLayoutDesigner {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,7 +25,6 @@ namespace PrinterTestForm {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer = new SplitContainer();
             this.tableLayoutPanel1 = new TableLayoutPanel();
             this.printerCanvas = new PrinterCanvas();
@@ -34,9 +33,6 @@ namespace PrinterTestForm {
             this.lblPage = new Label();
             this.butNext = new Button();
             this.butPrev = new Button();
-            this.toolStrip1 = new ToolStrip();
-            this.toolRefresh = new ToolStripButton();
-            this.toolStripButton3 = new ToolStripButton();
             this.tabSource = new TabControl();
             this.tabXML = new TabPage();
             this.txtXML = new TextBox();
@@ -45,20 +41,20 @@ namespace PrinterTestForm {
             this.menuStrip1 = new MenuStrip();
             this.fileToolStripMenuItem = new ToolStripMenuItem();
             this.loadXMLToolStripMenuItem = new ToolStripMenuItem();
+            this.saveToolStripMenuItem1 = new ToolStripMenuItem();
             this.saveToolStripMenuItem = new ToolStripMenuItem();
             this.printToolStripMenuItem = new ToolStripMenuItem();
-            this.viewToolStripMenuItem = new ToolStripMenuItem();
-            this.landscapeToolStripMenuItem = new ToolStripMenuItem();
-            this.portaitToolStripMenuItem = new ToolStripMenuItem();
-            this.freeFormToolStripMenuItem = new ToolStripMenuItem();
             this.printPreviewToolStripMenuItem = new ToolStripMenuItem();
+            this.actionsToolStripMenuItem = new ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new ToolStripMenuItem();
+            this.invalidateToolStripMenuItem = new ToolStripMenuItem();
+            this.newToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pagePanel.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             this.tabSource.SuspendLayout();
             this.tabXML.SuspendLayout();
             this.tabStyle.SuspendLayout();
@@ -74,7 +70,6 @@ namespace PrinterTestForm {
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.tableLayoutPanel1);
-            this.splitContainer.Panel1.Controls.Add(this.toolStrip1);
             // 
             // splitContainer.Panel2
             // 
@@ -90,13 +85,13 @@ namespace PrinterTestForm {
             this.tableLayoutPanel1.Controls.Add(this.printerCanvas, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.pagePanel, 0, 1);
             this.tableLayoutPanel1.Dock = DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new Point(0, 34);
+            this.tableLayoutPanel1.Location = new Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
             this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new Size(843, 830);
+            this.tableLayoutPanel1.Size = new Size(843, 864);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // printerCanvas
@@ -109,7 +104,7 @@ namespace PrinterTestForm {
             this.printerCanvas.Name = "printerCanvas";
             this.printerCanvas.Page = 0;
             this.printerCanvas.RootElement = null;
-            this.printerCanvas.Size = new Size(843, 750);
+            this.printerCanvas.Size = new Size(843, 784);
             this.printerCanvas.SubGridSize = 25;
             this.printerCanvas.TabIndex = 1;
             this.printerCanvas.ToBack = false;
@@ -121,7 +116,7 @@ namespace PrinterTestForm {
             this.pagePanel.Controls.Add(this.butNext);
             this.pagePanel.Controls.Add(this.butPrev);
             this.pagePanel.Dock = DockStyle.Fill;
-            this.pagePanel.Location = new Point(3, 753);
+            this.pagePanel.Location = new Point(3, 787);
             this.pagePanel.Name = "pagePanel";
             this.pagePanel.Size = new Size(837, 54);
             this.pagePanel.TabIndex = 1;
@@ -152,7 +147,7 @@ namespace PrinterTestForm {
             this.butNext.TabIndex = 1;
             this.butNext.Text = "Next Page";
             this.butNext.UseVisualStyleBackColor = true;
-            this.butNext.Click += this.butNextClick;
+            this.butNext.Click += this.ButNextClick;
             // 
             // butPrev
             // 
@@ -162,37 +157,7 @@ namespace PrinterTestForm {
             this.butPrev.TabIndex = 0;
             this.butPrev.Text = "Prev Page";
             this.butPrev.UseVisualStyleBackColor = true;
-            this.butPrev.Click += this.butPrevClick;
-            // 
-            // toolStrip1
-            // 
-            this.toolStrip1.ImageScalingSize = new Size(24, 24);
-            this.toolStrip1.Items.AddRange(new ToolStripItem[] { this.toolRefresh, this.toolStripButton3 });
-            this.toolStrip1.Location = new Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new Size(843, 34);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
-            // 
-            // toolRefresh
-            // 
-            this.toolRefresh.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            this.toolRefresh.Image = (Image)resources.GetObject("toolRefresh.Image");
-            this.toolRefresh.ImageTransparentColor = Color.Magenta;
-            this.toolRefresh.Name = "toolRefresh";
-            this.toolRefresh.Size = new Size(98, 29);
-            this.toolRefresh.Text = "Do Layout";
-            this.toolRefresh.Click += this.ToolLayoutClick;
-            // 
-            // toolStripButton3
-            // 
-            this.toolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            this.toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
-            this.toolStripButton3.ImageTransparentColor = Color.Magenta;
-            this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new Size(75, 29);
-            this.toolStripButton3.Text = "Repaint";
-            this.toolStripButton3.Click += this.toolStripButton3_Click;
+            this.butPrev.Click += this.ButPrevClick;
             // 
             // tabSource
             // 
@@ -227,7 +192,6 @@ namespace PrinterTestForm {
             this.txtXML.ScrollBars = ScrollBars.Both;
             this.txtXML.Size = new Size(872, 820);
             this.txtXML.TabIndex = 0;
-            this.txtXML.Text = "<document></document>";
             this.txtXML.KeyPress += this.TXT_KeyPress;
             // 
             // tabStyle
@@ -257,7 +221,7 @@ namespace PrinterTestForm {
             // menuStrip1
             // 
             this.menuStrip1.ImageScalingSize = new Size(24, 24);
-            this.menuStrip1.Items.AddRange(new ToolStripItem[] { this.fileToolStripMenuItem, this.viewToolStripMenuItem });
+            this.menuStrip1.Items.AddRange(new ToolStripItem[] { this.fileToolStripMenuItem, this.actionsToolStripMenuItem });
             this.menuStrip1.Location = new Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new Size(1733, 33);
@@ -266,7 +230,7 @@ namespace PrinterTestForm {
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadXMLToolStripMenuItem, this.saveToolStripMenuItem, this.printToolStripMenuItem, this.printPreviewToolStripMenuItem });
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.newToolStripMenuItem, this.loadXMLToolStripMenuItem, this.saveToolStripMenuItem1, this.saveToolStripMenuItem, this.printToolStripMenuItem, this.printPreviewToolStripMenuItem });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new Size(54, 29);
             this.fileToolStripMenuItem.Text = "File";
@@ -276,56 +240,66 @@ namespace PrinterTestForm {
             this.loadXMLToolStripMenuItem.Name = "loadXMLToolStripMenuItem";
             this.loadXMLToolStripMenuItem.Size = new Size(270, 34);
             this.loadXMLToolStripMenuItem.Text = "Load";
-            this.loadXMLToolStripMenuItem.Click += this.menuLoadClick;
+            this.loadXMLToolStripMenuItem.Click += this.MenuLoadClick;
+            // 
+            // saveToolStripMenuItem1
+            // 
+            this.saveToolStripMenuItem1.Enabled = false;
+            this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
+            this.saveToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.S;
+            this.saveToolStripMenuItem1.Size = new Size(270, 34);
+            this.saveToolStripMenuItem1.Text = "Save";
+            this.saveToolStripMenuItem1.Click += this.MenuSaveClick;
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new Size(270, 34);
-            this.saveToolStripMenuItem.Text = "Save";
-            this.saveToolStripMenuItem.Click += this.menuSaveClick;
+            this.saveToolStripMenuItem.Text = "Save As";
+            this.saveToolStripMenuItem.Click += this.MenuSaveAsClick;
             // 
             // printToolStripMenuItem
             // 
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.Size = new Size(270, 34);
             this.printToolStripMenuItem.Text = "Print";
-            this.printToolStripMenuItem.Click += this.menuPrintClick;
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.landscapeToolStripMenuItem, this.portaitToolStripMenuItem, this.freeFormToolStripMenuItem });
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new Size(65, 29);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // landscapeToolStripMenuItem
-            // 
-            this.landscapeToolStripMenuItem.Name = "landscapeToolStripMenuItem";
-            this.landscapeToolStripMenuItem.Size = new Size(197, 34);
-            this.landscapeToolStripMenuItem.Text = "Landscape";
-            this.landscapeToolStripMenuItem.Click += this.menuLandscapeClick;
-            // 
-            // portaitToolStripMenuItem
-            // 
-            this.portaitToolStripMenuItem.Name = "portaitToolStripMenuItem";
-            this.portaitToolStripMenuItem.Size = new Size(197, 34);
-            this.portaitToolStripMenuItem.Text = "Portait";
-            this.portaitToolStripMenuItem.Click += this.menuPortaitClick;
-            // 
-            // freeFormToolStripMenuItem
-            // 
-            this.freeFormToolStripMenuItem.Name = "freeFormToolStripMenuItem";
-            this.freeFormToolStripMenuItem.Size = new Size(197, 34);
-            this.freeFormToolStripMenuItem.Text = "Square";
-            this.freeFormToolStripMenuItem.Click += this.menuFreeFormClick;
+            this.printToolStripMenuItem.Click += this.MenuPrintClick;
             // 
             // printPreviewToolStripMenuItem
             // 
             this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
             this.printPreviewToolStripMenuItem.Size = new Size(270, 34);
             this.printPreviewToolStripMenuItem.Text = "Print Preview";
-            this.printPreviewToolStripMenuItem.Click += this.menuPreviewClick;
+            this.printPreviewToolStripMenuItem.Click += this.MenuPreviewClick;
+            // 
+            // actionsToolStripMenuItem
+            // 
+            this.actionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.refreshToolStripMenuItem, this.invalidateToolStripMenuItem });
+            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
+            this.actionsToolStripMenuItem.Size = new Size(87, 29);
+            this.actionsToolStripMenuItem.Text = "Actions";
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.R;
+            this.refreshToolStripMenuItem.Size = new Size(246, 34);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += this.MenuRefreshClick;
+            // 
+            // invalidateToolStripMenuItem
+            // 
+            this.invalidateToolStripMenuItem.Name = "invalidateToolStripMenuItem";
+            this.invalidateToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.I;
+            this.invalidateToolStripMenuItem.Size = new Size(246, 34);
+            this.invalidateToolStripMenuItem.Text = "Invalidate";
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new Size(270, 34);
+            this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += this.MenuNewClick;
             // 
             // MainForm
             // 
@@ -335,18 +309,15 @@ namespace PrinterTestForm {
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Name = "Printer Layout Designer";
+            this.Text = "Printer Layout Designer";
             this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).EndInit();
             this.splitContainer.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.pagePanel.ResumeLayout(false);
             this.pagePanel.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.tabSource.ResumeLayout(false);
             this.tabXML.ResumeLayout(false);
             this.tabXML.PerformLayout();
@@ -364,7 +335,6 @@ namespace PrinterTestForm {
         private TabControl tabSource;
         private TabPage tabXML;
         private TabPage tabStyle;
-        private ToolStrip toolStrip1;
         private PrinterCanvas printerCanvas;
         private TextBox txtXML;
         private TextBox txtStyle;
@@ -373,18 +343,17 @@ namespace PrinterTestForm {
         private Label lblPage;
         private Button butNext;
         private Button butPrev;
-        private ToolStripButton toolRefresh;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
-        private ToolStripMenuItem viewToolStripMenuItem;
-        private ToolStripMenuItem landscapeToolStripMenuItem;
-        private ToolStripMenuItem portaitToolStripMenuItem;
-        private ToolStripMenuItem freeFormToolStripMenuItem;
-        private ToolStripButton toolStripButton3;
         private Label lblTimer;
         private ToolStripMenuItem loadXMLToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem printToolStripMenuItem;
         private ToolStripMenuItem printPreviewToolStripMenuItem;
+        private ToolStripMenuItem actionsToolStripMenuItem;
+        private ToolStripMenuItem refreshToolStripMenuItem;
+        private ToolStripMenuItem invalidateToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem1;
+        private ToolStripMenuItem newToolStripMenuItem;
     }
 }

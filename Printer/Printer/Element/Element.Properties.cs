@@ -7,6 +7,8 @@
 
         public Element? Parent { get; private set; }
 
+        public bool IsRoot { get => this.Parent == null; }
+
         public Dictionary<string, string> Attributes { get; init; } = new();
 
         public string TagName { get; init; } = "";

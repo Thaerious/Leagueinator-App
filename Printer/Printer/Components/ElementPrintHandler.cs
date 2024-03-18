@@ -17,8 +17,12 @@ namespace Leagueinator.PrinterComponents {
 
         private void HndPrintPage(object sender, PrintPageEventArgs e) {
             Debug.WriteLine($"HndPrintPage {this.CurrentPage}");
-            this.Root.Style.Draw(e.Graphics!, this.Root, this.CurrentPage);
-            CurrentPage++;
+            Debug.WriteLine(e.PageSettings.PrintableArea.Size);
+
+            if (CurrentPage < this.PageCount) {
+                this.Root.Style.Draw(e.Graphics!, this.Root, this.CurrentPage);
+                CurrentPage++;
+            }
             e.HasMorePages = CurrentPage < this.PageCount;
         }
     }

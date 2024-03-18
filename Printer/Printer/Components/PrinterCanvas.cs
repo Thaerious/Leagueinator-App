@@ -11,8 +11,8 @@ namespace Leagueinator.PrinterComponents {
             this.DoubleBuffered = true;
         }
 
-        public float dimX = 8.5f, dimY = 11f;
-        public int dpi = 100;
+        public float dimX = 0f;
+        public float dimY = 0f;
 
         [Category("Inner")]
         public int GridSize { get; set; } = 0;
@@ -37,13 +37,14 @@ namespace Leagueinator.PrinterComponents {
             set {
                 this._rootElement = value;
                 if (this._rootElement == null) return;
-                this._rootElement.ContainerRect = new(0, 0, this.Width, this.Height);
+                this.outer.SetDims(this._rootElement?.Style.Width, this._rootElement?.Style.Height);
             }
         }
 
         public TimeSpan RepaintTime { get; private set; }
 
         protected override void OnPaint(PaintEventArgs e) {
+            if (this.RootElement is null) return;
             var stopwatch = new Stopwatch();
 
             base.OnPaint(e);
@@ -74,15 +75,15 @@ namespace Leagueinator.PrinterComponents {
         }
 
         private void DrawGrid(Graphics g, Pen pen, int size) {         
-            var top = (int)(this.dimY * this.dpi);
-            var right = (int)(this.dimX * this.dpi);
+            var top = (int)(this.dimY);
+            var right = (int)(this.dimX);
 
-            for (int x = 0; x < this.dimX * this.dpi; x += size) {
+            for (int x = 0; x < this.dimX; x += size) {
                 var p1 = new Point(x, 0);
                 var p2 = new Point(x, top);
                 g.DrawLine(pen, p1, p2);
             }
-            for (int y = 0; y < this.dimY * this.dpi; y += size) {
+            for (int y = 0; y < this.dimY; y += size) {
                 var p1 = new Point(0, y);
                 var p2 = new Point(right, y);
                 g.DrawLine(pen, p1, p2);
@@ -113,14 +114,13 @@ namespace Leagueinator.PrinterComponents {
         private System.ComponentModel.IContainer? components = null;
 
         private void ResetDims() {
-            this.SetDims(this.inner.dimX, this.inner.dimY, this.inner.dpi);
+            this.SetDims(this.inner.dimX, this.inner.dimY);
         }
 
-        public void SetDims(float x, float y, int dpi = 100) {
+        public void SetDims(float x, float y) {
             this.inner.Dock = DockStyle.None;
             this.inner.dimX = x;
             this.inner.dimY = y;
-            this.inner.dpi = dpi;
 
             if (this.FitWidth().Height <= this.Height) {
                 this.PinWidth();
@@ -129,8 +129,8 @@ namespace Leagueinator.PrinterComponents {
                 this.PinHeight();
             }
 
-            var scalex = this.inner.Width / this.inner.dimX / this.inner.dpi;
-            var scaley = this.inner.Height / this.inner.dimY / this.inner.dpi;
+            var scalex = this.inner.Width / this.inner.dimX;
+            var scaley = this.inner.Height / this.inner.dimY;
             this.inner.GridScale = new(scalex, scaley);
 
             this.Invalidate(true);
@@ -188,7 +188,6 @@ namespace Leagueinator.PrinterComponents {
             set => this.inner.BorderStyle = value;
         }
 
-
         public int Page {
             get => this.inner.Page;
             set => this.inner.Page = value;
@@ -205,6 +204,8 @@ namespace Leagueinator.PrinterComponents {
             this.ResetDims();
 
             if (this.RootElement != null) {
+                this.inner.dimX = this.RootElement.Style.Width;
+                this.inner.dimY = this.RootElement.Style.Height;
                 this.RootElement.Style.DoLayout(this.RootElement);
             }
         }

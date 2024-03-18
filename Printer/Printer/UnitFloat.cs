@@ -14,7 +14,8 @@
             this.Unit = unit;
         }
 
-        public static implicit operator float(UnitFloat m) {
+        public static implicit operator float(UnitFloat? m) {
+            if (m is null) return 0;
             if (m.Unit == "%") {
                 return m.Value * m.Factor / 100;
             }
