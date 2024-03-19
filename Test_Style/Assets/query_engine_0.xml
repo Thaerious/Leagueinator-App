@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <div class="parent">
+    <div class="child">
+      <list>
+        <li id="first">itema</li>
+        <li id="second">itemb</li>
+        <li id="third">itemc</li>
+        <li id="third">repeat id</li>
+      </list>
+      <div id="deepchild" class="child deep"></div>
+    </div>
+  </div>
+</root>

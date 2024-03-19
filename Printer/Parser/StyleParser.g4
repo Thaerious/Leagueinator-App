@@ -16,6 +16,8 @@ selector   : STRING
            | HASH STRING
            | AT STRING
            | STAR
+           | selector GT selector
+           | selector selector
            ;
 
 line       : property

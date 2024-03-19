@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- [div target.select] -->
+<root>
+  <div>
+    <mid class="select">
+      <target id="1"></target>
+    </mid>
+  </div>
+  <div>
+    <mid>
+      <target id="2"></target>
+    </mid>
+  </div>
+  <mid class="select">
+    <target id="3"></target>
+  </mid>
+</root>

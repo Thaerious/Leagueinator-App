@@ -6,6 +6,7 @@ HASH  : '#'                             ;
 STAR  : '*'                             ;
 COMMA : ','                             ;
 AT    : '@'                             ;
+GT    : '>'                             ;
 
 STRING     : [a-zA-Z]?[a-zA-Z0-9_-]+    ;
 WS         : [ \t\r\n]+ -> skip         ;

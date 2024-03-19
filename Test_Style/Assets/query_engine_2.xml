@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Select all elements with div as a direct parent -->
+<!-- [div > *] -->
+<root>
+  <not>
+    <target selected="false"></target>
+  </not>
+  <div>
+    <target selected="true"></target>
+  </div>
+  <not>
+    <div>
+      <target selected="true"></target>
+    </div>
+  </not>
+</root>

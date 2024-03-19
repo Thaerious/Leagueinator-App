@@ -1,10 +1,9 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
 using Leagueinator.PrinterComponents;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Drawing.Printing;
-using System.IO;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace PrinterTestForm {
     public partial class PrinterLayoutDesigner : Form {
@@ -17,14 +16,36 @@ namespace PrinterTestForm {
                 if (value is null) {
                     xmlPath = null;
                     stylePath = null;
-                    this.Text = $"{this.Name} *";
                 }
                 else {
                     xmlPath = value;
                     stylePath = value + ".style";
-                    this.Text = $"{this.Name} [{value}]";
+                }
+                this.UpdateTitle();
+            }
+        }
+
+        private bool _isSaved = true;
+        private bool IsSaved {
+            get => _isSaved;
+            set {
+                _isSaved = value;
+                this.UpdateTitle();
+            }
+        }
+
+        private void UpdateTitle() {
+            if (xmlPath is not null) {
+                if (this.IsSaved) {
+                    this.Text = $"{this.Name} [{xmlPath}]";
+                }
+                else {
+                    this.Text = $"{this.Name} [{xmlPath}] *";
                 }
             }
+            else {
+                this.Text = $"{this.Name}";
+            }            
         }
 
         public PrinterLayoutDesigner() {
@@ -63,6 +84,7 @@ namespace PrinterTestForm {
                     textBox.SelectionStart = selectionStart + tabSize;
                 }
             }
+            this.IsSaved = false;
         }
 
 
@@ -99,6 +121,7 @@ namespace PrinterTestForm {
             this.MenuRefreshClick(null, null);
             
             this.saveToolStripMenuItem1.Enabled = true;
+            this.IsSaved = true;
         }
 
         private void MenuSaveAsClick(object sender, EventArgs e) {
@@ -109,10 +132,11 @@ namespace PrinterTestForm {
             if (dialog.ShowDialog() == DialogResult.OK) {
                 this.FilePath = dialog.FileName;
                 this.MenuRefreshClick(null, null);
-                File.WriteAllText(this.xmlPath, this.txtXML.Text);
-                File.WriteAllText(this.stylePath, this.txtStyle.Text);
+                File.WriteAllText(this.xmlPath!, this.txtXML.Text);
+                File.WriteAllText(this.stylePath!, this.txtStyle.Text);
                 this.saveToolStripMenuItem1.Enabled = true;
                 File.WriteAllText(this.roamingPath, dialog.FileName);
+                this.IsSaved = true;
             }            
         }
 
@@ -160,6 +184,7 @@ namespace PrinterTestForm {
             File.WriteAllText(this.xmlPath, this.txtXML.Text);
             File.WriteAllText(this.stylePath, this.txtStyle.Text);
             this.MenuRefreshClick(null, null);
+            this.IsSaved = true;
         }
 
         private void MenuNewClick(object sender, EventArgs e) {

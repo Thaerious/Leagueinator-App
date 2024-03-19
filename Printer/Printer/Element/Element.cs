@@ -43,12 +43,6 @@ namespace Leagueinator.Printer {
             this.Style = new Flex();
         }
 
-        public ElementList this[string query] {
-            get {
-                return this.Children.QueryAll(query);
-            }
-        }
-
         public string? InnerText {
             get {
                 if (this.Children.Count == 0) return null;

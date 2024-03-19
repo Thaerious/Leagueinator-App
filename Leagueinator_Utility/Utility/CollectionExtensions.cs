@@ -3,6 +3,18 @@
 namespace Leagueinator.Utility {
     public static class CollectionExtensions {
 
+        public static T Dequeue<T>(this List<T> list) {
+            if (list.Count == 0) throw new InvalidOperationException();
+            T item = list[0];
+            list.RemoveAt(0);
+            return item;
+        }
+
+        public static T Peek<T>(this List<T> list) {
+            if (list.Count == 0) throw new InvalidOperationException();
+            return list[0];
+        }
+
         public static List<T> AddUnique<T>(this List<T> list, T t) {
             if (t == null) return list;
             if (!list.Contains(t)) list.Add(t);
