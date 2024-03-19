@@ -34,7 +34,7 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Create a new element with the specified name and classlist.
+        /// Create a new element with the specified name.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="classes"></param>
@@ -80,24 +80,27 @@ namespace Leagueinator.Printer {
 
         /// <summary>
         /// Add a single child child to this.
-        /// If the child node already has a parent an exception will be thrown.
+        /// If the child element already has a parent an exception will be thrown.
         /// be updated to this child.
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
         public void AddChild(Element child) {
-            if (child.Parent is not null) throw new InvalidOperationException("Child node already has a parent");
+            if (child.Parent is not null) throw new InvalidOperationException("Child element already has a parent");
             this._children.Add(child);
             child.Parent = this;
+            this.InvalidateQueryEngine();
         }
 
         /// <summary>
-        /// Remove all child nodes from this child.
+        /// Remove all child elements from this child.
         /// </summary>
         public void ClearChildren() {
             foreach (Element child in this.Children) {
-                this.Detach(child);
+                this._children.Remove(child);
+                child.Parent = null;
             }
+            this.InvalidateQueryEngine();
         }
 
         /// <summary>
@@ -108,10 +111,7 @@ namespace Leagueinator.Printer {
         public void Detach(Element child) {
             this._children.Remove(child);
             child.Parent = null;
-        }
-
-        public override string ToString() {
-            return this.Identifier;
+            this.InvalidateQueryEngine();
         }
 
         public virtual XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
@@ -134,6 +134,6 @@ namespace Leagueinator.Printer {
             return xml;
         }
 
-        private readonly ElementList _children = new();
+        private readonly List<Element> _children = new();
     }
 }

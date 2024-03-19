@@ -3,7 +3,7 @@
 
         public Style Style { get; internal set; }
 
-        public ElementList Children => new(this._children);
+        public List<Element> Children => new(this._children);
 
         public Element? Parent { get; private set; }
 

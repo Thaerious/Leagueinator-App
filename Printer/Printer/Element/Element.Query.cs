@@ -15,5 +15,13 @@ namespace Leagueinator.Printer {
                 return this.queryEngine[query];
             }
         }
+
+        private void InvalidateQueryEngine() {
+            Element? current = this;
+            while (current is not null) {
+                current.queryEngine = null;
+                current = current.Parent;
+            }
+        }
     }
 }
