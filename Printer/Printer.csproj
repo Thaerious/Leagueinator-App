@@ -27,8 +27,4 @@
     <Compile Update="Printer\Components\PrinterCanvas.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Style\" />
-  </ItemGroup>
-
 </Project>

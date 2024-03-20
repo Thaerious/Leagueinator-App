@@ -1,5 +1,6 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer.Enums;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Text;
@@ -88,13 +89,16 @@ namespace Leagueinator.Printer {
         /// Used to create inhereited style properties.
         /// </summary>
         /// <param name="source"></param>
-        internal static void MergeStyles(Style target, Style source) {
+        internal static void MergeStyles(Style target, Style source, bool checkInherited = false) {
             PropertyInfo[] properties = source.GetType().GetProperties();
             FieldInfo[] fields = source.GetType().GetFields();
 
             target.Selector += " " + source.Selector;
-
+            
             foreach (var property in properties) {
+                InheritedAttribute? inherited = property.GetCustomAttribute<InheritedAttribute>();
+                if (inherited == null && checkInherited == true) continue;
+
                 if (property.GetCustomAttribute<CSS>() == null) continue;
                 if (property.CanWrite && property.CanRead) {
                     var sourceValue = property.GetValue(source);
@@ -105,9 +109,13 @@ namespace Leagueinator.Printer {
             }
 
             foreach (var field in fields) {
+                InheritedAttribute? inherited = field.GetCustomAttribute<InheritedAttribute>();
+                if (inherited == null && checkInherited == true) continue;
+
                 if (field.GetCustomAttribute<CSS>() == null) continue;
                 var sourceValue = field.GetValue(source);
                 var targetValue = field.GetValue(target);
+
                 if (sourceValue == null || targetValue != null) continue;
                 field.SetValue(target, sourceValue);
             }

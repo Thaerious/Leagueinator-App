@@ -275,5 +275,19 @@ namespace Test_Style {
             Assert.AreEqual(5, r.Count);
         }
 
+        [TestMethod]
+        public void Query_All() {
+            // id exists, but parent branch does not match
+            QueryEngine q = new();
+            Element root = LoadXMLResource("layout.xml");
+            q.AddAll(root);
+            var r = q["*"];
+
+            Debug.WriteLine("- matches -");
+            r.ForEach(x => Debug.WriteLine(x.Identifier));
+
+            Assert.AreEqual(4, r.Count);
+        }
+
     }
 }
