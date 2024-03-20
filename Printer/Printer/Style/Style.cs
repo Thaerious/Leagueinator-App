@@ -1,12 +1,13 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer.Enums;
-using System.Diagnostics;
+using Leagueinator.Printer.Query;
+using Leagueinator.Utility;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Text;
 
 namespace Leagueinator.Printer {
-    public partial class Style {
+    public partial class Style : IComparable<Style> {
         [CSS("Flex")] public Position? Position = null;
         [CSS("Visible")] public Overflow? Overflow = null;
 
@@ -52,11 +53,11 @@ namespace Leagueinator.Printer {
             LineAlignment = StringAlignment.Center
         };
 
-        public string Selector { get; internal set; }
+        public string Selector { get; init; } = "";
 
-        public Style(string selector = "") {
-            this.Selector = selector;
-        }
+        public int[] Specificity { get; init; } = new int[QueryEngine.SPECIFICITY_SIZE];
+
+        public Style() { }
 
         public virtual int DoLayout(Element element) {
             this.DoSize(element);
@@ -93,8 +94,6 @@ namespace Leagueinator.Printer {
             PropertyInfo[] properties = source.GetType().GetProperties();
             FieldInfo[] fields = source.GetType().GetFields();
 
-            target.Selector += " " + source.Selector;
-            
             foreach (var property in properties) {
                 InheritedAttribute? inherited = property.GetCustomAttribute<InheritedAttribute>();
                 if (inherited == null && checkInherited == true) continue;
@@ -206,6 +205,7 @@ namespace Leagueinator.Printer {
 
             sb.AppendLine($"Class : {this.GetType()}");
             sb.AppendLine($"Selector : {this.Selector}");
+            sb.AppendLine($"Specificity : [{this.Specificity.DelString()}]");
             sb.AppendLine($"Properties : [");
 
             foreach (var property in properties) {
@@ -223,6 +223,16 @@ namespace Leagueinator.Printer {
 
             sb.AppendLine($"]");
             return sb.ToString();
+        }
+
+        public int CompareTo(Style? other) {
+            if (other == null) return 1;
+            for (int i = 0; i < this.Specificity.Length; i++) {
+                if (this.Specificity[i] == other.Specificity[i]) continue;
+                return other.Specificity[i].CompareTo(this.Specificity[i]);
+            }
+
+            return 0;
         }
     }
 }

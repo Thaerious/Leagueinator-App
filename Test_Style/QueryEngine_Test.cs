@@ -1,8 +1,6 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer;
+﻿using Leagueinator.Printer;
 using Leagueinator.Printer.Query;
 using System.Diagnostics;
-using System.Drawing;
 using System.Reflection;
 
 namespace Test_Style {

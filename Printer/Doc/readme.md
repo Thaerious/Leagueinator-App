@@ -20,15 +20,15 @@ java -jar D:\lib\antlr.jar -o generated -Dlanguage=CSharp .\StyleLexer.g4
 java -jar D:\lib\antlr.jar -o generated -Dlanguage=CSharp .\StyleParser.g4
 
 # Rectangles
-┌────Container──┐
-│    Margin     │
-│┌───Border────┐│
-││   Padding   ││
-││┌──Content──┐││
-│││           │││
-││└───────────┘││
-│└─────────────┘│
-└───────────────┘
+    ┌────Container──┐
+    │    Margin     │
+    │┌───Border────┐│
+    ││   Padding   ││
+    ││┌──Content──┐││
+    │││           │││    
+    ││└───────────┘││
+    │└─────────────┘│
+    └───────────────┘
 
 # Styles
 
@@ -66,3 +66,13 @@ the given page are in the parent.
 
 The root element is always drawn, because overflow effects child elements.  Each page will be assigned
 at least one element even if it overflows.
+
+## Query Selectors
+
+| Selector  | Example  | Specificity | Description    |
+|-----------|----------|-------------|----------------|
+| #id       | #first   | 1           | identity       |
+| *         | *        | 5           | all            |
+| .         | .bold    | 3           | class          |
+| tag       | div      | 4           | element name   |
+| tag.class | div.bold | 2           | name and class | 

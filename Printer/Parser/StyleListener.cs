@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Leagueinator.Printer;
+using Leagueinator.Printer.Query;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Reflection;
@@ -18,8 +19,12 @@ namespace Leagueinator.CSSParser {
             var selectors = context.selectors().GetText();
 
             foreach (var selector in selectors.Split(",")) {
-                if (!this.Styles.ContainsKey(selector)) this.Styles[selector] = new Style(selector);
-                var style = this.Styles[selector];
+                var style = new Style() {
+                    Selector = selector,
+                    Specificity = QueryEngine.Specificity(selector, -this.Styles.Count)
+                };
+
+                this.Styles.Add(style);
                 this.currentStyles.Add(style);
             }
         }

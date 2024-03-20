@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Printer;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -6,17 +7,27 @@ namespace Leagueinator.CSSParser {
     /// <summary>
     /// A collection of styles with the query string as the key.
     /// </summary>
-    public class LoadedStyles : Dictionary<string, Style> {
+    public class LoadedStyles : SortedList<Style, Style> {
+
+        public void Add(Style style) => base.Add(style, style);
 
         public void ApplyTo(Element root) {
-            foreach (string query in this.Keys) {
-                foreach (Element element in root[query]) {
-                    Style.MergeStyles(element.Style, this[query]);
+            var sortedKeys = this
+                .OrderBy(pair => pair.Value)
+                .Select(pair => pair.Key)
+                .ToList();
+
+
+            // apply defined styles
+            foreach (Style style in this.Keys) {
+                foreach (Element element in root[style.Selector]) {
+                    Style.MergeStyles(element.Style, style);
                 }
             }
 
             this.ApplyParentStyles(root);
 
+            // apply default styles
             foreach (Element element in root["*"]) {
                 Style.MergeStyles(element.Style, Style.Default);
             }

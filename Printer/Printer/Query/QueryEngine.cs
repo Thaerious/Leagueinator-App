@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Utility;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Leagueinator.Printer.Query {
     public class QueryEngine {
@@ -9,6 +10,8 @@ namespace Leagueinator.Printer.Query {
         private readonly HashTable<Element> id = new();
 
         public int Count => this.elements.Count;
+
+        public readonly static int SPECIFICITY_SIZE = 5;
 
         public List<Element> this[string query] {
             get {
@@ -138,6 +141,37 @@ namespace Leagueinator.Printer.Query {
             string[] split = query.Split(".");
             if (!split[0].Equals(element.TagName)) return false;
             return element.ClassList.Contains(split[1]);
+        }
+
+        public static int[] Specificity(string query, int rank = 0) {
+            int[] specificity = new int[SPECIFICITY_SIZE];
+            specificity[4] = rank;
+
+            string pattern = @"[ >]";
+            string[] split = Regex.Split(query, pattern);
+
+            foreach (string s in split) {
+                if (s.IsEmpty()) continue;
+                switch (s.ToCharArray()[0]) {
+                    case '*':
+                        break;
+                    case '#':
+                        specificity[1]++;
+                        break;
+                    case '.':
+                        specificity[2]++;
+                        break;
+                    default:
+                        if (query.Contains('.')) {
+                            specificity[2]++;
+                            specificity[3]++;
+                        }
+                        else specificity[3]++;
+                        break;
+                }
+            }
+
+            return specificity;
         }
     }
 }

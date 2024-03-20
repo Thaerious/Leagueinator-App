@@ -1,5 +1,6 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
+using Leagueinator.Printer.Enums;
 using System.Drawing;
 using System.Reflection;
 
@@ -7,38 +8,37 @@ namespace Test_Style {
     [TestClass]
     public class Style_Test {
 
-        public static LoadedStyles LoadStyleResource(Assembly assembly, string resourceName) {
-            using Stream? styleStream = assembly.GetManifestResourceStream(resourceName) ?? throw new NullReferenceException($"Resource Not Found: {resourceName}");
-            using StreamReader styleReader = new StreamReader(styleStream);
-            string styleText = styleReader.ReadToEnd();
-            return StyleLoader.Load(styleText);
+        public static Element LoadResources(string xmlName, string cssName) {
+            var element = LoadXMLResource(xmlName);
+            LoadedStyles ss = LoadSSResource(cssName);
+            ss.ApplyTo(element);
+            return element;
         }
 
-        public Element LoadXMLResource(Assembly assembly, string resourceName) {
-            using Stream? xmlStream = assembly.GetManifestResourceStream(resourceName) ?? throw new NullReferenceException($"Resource Not Found: {resourceName}");
+        public static Element LoadXMLResource(string xmlName) {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            xmlName = $"Test_Style.Assets.{xmlName}";
+            using Stream? xmlStream = assembly.GetManifestResourceStream(xmlName) ?? throw new NullReferenceException($"Resource Not Found: {xmlName}");
             using StreamReader xmlReader = new StreamReader(xmlStream);
             string xmlText = xmlReader.ReadToEnd();
             return XMLLoader.Load(xmlText);
         }
 
+        public static LoadedStyles LoadSSResource(string cssName) {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            cssName = $"Test_Style.Assets.{cssName}";
+            using Stream? xmlStream = assembly.GetManifestResourceStream(cssName) ?? throw new NullReferenceException($"Resource Not Found: {cssName}");
+            using StreamReader xmlReader = new StreamReader(xmlStream);
+            string xmlText = xmlReader.ReadToEnd();
+            return StyleLoader.Load(xmlText);
+        }
+
         [TestMethod]
         public void Sanity() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
+            LoadedStyles styles = LoadSSResource("style.css");
             Assert.IsNotNull(styles);
-        }
 
-        [TestMethod]
-        public void WildCard() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Console.WriteLine(styles["*"]);
-            Assert.IsNotNull(styles["*"]);
-        }
-
-        [TestMethod]
-        public void WildCard_Background_Color() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Console.WriteLine(styles["*"]);
-            Assert.AreEqual(System.Drawing.Color.WhiteSmoke, styles["*"].BackgroundColor);
+            foreach (Style style in styles.Values) Console.WriteLine(style);
         }
 
         /// <summary>
@@ -47,12 +47,7 @@ namespace Test_Style {
         /// </summary>
         [TestMethod]
         public void Apply_Styles_WildCard_Only() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
-            styles.ApplyTo(xml);
-
-            Console.WriteLine(styles["*"]);
-            Console.WriteLine(xml.Style);
+            Element xml = LoadResources("layout.xml", "style.css");
             Assert.AreEqual(System.Drawing.Color.WhiteSmoke, xml.Style.BackgroundColor);
             Assert.AreEqual(null, xml.Style.BorderColor);
         }
@@ -72,11 +67,7 @@ namespace Test_Style {
         /// </summary>
         [TestMethod]
         public void Inherited_Default_Value() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
-            styles.ApplyTo(xml);
-
-            Console.WriteLine(xml.Style);
+            Element xml = LoadResources("layout.xml", "style.css");
             Assert.AreEqual(new Point(0, 0), xml.Style.Location);
         }
 
@@ -86,31 +77,81 @@ namespace Test_Style {
         /// </summary>
         [TestMethod]
         public void Inherited_Value() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
-
-            styles.ApplyTo(xml);
-
-            //Console.WriteLine(styles[".parent"]);
-            //Console.WriteLine(xml[".parent"][0].Style);
-            //Console.WriteLine(xml[".child"][0].Style);
-            //Console.WriteLine(xml["#deepchild"][0].Style);
-
-            //Assert.AreEqual("arial", xml[".parent"][0].Style.FontFamily);
+            Element xml = LoadResources("layout.xml", "style.css");
+            Assert.AreEqual("arial", xml[".parent"][0].Style.FontFamily);
             Assert.AreEqual("arial", xml[".child"][0].Style.FontFamily);
-            //Assert.AreEqual("arial", xml["#deepchild"][0].Style.FontFamily);
+            Assert.AreEqual("arial", xml["#deepchild"][0].Style.FontFamily);
         }
 
         [TestMethod]
         public void Width_Height() {
-            LoadedStyles styles = LoadStyleResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.style.css");
-            Element xml = this.LoadXMLResource(Assembly.GetExecutingAssembly(), "Test_Style.Assets.layout.xml");
-
-            styles.ApplyTo(xml);
-            Console.WriteLine(xml[".child"][0].Style);
-
+            Element xml = LoadResources("layout.xml", "style.css");
             Assert.AreEqual("50px", xml[".child"][0].Style.Width.ToString());
             Assert.AreEqual("75px", xml[".child"][0].Style.Height.ToString());
         }
+
+        /// <summary>
+        /// ID > Class
+        /// </summary>
+        [TestMethod]
+        public void Specificity_ID_Class() {
+            Element xml = LoadResources("specificity.xml", "specificity.css");
+            Assert.AreEqual(Color.Green, xml["t1"][0].Style.BackgroundColor);
+        }
+
+        /// <summary>
+        /// Class > Name
+        /// </summary>
+        [TestMethod]
+        public void Specificity_Class_Name() {
+            Element xml = LoadResources("specificity.xml", "specificity.css");
+            Assert.AreEqual("10px", xml["t1"][0].Style.Height?.ToString());
+        }
+
+        /// <summary>
+        /// Name > WildCard
+        /// </summary>
+        [TestMethod]
+        public void Specificity_Name_WildCard() {
+            Element xml = LoadResources("specificity.xml", "specificity.css");
+            Assert.AreEqual("50px", xml["t1"][0].Style.Width?.ToString());
+        }
+
+        /// <summary>
+        /// Name.Class > Name
+        /// </summary>
+        [TestMethod]
+        public void Specificity_NameClass_Name() {
+            Element xml = LoadResources("specificity.xml", "specificity.css");
+            Assert.AreEqual(Flex_Axis.Column, xml["t1"][0].Style.Flex_Axis);
+        }
+
+        /// <summary>
+        /// Name.Class > Class
+        /// </summary>
+        [TestMethod]
+        public void Specificity_NameClass_Class() {
+            Element xml = LoadResources("specificity.xml", "specificity.css");
+            Assert.AreEqual("10px", xml["t1"][0].Style.Bottom?.ToString());
+        }
+
+        [TestMethod]
+        public void Specificity_Order_Of_Appearance() {
+            Element xml = LoadResources("specificity.xml", "specificity.css");
+            Assert.AreEqual("30px", xml["t1"][0].Style.Left?.ToString());
+        }
+
+        /// <summary>
+        /// Class > ElementName
+        /// </summary>
+        [TestMethod]
+        public void Specificity() {
+            LoadedStyles styles = LoadSSResource("specificity.css");
+
+            styles.OrderBy(pair => pair.Value)
+                  .ToList()
+                  .ForEach(pair => Console.WriteLine(pair.Value));
+        }
+
     }
 }

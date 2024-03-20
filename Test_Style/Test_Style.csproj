@@ -16,15 +16,19 @@
     <None Remove="Assets\query_engine_1.xml" />
     <None Remove="Assets\query_engine_2.xml" />
     <None Remove="Assets\query_engine_3.xml" />
+    <None Remove="Assets\specificity.css" />
+    <None Remove="Assets\specificity.xml" />
     <None Remove="Assets\style.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\specificity.xml" />
     <EmbeddedResource Include="Assets\query_engine_3.xml" />
     <EmbeddedResource Include="Assets\query_engine_2.xml" />
     <EmbeddedResource Include="Assets\query_engine_1.xml" />
     <EmbeddedResource Include="Assets\query_engine_0.xml" />
     <EmbeddedResource Include="Assets\layout.xml" />
+    <EmbeddedResource Include="Assets\specificity.css" />
     <EmbeddedResource Include="Assets\style.css" />
   </ItemGroup>
 
