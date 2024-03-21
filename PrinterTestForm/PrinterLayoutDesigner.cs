@@ -1,9 +1,9 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
 using Leagueinator.PrinterComponents;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Drawing.Printing;
+using System.Reflection;
 
 namespace PrinterTestForm {
     public partial class PrinterLayoutDesigner : Form {
@@ -188,8 +188,9 @@ namespace PrinterTestForm {
         }
 
         private void MenuNewClick(object sender, EventArgs e) {
-            this.txtXML.Text = "<root></root>";
-            this.txtStyle.Text = 
+            this.txtXML.Text = "<root>\n</root>";
+
+            this.txtStyle.Text =
                 "root {" +
                 "\tWidth: 850px;\n" +
                 "\tHeight: 1100px;\n" +

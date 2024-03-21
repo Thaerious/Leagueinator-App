@@ -68,23 +68,37 @@ namespace Leagueinator.Printer {
         void SetDefaultSize(Element element) {
             if (this.Width != null) this.Width.Factor = element.Parent?.ContentRect.Width ?? 0f;
             if (this.Height != null) this.Height.Factor = element.Parent?.ContentRect.Height ?? 0f;
+            if (this.Translate != null) this.Translate.X.Factor = element.Parent?.ContentRect.Width ?? 0f;
+            if (this.Translate != null) this.Translate.Y.Factor = element.Parent?.ContentRect.Width ?? 0f;
             element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
         }
 
-        private void DoPosPage(Element element, int page) {
+        public override int DoPos(Element element) {
+            int pageCount = this.AssignPages(element);
+
+            for (int page = 0; page < pageCount; page++) {
+                this.DoPosFlex(element, page);
+            }
+
+            this.DoPosAbsolute(element);
+            this.DoPosFixed(element);
+            return pageCount;
+        }
+
+        private void DoPosFlex(Element element, int page) {
             var children = this.CollectChildren(element, page);
             if (children.Count == 0) return;
 
-            foreach (Element child in children) {
-                child.Translation = new();
-            }
-
+            children.ForEach(c => c.Translation = new());
             this.JustifyContent(element, children);
             this.AlignItems(element, children);
 
             foreach (Element child in children) {
                 child.Translate(child.Parent?.ContentRect.TopLeft() ?? new());
-                child.Translate(child.Style.Location ?? new());
+
+                if (child.Style.Translate != null) {
+                    child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
+                }
                 child.Style.DoPos(child);
             }
         }
@@ -116,7 +130,7 @@ namespace Leagueinator.Printer {
 
                        child.Translation = child.Parent?.ContentRect.TopLeft() ?? new();
                        child.Translate(new(x, y));
-                       child.Translate(cStyle.Location ?? new());
+                       child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
                        child.Style.DoPos(child);
                    });
         }
@@ -126,29 +140,17 @@ namespace Leagueinator.Printer {
                    .Where(child => child.Style.Position == Enums.Position.Fixed)
                    .ToList()
                    .ForEach(child => {
-                       child.Translate(child.Style.Location ?? new());
+                       child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
                        child.Style.DoPos(child);
                    });
         }
 
-        public override int DoPos(Element element) {
-            int pageCount = this.AssignPages(element);
-            for (int page = 0; page < pageCount; page++) {
-                this.DoPosPage(element, page);
-            }
-            this.DoPosAbsolute(element);
-            this.DoPosFixed(element);
-            return pageCount;
-        }
-
         /// <summary>
-        /// Layout all child nodes without taking into account alignment.
+        /// Layout all element nodes without taking into account alignment.
         /// </summary>
         /// <param name="element"></param>
         /// <param name="children"></param>
         private void JustifyContent(Element element, List<Element> children) {
-            int count = children.Count;
-
             switch (this.Justify_Content) {
                 default:
                 case Enums.Justify_Content.Flex_start: {
@@ -280,6 +282,7 @@ namespace Leagueinator.Printer {
 
             while (stack.Count > 0) {
                 Element element = stack.Pop();
+                Debug.WriteLine($"Draw {element.Identifier} {element.ContentRect}");
                 element.InvokeDrawHandlers(g, page);
 
                 if (element.Style.Overflow == Enums.Overflow.Visible) {
@@ -290,6 +293,7 @@ namespace Leagueinator.Printer {
                         if (child.Style.Position == Enums.Position.Absolute) stack.Push(child);
                         else if (child.Style.Position == Enums.Position.Fixed) stack.Push(child);
                         else if (child.Style.Page == page) stack.Push(child);
+                        else if (child.TagName == TextElement.TAG_NAME) stack.Push(child);
                     }
                 }
             }
@@ -353,13 +357,20 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Collect all child nodes with a flex position and the specified page.
+        /// Collect all element nodes with a flex position and the specified page.
         /// </summary>
         /// <param name = "element" ></ param >
         /// <returns></returns>
         private List<Element> CollectChildren(Element element, int page) {
+            Debug.WriteLine("\nCollectChildren");
+
             var children = element.Children
+                                  .Select(ele => { 
+                                      Debug.WriteLine($"{ele.Identifier} {ele.Style}"); 
+                                      return ele; 
+                                  })
                                   .Where(ele => ele.Style.Position == Enums.Position.Flex)
+                                  .Select(ele => { Debug.WriteLine("KEPT"); return ele; })
                                   .Where(ele => ele.Style.Page == page)
                                   .ToList();
 
@@ -380,7 +391,7 @@ namespace Leagueinator.Printer {
             }
 
             PointF current = from;
-            foreach (Element child in children) {
+            foreach (Element child in children) {                
                 child.Translate(current);
                 var diff = new PointF(child.OuterSize.Width, child.OuterSize.Height).Scale(vector);
                 current = current.Translate(diff);
@@ -419,12 +430,12 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Calculates and assigns page numbers to child elements of a given parent element based on the 
+        /// Calculates and assigns page numbers to element elements of a given parent element based on the 
         /// parent's content size and the heights of the children. Returns the total page count for 
         /// the parent element.
         /// </summary>
         /// <param name="element">The parent element.</param>
-        /// <returns>Total page count for all child elements.</returns>
+        /// <returns>Total page count for all element elements.</returns>
         private int AssignPages(Element element) {
             if (element.Style.Overflow != Enums.Overflow.Paged) return 1;
             Queue<Element> children = new(element.Children);

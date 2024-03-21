@@ -12,7 +12,7 @@ namespace Leagueinator.Printer {
         [CSS("Flex")] public Position? Position = null;
         [CSS("Visible")] public Overflow? Overflow = null;
 
-        [CSS("0, 0", "SetLocation")] public PointF? Location = null;
+        [CSS("0px, 0px")] public Coordinate<UnitFloat>? Translate = null;
         [CSS] public UnitFloat? Left = null;
         [CSS] public UnitFloat? Right = null;
         [CSS] public UnitFloat? Top = null;
@@ -27,7 +27,11 @@ namespace Leagueinator.Printer {
         [CSS] public Cardinal<Color>? BorderColor = null;
         [CSS("0px")] public Cardinal<UnitFloat>? BorderSize;
         [CSS("Solid")] public Cardinal<DashStyle>? BorderStyle;
-        [CSS] public string Border { set => this.SetBorder(value); }
+
+        [CSS] public string Border {
+            get => $"{BorderSize} {BorderStyle} {BorderColor}";
+            set => this.SetBorder(value); 
+        }
 
         [CSS("Row")] public Flex_Axis? Flex_Axis = null;
         [CSS("Flex_Start")] public Justify_Content? Justify_Content = null;
@@ -117,15 +121,6 @@ namespace Leagueinator.Printer {
                 if (sourceValue == null || targetValue != null) continue;
                 field.SetValue(target, sourceValue);
             }
-        }
-
-        public bool SetLocation(string source) {
-            var args = source.Split(',')
-                             .Select(s => int.Parse(s))
-                             .ToArray();
-
-            this.Location = new Point(args[0], args[1]);
-            return true;
         }
 
         private void SetBorder(string source) {

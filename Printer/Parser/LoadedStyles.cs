@@ -24,7 +24,7 @@ namespace Leagueinator.CSSParser {
             this.ApplyParentStyles(root);
 
             // apply default styles
-            foreach (Element element in root["*"]) {
+            foreach (Element element in root.All()) {
                 Style.MergeStyles(element.Style, Style.Default);
             }
         }

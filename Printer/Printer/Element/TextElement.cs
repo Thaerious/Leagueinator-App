@@ -2,6 +2,7 @@
 
 namespace Leagueinator.Printer {
     public class TextElement : Element {
+        public static readonly string TAG_NAME = "@text";
         public string Text = "";
 
         internal override SizeF ContentSize => this.Size();
@@ -19,7 +20,7 @@ namespace Leagueinator.Printer {
             return graphics.MeasureString(this.Text, this.Style.Font);
         }
 
-        public TextElement(string text) : base("@text") {
+        public TextElement(string text) : base(TAG_NAME) {
             this.Text = text.Trim();
         }
 

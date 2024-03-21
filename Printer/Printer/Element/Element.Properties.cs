@@ -5,6 +5,17 @@
 
         public List<Element> Children => new(this._children);
 
+        public List<Element> All() {
+            List<Element> allElements = [];
+            allElements.Add(this);
+
+            foreach (Element child in this.Children) {
+                allElements.AddRange(child.All());
+            }
+
+            return allElements;
+        } 
+
         public Element? Parent { get; private set; }
 
         public bool IsRoot { get => this.Parent == null; }

@@ -15,7 +15,7 @@ namespace Leagueinator.CSSParser {
             this.DefVal = defVal;
         }
 
-        public CSS(string defVal, string setMethod) {
+        public CSS(string? defVal, string setMethod) {
             this.DefVal = defVal;
             this.SetMethod = setMethod;
         }

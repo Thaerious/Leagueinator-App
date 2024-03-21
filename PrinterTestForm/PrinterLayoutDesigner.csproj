@@ -9,12 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\new.xml" />
     <None Remove="xml\layout.xml" />
     <None Remove="xml\style.ss" />
     <None Remove="xml\template.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\new.xml" />
     <EmbeddedResource Include="xml\layout.xml" />
     <EmbeddedResource Include="xml\style.ss" />
     <EmbeddedResource Include="xml\template.xml" />

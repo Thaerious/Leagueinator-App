@@ -59,9 +59,9 @@
         /// </summary>
         public RectangleF ContentRect {
             get {
-                Cardinal<UnitFloat> margin = this.Style.Margin;
-                Cardinal<UnitFloat> border = this.Style.BorderSize;
-                Cardinal<UnitFloat> padding = this.Style.Padding;
+                Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
+                Cardinal<UnitFloat> border = this.Style.BorderSize ?? new();
+                Cardinal<UnitFloat> padding = this.Style.Padding ?? new();
 
                 return new RectangleF(
                     this.Location.X + margin.Left + border.Left + padding.Left,
@@ -90,7 +90,7 @@
         /// </summary>
         public RectangleF BorderRect {
             get {
-                Cardinal<UnitFloat> margin = this.Style.Margin;
+                Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
 
                 return new RectangleF(
                     this.Location.X + margin.Left,

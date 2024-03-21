@@ -60,7 +60,7 @@ namespace Test_Style {
         /// </summary>
         [TestMethod]
         public void Default_Values_Location() {
-            Assert.AreEqual(new Point(0, 0), Style.Default.Location);
+            Assert.AreEqual(new Point(0, 0), Style.Default.Translate);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Test_Style {
         [TestMethod]
         public void Inherited_Default_Value() {
             Element xml = LoadResources("layout.xml", "style.css");
-            Assert.AreEqual(new Point(0, 0), xml.Style.Location);
+            Assert.AreEqual(new Point(0, 0), xml.Style.Translate);
         }
 
         /// <summary>
@@ -89,11 +89,6 @@ namespace Test_Style {
             Element xml = LoadResources("layout.xml", "style.css");
             Assert.AreEqual("50px", xml[".child"][0].Style.Width.ToString());
             Assert.AreEqual("75px", xml[".child"][0].Style.Height.ToString());
-        }
-
-        [TestMethod]
-        public void Border() {
-            Document document = Document.LoadAsset("Test_Style.Assets.border.xml", Assembly.GetExecutingAssembly());
         }
 
         /// <summary>
