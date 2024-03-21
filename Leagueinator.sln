@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_Style", "Test_Style\Te
 		{80487A98-7BA7-4F7A-99FC-B17F3D41330F} = {80487A98-7BA7-4F7A-99FC-B17F3D41330F}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Time_Style", "Time_Style\Time_Style.csproj", "{46043305-B400-44BB-9E2F-DE1476DE5615}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,10 @@ Global
 		{5CD0D0D5-EB64-44AC-9A10-D27B60C05BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CD0D0D5-EB64-44AC-9A10-D27B60C05BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CD0D0D5-EB64-44AC-9A10-D27B60C05BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46043305-B400-44BB-9E2F-DE1476DE5615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46043305-B400-44BB-9E2F-DE1476DE5615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46043305-B400-44BB-9E2F-DE1476DE5615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46043305-B400-44BB-9E2F-DE1476DE5615}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

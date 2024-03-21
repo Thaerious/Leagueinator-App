@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\layout.xml" />
+    <None Remove="Assets\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\layout.xml" />
+    <EmbeddedResource Include="Assets\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Printer\Printer.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<docroot>
+
+  <head>
+    <stylesheet asset="Test_Style.Assets.style.css"/>
+  </head>
+  
+  <body>
+    <div class="parent">
+      <div class="child">
+        <div id="deepchild"></div>
+      </div>
+    </div>
+  </body>
+</docroot>

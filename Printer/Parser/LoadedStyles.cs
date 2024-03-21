@@ -1,7 +1,4 @@
 ﻿using Leagueinator.Printer;
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace Leagueinator.CSSParser {
     /// <summary>
@@ -16,7 +13,6 @@ namespace Leagueinator.CSSParser {
                 .OrderBy(pair => pair.Value)
                 .Select(pair => pair.Key)
                 .ToList();
-
 
             // apply defined styles
             foreach (Style style in this.Keys) {
@@ -40,10 +36,14 @@ namespace Leagueinator.CSSParser {
             while (queue.Count > 0) {
                 Element parent = queue.Dequeue();
                 foreach (Element child in parent.Children) {
-                    Style.MergeStyles(child.Style, parent.Style, true);
+                    Style.MergeInheritedStyles(child.Style, parent.Style);
                     queue.Enqueue(child);
                 }
             }
+        }
+
+        public IList<Style> AsList() {
+            return this.Keys;
         }
     }
 }

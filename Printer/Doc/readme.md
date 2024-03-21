@@ -1,4 +1,33 @@
 ﻿# Usage
+
+## DOM
+    <docroot>
+        <head>
+            <stylesheet asset="" file="">
+            <style></style>
+        </head>
+
+        <template></template>
+
+        ... non-rendered content ...
+
+        <body>
+            ... rendered content ...
+        <body>
+    </docroot>
+
+## Reserved Tags
+### Docroot
+The document root, any elements can go here, but are not rendered.
+
+### Stylesheet
+The <stylesheet> tag defines the relationship between the current document and an external stylesheet.
+If the stylesheet is an asset put the name in the asset field.
+If the stylesheet is a file put the name in the file field.
+
+### Style
+The text contents are read in as a style sheet.
+
 ## Quick Start
 
     var xmlLoader = new XMLLoader();

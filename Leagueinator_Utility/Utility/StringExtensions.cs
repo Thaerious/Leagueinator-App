@@ -9,10 +9,6 @@
         }
 
         public static string DelString<T>(this IEnumerable<T> inEnumerable, int colsize, string del = ", ") {
-            inEnumerable.NotNull();
-
-
-
             string?[] array = inEnumerable.Select(t => t?.ToString())
                 .NotNull()
                 .Select(t => t?.PadRight(colsize, ' '))

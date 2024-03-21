@@ -18,6 +18,7 @@ namespace Test_Style {
         public static Element LoadXMLResource(string xmlName) {
             Assembly assembly = Assembly.GetExecutingAssembly();
             xmlName = $"Test_Style.Assets.{xmlName}";
+            Console.WriteLine(xmlName);
             using Stream? xmlStream = assembly.GetManifestResourceStream(xmlName) ?? throw new NullReferenceException($"Resource Not Found: {xmlName}");
             using StreamReader xmlReader = new StreamReader(xmlStream);
             string xmlText = xmlReader.ReadToEnd();
@@ -88,6 +89,11 @@ namespace Test_Style {
             Element xml = LoadResources("layout.xml", "style.css");
             Assert.AreEqual("50px", xml[".child"][0].Style.Width.ToString());
             Assert.AreEqual("75px", xml[".child"][0].Style.Height.ToString());
+        }
+
+        [TestMethod]
+        public void Border() {
+            Document document = Document.LoadAsset("Test_Style.Assets.border.xml", Assembly.GetExecutingAssembly());
         }
 
         /// <summary>

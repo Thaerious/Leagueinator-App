@@ -2,7 +2,6 @@
 
 namespace Leagueinator.Printer {
     public class XMLLoader {
-
         public static Element Load(string xmlString) {
             XDocument xml = XDocument.Parse(xmlString);
 

@@ -38,8 +38,8 @@ namespace Leagueinator.CSSParser {
             var val = context.children[2].GetText().Trim();
 
             try {
-                if (Style.Fields.ContainsKey(key)) {
-                    var field = Style.Fields[key];
+                if (Style.CSSFields.ContainsKey(key)) {
+                    var field = Style.CSSFields[key];
                     CSS? css = field.GetCustomAttribute<CSS>();
                     if (css is null) return;
 
@@ -47,8 +47,8 @@ namespace Leagueinator.CSSParser {
                         css.TryParse(style, val, field);
                     }
                 }
-                else if (Style.Properties.ContainsKey(key)) {
-                    var prop = Style.Properties[key];
+                else if (Style.CSSProperties.ContainsKey(key)) {
+                    var prop = Style.CSSProperties[key];
                     CSS? css = prop.GetCustomAttribute<CSS>();
                     if (css is null) return;
 
@@ -57,7 +57,10 @@ namespace Leagueinator.CSSParser {
                     }
                 }
                 else {
-                    throw new Exception($"Unknown proptery {key}");
+                    string msg 
+                        = $"Line {context.Start.Line}:{context.Start.Column}\n"
+                        + $"Unknown property {key}";
+                    throw new Exception(msg);
                 }
             }
             catch (TargetInvocationException ex) {
@@ -71,14 +74,14 @@ namespace Leagueinator.CSSParser {
 
                 throw new Exception(msg);
             }
-            catch (Exception ex) {
-                string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
-                msg += ex.Message;
-                Debug.WriteLine("\n");
-                Debug.WriteLine(ex);
-                Debug.WriteLine("\n");
-                throw new Exception(msg);
-            }
+            //catch (Exception ex) {
+            //    string msg = $"Line {context.Start.Line}:{context.Start.Column}\n";
+            //    msg += ex.Message;
+            //    Debug.WriteLine("\n");
+            //    Debug.WriteLine(ex);
+            //    Debug.WriteLine("\n");
+            //    throw new Exception(msg);
+            //}
         }
     }
 

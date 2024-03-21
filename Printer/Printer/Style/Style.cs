@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 
 namespace Leagueinator.Printer {
+
     public partial class Style : IComparable<Style> {
         [CSS("Flex")] public Position? Position = null;
         [CSS("Visible")] public Overflow? Overflow = null;
@@ -56,9 +57,6 @@ namespace Leagueinator.Printer {
         public string Selector { get; init; } = "";
 
         public int[] Specificity { get; init; } = new int[QueryEngine.SPECIFICITY_SIZE];
-
-        public Style() { }
-
         public virtual int DoLayout(Element element) {
             this.DoSize(element);
             int pageCount = this.DoPos(element);
@@ -66,7 +64,6 @@ namespace Leagueinator.Printer {
 
             return pageCount;
         }
-
         public virtual void DoSize(Element element) { }
         public virtual int DoPos(Element element) { return 0; }
         public virtual void AssignInvokes(Element element) { }
@@ -84,77 +81,42 @@ namespace Leagueinator.Printer {
             }
         }
 
-        /// <summary>
-        /// Copy all CSS properties and fields from source to target.
-        /// Will only overwrite null fields on target.
-        /// Used to create inhereited style properties.
-        /// </summary>
-        /// <param name="source"></param>
-        internal static void MergeStyles(Style target, Style source, bool checkInherited = false) {
-            PropertyInfo[] properties = source.GetType().GetProperties();
-            FieldInfo[] fields = source.GetType().GetFields();
-
-            foreach (var property in properties) {
-                InheritedAttribute? inherited = property.GetCustomAttribute<InheritedAttribute>();
-                if (inherited == null && checkInherited == true) continue;
-
-                if (property.GetCustomAttribute<CSS>() == null) continue;
-                if (property.CanWrite && property.CanRead) {
-                    var sourceValue = property.GetValue(source);
-                    var targetValue = property.GetValue(target);
-                    if (sourceValue == null || targetValue != null) continue;
-                    property.SetValue(target, sourceValue);
-                }
+        internal static void MergeInheritedStyles(Style target, Style source) {
+            foreach (var property in Style.InheritedProperties.Values) {                
+                var sourceValue = property.GetValue(source);
+                var targetValue = property.GetValue(target);
+                if (sourceValue == null || targetValue != null) continue;
+                property.SetValue(target, sourceValue);
             }
 
-            foreach (var field in fields) {
-                InheritedAttribute? inherited = field.GetCustomAttribute<InheritedAttribute>();
-                if (inherited == null && checkInherited == true) continue;
-
-                if (field.GetCustomAttribute<CSS>() == null) continue;
+            foreach (var field in Style.InheritedFields.Values) {
                 var sourceValue = field.GetValue(source);
                 var targetValue = field.GetValue(target);
-
                 if (sourceValue == null || targetValue != null) continue;
                 field.SetValue(target, sourceValue);
             }
         }
 
         /// <summary>
-        /// Create a new style from this style.
-        /// Copies all properties to the new style.
-        /// Used to create a specific style after the source has been read.
+        /// Copy all CSS properties and fields from source to target.
+        /// Will only overwrite null fields on target.
+        /// Used to create inhereited style properties.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T ToStyle<T>() where T : Style, new() {
-            T target = new();
-
-            foreach (var propName in Style.Properties.Keys) {
-                var sourceProp = Style.Properties[propName];
-
-                if (sourceProp.GetCustomAttribute<CSS>() == null) continue;
-                var targetProp = Style.Properties[propName];
-
-                if (sourceProp.CanRead && targetProp.CanWrite) {
-                    var sourceValue = sourceProp.GetValue(this);
-                    if (sourceValue == null) continue;
-                    targetProp.SetValue(target, sourceValue);
-                }
+        /// <param name="source"></param>
+        internal static void MergeStyles(Style target, Style source) {
+            foreach (var property in Style.CSSProperties.Values) {
+                var sourceValue = property.GetValue(source);
+                var targetValue = property.GetValue(target);
+                if (sourceValue == null || targetValue != null) continue;
+                property.SetValue(target, sourceValue);
             }
 
-            foreach (var fieldName in Style.Fields.Keys) {
-                var sourceField = Style.Fields[fieldName];
-
-                if (sourceField.GetCustomAttribute<CSS>() == null) continue;
-                var targetField = Style.Fields[fieldName];
-
-                var sourceValue = sourceField.GetValue(this);
-                if (sourceValue == null) continue;
-                targetField.SetValue(target, sourceValue);
+            foreach (var field in Style.CSSFields.Values) {
+                var sourceValue = field.GetValue(source);
+                var targetValue = field.GetValue(target);
+                if (sourceValue == null || targetValue != null) continue;
+                field.SetValue(target, sourceValue);
             }
-
-            return target;
         }
 
         public bool SetLocation(string source) {
@@ -188,14 +150,6 @@ namespace Leagueinator.Printer {
             this.BorderColor ??= new(Color.Black);
             this.BorderStyle ??= new(DashStyle.Solid);
             this.BorderSize ??= new(new(1, "px"));
-        }
-
-        public static IReadOnlyDictionary<string, FieldInfo> Fields { get; private set; }
-        public static IReadOnlyDictionary<string, PropertyInfo> Properties { get; private set; }
-
-        static Style() {
-            Fields = typeof(Style).GetFields().ToDictionary();
-            Properties = typeof(Style).GetProperties().ToDictionary();
         }
 
         public override string ToString() {
