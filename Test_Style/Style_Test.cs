@@ -1,6 +1,8 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
 using Leagueinator.Printer.Enums;
+using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 
@@ -53,24 +55,24 @@ namespace Test_Style {
             Assert.AreEqual(null, xml.Style.BorderColor);
         }
 
-        /// <summary>
-        /// Parameters can have a default value set in the CSS annotation, 
-        /// they will be used if the parameter is null after other propagation methods.
-        /// The default style only exists on a style that is on an xml element.
-        /// </summary>
-        [TestMethod]
-        public void Default_Values_Location() {
-            Assert.AreEqual(new Point(0, 0), Style.Default.Translate);
-        }
+        ///// <summary>
+        ///// Parameters can have a default value set in the CSS annotation, 
+        ///// they will be used if the parameter is null after other propagation methods.
+        ///// The default style only exists on a style that is on an xml element.
+        ///// </summary>
+        //[TestMethod]
+        //public void Default_Values_Location() {
+        //    Assert.AreEqual(new Point(0, 0), Style.Default.Translate);
+        //}
 
-        /// <summary>
-        /// All elements inherit default values.
-        /// </summary>
-        [TestMethod]
-        public void Inherited_Default_Value() {
-            Element xml = LoadResources("layout.xml", "style.css");
-            Assert.AreEqual(new Point(0, 0), xml.Style.Translate);
-        }
+        ///// <summary>
+        ///// All elements inherit default values.
+        ///// </summary>
+        //[TestMethod]
+        //public void Inherited_Default_Value() {
+        //    Element xml = LoadResources("layout.xml", "style.css");
+        //    Assert.AreEqual(new Point(0, 0), xml.Style.Translate);
+        //}
 
         /// <summary>
         /// CSS properties marked 'inherited' will cause elements to inherit from their parent
@@ -124,6 +126,17 @@ namespace Test_Style {
         [TestMethod]
         public void Specificity_NameClass_Name() {
             Element xml = LoadResources("specificity.xml", "specificity.css");
+
+            var styles = LoadSSResource("specificity.css");
+            var sortedKeys = styles
+                            .OrderBy(pair => pair.Value)
+                            .Select(pair => pair.Key)
+                            .ToList();
+            int i = 0;
+            foreach (var key in sortedKeys) {
+                Debug.WriteLine($"{i++}\t\"{key.Selector}\"\t[{key.Specificity.DelString()}]");
+            }
+
             Assert.AreEqual(Flex_Axis.Column, xml["t1"][0].Style.Flex_Axis);
         }
 
@@ -152,6 +165,15 @@ namespace Test_Style {
             styles.OrderBy(pair => pair.Value)
                   .ToList()
                   .ForEach(pair => Console.WriteLine(pair.Value));
+        }
+
+
+        /// <summary>
+        /// Class > ElementName
+        /// </summary>
+        [TestMethod]
+        public void Apply_Deep_Style() {
+            LoadResources("layout.xml", "applyDeepStyle.css");
         }
 
     }

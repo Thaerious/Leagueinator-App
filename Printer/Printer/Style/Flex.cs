@@ -282,7 +282,6 @@ namespace Leagueinator.Printer {
 
             while (stack.Count > 0) {
                 Element element = stack.Pop();
-                Debug.WriteLine($"Draw {element.Identifier} {element.ContentRect}");
                 element.InvokeDrawHandlers(g, page);
 
                 if (element.Style.Overflow == Enums.Overflow.Visible) {
@@ -362,15 +361,8 @@ namespace Leagueinator.Printer {
         /// <param name = "element" ></ param >
         /// <returns></returns>
         private List<Element> CollectChildren(Element element, int page) {
-            Debug.WriteLine("\nCollectChildren");
-
             var children = element.Children
-                                  .Select(ele => { 
-                                      Debug.WriteLine($"{ele.Identifier} {ele.Style}"); 
-                                      return ele; 
-                                  })
                                   .Where(ele => ele.Style.Position == Enums.Position.Flex)
-                                  .Select(ele => { Debug.WriteLine("KEPT"); return ele; })
                                   .Where(ele => ele.Style.Page == page)
                                   .ToList();
 
@@ -425,8 +417,6 @@ namespace Leagueinator.Printer {
                     }
                     break;
             }
-
-            children.ForEach(c => Debug.WriteLine($"{c.Identifier} {c.OuterRect}"));
         }
 
         /// <summary>

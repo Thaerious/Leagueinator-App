@@ -40,6 +40,7 @@ namespace PrinterTestForm {
             this.txtStyle = new TextBox();
             this.menuStrip1 = new MenuStrip();
             this.fileToolStripMenuItem = new ToolStripMenuItem();
+            this.newToolStripMenuItem = new ToolStripMenuItem();
             this.loadXMLToolStripMenuItem = new ToolStripMenuItem();
             this.saveToolStripMenuItem1 = new ToolStripMenuItem();
             this.saveToolStripMenuItem = new ToolStripMenuItem();
@@ -48,7 +49,11 @@ namespace PrinterTestForm {
             this.actionsToolStripMenuItem = new ToolStripMenuItem();
             this.refreshToolStripMenuItem = new ToolStripMenuItem();
             this.invalidateToolStripMenuItem = new ToolStripMenuItem();
-            this.newToolStripMenuItem = new ToolStripMenuItem();
+            this.toBackToolStripMenuItem = new ToolStripMenuItem();
+            this.majorToolStripMenuItem = new ToolStripTextBox();
+            this.minorToolStripMenuItem = new ToolStripTextBox();
+            this.majorToolStripMenuItem1 = new ToolStripMenuItem();
+            this.minorToolStripMenuItem1 = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -235,6 +240,13 @@ namespace PrinterTestForm {
             this.fileToolStripMenuItem.Size = new Size(54, 29);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new Size(270, 34);
+            this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += this.MenuNewClick;
+            // 
             // loadXMLToolStripMenuItem
             // 
             this.loadXMLToolStripMenuItem.Name = "loadXMLToolStripMenuItem";
@@ -294,14 +306,41 @@ namespace PrinterTestForm {
             this.invalidateToolStripMenuItem.Size = new Size(246, 34);
             this.invalidateToolStripMenuItem.Text = "Invalidate";
             // 
-            // newToolStripMenuItem
+            // toBackToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new Size(270, 34);
-            this.newToolStripMenuItem.Text = "New";
-            this.newToolStripMenuItem.Click += this.MenuNewClick;
+            this.toBackToolStripMenuItem.Checked = true;
+            this.toBackToolStripMenuItem.CheckState = CheckState.Checked;
+            this.toBackToolStripMenuItem.Name = "toBackToolStripMenuItem";
+            this.toBackToolStripMenuItem.Size = new Size(450, 34);
+            this.toBackToolStripMenuItem.Text = "To Back";
             // 
-            // MainForm
+            // majorToolStripMenuItem
+            // 
+            this.majorToolStripMenuItem.Margin = new Padding(1, 0, 1, 0);
+            this.majorToolStripMenuItem.Name = "majorToolStripMenuItem";
+            this.majorToolStripMenuItem.Size = new Size(270, 31);
+            this.majorToolStripMenuItem.Text = "Major";
+            // 
+            // minorToolStripMenuItem
+            // 
+            this.minorToolStripMenuItem.Margin = new Padding(1, 0, 1, 0);
+            this.minorToolStripMenuItem.Name = "minorToolStripMenuItem";
+            this.minorToolStripMenuItem.Size = new Size(360, 31);
+            this.minorToolStripMenuItem.Text = "Minor";
+            // 
+            // majorToolStripMenuItem1
+            // 
+            this.majorToolStripMenuItem1.Name = "majorToolStripMenuItem1";
+            this.majorToolStripMenuItem1.Size = new Size(450, 34);
+            this.majorToolStripMenuItem1.Text = "Major";
+            // 
+            // minorToolStripMenuItem1
+            // 
+            this.minorToolStripMenuItem1.Name = "minorToolStripMenuItem1";
+            this.minorToolStripMenuItem1.Size = new Size(450, 34);
+            this.minorToolStripMenuItem1.Text = "Minor";
+            // 
+            // PrinterLayoutDesigner
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
@@ -309,7 +348,7 @@ namespace PrinterTestForm {
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Printer Layout Designer";
+            this.Name = "PrinterLayoutDesigner";
             this.Text = "Printer Layout Designer";
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
@@ -355,5 +394,10 @@ namespace PrinterTestForm {
         private ToolStripMenuItem invalidateToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem1;
         private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem toBackToolStripMenuItem;
+        private ToolStripTextBox majorToolStripMenuItem;
+        private ToolStripTextBox minorToolStripMenuItem;
+        private ToolStripMenuItem majorToolStripMenuItem1;
+        private ToolStripMenuItem minorToolStripMenuItem1;
     }
 }

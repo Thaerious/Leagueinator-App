@@ -1,27 +1,54 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using Leagueinator.Printer;
 using Leagueinator.Printer.Query;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
+using static StyleParser;
 
 namespace Leagueinator.CSSParser {
     internal class StyleListener : StyleParserBaseListener {
         public readonly LoadedStyles Styles = new();
         private readonly List<Style> currentStyles = new();
 
+        private static string CollectSelectorContext(SelectorContext selector) {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < selector.ChildCount; i++) {
+                var child = selector.GetChild(i);   
+                sb.Append(child.GetText());
+
+                if (i < selector.ChildCount - 1) {
+                    switch (child.GetText()) {
+                        case ".":
+                        case "#":
+                            break;
+                        default:
+                            sb.Append(" ");
+                            break;
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Treat the style selector as a commas seperated list and extract each style name.
         /// </summary>
         /// <param name="context"></param>
         public override void EnterStyle([NotNull] global::StyleParser.StyleContext context) {
-            var selectors = context.selectors().GetText();
+            var selectors_txt = context.selectors().GetText();
+            SelectorContext[] selectors = context.selectors().selector();
+            foreach (SelectorContext selector in selectors) {
+                string selectorText = CollectSelectorContext(selector);
 
-            foreach (var selector in selectors.Split(",")) {
                 var style = new Style() {
-                    Selector = selector,
-                    Specificity = QueryEngine.Specificity(selector, -this.Styles.Count)
+                    Selector = selectorText,
+                    Specificity = QueryEngine.Specificity(selectorText, -this.Styles.Count)
                 };
 
                 this.Styles.Add(style);
@@ -57,7 +84,7 @@ namespace Leagueinator.CSSParser {
                     }
                 }
                 else {
-                    string msg 
+                    string msg
                         = $"Line {context.Start.Line}:{context.Start.Column}\n"
                         + $"Unknown property {key}";
                     throw new Exception(msg);

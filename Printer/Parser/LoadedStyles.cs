@@ -1,4 +1,6 @@
 ﻿using Leagueinator.Printer;
+using Leagueinator.Utility;
+using System.Diagnostics;
 
 namespace Leagueinator.CSSParser {
     /// <summary>
@@ -17,7 +19,8 @@ namespace Leagueinator.CSSParser {
             // apply defined styles
             foreach (Style style in this.Keys) {
                 foreach (Element element in root[style.Selector]) {
-                    Style.MergeStyles(element.Style, style);
+                    Debug.WriteLine($"MergeStyles {element.Identifier} {style.Selector}");
+                    Style.MergeStyles(element.Style, style);                    
                 }
             }
 

@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Leagueinator.Printer.Query {
@@ -162,11 +161,13 @@ namespace Leagueinator.Printer.Query {
                         specificity[2]++;
                         break;
                     default:
-                        if (query.Contains('.')) {
+                        if (s.Contains('.')) {
                             specificity[2]++;
                             specificity[3]++;
                         }
-                        else specificity[3]++;
+                        else {
+                            specificity[3]++;
+                        }
                         break;
                 }
             }
