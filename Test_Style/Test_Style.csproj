@@ -51,6 +51,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Printer\Printer.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

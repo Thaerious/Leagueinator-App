@@ -20,11 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Leagueinator_Utility\Leagueinator_Utility.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Printer\Components\PrinterCanvas.cs" />
+    <Compile Update="Source\Printer\Components\PrinterCanvas.cs" />
   </ItemGroup>
 
 </Project>

@@ -1,30 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Scoring\Plus\PlusRounds.cs" />
-    <Compile Remove="Scoring\Plus\PlusScore.cs" />
-    <Compile Remove="Scoring\Plus\PlusSummary.cs" />
-    <Compile Remove="Scoring\Plus\PlusTeams.cs" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Leagueinator_Utility\Leagueinator_Utility.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Tables\SettingsTable.cs" />
-    <Compile Update="Tables\IdleTable.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Scoring\Plus\" />
+    <Compile Update="Source\Tables\SettingsTable.cs" />
   </ItemGroup>
 
 </Project>

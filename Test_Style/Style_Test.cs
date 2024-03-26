@@ -1,6 +1,8 @@
 ﻿using Leagueinator.CSSParser;
 using Leagueinator.Printer;
-using Leagueinator.Printer.Enums;
+using Leagueinator.Printer.Elements;
+using Leagueinator.Printer.Styles;
+using Leagueinator.Printer.Styles.Enums;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Drawing;
@@ -62,16 +64,16 @@ namespace Test_Style {
         ///// </summary>
         //[TestMethod]
         //public void Default_Values_Location() {
-        //    Assert.AreEqual(new Point(0, 0), Style.Default.Translate);
+        //    Assert.AreEqual(new Point(0, 0), Styles.Default.Translate);
         //}
 
         ///// <summary>
-        ///// All elements inherit default values.
+        ///// AllDecendents elements inherit default values.
         ///// </summary>
         //[TestMethod]
         //public void Inherited_Default_Value() {
-        //    Element xml = LoadResources("layout.xml", "style.css");
-        //    Assert.AreEqual(new Point(0, 0), xml.Style.Translate);
+        //    Elements xml = LoadResources("layout.xml", "style.css");
+        //    Assert.AreEqual(new Point(0, 0), xml.Styles.Translate);
         //}
 
         /// <summary>
