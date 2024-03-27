@@ -87,18 +87,20 @@ namespace Leagueinator.Printer.Styles {
         internal int DoPos() {
             int pageCount = this.AssignPages();
 
+            if (this.Translate != null) {
+                this.Element.Translate(this.Translate.X, this.Translate.Y);
+            }
+
+            if (this.Position != Enums.Position.Fixed) {
+                this.Element.Translate(this.Element.Parent?.ContentRect.TopLeft() ?? new());
+            }
+
             for (int page = 0; page < pageCount; page++) {
                 this.DoPosFlex(page);
             }
 
             this.DoPosAbsolute(this.Element.ContentRect, Enums.Position.Absolute);
             this.DoPosAbsolute(this.Element.Root.ContentRect, Enums.Position.Fixed);
-
-            foreach (Element child in this.Element.Children) {
-                if (child.Style.Translate != null) {
-                    child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
-                }
-            }
 
             return pageCount;
         }
@@ -110,10 +112,7 @@ namespace Leagueinator.Printer.Styles {
             this.JustifyContent(children);
             this.AlignItems(children);
 
-            foreach (Element child in children) {
-                child.Translate(child.Parent?.ContentRect.TopLeft() ?? new());
-                child.Style.DoPos();
-            }
+            foreach (Element child in children) child.Style.DoPos();
         }
 
         private void DoPosAbsolute(RectangleF reference, Enums.Position position) {
@@ -141,7 +140,6 @@ namespace Leagueinator.Printer.Styles {
                            y = reference.Height - child.OuterRect.Height - cStyle.Bottom;
                        }
 
-                       child.Translate(child.Parent?.ContentRect.TopLeft() ?? new());
                        child.Translate(x, y);
                        child.Style.DoPos();
                    });
@@ -360,7 +358,6 @@ namespace Leagueinator.Printer.Styles {
                 child.Translate(current);
                 var diff = new PointF(child.OuterRect.Width, child.OuterRect.Height).Scale(vector);
                 current = current.Translate(diff);
-                Debug.WriteLine($"{child} {child.OuterRect}");
             }
         }
 
