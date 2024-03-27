@@ -71,9 +71,9 @@ namespace Leagueinator.Printer.Styles {
             var outerWidth = borderWidth + this.Margin.Left + this.Margin.Right;
             var outerHeight = borderHeight + this.Margin.Top + this.Margin.Bottom;
 
-            this.Element.OuterRect = new (0, 0, outerWidth, outerHeight);
+            this.Element.OuterRect = new(0, 0, outerWidth, outerHeight);
             this.Element.BorderSize = new SizeF(borderWidth, borderHeight);
-            this.Element.ContentRect = new (0, 0, contentWidth, contentHeight);
+            this.Element.ContentRect = new(0, 0, contentWidth, contentHeight);
         }
 
         void SetDefaultSize() {
@@ -91,8 +91,15 @@ namespace Leagueinator.Printer.Styles {
                 this.DoPosFlex(page);
             }
 
-            this.DoPosAbsolute();
-            this.DoPosFixed();
+            this.DoPosAbsolute(this.Element.ContentRect, Enums.Position.Absolute);
+            this.DoPosAbsolute(this.Element.Root.ContentRect, Enums.Position.Fixed);
+
+            foreach (Element child in this.Element.Children) {
+                if (child.Style.Translate != null) {
+                    child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
+                }
+            }
+
             return pageCount;
         }
 
@@ -105,53 +112,37 @@ namespace Leagueinator.Printer.Styles {
 
             foreach (Element child in children) {
                 child.Translate(child.Parent?.ContentRect.TopLeft() ?? new());
-
-                if (child.Style.Translate != null) {
-                    child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
-                }
-
                 child.Style.DoPos();
-            }            
+            }
         }
 
-        private void DoPosAbsolute() {
+        private void DoPosAbsolute(RectangleF reference, Enums.Position position) {
             this.Element.Children
-                   .Where(child => child.Style.Position == Enums.Position.Absolute)
+                   .Where(child => child.Style.Position == position)
                    .ToList()
                    .ForEach(child => {
                        float x = 0f, y = 0f;
                        var cStyle = child.Style;
 
                        if (cStyle.Left != null) {
-                           cStyle.Left.Factor = this.Element.ContentRect.Width;
+                           cStyle.Left.Factor = reference.Width;
                            x = cStyle.Left;
                        }
                        if (cStyle.Right != null) {
-                           cStyle.Right.Factor = this.Element.ContentRect.Width;
-                           x = this.Element.ContentRect.Width - child.OuterRect.Width - cStyle.Right;
+                           cStyle.Right.Factor = reference.Width;
+                           x = reference.Width - child.OuterRect.Width - cStyle.Right;
                        }
                        if (cStyle.Top != null) {
-                           cStyle.Top.Factor = this.Element.ContentRect.Height;
+                           cStyle.Top.Factor = reference.Height;
                            y = cStyle.Top;
                        }
                        if (cStyle.Bottom != null) {
-                           cStyle.Bottom.Factor = this.Element.ContentRect.Height;
-                           y = this.Element.ContentRect.Height - child.OuterRect.Height - cStyle.Bottom;
+                           cStyle.Bottom.Factor = reference.Height;
+                           y = reference.Height - child.OuterRect.Height - cStyle.Bottom;
                        }
 
-                       child.Translation = child.Parent?.ContentRect.TopLeft() ?? new();
+                       child.Translate(child.Parent?.ContentRect.TopLeft() ?? new());
                        child.Translate(x, y);
-                       child.Translate(child.Style.Translate!.X, child.Style.Translate!.Y);
-                       child.Style.DoPos();
-                   });
-        }
-
-        private void DoPosFixed() {
-            this.Element.Children
-                   .Where(child => child.Style.Position == Enums.Position.Fixed)
-                   .ToList()
-                   .ForEach(child => {
-                       child.OuterRect = new(0, 0, child.Style.Translate!.X, child.Style.Translate!.Y);
                        child.Style.DoPos();
                    });
         }

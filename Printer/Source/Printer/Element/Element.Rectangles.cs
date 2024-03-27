@@ -60,11 +60,10 @@ namespace Leagueinator.Printer.Elements {
             get; set;
         }
 
-        internal void SetContentRect(float width, float height) {
-            this.SetContentRect(width, height, ContentRect.TopLeft());
-        }
 
-        internal void SetContentRect(float width, float height, PointF location) {
+        internal void SetContentRect(float width, float height) {
+            PointF location = ContentRect.TopLeft();
+
             Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
             Cardinal<UnitFloat> border = this.Style.BorderSize ?? new();
             Cardinal<UnitFloat> padding = this.Style.Padding ?? new();
@@ -92,20 +91,12 @@ namespace Leagueinator.Printer.Elements {
                 Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
 
                 return new RectangleF(
-                    this.Location.X + margin.Left,
-                    this.Location.Y + margin.Top,
+                    this.ContainerRect.X + this.Translation.X + this.PageOffset.X + margin.Left,
+                    this.ContainerRect.Y + this.Translation.Y + this.PageOffset.Y + margin.Top,
                     this.BorderSize.Width,
                     this.BorderSize.Height
                 );
             }
         }
-
-        /// <summary>
-        /// The top-left screen location of this element.
-        /// </summary>
-        public virtual PointF Location => new(
-            this.ContainerRect.X + this.Translation.X + this.PageOffset.X,
-            this.ContainerRect.Y + this.Translation.Y + this.PageOffset.Y
-        );
     }
 }
