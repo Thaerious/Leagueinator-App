@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Printer.Aspects;
+using Leagueinator.Printer.Utility;
 
 namespace Leagueinator.Printer.Elements {
     public partial class Element {
@@ -11,12 +12,6 @@ namespace Leagueinator.Printer.Elements {
         /// The (x,y) translation of this element to account for paging.
         /// </summary>
         internal PointF PageOffset { get; set; } = new();
-
-        /// <summary>
-        /// The rectangle print actions will take place in.
-        /// This is defined by style width and height.
-        /// </summary>
-        internal virtual SizeF ContentSize { get; set; } = new();
 
         /// <summary>
         /// The rectable the border will be printed in.
@@ -53,44 +48,42 @@ namespace Leagueinator.Printer.Elements {
         }
 
         internal void Translate(PointF p) {
-            this.Translation = new PointF(this.Translation.X + p.X, this.Translation.Y + p.Y);
+            this.ContentRect = this.ContentRect.Translate(p);
+            this.OuterRect = this.OuterRect.Translate(p);
         }
 
         /// <summary>
         /// The area on the screen where drawing takes place for this element.
         /// This is the innermost rectangle.
         /// </summary>
-        public RectangleF ContentRect {
-            get {
-                Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
-                Cardinal<UnitFloat> border = this.Style.BorderSize ?? new();
-                Cardinal<UnitFloat> padding = this.Style.Padding ?? new();
+        internal RectangleF ContentRect {
+            get; set;
+        }
 
-                return new RectangleF(
-                    this.Location.X + margin.Left + border.Left + padding.Left,
-                    this.Location.Y + margin.Top + border.Top + padding.Top,
-                    this.ContentSize.Width,
-                    this.ContentSize.Height
-                );
-            }
+        internal void SetContentRect(float width, float height) {
+            this.SetContentRect(width, height, ContentRect.TopLeft());
+        }
+
+        internal void SetContentRect(float width, float height, PointF location) {
+            Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
+            Cardinal<UnitFloat> border = this.Style.BorderSize ?? new();
+            Cardinal<UnitFloat> padding = this.Style.Padding ?? new();
+
+            this.ContentRect = new(
+                location.X + margin.Left + border.Left + padding.Left,
+                location.Y + margin.Top + border.Top + padding.Top,
+                width,
+                height
+            );
         }
 
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
-        public RectangleF OuterRect {
+        internal RectangleF OuterRect {
             get; set;
-
-            //get {
-            //    return new RectangleF(
-            //        this.Location.X,
-            //        this.Location.Y,
-            //        this.OuterSize.Width,
-            //        this.OuterSize.Height
-            //    );
-            //}
-            //set 
         }
+
         /// <summary>
         /// The entire occupied space of this child, including padding and border.
         /// </summary>

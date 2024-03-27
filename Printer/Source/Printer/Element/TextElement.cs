@@ -18,7 +18,6 @@ namespace Leagueinator.Printer.Elements {
 
         public string Text { get; [Validated] set; } = "";
 
-        internal override SizeF ContentSize => this.Size();
 
         internal override SizeF BorderSize => this.Size();
 

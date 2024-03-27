@@ -145,6 +145,8 @@ namespace Leagueinator.Printer.Elements {
             return xml;
         }
 
+        public override string ToString() => this.Identifier;
+
         private readonly List<Element> _children = new();
     }
 }

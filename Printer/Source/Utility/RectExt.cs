@@ -32,5 +32,13 @@
         public static PointF Scale(this PointF left, PointF amount) {
             return new(left.X * amount.X, left.Y * amount.Y);
         }
+
+        public static RectangleF Translate(this RectangleF rect, PointF point) {
+            return new(rect.X + point.X, rect.Y + point.Y, rect.Width, rect.Height );
+        }
+
+        public static RectangleF Translate(this RectangleF rect, float x, float y) {
+            return rect.Translate(new PointF(x, y));
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Printer.Elements;
 using System.Drawing.Drawing2D;
 using Leagueinator.Printer.Utility;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer.Styles {
     public class Flex(Element owner) : Style {
@@ -23,7 +24,7 @@ namespace Leagueinator.Printer.Styles {
         private void DoRootSize() {
             this.Element.OuterRect = new(0, 0, this.Width, this.Height);
             this.Element.BorderSize = new(this.Width, this.Height);
-            this.Element.ContentSize = new(this.Width, this.Height);
+            this.Element.ContentRect = new(0, 0, this.Width, this.Height);
             this.Element.ContainerRect = new(0, 0, this.Width, this.Height);
             foreach (Element child in this.Element.Children) child.Style.DoSize();
         }
@@ -72,7 +73,7 @@ namespace Leagueinator.Printer.Styles {
 
             this.Element.OuterRect = new (0, 0, outerWidth, outerHeight);
             this.Element.BorderSize = new SizeF(borderWidth, borderHeight);
-            this.Element.ContentSize = new SizeF(contentWidth, contentHeight);
+            this.Element.ContentRect = new (0, 0, contentWidth, contentHeight);
         }
 
         void SetDefaultSize() {
@@ -80,7 +81,7 @@ namespace Leagueinator.Printer.Styles {
             if (this.Height != null) this.Height.Factor = this.Element.Parent?.ContentRect.Height ?? 0f;
             if (this.Translate != null) this.Translate.X.Factor = this.Element.Parent?.ContentRect.Width ?? 0f;
             if (this.Translate != null) this.Translate.Y.Factor = this.Element.Parent?.ContentRect.Width ?? 0f;
-            this.Element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
+            this.Element.SetContentRect(this.Width ?? 0f, this.Height ?? 0f);
         }
 
         internal int DoPos() {
@@ -99,7 +100,6 @@ namespace Leagueinator.Printer.Styles {
             var children = this.CollectChildren(page);
             if (children.Count == 0) return;
 
-            children.ForEach(c => c.Translation = new());
             this.JustifyContent(children);
             this.AlignItems(children);
 
@@ -109,8 +109,9 @@ namespace Leagueinator.Printer.Styles {
                 if (child.Style.Translate != null) {
                     child.Translate(child.Style.Translate.X, child.Style.Translate.Y);
                 }
+
                 child.Style.DoPos();
-            }
+            }            
         }
 
         private void DoPosAbsolute() {
@@ -164,7 +165,7 @@ namespace Leagueinator.Printer.Styles {
             switch (this.Justify_Content) {
                 default:
                 case Enums.Justify_Content.Flex_start: {
-                        this.LayoutChildren(children, new PointF(0, 0));
+                        this.LineupElements(children, new PointF(0, 0));
                         break;
                     }
 
@@ -178,7 +179,7 @@ namespace Leagueinator.Printer.Styles {
                             from = new PointF(0, this.Element.HeightRemaining(children));
                         }
 
-                        this.LayoutChildren(children, from);
+                        this.LineupElements(children, from);
                         break;
                     }
 
@@ -192,7 +193,7 @@ namespace Leagueinator.Printer.Styles {
                             from = new PointF(0, this.Element.HeightRemaining(children) / 2);
                         }
 
-                        this.LayoutChildren(children, from);
+                        this.LineupElements(children, from);
                         break;
                     }
 
@@ -281,7 +282,7 @@ namespace Leagueinator.Printer.Styles {
 
         public void DoDrawBackground(Graphics g, Element __, int page) {
             if (this.BackgroundColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), this.Element.BorderRect);
+                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), this.Element.ContentRect);
             }
         }
 
@@ -354,7 +355,7 @@ namespace Leagueinator.Printer.Styles {
             return children;
         }
 
-        private void LayoutChildren(List<Element> children, PointF from) {
+        private void LineupElements(List<Element> children, PointF from) {
             PointF vector;
             if (this.Flex_Axis == Enums.Flex_Axis.Column) {
                 vector = new(0, 1);
@@ -368,6 +369,7 @@ namespace Leagueinator.Printer.Styles {
                 child.Translate(current);
                 var diff = new PointF(child.OuterRect.Width, child.OuterRect.Height).Scale(vector);
                 current = current.Translate(diff);
+                Debug.WriteLine($"{child} {child.OuterRect}");
             }
         }
 
@@ -415,7 +417,7 @@ namespace Leagueinator.Printer.Styles {
 
             while (children.Count > 0) {
                 page++;
-                float heightRemaining = this.Element.ContentSize.Height;
+                float heightRemaining = this.Element.ContentRect.Height;
                 var child = children.Dequeue();
                 heightRemaining -= child.OuterRect.Height;
                 child.Style.Page = page;
@@ -440,7 +442,7 @@ namespace Leagueinator.Printer.Styles {
         /// <returns></returns>
         public static float WidthRemaining(this Element element, IList<Element> children) {
             children ??= element.Children;
-            float widthRemaining = element.ContentSize.Width;
+            float widthRemaining = element.ContentRect.Width;
 
             foreach (Element child in children) {
                 widthRemaining -= child.OuterRect.Width;
@@ -456,7 +458,7 @@ namespace Leagueinator.Printer.Styles {
         /// <returns></returns>
         public static float HeightRemaining(this Element element, IList<Element> children) {
             children ??= element.Children;
-            float heightRemaining = element.ContentSize.Height;
+            float heightRemaining = element.ContentRect.Height;
 
             foreach (Element child in children) {
                 heightRemaining -= child.OuterRect.Height;
