@@ -1,7 +1,6 @@
 ﻿using Leagueinator.Printer.Aspects;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Utility;
-using System;
 using System.Text;
 using System.Xml.Linq;
 

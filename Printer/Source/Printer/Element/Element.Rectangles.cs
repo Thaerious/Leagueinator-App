@@ -23,10 +23,10 @@ namespace Leagueinator.Printer.Elements {
         /// </summary>
         internal virtual SizeF BorderSize { get; set; } = new();
 
-        /// <summary>
-        /// The rectangle _parent elements will use for child size.
-        /// </summary>
-        internal virtual SizeF OuterSize { get; set; } = new();
+        ///// <summary>
+        ///// The rectangle _parent elements will use for child size.
+        ///// </summary>
+        //internal virtual SizeF OuterSize { get; set; } = new();
 
 
         /// <summary>
@@ -79,14 +79,17 @@ namespace Leagueinator.Printer.Elements {
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
         public RectangleF OuterRect {
-            get {
-                return new RectangleF(
-                    this.Location.X,
-                    this.Location.Y,
-                    this.OuterSize.Width,
-                    this.OuterSize.Height
-                );
-            }
+            get; set;
+
+            //get {
+            //    return new RectangleF(
+            //        this.Location.X,
+            //        this.Location.Y,
+            //        this.OuterSize.Width,
+            //        this.OuterSize.Height
+            //    );
+            //}
+            //set 
         }
         /// <summary>
         /// The entire occupied space of this child, including padding and border.

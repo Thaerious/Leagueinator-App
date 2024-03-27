@@ -22,8 +22,6 @@ namespace Leagueinator.Printer.Elements {
 
         internal override SizeF BorderSize => this.Size();
 
-        internal override SizeF OuterSize => this.Size();
-
         private SizeF Size() {
             if (this.Style == null) return new();
             if (this.Style.Font == null) return new();
