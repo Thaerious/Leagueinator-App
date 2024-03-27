@@ -8,14 +8,14 @@ namespace Leagueinator.Printer.Elements {
     /// <summary>
     /// An element queue that will add all child elements to the queue whenever an element is dequeued.
     /// </summary>
-    public class ElementQueue : Queue<Element> {
+    internal class ElementQueue : Queue<Element> {
 
         public ElementQueue(Element element) {
             this.Enqueue(element);
         }
 
         public new Element Dequeue() {
-            if (this.Count == 0) throw new InvalidOperationException("Can not dequeue from an empty queue");
+            if (this.Count == 0) throw new InvalidOperationException("Can not dequeue an empty queue");
             Element element = this.Dequeue();
             foreach (Element child in element.Children) this.Enqueue(child);
             return element;

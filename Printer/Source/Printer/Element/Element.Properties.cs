@@ -1,15 +1,44 @@
 ﻿
+using Leagueinator.Printer.Aspects;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Printer.Elements {
+
+
     public partial class Element {
 
-        public Styles.Style Style { get; internal set; }
+        public Styles.Style Style { 
+            get; 
+            internal set; 
+        }
+
+        public bool Invalid { 
+            get {
+                if (this.IsRoot) return this._invalid;
+                else return this.Root.Invalid;
+            }
+            set {
+                if (this.IsRoot) this._invalid = value;
+                else this.Root.Invalid = value;   
+            }
+        }
 
         public ReadOnlyCollection<Element> Children => new(this._children);
 
+        public Attributes Attributes { get; init; }
+
+        public Element Root {
+            get {
+                Element current = this;
+                while (current.Parent != null) {
+                    current = current.Parent;
+                }
+                return current;
+            }
+        }
         /// <summary>
-        /// Retrieves a list of all elements, starting with this element including all descendants recursivly.
+        /// Retrieves a non-reflective list of all elements, starting with this element including all 
+        /// descendants recursivly.
         /// </summary>
         /// <remarks>
         /// This method performs a depth-first search to collect all elements in the hierarchy, starting with 
@@ -33,15 +62,15 @@ namespace Leagueinator.Printer.Elements {
 
         public Element? Parent {
             get => _parent;
-            private set {
+            
+            [Validated] 
+            private  set {
                 if (this._parent != null) throw new InvalidOperationException("Child element already has a parent");
                 _parent = value;
             }
         }
 
         public bool IsRoot { get => this.Parent == null; }
-
-        public Dictionary<string, string> Attributes { get; init; } = new();
 
         public string TagName { get; init; } = "";
 
@@ -66,5 +95,7 @@ namespace Leagueinator.Printer.Elements {
         }
 
         private Element? _parent;
+        private Dictionary<string, string> _attributes = [];
+        private bool _invalid = true;
     }
 }

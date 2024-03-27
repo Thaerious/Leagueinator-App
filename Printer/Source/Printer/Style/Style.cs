@@ -4,46 +4,11 @@ using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Text;
 using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Styles.Enums;
 using Leagueinator.Utility;
 
 namespace Leagueinator.Printer.Styles {
 
     public partial class Style : IComparable<Style> {
-        [CSS("Flex")] public Position? Position = null;
-        [CSS("Visible")] public Overflow? Overflow = null;
-
-        [CSS("0px, 0px")] public Coordinate<UnitFloat>? Translate = null;
-        [CSS] public UnitFloat? Left = null;
-        [CSS] public UnitFloat? Right = null;
-        [CSS] public UnitFloat? Top = null;
-        [CSS] public UnitFloat? Bottom = null;
-        [CSS] public UnitFloat? Width = null;
-        [CSS] public UnitFloat? Height = null;
-        [CSS] public Color? BackgroundColor = null;
-
-        [CSS("0px")] public Cardinal<UnitFloat>? Margin = null;
-        [CSS("0px")] public Cardinal<UnitFloat>? Padding = null;
-
-        [CSS] public Cardinal<Color>? BorderColor = null;
-        [CSS("0px")] public Cardinal<UnitFloat>? BorderSize;
-        [CSS("Solid")] public Cardinal<DashStyle>? BorderStyle;
-
-        [CSS]
-        public string Border {
-            get => $"{this.BorderSize} {this.BorderStyle} {this.BorderColor}";
-            set => this.SetBorder(value);
-        }
-
-        [CSS("Row")] public Flex_Axis? Flex_Axis = null;
-        [CSS("Flex_Start")] public Justify_Content? Justify_Content = null;
-        [CSS("Flex_Start")] public Align_Items? Align_Items = null;
-        [CSS("Forward")] public Direction? Flex_Direction = null;
-
-        [CSS][Inherited] public string? FontFamily = null;
-        [CSS][Inherited] public UnitFloat? FontSize = null;
-        [CSS][Inherited] public FontStyle? FontStyle = null;
-
         public int Page { get; internal set; } = 0;
 
         public Font Font {
@@ -63,18 +28,30 @@ namespace Leagueinator.Printer.Styles {
         public string Selector { get; init; } = "";
 
         public int[] Specificity { get; init; } = new int[QueryEngine.SPECIFICITY_SIZE];
-        public virtual int DoLayout(Element element) {
+
+        public Element? Owner { get; set; }
+
+        public bool Invalid {
+            get => this.Owner?.Invalid ?? false;
+            internal set {
+                if (this.Owner is not null) this.Owner.Invalid = value;
+            }
+        }
+
+        internal int DoLayout(Element element) {
+            Console.WriteLine($"Do Layout For {element.Identifier}");
+
             this.DoSize(element);
             int pageCount = this.DoPos(element);
             this.AssignInvokes(element);
+            element.Invalid = false;
 
             return pageCount;
         }
-        public virtual void DoSize(Element element) { }
-        public virtual int DoPos(Element element) { return 0; }
-        public virtual void AssignInvokes(Element element) { }
-        public virtual void Draw(Graphics g, Element element, int page) { }
-
+        internal virtual void DoSize(Element element) { }
+        internal virtual int DoPos(Element element) { return 0; }
+        internal virtual void AssignInvokes(Element element) { }
+        
         public Enums.Direction Flex_Major_Direction {
             get {
                 switch (this.Flex_Axis) {
@@ -87,19 +64,14 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
+        
+
         internal static void MergeInheritedStyles(Style target, Style source) {
             foreach (var property in Style.InheritedProperties.Values) {
                 var sourceValue = property.GetValue(source);
                 var targetValue = property.GetValue(target);
                 if (sourceValue == null || targetValue != null) continue;
                 property.SetValue(target, sourceValue);
-            }
-
-            foreach (var field in Style.InheritedFields.Values) {
-                var sourceValue = field.GetValue(source);
-                var targetValue = field.GetValue(target);
-                if (sourceValue == null || targetValue != null) continue;
-                field.SetValue(target, sourceValue);
             }
         }
 
@@ -115,13 +87,6 @@ namespace Leagueinator.Printer.Styles {
                 var targetValue = property.GetValue(target);
                 if (sourceValue == null || targetValue != null) continue;
                 property.SetValue(target, sourceValue);
-            }
-
-            foreach (var field in Style.CSSFields.Values) {
-                var sourceValue = field.GetValue(source);
-                var targetValue = field.GetValue(target);
-                if (sourceValue == null || targetValue != null) continue;
-                field.SetValue(target, sourceValue);
             }
         }
 
@@ -156,6 +121,7 @@ namespace Leagueinator.Printer.Styles {
 
             sb.AppendLine($"Class : {this.GetType()}");
             sb.AppendLine($"Selector : {this.Selector}");
+            sb.AppendLine($"Owner : {(this.Owner != null ? this.Owner.Identifier : "")}");
             sb.AppendLine($"Specificity : [{this.Specificity.DelString()}]");
             sb.AppendLine($"Properties : [");
 

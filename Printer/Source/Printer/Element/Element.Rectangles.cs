@@ -1,14 +1,16 @@
-﻿namespace Leagueinator.Printer.Elements {
+﻿using Leagueinator.Printer.Aspects;
+
+namespace Leagueinator.Printer.Elements {
     public partial class Element {
         /// <summary>
         /// The (x,y) translation of this element relative to it's _parent element.
         /// </summary>
-        public PointF Translation { get; set; } = new();
+        internal PointF Translation { get; set; } = new();
 
         /// <summary>
         /// The (x,y) translation of this element to account for paging.
         /// </summary>
-        public PointF PageOffset { get; set; } = new();
+        internal PointF PageOffset { get; set; } = new();
 
         /// <summary>
         /// The rectangle print actions will take place in.
@@ -41,16 +43,16 @@
                 if (this._containerRect is not null) return (RectangleF)this._containerRect;
                 return this.Parent!.ContentRect;
             }
-            set => this._containerRect = value;
+            internal set => this._containerRect = value;
         }
 
         private RectangleF? _containerRect = null;
 
-        public void Translate(float x, float y) {
+        internal void Translate(float x, float y) {
             this.Translate(new PointF(x, y));
         }
 
-        public void Translate(PointF p) {
+        internal void Translate(PointF p) {
             this.Translation = new PointF(this.Translation.X + p.X, this.Translation.Y + p.Y);
         }
 

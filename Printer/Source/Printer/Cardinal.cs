@@ -1,4 +1,5 @@
-﻿using Leagueinator.CSSParser;
+﻿using AspectInjector.Broker;
+using Leagueinator.CSSParser;
 
 namespace Leagueinator.Printer {
     public class CardinalParseException : Exception {
@@ -12,7 +13,10 @@ namespace Leagueinator.Printer {
     }
 
     public class Cardinal<T> where T : new() {
-        public readonly T Left, Right, Top, Bottom;
+        public T Left { get; }
+        public T Right { get; }
+        public T Top { get; }
+        public T Bottom { get; }
 
         public Cardinal() {
             this.Top = new();

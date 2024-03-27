@@ -45,7 +45,7 @@ namespace Leagueinator.Printer.Components {
 
         protected override void OnPaint(PaintEventArgs e) {
             if (this.RootElement is null) return;
-            Console.WriteLine(this.RootElement.ToXML());
+            Console.WriteLine("PrinterCanvas.OnPaint");
 
             var stopwatch = new Stopwatch();
 
@@ -56,7 +56,7 @@ namespace Leagueinator.Printer.Components {
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
 
             stopwatch.Start();
-            this.RootElement?.Style.Draw(e.Graphics, this.RootElement, this.Page);
+            this.RootElement?.Draw(e.Graphics, this.Page);
             stopwatch.Stop();
 
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);

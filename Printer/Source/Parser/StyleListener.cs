@@ -64,16 +64,7 @@ namespace Leagueinator.CSSParser {
             var val = context.children[2].GetText().Trim();
 
             try {
-                if (Style.CSSFields.ContainsKey(key)) {
-                    var field = Style.CSSFields[key];
-                    CSS? css = field.GetCustomAttribute<CSS>();
-                    if (css is null) return;
-
-                    foreach (var style in this.currentStyles) {
-                        css.TryParse(style, val, field);
-                    }
-                }
-                else if (Style.CSSProperties.ContainsKey(key)) {
+                if (Style.CSSProperties.ContainsKey(key)) {
                     var prop = Style.CSSProperties[key];
                     CSS? css = prop.GetCustomAttribute<CSS>();
                     if (css is null) return;

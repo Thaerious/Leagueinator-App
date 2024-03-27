@@ -51,6 +51,7 @@ namespace Leagueinator.Designer {
 
         public PrinterLayoutDesigner() {
             this.InitializeComponent();
+
             this.printerCanvas.OnRepaintTime += (double ms) => {
                 this.lblTimer.Text = ms + " ms";
             };
@@ -171,7 +172,6 @@ namespace Leagueinator.Designer {
                 styles.ApplyTo(root);
 
                 this.printerCanvas.RootElement = root;
-                //root.Style.DoLayout(root);
 
                 this.printerCanvas.Invalidate(true);
             }
@@ -203,6 +203,13 @@ namespace Leagueinator.Designer {
         private void HndMenuAboutClick(object sender, EventArgs e) {
             string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "x.x.x.x";
             MessageBox.Show(version, "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void changeToolStripMenuItem_Click(object sender, EventArgs e) {
+            Element target = this.printerCanvas.RootElement["#target"][0];
+
+            Cardinal<UnitFloat>.TryParse("15px", out Cardinal<UnitFloat> value);
+            target.Style.BorderSize = value;
         }
     }
 }

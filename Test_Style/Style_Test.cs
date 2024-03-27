@@ -7,36 +7,13 @@ using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
+using static Test_Style.Loader;
 
 namespace Test_Style {
     [TestClass]
     public class Style_Test {
 
-        public static Element LoadResources(string xmlName, string cssName) {
-            var element = LoadXMLResource(xmlName);
-            LoadedStyles ss = LoadSSResource(cssName);
-            ss.ApplyTo(element);
-            return element;
-        }
 
-        public static Element LoadXMLResource(string xmlName) {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            xmlName = $"Test_Style.Assets.{xmlName}";
-            Console.WriteLine(xmlName);
-            using Stream? xmlStream = assembly.GetManifestResourceStream(xmlName) ?? throw new NullReferenceException($"Resource Not Found: {xmlName}");
-            using StreamReader xmlReader = new StreamReader(xmlStream);
-            string xmlText = xmlReader.ReadToEnd();
-            return XMLLoader.Load(xmlText);
-        }
-
-        public static LoadedStyles LoadSSResource(string cssName) {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            cssName = $"Test_Style.Assets.{cssName}";
-            using Stream? xmlStream = assembly.GetManifestResourceStream(cssName) ?? throw new NullReferenceException($"Resource Not Found: {cssName}");
-            using StreamReader xmlReader = new StreamReader(xmlStream);
-            string xmlText = xmlReader.ReadToEnd();
-            return StyleLoader.Load(xmlText);
-        }
 
         [TestMethod]
         public void Sanity() {
@@ -178,5 +155,16 @@ namespace Test_Style {
             LoadResources("layout.xml", "applyDeepStyle.css");
         }
 
+        /// <summary>
+        /// Class > ElementName
+        /// </summary>
+        [TestMethod]
+        public void Default_Position() {
+            LoadedStyles styles = LoadSSResource("empty.css");
+            Element element = new("element", []);
+            styles.ApplyTo(element);
+
+            Assert.AreEqual(Position.Flex, element.Style.Position);
+        }
     }
 }

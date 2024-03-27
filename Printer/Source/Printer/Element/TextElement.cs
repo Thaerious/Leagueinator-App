@@ -1,7 +1,8 @@
-﻿using Leagueinator.Utility;
+﻿using Leagueinator.Printer.Aspects;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Printer.Elements {
-    public class TextElement : Element {
+    internal class TextElement : Element {
         public static readonly string TAG_NAME = "@text";
         public string Text = "";
 
@@ -20,6 +21,7 @@ namespace Leagueinator.Printer.Elements {
             return graphics.MeasureString(this.Text, this.Style.Font);
         }
 
+        [Validated]
         public TextElement(string text) : base(TAG_NAME, []) {
             this.Text = text.Trim();
         }

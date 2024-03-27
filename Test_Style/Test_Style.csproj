@@ -14,6 +14,7 @@
     <None Remove="Assets\applyDeepStyle.css" />
     <None Remove="Assets\border.xml" />
     <None Remove="Assets\document.xml" />
+    <None Remove="Assets\empty.css" />
     <None Remove="Assets\layout.xml" />
     <None Remove="Assets\query_engine_0.xml" />
     <None Remove="Assets\query_engine_1.xml" />
@@ -35,6 +36,7 @@
     <EmbeddedResource Include="Assets\layout.xml" />
     <EmbeddedResource Include="Assets\specificity.css" />
     <EmbeddedResource Include="Assets\applyDeepStyle.css" />
+    <EmbeddedResource Include="Assets\empty.css" />
     <EmbeddedResource Include="Assets\style.css" />
   </ItemGroup>
 

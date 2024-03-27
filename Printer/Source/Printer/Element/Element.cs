@@ -1,5 +1,7 @@
-﻿using Leagueinator.Printer.Styles;
+﻿using Leagueinator.Printer.Aspects;
+using Leagueinator.Printer.Styles;
 using Leagueinator.Utility;
+using System;
 using System.Text;
 using System.Xml.Linq;
 
@@ -8,6 +10,10 @@ namespace Leagueinator.Printer.Elements {
     public partial class Element {
         public delegate void DrawDelegate(Graphics g, Element element, int page);
 
+        /// <summary>
+        /// Draw (paint) handlers.  Each draw delegate get's called when the draw method is called.
+        /// Adding the same delegate multiple times is ignored.
+        /// </summary>
         private DrawDelegate _onDraw = delegate { };
         public event DrawDelegate OnDraw {
             add {
@@ -22,12 +28,39 @@ namespace Leagueinator.Printer.Elements {
             }
         }
 
+        public virtual void Draw(Graphics g, int page) {
+            if (this.Invalid == true) this.Style.DoLayout(this);
+            this.Invalid = false;
+
+            Stack<Element> stack = [];
+            stack.Push(this);
+
+            while (stack.Count > 0) {
+                Element current = stack.Pop();
+                current._onDraw.Invoke(g, current, page);
+
+                if (current.Style.Overflow == Styles.Enums.Overflow.Visible) {
+                    foreach (Element child in current.Children) stack.Push(child);
+                }
+                else if (current.Style.Overflow == Styles.Enums.Overflow.Paged) {
+                    foreach (Element child in current.Children) {
+                        if (child.Style.Position == Styles.Enums.Position.Absolute) stack.Push(child);
+                        else if (child.Style.Position == Styles.Enums.Position.Fixed) stack.Push(child);
+                        else if (child.Style.Page == page) stack.Push(child);
+                        else if (child.TagName == TextElement.TAG_NAME) stack.Push(child);
+                    }
+                }
+            }
+        }
+
         /// <summary>
-        /// Create a new element with a default name and classlist.
+        /// Create a new current with a default name and classlist.
         /// </summary>
         public Element(string name, IEnumerable<XAttribute> attributes) : base() {
             this.TagName = name;
             this.Style = new Flex();
+            this.Style.Owner = this;
+            this.Attributes = new(this);
 
             foreach (XAttribute xattr in attributes) {
                 this.Attributes[xattr.Name.ToString()] = xattr.Value;
@@ -62,11 +95,12 @@ namespace Leagueinator.Printer.Elements {
 
         /// <summary>
         /// Add a single child child to this.
-        /// If the child element already has a _parent an exception will be thrown.
+        /// If the child current already has a _parent an exception will be thrown.
         /// be updated to this child.
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
+        [Validated]
         public void AddChild(Element child) {
             if (child.Parent is not null) throw new InvalidOperationException("Child element already has a parent");
             this._children.Add(child);
@@ -77,6 +111,7 @@ namespace Leagueinator.Printer.Elements {
         /// <summary>
         /// Remove all child elements from this child.
         /// </summary>
+        [Validated]
         public void ClearChildren() {
             foreach (var child in new List<Element>(this.Children)) {
                 this._children.Remove(child);
@@ -87,10 +122,11 @@ namespace Leagueinator.Printer.Elements {
         }
 
         /// <summary>
-        /// Remove a child element from this element.
+        /// Remove a child current from this current.
         /// </summary>
         /// <param name="child"></param>
         /// <exception cref="Exception">If the child does not belong to this _parent.</exception>
+        [Validated]
         public void Detach(Element child) {
             this._children.Remove(child);
             child.Parent = null;

@@ -5,7 +5,7 @@ using Leagueinator.Printer.Utility;
 namespace Leagueinator.Printer.Styles {
     public class Flex : Style {
 
-        public override void DoSize(Element element) {
+        internal override void DoSize(Element element) {
             if (element.IsRoot) this.DoRootSize(element);
             else this.DoChildSize(element);
         }
@@ -73,7 +73,7 @@ namespace Leagueinator.Printer.Styles {
             element.ContentSize = new SizeF(this.Width ?? 0f, this.Height ?? 0f);
         }
 
-        public override int DoPos(Element element) {
+        internal override int DoPos(Element element) {
             int pageCount = this.AssignPages(element);
 
             for (int page = 0; page < pageCount; page++) {
@@ -262,41 +262,12 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        public override void AssignInvokes(Element element) {
+        internal override void AssignInvokes(Element element) {
             element.OnDraw += this.DoDrawBackground;
             element.OnDraw += this.DoDrawBorders;
 
             foreach (Element child in element.Children) child.Style.AssignInvokes(child);
-        }
-
-        /// <summary>
-        /// This is the main entry point when drawing the element to a graphics object.
-        /// DoLayout() must be called before calling Draw().
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="root"></param>
-        /// <param name="page"></param>
-        public override void Draw(Graphics g, Element root, int page) {
-            Stack<Element> stack = [];
-            stack.Push(root);
-
-            while (stack.Count > 0) {
-                Element element = stack.Pop();
-                element.InvokeDrawHandlers(g, page);
-
-                if (element.Style.Overflow == Enums.Overflow.Visible) {
-                    foreach (Element child in element.Children) stack.Push(child);
-                }
-                else if (element.Style.Overflow == Enums.Overflow.Paged) {
-                    foreach (Element child in element.Children) {
-                        if (child.Style.Position == Enums.Position.Absolute) stack.Push(child);
-                        else if (child.Style.Position == Enums.Position.Fixed) stack.Push(child);
-                        else if (child.Style.Page == page) stack.Push(child);
-                        else if (child.TagName == TextElement.TAG_NAME) stack.Push(child);
-                    }
-                }
-            }
-        }
+        }               
 
         public void DoDrawBackground(Graphics g, Element element, int page) {
             if (this.BackgroundColor != null) {
