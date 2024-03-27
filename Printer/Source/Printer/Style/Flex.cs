@@ -25,7 +25,6 @@ namespace Leagueinator.Printer.Styles {
             this.Element.OuterRect = new(0, 0, this.Width, this.Height);
             this.Element.BorderSize = new(this.Width, this.Height);
             this.Element.ContentRect = new(0, 0, this.Width, this.Height);
-            this.Element.ContainerRect = new(0, 0, this.Width, this.Height);
             foreach (Element child in this.Element.Children) child.Style.DoSize();
         }
 
@@ -205,7 +204,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceBetween;
 
                 foreach (var child in children) {
-                    child.Translation = new(0, dy);
+                    child.Translate(0, dy);
                     dy = dy + spaceBetween + child.OuterRect.Height;
                 }
             }
@@ -214,7 +213,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = spaceBetween;
 
                 foreach (var child in children) {
-                    child.Translation = new(dx, 0);
+                    child.Translate(dx, 0);
                     dx = dx + spaceBetween + child.OuterRect.Width;
                 }
             }
@@ -226,7 +225,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = 0;
 
                 foreach (var child in children) {
-                    child.Translation = new(dx, child.Translation.Y);
+                    child.Translate(dx, 0);
                     dx = dx + spaceBetween + child.OuterRect.Width;
                 }
             }
@@ -235,7 +234,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = 0;
 
                 foreach (var child in children) {
-                    child.Translation = new(child.Translation.X, dy);
+                    child.Translate(0, dy);
                     dy = dy + spaceBetween + child.OuterRect.Height;
                 }
             }
@@ -247,7 +246,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = spaceAround;
 
                 foreach (var child in children) {
-                    child.Translation = new(dx, child.Translation.Y);
+                    child.Translate(dx, 0);
                     dx = dx + (2 * spaceAround) + child.OuterRect.Width;
                 }
             }
@@ -256,7 +255,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceAround;
 
                 foreach (var child in children) {
-                    child.Translation = new(child.Translation.X, dy);
+                    child.Translate(0, dy);
                     dy = dy + (2 * spaceAround) + child.OuterRect.Height;
                 }
             }

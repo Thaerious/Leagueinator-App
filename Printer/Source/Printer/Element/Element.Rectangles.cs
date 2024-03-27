@@ -4,11 +4,6 @@ using Leagueinator.Printer.Utility;
 namespace Leagueinator.Printer.Elements {
     public partial class Element {
         /// <summary>
-        /// The (x,y) translation of this element relative to it's _parent element.
-        /// </summary>
-        internal PointF Translation { get; set; } = new();
-
-        /// <summary>
         /// The (x,y) translation of this element to account for paging.
         /// </summary>
         internal PointF PageOffset { get; set; } = new();
@@ -31,14 +26,12 @@ namespace Leagueinator.Printer.Elements {
         /// </summary>
         public RectangleF ContainerRect {
             get {
-                if (this.Parent is null && this._containerRect is null) {
-                    throw new NullReferenceException($"On element {this.Identifier} neither parent nor container is set.");
+                if (this.Parent is null ) {
+                    return new(0, 0, this.Style.Width, this.Style.Height);
                 }
 
-                if (this._containerRect is not null) return (RectangleF)this._containerRect;
                 return this.Parent!.ContentRect;
             }
-            internal set => this._containerRect = value;
         }
 
         private RectangleF? _containerRect = null;
@@ -91,8 +84,8 @@ namespace Leagueinator.Printer.Elements {
                 Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
 
                 return new RectangleF(
-                    this.ContainerRect.X + this.Translation.X + this.PageOffset.X + margin.Left,
-                    this.ContainerRect.Y + this.Translation.Y + this.PageOffset.Y + margin.Top,
+                    this.ContainerRect.X + this.PageOffset.X + margin.Left,
+                    this.ContainerRect.Y + this.PageOffset.Y + margin.Top,
                     this.BorderSize.Width,
                     this.BorderSize.Height
                 );
