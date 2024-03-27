@@ -29,7 +29,7 @@ namespace Leagueinator.Printer.Elements {
         }
 
         public virtual void Draw(Graphics g, int page) {
-            if (this.Invalid == true) this.Style.DoLayout(this);
+            if (this.Invalid == true) this.Style.DoLayout();
             this.Invalid = false;
 
             Stack<Element> stack = [];
@@ -58,7 +58,7 @@ namespace Leagueinator.Printer.Elements {
         /// </summary>
         public Element(string name, IEnumerable<XAttribute> attributes) : base() {
             this.TagName = name;
-            this.Style = new Flex();
+            this.Style = new Flex(this);
             this.Style.Owner = this;
             this.Attributes = new(this);
 

@@ -1,5 +1,6 @@
 ﻿
 using Leagueinator.Printer.Aspects;
+using Leagueinator.Printer.Styles;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Printer.Elements {
@@ -7,9 +8,9 @@ namespace Leagueinator.Printer.Elements {
 
     public partial class Element {
 
-        public Styles.Style Style { 
+        public Flex Style { 
             get; 
-            internal set; 
+            private set; 
         }
 
         public bool Invalid { 

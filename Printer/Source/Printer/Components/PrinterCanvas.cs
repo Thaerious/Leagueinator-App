@@ -207,7 +207,7 @@ namespace Leagueinator.Printer.Components {
             if (this.RootElement != null) {
                 this.inner.dimX = this.RootElement.Style.Width;
                 this.inner.dimY = this.RootElement.Style.Height;
-                this.RootElement.Style.DoLayout(this.RootElement);
+                this.RootElement.Style.DoLayout();
             }
         }
 

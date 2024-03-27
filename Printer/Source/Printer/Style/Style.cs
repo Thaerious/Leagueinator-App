@@ -37,18 +37,6 @@ namespace Leagueinator.Printer.Styles {
                 if (this.Owner is not null) this.Owner.Invalid = value;
             }
         }
-
-        internal int DoLayout(Element element) {
-            this.DoSize(element);
-            int pageCount = this.DoPos(element);
-            this.AssignInvokes(element);
-            element.Invalid = false;
-
-            return pageCount;
-        }
-        internal virtual void DoSize(Element element) { }
-        internal virtual int DoPos(Element element) { return 0; }
-        internal virtual void AssignInvokes(Element element) { }
         
         public Enums.Direction Flex_Major_Direction {
             get {
