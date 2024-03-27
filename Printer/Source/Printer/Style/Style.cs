@@ -39,8 +39,6 @@ namespace Leagueinator.Printer.Styles {
         }
 
         internal int DoLayout(Element element) {
-            Console.WriteLine($"Do Layout For {element.Identifier}");
-
             this.DoSize(element);
             int pageCount = this.DoPos(element);
             this.AssignInvokes(element);

@@ -4,7 +4,19 @@ using Leagueinator.Utility;
 namespace Leagueinator.Printer.Elements {
     internal class TextElement : Element {
         public static readonly string TAG_NAME = "@text";
-        public string Text = "";
+
+        public TextElement(string text) : base(TAG_NAME, []) {
+            this.Text = text.Trim();
+            this.OnDraw += this.TextElement_OnDraw;
+        }
+
+        private void TextElement_OnDraw(Graphics g, Element element, int page) {
+            using Brush brush = new SolidBrush(Color.Black);
+            Console.WriteLine(this.Style);
+            g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
+        }
+
+        public string Text { get; [Validated] set; } = "";
 
         internal override SizeF ContentSize => this.Size();
 
@@ -21,10 +33,6 @@ namespace Leagueinator.Printer.Elements {
             return graphics.MeasureString(this.Text, this.Style.Font);
         }
 
-        [Validated]
-        public TextElement(string text) : base(TAG_NAME, []) {
-            this.Text = text.Trim();
-        }
 
         public override XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
             action ??= (element, xml) => { };
@@ -33,12 +41,6 @@ namespace Leagueinator.Printer.Elements {
                 action(this, xml);
                 xml.AppendLine(this.Text);
             });
-        }
-
-        public override void InvokeDrawHandlers(Graphics g, int page) {
-            base.InvokeDrawHandlers(g, page);
-            using Brush brush = new SolidBrush(Color.Black);
-            g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }
     }
 }

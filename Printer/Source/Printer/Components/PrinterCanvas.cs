@@ -45,7 +45,6 @@ namespace Leagueinator.Printer.Components {
 
         protected override void OnPaint(PaintEventArgs e) {
             if (this.RootElement is null) return;
-            Console.WriteLine("PrinterCanvas.OnPaint");
 
             var stopwatch = new Stopwatch();
 

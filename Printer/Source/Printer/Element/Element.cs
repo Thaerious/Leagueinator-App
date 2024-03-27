@@ -87,13 +87,6 @@ namespace Leagueinator.Printer.Elements {
         }
 
         /// <summary>
-        /// </summary>
-        /// <param name="g"></param>
-        public virtual void InvokeDrawHandlers(Graphics g, int page) {
-            this._onDraw.Invoke(g, this, page);
-        }
-
-        /// <summary>
         /// Add a single child child to this.
         /// If the child current already has a _parent an exception will be thrown.
         /// be updated to this child.
