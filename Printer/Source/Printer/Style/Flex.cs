@@ -1,11 +1,13 @@
 ﻿using Leagueinator.Printer.Elements;
 using System.Drawing.Drawing2D;
 using Leagueinator.Printer.Utility;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer.Styles {
     public class Flex(Element owner) : Style {
         public Element Element { get; } = owner;
+
+        private RectangleF PaddingBox = new();
+        private RectangleF BorderBox = new();
 
         internal int DoLayout() {
             this.DoSize();
@@ -29,8 +31,6 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private void DoChildSize() {
-            this.SetDefaultSize();
-
             float maxWidth = 0f;
             float maxHeight = 0f;
             float sumWidth = 0f;
@@ -57,41 +57,43 @@ namespace Leagueinator.Printer.Styles {
                     break;
             }
 
-            this.BorderSize ??= new();
-            this.Padding ??= new();
-            this.Margin ??= new();
+            this.Element.ContentRect = new(
+                this.Margin!.Left + this.BorderSize!.Left + this.Padding!.Left,
+                this.Margin!.Top + this.BorderSize!.Top + this.Padding!.Top,
+                contentWidth,
+                contentHeight
+            );
 
-            var paddingWidth = contentWidth + this.Padding.Left + this.Padding.Right;
-            var paddingHeight = contentHeight + this.Padding.Top + this.Padding.Bottom;
+            this.PaddingBox = new(
+                 this.Margin!.Left + this.BorderSize!.Left,
+                 this.Margin!.Top + this.BorderSize!.Top,
+                 this.Element.ContentRect.Width + Padding.Right + Padding.Left,
+                 this.Element.ContentRect.Height + Padding.Top + Padding.Bottom
+            );
 
-            var borderWidth = paddingWidth + this.BorderSize.Left + this.BorderSize.Right;
-            var borderHeight = paddingHeight + this.BorderSize.Top + this.BorderSize.Bottom;
+            this.BorderBox = new(
+                this.Margin!.Left,
+                this.Margin!.Top,
+                this.PaddingBox.Width + BorderSize.Left + BorderSize.Right,
+                this.PaddingBox.Height + BorderSize.Top + BorderSize.Bottom
+            );
 
-            var outerWidth = borderWidth + this.Margin.Left + this.Margin.Right;
-            var outerHeight = borderHeight + this.Margin.Top + this.Margin.Bottom;
-
-            this.Element.OuterRect = new(0, 0, outerWidth, outerHeight);
-            this.Element.BorderSize = new SizeF(borderWidth, borderHeight);
-            this.Element.ContentRect = new(0, 0, contentWidth, contentHeight);
-        }
-
-        void SetDefaultSize() {
-            if (this.Width != null) this.Width.Factor = this.Element.Parent?.ContentRect.Width ?? 0f;
-            if (this.Height != null) this.Height.Factor = this.Element.Parent?.ContentRect.Height ?? 0f;
-            if (this.Translate != null) this.Translate.X.Factor = this.Element.Parent?.ContentRect.Width ?? 0f;
-            if (this.Translate != null) this.Translate.Y.Factor = this.Element.Parent?.ContentRect.Width ?? 0f;
-            this.Element.SetContentRect(this.Width ?? 0f, this.Height ?? 0f);
+            this.Element.OuterRect = new(
+                0, 0,
+                this.BorderBox.Width + this.Margin!.Left + this.Margin.Right,
+                this.BorderBox.Height + this.Margin!.Top + this.Margin.Bottom
+            );
         }
 
         internal int DoPos() {
             int pageCount = this.AssignPages();
 
             if (this.Translate != null) {
-                this.Element.Translate(this.Translate.X, this.Translate.Y);
+                this.Transform(this.Translate.X, this.Translate.Y);
             }
 
             if (this.Position != Enums.Position.Fixed) {
-                this.Element.Translate(this.Element.Parent?.ContentRect.TopLeft() ?? new());
+                this.Transform(this.Element.Parent?.ContentRect.TopLeft() ?? new());
             }
 
             for (int page = 0; page < pageCount; page++) {
@@ -139,7 +141,7 @@ namespace Leagueinator.Printer.Styles {
                            y = reference.Height - child.OuterRect.Height - cStyle.Bottom;
                        }
 
-                       child.Translate(x, y);
+                       child.Style.Transform(x, y);
                        child.Style.DoPos();
                    });
         }
@@ -204,7 +206,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceBetween;
 
                 foreach (var child in children) {
-                    child.Translate(0, dy);
+                    child.Style.Transform(0, dy);
                     dy = dy + spaceBetween + child.OuterRect.Height;
                 }
             }
@@ -213,7 +215,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = spaceBetween;
 
                 foreach (var child in children) {
-                    child.Translate(dx, 0);
+                    child.Style.Transform(dx, 0);
                     dx = dx + spaceBetween + child.OuterRect.Width;
                 }
             }
@@ -225,7 +227,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = 0;
 
                 foreach (var child in children) {
-                    child.Translate(dx, 0);
+                    child.Style.Transform(dx, 0);
                     dx = dx + spaceBetween + child.OuterRect.Width;
                 }
             }
@@ -234,7 +236,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = 0;
 
                 foreach (var child in children) {
-                    child.Translate(0, dy);
+                    child.Style.Transform(0, dy);
                     dy = dy + spaceBetween + child.OuterRect.Height;
                 }
             }
@@ -246,7 +248,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = spaceAround;
 
                 foreach (var child in children) {
-                    child.Translate(dx, 0);
+                    child.Style.Transform(dx, 0);
                     dx = dx + (2 * spaceAround) + child.OuterRect.Width;
                 }
             }
@@ -255,7 +257,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceAround;
 
                 foreach (var child in children) {
-                    child.Translate(0, dy);
+                    child.Style.Transform(0, dy);
                     dy = dy + (2 * spaceAround) + child.OuterRect.Height;
                 }
             }
@@ -269,6 +271,14 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public void DoDrawBackground(Graphics g, Element __, int page) {
+            if (this.MarginColor != null) {
+                g.FillRectangle(new SolidBrush((Color)this.MarginColor), this.Element.OuterRect);
+            }
+
+            if (this.PaddingColor != null) {
+                g.FillRectangle(new SolidBrush((Color)this.PaddingColor), this.PaddingBox);
+            }
+
             if (this.BackgroundColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), this.Element.ContentRect);
             }
@@ -286,8 +296,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.Element.BorderRect.TopLeft().Translate(0, this.BorderSize.Top / 2),
-                    this.Element.BorderRect.TopRight().Translate(0, this.BorderSize.Top / 2)
+                    this.BorderBox.TopLeft().Translate(0, this.BorderSize.Top / 2),
+                    this.BorderBox.TopRight().Translate(0, this.BorderSize.Top / 2)
                 );
             }
             if (this.BorderColor.Right != default) {
@@ -297,8 +307,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.Element.BorderRect.TopRight().Translate(-this.BorderSize.Right / 2, 0),
-                    this.Element.BorderRect.BottomRight().Translate(-this.BorderSize.Right / 2, 0)
+                    this.BorderBox.TopRight().Translate(-this.BorderSize.Right / 2, 0),
+                    this.BorderBox.BottomRight().Translate(-this.BorderSize.Right / 2, 0)
                 );
             }
             if (this.BorderColor.Bottom != default) {
@@ -308,8 +318,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.Element.BorderRect.BottomRight().Translate(0, -this.BorderSize.Bottom / 2),
-                    this.Element.BorderRect.BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
+                    this.BorderBox.BottomRight().Translate(0, -this.BorderSize.Bottom / 2),
+                    this.BorderBox.BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
                 );
             }
             if (this.BorderColor.Left != default) {
@@ -319,8 +329,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.Element.BorderRect.BottomLeft().Translate(this.BorderSize.Left / 2, 0),
-                    this.Element.BorderRect.TopLeft().Translate(this.BorderSize.Left / 2, 0)
+                    this.BorderBox.BottomLeft().Translate(this.BorderSize.Left / 2, 0),
+                    this.BorderBox.TopLeft().Translate(this.BorderSize.Left / 2, 0)
                 );
             }
         }
@@ -354,7 +364,7 @@ namespace Leagueinator.Printer.Styles {
 
             PointF current = from;
             foreach (Element child in children) {
-                child.Translate(current);
+                child.Style.Transform(current);
                 var diff = new PointF(child.OuterRect.Width, child.OuterRect.Height).Scale(vector);
                 current = current.Translate(diff);
             }
@@ -367,10 +377,10 @@ namespace Leagueinator.Printer.Styles {
                         case Enums.Align_Items.Flex_start:
                             break;
                         case Enums.Align_Items.Flex_end:
-                            children.ForEach(c => c.Translate(0, this.Element.ContentRect.Height - c.OuterRect.Height));
+                            children.ForEach(c => c.Style.Transform(0, this.Element.ContentRect.Height - c.OuterRect.Height));
                             break;
                         case Enums.Align_Items.Center:
-                            children.ForEach(c => c.Translate(0, (this.Element.ContentRect.Height / 2) - (c.OuterRect.Height / 2)));
+                            children.ForEach(c => c.Style.Transform(0, (this.Element.ContentRect.Height / 2) - (c.OuterRect.Height / 2)));
                             break;
                     }
                     break;
@@ -379,10 +389,10 @@ namespace Leagueinator.Printer.Styles {
                         case Enums.Align_Items.Flex_start:
                             break;
                         case Enums.Align_Items.Flex_end:
-                            children.ForEach(c => c.Translate(this.Element.ContentRect.Width - c.OuterRect.Width, 0));
+                            children.ForEach(c => c.Style.Transform(this.Element.ContentRect.Width - c.OuterRect.Width, 0));
                             break;
                         case Enums.Align_Items.Center:
-                            children.ForEach(c => c.Translate((this.Element.ContentRect.Width / 2) - (c.OuterRect.Width / 2), 0));
+                            children.ForEach(c => c.Style.Transform((this.Element.ContentRect.Width / 2) - (c.OuterRect.Width / 2), 0));
                             break;
                     }
                     break;
@@ -417,6 +427,17 @@ namespace Leagueinator.Printer.Styles {
             }
 
             return page + 1;
+        }
+
+        private void Transform(float x, float y) {
+            this.Transform(new PointF(x, y));
+        }
+
+        private void Transform(PointF p) {
+            this.Element.ContentRect = this.Element.ContentRect.Translate(p);
+            this.PaddingBox = this.PaddingBox.Translate(p);
+            this.BorderBox = this.BorderBox.Translate(p);
+            this.Element.OuterRect = this.Element.OuterRect.Translate(p);
         }
     }
 
@@ -454,5 +475,4 @@ namespace Leagueinator.Printer.Styles {
             return heightRemaining;
         }
     }
-
 }

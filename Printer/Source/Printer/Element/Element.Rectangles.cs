@@ -36,15 +36,6 @@ namespace Leagueinator.Printer.Elements {
 
         private RectangleF? _containerRect = null;
 
-        internal void Translate(float x, float y) {
-            this.Translate(new PointF(x, y));
-        }
-
-        internal void Translate(PointF p) {
-            this.ContentRect = this.ContentRect.Translate(p);
-            this.OuterRect = this.OuterRect.Translate(p);
-        }
-
         /// <summary>
         /// The area on the screen where drawing takes place for this element.
         /// This is the innermost rectangle.
@@ -53,43 +44,11 @@ namespace Leagueinator.Printer.Elements {
             get; set;
         }
 
-
-        internal void SetContentRect(float width, float height) {
-            PointF location = ContentRect.TopLeft();
-
-            Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
-            Cardinal<UnitFloat> border = this.Style.BorderSize ?? new();
-            Cardinal<UnitFloat> padding = this.Style.Padding ?? new();
-
-            this.ContentRect = new(
-                location.X + margin.Left + border.Left + padding.Left,
-                location.Y + margin.Top + border.Top + padding.Top,
-                width,
-                height
-            );
-        }
-
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
         internal RectangleF OuterRect {
             get; set;
-        }
-
-        /// <summary>
-        /// The entire occupied space of this child, including padding and border.
-        /// </summary>
-        public RectangleF BorderRect {
-            get {
-                Cardinal<UnitFloat> margin = this.Style.Margin ?? new();
-
-                return new RectangleF(
-                    this.ContainerRect.X + this.PageOffset.X + margin.Left,
-                    this.ContainerRect.Y + this.PageOffset.Y + margin.Top,
-                    this.BorderSize.Width,
-                    this.BorderSize.Height
-                );
-            }
         }
     }
 }

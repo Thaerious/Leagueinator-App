@@ -16,7 +16,9 @@ namespace Leagueinator.Printer.Styles {
         [CSS] public UnitFloat? Bottom { get => bottom; [Validated] set => bottom = value; }
         [CSS] public UnitFloat? Width { get => width; [Validated] set => width = value; }
         [CSS] public UnitFloat? Height { get => this.height; [Validated] set => this.height = value; }
+        [CSS] public Color? MarginColor { get => marginColor; set => marginColor = value; }
         [CSS("0px")] public Cardinal<UnitFloat>? Margin { get => margin; [Validated] set => margin = value; }
+        [CSS] public Color? PaddingColor { get => paddingColor; set => paddingColor = value; }
         [CSS("0px")] public Cardinal<UnitFloat>? Padding { get => this.padding; [Validated] set => this.padding = value; }
         [CSS("Solid")] public Cardinal<DashStyle>? BorderStyle { get => this.borderStyle; set => this.borderStyle = value; }
         [CSS] public Color? BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
@@ -48,6 +50,8 @@ namespace Leagueinator.Printer.Styles {
         private UnitFloat? height = null;
 
         private Color? backgroundColor = null;
+        private Color? marginColor = null;
+        private Color? paddingColor = null;
 
         private Cardinal<UnitFloat>? margin = null;
         private Cardinal<UnitFloat>? padding = null;
