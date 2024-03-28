@@ -128,11 +128,49 @@ namespace Test_Style {
             Element root = LoadXMLResource("query_engine_1.xml");
             q.AddAll(root);
             var r = q["first_tier > second_tier"];
-
-            Debug.WriteLine("---------------------");
             r.ForEach(x => Debug.WriteLine(x.Identifier));
+            Debug.WriteLine($"\n{r.Count} Result{(r.Count == 1 ? "" : "s")}");
 
             Assert.AreEqual(2, r.Count);
+        }
+
+        [TestMethod]
+        public void Query_Id_Then_Tag() {
+            QueryEngine q = new();
+            Element root = LoadXMLResource("query_engine_4.xml");
+            q.AddAll(root);
+            var r = q["#after > red"];
+
+            r.ForEach(x => Debug.WriteLine(x.Identifier));
+            Debug.WriteLine($"\n{r.Count} Result{(r.Count == 1 ? "" : "s")}");
+
+            Assert.AreEqual(1, r.Count);
+        }
+
+        [TestMethod]
+        public void Query_Class_Then_Tag() {
+            QueryEngine q = new();
+            Element root = LoadXMLResource("query_engine_4.xml");
+            q.AddAll(root);
+            var r = q[".after > red"];
+
+            r.ForEach(x => Debug.WriteLine(x.Identifier));
+            Debug.WriteLine($"\n{r.Count} Result{(r.Count == 1 ? "" : "s")}");
+
+            Assert.AreEqual(1, r.Count);
+        }
+
+        [TestMethod]
+        public void Chain_Tag_ID_Tag() {
+            QueryEngine q = new();
+            Element root = LoadXMLResource("query_engine_4.xml");
+            q.AddAll(root);
+            var r = q["root > #after > red"];
+
+            r.ForEach(x => Debug.WriteLine(x.Identifier));
+            Debug.WriteLine($"\n{r.Count} Result{(r.Count == 1 ? "" : "s")}");
+
+            Assert.AreEqual(1, r.Count);
         }
 
         [TestMethod]

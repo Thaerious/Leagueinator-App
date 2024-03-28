@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Printer.Elements;
 using System.Text.RegularExpressions;
 using Leagueinator.Utility;
+using System.Xml.Linq;
 
 namespace Leagueinator.Printer.Query {
     public class QueryEngine {
@@ -15,12 +16,13 @@ namespace Leagueinator.Printer.Query {
 
         public List<Element> this[string query] {
             get {
-                List<Element> result = new();
+                List<Element> result = [];
 
+                // Look at each query in a comma seperated list.
                 foreach (string subq in query.Split(",")) {
                     string q = subq.Trim();
-                    Queue<string> split = new(q.Split(' ').Reverse());
-                    List<Element> elements = this.Lookup(split.Dequeue());
+                    Queue<string> split = new(q.Split(' ').Reverse());                 // elements are space delimited
+                    List<Element> elements = this.Lookup(split.Dequeue());             // get leaf elements
                     var part = elements.Where(e => this.Query(new(split), e)).ToList();
                     result.AddRange(part);
                 }
@@ -78,16 +80,8 @@ namespace Leagueinator.Printer.Query {
         }
 
         public void AddAll(Element root) {
-            Queue<Element> queue = [];
-            queue.Enqueue(root);
-
-            while (queue.Count > 0) {
-                Element next = queue.Dequeue();
-                this.Add(next);
-                foreach (Element element in next.Children) {
-                    queue.Enqueue(element);
-                }
-            }
+            ElementQueue queue = new(root);
+            queue.Walk(e => this.Add(e));
         }
 
         public bool Contains(Element element) {
@@ -128,11 +122,13 @@ namespace Leagueinator.Printer.Query {
                 case '*':
                     return true;
                 case '#':
-                    return element.Identifier.Equals(query[1..]);
+                    return element.Attributes["id"].Equals(query[1..]);
                 case '.':
                     return element.ClassList.Contains(query[1..]);
                 default:
-                    if (query.Contains('.')) return MatchTagAndClass(element, query);
+                    if (query.Contains('.')) {
+                        return MatchTagAndClass(element, query);
+                    }
                     return element.TagName.Equals(query);
             }
         }

@@ -8,7 +8,7 @@ style      : selectors OPAR line* CPAR
            ;
 
 selectors  : selector
-           | selector COMMA selector
+           | selectors COMMA selector
            ;
 
 selector   : MULT_SELECTOR

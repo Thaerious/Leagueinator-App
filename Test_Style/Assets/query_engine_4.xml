@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <container id="before">
+    <red></red>
+  </container>
+  <container id="after" class="something after hidden">
+    <red id="target" class="bordered"></red>
+  </container>
+</root>

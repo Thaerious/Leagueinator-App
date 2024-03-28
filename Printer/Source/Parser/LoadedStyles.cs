@@ -1,24 +1,26 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
+using System.Collections;
+using System.Diagnostics;
 
 namespace Leagueinator.CSSParser {
     /// <summary>
     /// A collection of styles with the query string as the key.
     /// </summary>
-    public class LoadedStyles : SortedList<Style, Style> {
+    public class LoadedStyles: IEnumerable<Style>{
+        private readonly SortedList<Style, Style> inner = [];
 
-        public void Add(Style style) => base.Add(style, style);
+        public Style this[int index] {
+            get => this.inner.Keys[index];
+        }
+
+        public void Add(Style style) => inner.Add(style, style);
 
         public void ApplyTo(Element root) {
-            var sortedKeys = this
-                .OrderBy(pair => pair.Value)
-                .Select(pair => pair.Key)
-                .ToList();
-
             // apply defined styles
-            foreach (Style style in this.Keys) {
+            foreach (Style style in inner.Keys) {
                 foreach (Element element in root[style.Selector]) {
-                    Style.MergeStyles(element.Style, style);
+                    element.Style.MergeWith(style);
                 }
             }
 
@@ -26,7 +28,7 @@ namespace Leagueinator.CSSParser {
 
             // apply default styles
             foreach (Element element in root.AllDecendents()) {
-                Style.MergeStyles(element.Style, Style.Default);
+                element.Style.MergeWith(Style.Default);
             }
         }
 
@@ -44,7 +46,21 @@ namespace Leagueinator.CSSParser {
         }
 
         public IList<Style> AsList() {
-            return this.Keys;
+            return inner.Keys;
         }
+
+        public IEnumerable<Style> AsEnumerable() {
+            return inner.Keys;
+        }
+
+        public IEnumerator<Style> GetEnumerator() {
+            return inner.Keys.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return inner.Keys.GetEnumerator();
+        }
+
+        public int Count => this.inner.Keys.Count;
     }
 }

@@ -9,12 +9,11 @@ namespace Leagueinator.Printer.Styles {
         private RectangleF PaddingBox = new();
         private RectangleF BorderBox = new();
 
-        internal int DoLayout() {
+        public int DoLayout() {
             this.DoSize();
             int pageCount = this.DoPos();
             this.AssignInvokes();
             this.Element.Invalid = false;
-
             return pageCount;
         }
 
@@ -25,7 +24,6 @@ namespace Leagueinator.Printer.Styles {
 
         private void DoRootSize() {
             this.Element.OuterRect = new(0, 0, this.Width, this.Height);
-            this.Element.BorderSize = new(this.Width, this.Height);
             this.Element.ContentRect = new(0, 0, this.Width, this.Height);
             foreach (Element child in this.Element.Children) child.Style.DoSize();
         }
@@ -46,15 +44,22 @@ namespace Leagueinator.Printer.Styles {
 
             float contentWidth = 0f, contentHeight = 0f;
 
-            switch (this.Flex_Axis) {
-                case Enums.Flex_Axis.Row:
-                    contentWidth = this.Width ?? sumWidth;
-                    contentHeight = this.Height ?? maxHeight;
-                    break;
-                case Enums.Flex_Axis.Column:
-                    contentWidth = this.Width ?? maxWidth;
-                    contentHeight = this.Height ?? sumHeight;
-                    break;
+            if (this.Element is TextElement textElement) {
+                SizeF size = textElement.Size();
+                contentWidth = size.Width;
+                contentHeight = size.Height;
+            }
+            else {
+                switch (this.Flex_Axis) {
+                    case Enums.Flex_Axis.Row:
+                        contentWidth = this.Width ?? sumWidth;
+                        contentHeight = this.Height ?? maxHeight;
+                        break;
+                    case Enums.Flex_Axis.Column:
+                        contentWidth = this.Width ?? maxWidth;
+                        contentHeight = this.Height ?? sumHeight;
+                        break;
+                }
             }
 
             this.Element.ContentRect = new(
@@ -277,202 +282,205 @@ namespace Leagueinator.Printer.Styles {
 
             if (this.PaddingColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.PaddingColor), this.PaddingBox);
+
+                if (this.BackgroundColor != null) {
+                    g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), this.Element.ContentRect);
+                }
             }
-
-            if (this.BackgroundColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), this.Element.ContentRect);
-            }
-        }
-
-        public void DoDrawBorders(Graphics g, Element __, int page) {
-            if (this.BorderColor is null) return;
-            this.BorderSize ??= new();
-            this.BorderStyle ??= new(DashStyle.Solid);
-
-            if (this.BorderColor.Top != default) {
-                using Pen pen = new Pen(this.BorderColor.Top);
-                pen.Width = this.BorderSize.Top;
-                pen.DashStyle = this.BorderStyle.Top;
-
-                g.DrawLine(
-                    pen,
-                    this.BorderBox.TopLeft().Translate(0, this.BorderSize.Top / 2),
-                    this.BorderBox.TopRight().Translate(0, this.BorderSize.Top / 2)
-                );
-            }
-            if (this.BorderColor.Right != default) {
-                using Pen pen = new Pen(this.BorderColor.Right);
-                pen.Width = this.BorderSize.Right;
-                pen.DashStyle = this.BorderStyle.Right;
-
-                g.DrawLine(
-                    pen,
-                    this.BorderBox.TopRight().Translate(-this.BorderSize.Right / 2, 0),
-                    this.BorderBox.BottomRight().Translate(-this.BorderSize.Right / 2, 0)
-                );
-            }
-            if (this.BorderColor.Bottom != default) {
-                using Pen pen = new Pen(this.BorderColor.Bottom);
-                pen.Width = this.BorderSize.Bottom;
-                pen.DashStyle = this.BorderStyle.Bottom;
-
-                g.DrawLine(
-                    pen,
-                    this.BorderBox.BottomRight().Translate(0, -this.BorderSize.Bottom / 2),
-                    this.BorderBox.BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
-                );
-            }
-            if (this.BorderColor.Left != default) {
-                using Pen pen = new Pen(this.BorderColor.Left);
-                pen.Width = this.BorderSize.Left;
-                pen.DashStyle = this.BorderStyle.Left;
-
-                g.DrawLine(
-                    pen,
-                    this.BorderBox.BottomLeft().Translate(this.BorderSize.Left / 2, 0),
-                    this.BorderBox.TopLeft().Translate(this.BorderSize.Left / 2, 0)
-                );
-            }
-        }
-
-        /// <summary>
-        /// Collect all this.Element nodes with a flex position and the specified page.
-        /// </summary>
-        /// <param name = "this.Element" ></ param >
-        /// <returns></returns>
-        private List<Element> CollectChildren(int page) {
-            var children = this.Element.Children
-                                  .Where(ele => ele.Style.Position == Enums.Position.Flex)
-                                  .Where(ele => ele.Style.Page == page)
-                                  .ToList();
-
-            if (this.Flex_Direction == Enums.Direction.Reverse) {
-                children.Reverse();
-            }
-
-            return children;
-        }
-
-        private void LineupElements(List<Element> children, PointF from) {
-            PointF vector;
-            if (this.Flex_Axis == Enums.Flex_Axis.Column) {
-                vector = new(0, 1);
-            }
-            else {
-                vector = new(1, 0);
-            }
-
-            PointF current = from;
-            foreach (Element child in children) {
-                child.Style.Transform(current);
-                var diff = new PointF(child.OuterRect.Width, child.OuterRect.Height).Scale(vector);
-                current = current.Translate(diff);
-            }
-        }
-
-        private void AlignItems(List<Element> children) {
-            switch (this.Flex_Axis) {
-                case Enums.Flex_Axis.Row:
-                    switch (this.Align_Items) {
-                        case Enums.Align_Items.Flex_start:
-                            break;
-                        case Enums.Align_Items.Flex_end:
-                            children.ForEach(c => c.Style.Transform(0, this.Element.ContentRect.Height - c.OuterRect.Height));
-                            break;
-                        case Enums.Align_Items.Center:
-                            children.ForEach(c => c.Style.Transform(0, (this.Element.ContentRect.Height / 2) - (c.OuterRect.Height / 2)));
-                            break;
-                    }
-                    break;
-                case Enums.Flex_Axis.Column:
-                    switch (this.Align_Items) {
-                        case Enums.Align_Items.Flex_start:
-                            break;
-                        case Enums.Align_Items.Flex_end:
-                            children.ForEach(c => c.Style.Transform(this.Element.ContentRect.Width - c.OuterRect.Width, 0));
-                            break;
-                        case Enums.Align_Items.Center:
-                            children.ForEach(c => c.Style.Transform((this.Element.ContentRect.Width / 2) - (c.OuterRect.Width / 2), 0));
-                            break;
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Calculates and assigns page numbers to this.s of a given _parent this.Element based on the 
-        /// _parent's content size and the heights of the children. Returns the total page count for 
-        /// the _parent this.Element.
-        /// </summary>
-        /// <param name="this.Element">The _parent this.Element.</param>
-        /// <returns>Total page count for all this.s.</returns>
-        private int AssignPages() {
-            if (this.Element.Style.Overflow != Enums.Overflow.Paged) return 1;
-            Queue<Element> children = new(this.Element.Children);
-
-            int page = -1;
-
-            while (children.Count > 0) {
-                page++;
-                float heightRemaining = this.Element.ContentRect.Height;
-                var child = children.Dequeue();
-                heightRemaining -= child.OuterRect.Height;
-                child.Style.Page = page;
-
-                while (children.Count > 0 && heightRemaining - children.Peek().OuterRect.Height > 0) {
-                    child = children.Dequeue();
-                    heightRemaining -= child.OuterRect.Height;
-                    child.Style.Page = page;
+            else if (this.BackgroundColor != null) {
+                    g.FillRectangle(new SolidBrush((Color)this.BackgroundColor), this.PaddingBox);
                 }
             }
 
-            return page + 1;
-        }
+            public void DoDrawBorders(Graphics g, Element __, int page) {
+                if (this.BorderColor is null) return;
+                this.BorderSize ??= new();
+                this.BorderStyle ??= new(DashStyle.Solid);
 
-        private void Transform(float x, float y) {
-            this.Transform(new PointF(x, y));
-        }
+                if (this.BorderColor.Top != default) {
+                    using Pen pen = new Pen(this.BorderColor.Top);
+                    pen.Width = this.BorderSize.Top;
+                    pen.DashStyle = this.BorderStyle.Top;
 
-        private void Transform(PointF p) {
-            this.Element.ContentRect = this.Element.ContentRect.Translate(p);
-            this.PaddingBox = this.PaddingBox.Translate(p);
-            this.BorderBox = this.BorderBox.Translate(p);
-            this.Element.OuterRect = this.Element.OuterRect.Translate(p);
-        }
-    }
+                    g.DrawLine(
+                        pen,
+                        this.BorderBox.TopLeft().Translate(0, this.BorderSize.Top / 2),
+                        this.BorderBox.TopRight().Translate(0, this.BorderSize.Top / 2)
+                    );
+                }
+                if (this.BorderColor.Right != default) {
+                    using Pen pen = new Pen(this.BorderColor.Right);
+                    pen.Width = this.BorderSize.Right;
+                    pen.DashStyle = this.BorderStyle.Right;
 
-    public static class FlexExt {
+                    g.DrawLine(
+                        pen,
+                        this.BorderBox.TopRight().Translate(-this.BorderSize.Right / 2, 0),
+                        this.BorderBox.BottomRight().Translate(-this.BorderSize.Right / 2, 0)
+                    );
+                }
+                if (this.BorderColor.Bottom != default) {
+                    using Pen pen = new Pen(this.BorderColor.Bottom);
+                    pen.Width = this.BorderSize.Bottom;
+                    pen.DashStyle = this.BorderStyle.Bottom;
 
-        /// <summary>
-        ///  The amount of width left over when all children are taken into account.
-        /// </summary>
-        /// <param name="this.Element"></param>
-        /// <returns></returns>
-        public static float WidthRemaining(this Element element, IList<Element> children) {
-            children ??= element.Children;
-            float widthRemaining = element.ContentRect.Width;
+                    g.DrawLine(
+                        pen,
+                        this.BorderBox.BottomRight().Translate(0, -this.BorderSize.Bottom / 2),
+                        this.BorderBox.BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
+                    );
+                }
+                if (this.BorderColor.Left != default) {
+                    using Pen pen = new Pen(this.BorderColor.Left);
+                    pen.Width = this.BorderSize.Left;
+                    pen.DashStyle = this.BorderStyle.Left;
 
-            foreach (Element child in children) {
-                widthRemaining -= child.OuterRect.Width;
+                    g.DrawLine(
+                        pen,
+                        this.BorderBox.BottomLeft().Translate(this.BorderSize.Left / 2, 0),
+                        this.BorderBox.TopLeft().Translate(this.BorderSize.Left / 2, 0)
+                    );
+                }
             }
 
-            return widthRemaining;
-        }
+            /// <summary>
+            /// Collect all this.Element nodes with a flex position and the specified page.
+            /// </summary>
+            /// <param name = "this.Element" ></ param >
+            /// <returns></returns>
+            private List<Element> CollectChildren(int page) {
+                var children = this.Element.Children
+                                      .Where(ele => ele.Style.Position == Enums.Position.Flex)
+                                      .Where(ele => ele.Style.Page == page)
+                                      .ToList();
 
-        /// <summary>
-        ///  The amount of height left over when all children are taken into account.
-        /// </summary>
-        /// <param name="this.Element"></param>
-        /// <returns></returns>
-        public static float HeightRemaining(this Element element, IList<Element> children) {
-            children ??= element.Children;
-            float heightRemaining = element.ContentRect.Height;
+                if (this.Flex_Direction == Enums.Direction.Reverse) {
+                    children.Reverse();
+                }
 
-            foreach (Element child in children) {
-                heightRemaining -= child.OuterRect.Height;
+                return children;
             }
 
-            return heightRemaining;
+            private void LineupElements(List<Element> children, PointF from) {
+                PointF vector;
+                if (this.Flex_Axis == Enums.Flex_Axis.Column) {
+                    vector = new(0, 1);
+                }
+                else {
+                    vector = new(1, 0);
+                }
+
+                PointF current = from;
+                foreach (Element child in children) {
+                    child.Style.Transform(current);
+                    var diff = new PointF(child.OuterRect.Width, child.OuterRect.Height).Scale(vector);
+                    current = current.Translate(diff);
+                }
+            }
+
+            private void AlignItems(List<Element> children) {
+                switch (this.Flex_Axis) {
+                    case Enums.Flex_Axis.Row:
+                        switch (this.Align_Items) {
+                            case Enums.Align_Items.Flex_start:
+                                break;
+                            case Enums.Align_Items.Flex_end:
+                                children.ForEach(c => c.Style.Transform(0, this.Element.ContentRect.Height - c.OuterRect.Height));
+                                break;
+                            case Enums.Align_Items.Center:
+                                children.ForEach(c => c.Style.Transform(0, (this.Element.ContentRect.Height / 2) - (c.OuterRect.Height / 2)));
+                                break;
+                        }
+                        break;
+                    case Enums.Flex_Axis.Column:
+                        switch (this.Align_Items) {
+                            case Enums.Align_Items.Flex_start:
+                                break;
+                            case Enums.Align_Items.Flex_end:
+                                children.ForEach(c => c.Style.Transform(this.Element.ContentRect.Width - c.OuterRect.Width, 0));
+                                break;
+                            case Enums.Align_Items.Center:
+                                children.ForEach(c => c.Style.Transform((this.Element.ContentRect.Width / 2) - (c.OuterRect.Width / 2), 0));
+                                break;
+                        }
+                        break;
+                }
+            }
+
+            /// <summary>
+            /// Calculates and assigns page numbers to this.s of a given _parent this.Element based on the 
+            /// _parent's content size and the heights of the children. Returns the total page count for 
+            /// the _parent this.Element.
+            /// </summary>
+            /// <param name="this.Element">The _parent this.Element.</param>
+            /// <returns>Total page count for all this.s.</returns>
+            private int AssignPages() {
+                if (this.Element.Style.Overflow != Enums.Overflow.Paged) return 1;
+                Queue<Element> children = new(this.Element.Children);
+
+                int page = -1;
+
+                while (children.Count > 0) {
+                    page++;
+                    float heightRemaining = this.Element.ContentRect.Height;
+                    var child = children.Dequeue();
+                    heightRemaining -= child.OuterRect.Height;
+                    child.Style.Page = page;
+
+                    while (children.Count > 0 && heightRemaining - children.Peek().OuterRect.Height > 0) {
+                        child = children.Dequeue();
+                        heightRemaining -= child.OuterRect.Height;
+                        child.Style.Page = page;
+                    }
+                }
+
+                return page + 1;
+            }
+
+            private void Transform(float x, float y) {
+                this.Transform(new PointF(x, y));
+            }
+
+            private void Transform(PointF p) {
+                this.Element.ContentRect = this.Element.ContentRect.Translate(p);
+                this.PaddingBox = this.PaddingBox.Translate(p);
+                this.BorderBox = this.BorderBox.Translate(p);
+                this.Element.OuterRect = this.Element.OuterRect.Translate(p);
+            }
+        }
+
+        public static class FlexExt {
+
+            /// <summary>
+            ///  The amount of width left over when all children are taken into account.
+            /// </summary>
+            /// <param name="this.Element"></param>
+            /// <returns></returns>
+            public static float WidthRemaining(this Element element, IList<Element> children) {
+                children ??= element.Children;
+                float widthRemaining = element.ContentRect.Width;
+
+                foreach (Element child in children) {
+                    widthRemaining -= child.OuterRect.Width;
+                }
+
+                return widthRemaining;
+            }
+
+            /// <summary>
+            ///  The amount of height left over when all children are taken into account.
+            /// </summary>
+            /// <param name="this.Element"></param>
+            /// <returns></returns>
+            public static float HeightRemaining(this Element element, IList<Element> children) {
+                children ??= element.Children;
+                float heightRemaining = element.ContentRect.Height;
+
+                foreach (Element child in children) {
+                    heightRemaining -= child.OuterRect.Height;
+                }
+
+                return heightRemaining;
+            }
         }
     }
-}

@@ -16,7 +16,7 @@ namespace Leagueinator.Printer.Elements {
 
         public new Element Dequeue() {
             if (this.Count == 0) throw new InvalidOperationException("Can not dequeue an empty queue");
-            Element element = this.Dequeue();
+            Element element = base.Dequeue();
             foreach (Element child in element.Children) this.Enqueue(child);
             return element;
         }
@@ -29,7 +29,7 @@ namespace Leagueinator.Printer.Elements {
         /// <param name="action">An action to be applied to each dequeued element. This action takes a 
         /// single parameter of type <see cref="Element"/>, which represents the dequeued element.
         /// </param>
-        public void Process(Action<Element> action) {
+        public void Walk(Action<Element> action) {
             while (this.Count > 0) {
                 action(this.Dequeue());
             }

@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Text;
 using Leagueinator.Utility;
 using static StyleParser;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Leagueinator.CSSParser {
     internal class StyleListener : StyleParserBaseListener {
@@ -14,25 +16,14 @@ namespace Leagueinator.CSSParser {
         private readonly List<Style> currentStyles = new();
 
         private static string CollectSelectorContext(SelectorContext selector) {
-            StringBuilder sb = new StringBuilder();
+            string input = selector.GetText();
+            string pattern = "(>)";
 
-            for (int i = 0; i < selector.ChildCount; i++) {
-                var child = selector.GetChild(i);
-                sb.Append(child.GetText());
+            string[] result = Regex.Split(input, pattern)
+                                   .Where(s => !string.IsNullOrEmpty(s)) 
+                                   .ToArray();
 
-                if (i < selector.ChildCount - 1) {
-                    switch (child.GetText()) {
-                        case ".":
-                        case "#":
-                            break;
-                        default:
-                            sb.Append(" ");
-                            break;
-                    }
-                }
-            }
-
-            return sb.ToString();
+            return result.DelString(" ");
         }
 
         /// <summary>
@@ -40,9 +31,17 @@ namespace Leagueinator.CSSParser {
         /// </summary>
         /// <param name="context"></param>
         public override void EnterStyle([NotNull] global::StyleParser.StyleContext context) {
-            var selectors_txt = context.selectors().GetText();
-            SelectorContext[] selectors = context.selectors().selector();
-            foreach (SelectorContext selector in selectors) {
+            List<SelectorContext> list = [];
+            SelectorsContext current = context.selectors();
+
+            while (current != null) {
+                list.Add(current.selector());
+                current = current.selectors();
+            }
+
+            list.Reverse();
+
+            foreach (SelectorContext selector in list) {
                 string selectorText = CollectSelectorContext(selector);
 
                 var style = new Style() {

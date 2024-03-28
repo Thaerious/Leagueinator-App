@@ -48,33 +48,7 @@ namespace Leagueinator.Printer.Styles {
                         return Enums.Direction.Reverse;
                 }
             }
-        }
-
-        
-
-        internal static void MergeInheritedStyles(Style target, Style source) {
-            foreach (var property in Style.InheritedProperties.Values) {
-                var sourceValue = property.GetValue(source);
-                var targetValue = property.GetValue(target);
-                if (sourceValue == null || targetValue != null) continue;
-                property.SetValue(target, sourceValue);
-            }
-        }
-
-        /// <summary>
-        /// Copy all CSS properties and fields from source to target.
-        /// Will only overwrite null fields on target.
-        /// Used to create inhereited style properties.
-        /// </summary>
-        /// <param name="source"></param>
-        internal static void MergeStyles(Style target, Style source) {
-            foreach (var property in Style.CSSProperties.Values) {
-                var sourceValue = property.GetValue(source);
-                var targetValue = property.GetValue(target);
-                if (sourceValue == null || targetValue != null) continue;
-                property.SetValue(target, sourceValue);
-            }
-        }
+        }               
 
         private void SetBorder(string source) {
             foreach (string s in source.Split(' ')) {
@@ -109,6 +83,13 @@ namespace Leagueinator.Printer.Styles {
             sb.AppendLine($"Selector : {this.Selector}");
             sb.AppendLine($"Owner : {(this.Owner != null ? this.Owner.Identifier : "")}");
             sb.AppendLine($"Specificity : [{this.Specificity.DelString()}]");
+
+            sb.AppendLine($"Sources : [");
+            foreach (Style style in this.SourceStyles) {
+                sb.AppendLine($"\t'{style.Selector}'");
+            }
+            sb.AppendLine($"]");
+
             sb.AppendLine($"Properties : [");
 
             foreach (var property in properties) {

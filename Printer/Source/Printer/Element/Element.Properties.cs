@@ -24,7 +24,7 @@ namespace Leagueinator.Printer.Elements {
             }
         }
 
-        public ReadOnlyCollection<Element> Children => new(this._children);
+        public ReadOnlyCollection<Element> Children;
 
         public Attributes Attributes { get; init; }
 

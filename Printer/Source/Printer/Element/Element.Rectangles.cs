@@ -9,17 +9,6 @@ namespace Leagueinator.Printer.Elements {
         internal PointF PageOffset { get; set; } = new();
 
         /// <summary>
-        /// The rectable the border will be printed in.
-        /// </summary>
-        internal virtual SizeF BorderSize { get; set; } = new();
-
-        ///// <summary>
-        ///// The rectangle _parent elements will use for child size.
-        ///// </summary>
-        //internal virtual SizeF OuterSize { get; set; } = new();
-
-
-        /// <summary>
         /// The element's parent content rectangle.
         /// Setting this property overrides the getter and returns the set value.
         /// Typically the rectangle is set on the root element, and not set on child elements.

@@ -13,14 +13,12 @@ namespace Test_Style {
     [TestClass]
     public class Style_Test {
 
-
-
         [TestMethod]
         public void Sanity() {
             LoadedStyles styles = LoadSSResource("style.css");
             Assert.IsNotNull(styles);
 
-            foreach (Style style in styles.Values) Console.WriteLine(style);
+            foreach (Style style in styles) Console.WriteLine(style);
         }
 
         /// <summary>
@@ -106,14 +104,15 @@ namespace Test_Style {
         public void Specificity_NameClass_Name() {
             Element xml = LoadResources("specificity.xml", "specificity.css");
 
-            var styles = LoadSSResource("specificity.css");
-            var sortedKeys = styles
-                            .OrderBy(pair => pair.Value)
-                            .Select(pair => pair.Key)
-                            .ToList();
+            LoadedStyles styles = LoadSSResource("specificity.css");
+            //var sortedKeys = styles
+            //                .OrderBy(pair => pair.Value)
+            //                .Select(pair => pair.Key)
+            //                .ToList();
+
             int i = 0;
-            foreach (var key in sortedKeys) {
-                Debug.WriteLine($"{i++}\t\"{key.Selector}\"\t[{key.Specificity.DelString()}]");
+            foreach (Style style in styles) {
+                Debug.WriteLine($"{i++}\t\"{style.Selector}\"\t[{style.Specificity.DelString()}]");
             }
 
             Assert.AreEqual(Flex_Axis.Column, xml["t1"][0].Style.Flex_Axis);
@@ -141,9 +140,10 @@ namespace Test_Style {
         public void Specificity() {
             LoadedStyles styles = LoadSSResource("specificity.css");
 
-            styles.OrderBy(pair => pair.Value)
-                  .ToList()
-                  .ForEach(pair => Console.WriteLine(pair.Value));
+            int i = 0;
+            foreach (Style style in styles) {
+                Debug.WriteLine($"{i++}\t\"{style.Selector}\"\t[{style.Specificity.DelString()}]");
+            }
         }
 
 

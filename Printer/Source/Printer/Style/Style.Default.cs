@@ -12,7 +12,9 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private static void BuildDefault() {
-            _default = new Style();
+            _default = new Style() {
+                Selector = "@default"
+            };
 
             MemberInfo[] methods = [.. typeof(Style).GetFields(), .. typeof(Style).GetProperties()];
 

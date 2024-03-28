@@ -60,6 +60,7 @@ namespace Leagueinator.Printer.Elements {
             this.Style = new Flex(this);
             this.Style.Owner = this;
             this.Attributes = new(this);
+            this.Children = new(this._children);
 
             foreach (XAttribute xattr in attributes) {
                 this.Attributes[xattr.Name.ToString()] = xattr.Value;
@@ -70,7 +71,7 @@ namespace Leagueinator.Printer.Elements {
             get {
                 StringBuilder sb = new();
 
-                new ElementQueue(this).Process(current => {
+                new ElementQueue(this).Walk(current => {
                     if (current is TextElement textElement) {
                         sb.Append(textElement.Text);
                     }

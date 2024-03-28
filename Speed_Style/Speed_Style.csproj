@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\large.style" />
+    <None Remove="Assets\large.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\large.xml" />
+    <EmbeddedResource Include="Assets\large.style" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Printer\Printer.csproj" />
+  </ItemGroup>
+
+</Project>

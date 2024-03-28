@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Printer.Aspects;
 using Leagueinator.Utility;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer.Elements {
     internal class TextElement : Element {
@@ -10,18 +11,14 @@ namespace Leagueinator.Printer.Elements {
             this.OnDraw += this.TextElement_OnDraw;
         }
 
-        private void TextElement_OnDraw(Graphics g, Element element, int page) {
+        private void TextElement_OnDraw(Graphics g, Element element, int page) {            
             using Brush brush = new SolidBrush(Color.Black);
-            Console.WriteLine(this.Style);
             g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
         }
 
         public string Text { get; [Validated] set; } = "";
 
-
-        internal override SizeF BorderSize => this.Size();
-
-        private SizeF Size() {
+        internal SizeF Size() {
             if (this.Style == null) return new();
             if (this.Style.Font == null) return new();
 

@@ -205,11 +205,15 @@ namespace Leagueinator.Designer {
             MessageBox.Show(version, "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void changeToolStripMenuItem_Click(object sender, EventArgs e) {
-            Element target = this.printerCanvas.RootElement["#target"][0];
-
-            Cardinal<UnitFloat>.TryParse("15px", out Cardinal<UnitFloat> value);
-            target.Style.BorderSize = value;
+        private void HndMenuPrintTarget(object sender, EventArgs e) {
+            List<Element> targets = this.printerCanvas.RootElement["#target"];
+            if (targets.Count == 0) {
+                Console.WriteLine("#target is null");
+            }
+            else {
+                Console.WriteLine(targets[0].ToXML());
+                Console.WriteLine(targets[0].Style);
+            }
         }
     }
 }

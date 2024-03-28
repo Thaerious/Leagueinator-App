@@ -327,8 +327,8 @@ namespace Leagueinator.Designer {
             // 
             this.changeToolStripMenuItem.Name = "changeToolStripMenuItem";
             this.changeToolStripMenuItem.Size = new Size(270, 34);
-            this.changeToolStripMenuItem.Text = "Change";
-            this.changeToolStripMenuItem.Click += this.changeToolStripMenuItem_Click;
+            this.changeToolStripMenuItem.Text = "Print Target";
+            this.changeToolStripMenuItem.Click += this.HndMenuPrintTarget;
             // 
             // toBackToolStripMenuItem
             // 

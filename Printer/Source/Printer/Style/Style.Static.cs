@@ -6,26 +6,22 @@ using System.Diagnostics;
 namespace Leagueinator.Printer.Styles {
     public partial class Style {
         static Style() {
-            try {
-                PropertyInfo[] properties = typeof(Style).GetProperties();
 
-                Dictionary<string, PropertyInfo> pDict = [];
-                Dictionary<string, PropertyInfo> ipDict = [];
+            PropertyInfo[] properties = typeof(Style).GetProperties();
 
-                foreach (var property in properties) {
-                    if (property.GetCustomAttribute<CSS>() == null) continue;
-                    if (property.CanWrite && property.CanRead) pDict[property.Name.ToFlatCase()] = property;
+            Dictionary<string, PropertyInfo> pDict = [];
+            Dictionary<string, PropertyInfo> ipDict = [];
 
-                    if (property.GetCustomAttribute<InheritedAttribute>() == null) continue;
-                    ipDict[property.Name.ToLower()] = property;
-                }
+            foreach (var property in properties) {
+                if (property.GetCustomAttribute<CSS>() == null) continue;
+                if (property.CanWrite && property.CanRead) pDict[property.Name.ToFlatCase()] = property;
 
-                Style.CSSProperties = pDict.AsReadOnly();
-                Style.InheritedProperties = ipDict.AsReadOnly();
+                if (property.GetCustomAttribute<InheritedAttribute>() == null) continue;
+                ipDict[property.Name.ToLower()] = property;
             }
-            catch (Exception ex) {
-                Console.WriteLine(ex.ToString());
-            }
+
+            Style.CSSProperties = pDict.AsReadOnly();
+            Style.InheritedProperties = ipDict.AsReadOnly();
         }
 
         public static IReadOnlyDictionary<string, PropertyInfo> CSSProperties { get; private set; }
