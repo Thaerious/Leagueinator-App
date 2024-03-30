@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 
 namespace Leagueinator.Printer.Elements {
 
-
     public partial class Element {
 
         public Flex Style { 

@@ -19,25 +19,23 @@ namespace Leagueinator.Printer.Elements {
                     return new(0, 0, this.Style.Width, this.Style.Height);
                 }
 
-                return this.Parent!.ContentRect;
+                return this.Parent!.Style.ContentBox();
             }
         }
-
-        private RectangleF? _containerRect = null;
 
         /// <summary>
         /// The area on the screen where drawing takes place for this element.
         /// This is the innermost rectangle.
         /// </summary>
         internal RectangleF ContentRect {
-            get; set;
+            get => this.Style.ContentBox();
         }
 
         /// <summary>
         /// The entire occupied space of this element, including padding and border.
         /// </summary>
         internal RectangleF OuterRect {
-            get; set;
+            get => this.Style.OuterBox();
         }
     }
 }
