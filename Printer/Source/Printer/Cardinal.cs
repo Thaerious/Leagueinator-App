@@ -1,5 +1,5 @@
-﻿using AspectInjector.Broker;
-using Leagueinator.CSSParser;
+﻿using Leagueinator.CSSParser;
+using System.Collections;
 
 namespace Leagueinator.Printer {
     public class CardinalParseException : Exception {
@@ -12,7 +12,7 @@ namespace Leagueinator.Printer {
         }
     }
 
-    public class Cardinal<T> where T : new() {
+    public class Cardinal<T> : IEnumerable<T> where T : new() {
         public T Left { get; }
         public T Right { get; }
         public T Top { get; }
@@ -23,7 +23,6 @@ namespace Leagueinator.Printer {
             this.Right = new();
             this.Bottom = new();
             this.Left = new();
-
         }
 
         public Cardinal(T value) {
@@ -39,6 +38,9 @@ namespace Leagueinator.Printer {
             this.Bottom = bottom;
             this.Left = left;
         }
+
+        //public IEnumerable<T> GetEnumerator() {
+        //}
 
         public static bool TryParse(string source, out Cardinal<T> target) {
             string[] split = source.Split(' ', ',');
@@ -69,6 +71,17 @@ namespace Leagueinator.Printer {
 
         public override string ToString() {
             return $"[{this.Top} {this.Right} {this.Bottom} {this.Left}]";
+        }
+
+        public IEnumerator<T> GetEnumerator() {
+            yield return this.Top;
+            yield return this.Right;
+            yield return this.Bottom;
+            yield return this.Left;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this.GetEnumerator();
         }
     }
 }

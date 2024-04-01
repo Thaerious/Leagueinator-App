@@ -12,7 +12,7 @@
 
 // Unreachable code detected
 #pragma warning disable 0162
-// The variable '...' is assigned but its value is never used
+// The variable '...' is assigned but its Value is never used
 #pragma warning disable 0219
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591

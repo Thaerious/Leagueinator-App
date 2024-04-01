@@ -14,7 +14,7 @@ namespace Leagueinator.Printer.Styles {
         public Font Font {
             get {
                 string fontFamily = this.FontFamily ?? "Arial";
-                float fontSize = this.FontSize ?? new(12, "px");
+                float fontSize = this.FontSize ?? new() { Factor = 12, Unit = "px" };
                 FontStyle fontStyle = this.FontStyle ?? System.Drawing.FontStyle.Regular;
                 return new(fontFamily, fontSize, fontStyle);
             }
@@ -48,7 +48,7 @@ namespace Leagueinator.Printer.Styles {
                         return Enums.Direction.Reverse;
                 }
             }
-        }               
+        }
 
         private void SetBorder(string source) {
             foreach (string s in source.Split(' ')) {
@@ -71,7 +71,7 @@ namespace Leagueinator.Printer.Styles {
 
             this.BorderColor ??= new(Color.Black);
             this.BorderStyle ??= new(DashStyle.Solid);
-            this.BorderSize ??= new(new(1, "px"));
+            this.BorderSize ??= new(new() { Factor = 1, Unit = "px"});
         }
 
         public override string ToString() {

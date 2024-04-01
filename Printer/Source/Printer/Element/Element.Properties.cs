@@ -72,6 +72,8 @@ namespace Leagueinator.Printer.Elements {
 
         public bool IsRoot { get => this.Parent == null; }
 
+        public bool IsLeaf { get => this.Children.Count == 0; }
+
         public string TagName { get; init; } = "";
 
         public string Identifier {

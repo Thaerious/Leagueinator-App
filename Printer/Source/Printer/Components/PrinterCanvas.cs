@@ -44,6 +44,8 @@ namespace Leagueinator.Printer.Components {
         public TimeSpan RepaintTime { get; private set; }
 
         protected override void OnPaint(PaintEventArgs e) {
+            Console.WriteLine($"InnerCanvas.OnPaint() : {this.RootElement is not null}");
+
             if (this.RootElement is null) return;
 
             var stopwatch = new Stopwatch();
@@ -114,9 +116,6 @@ namespace Leagueinator.Printer.Components {
         /// </summary>
         private System.ComponentModel.IContainer? components = null;
 
-        private void ResetDims() {
-            this.SetDims(this.inner.dimX, this.inner.dimY);
-        }
 
         public void SetDims(float x, float y) {
             this.inner.Dock = DockStyle.None;
@@ -200,14 +199,18 @@ namespace Leagueinator.Printer.Components {
         }
         public TimeSpan RepaintTime { get => this.inner.RepaintTime; }
 
+        protected override void OnPaint(PaintEventArgs e) {
+            Console.WriteLine($"PrinterCanvas.OnPaint() : {this.RootElement is not null}");
+            base.OnPaint(e);
+        }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
-            this.ResetDims();
+            this.SetDims(this.inner.dimX, this.inner.dimY);
 
             if (this.RootElement != null) {
                 this.inner.dimX = this.RootElement.Style.Width;
                 this.inner.dimY = this.RootElement.Style.Height;
-                this.RootElement.Style.DoLayout();
             }
         }
 

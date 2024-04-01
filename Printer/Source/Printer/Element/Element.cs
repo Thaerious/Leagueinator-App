@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Printer.Aspects;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Text;
 using System.Xml.Linq;
 
@@ -28,6 +29,13 @@ namespace Leagueinator.Printer.Elements {
         }
 
         public virtual void Draw(Graphics g, int page) {
+            Debug.WriteLine("Element.Draw");
+            Debug.WriteLine(this.Root.ToXML(
+                (ele, xml) => {
+                    xml.AppendLine($"border size {ele.Style.BorderSize}");
+                }                
+            ));
+
             if (this.Invalid == true) this.Style.DoLayout();
             this.Invalid = false;
 

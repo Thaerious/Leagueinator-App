@@ -21,12 +21,12 @@ namespace Leagueinator.CSSParser {
         }
 
         /// <summary>
-        /// Attempt to apply a value to the style object
+        /// Attempt to apply a Value to the style object
         /// </summary>
-        /// <param name="style">The style object that will recieve the value.</param>
-        /// <param name="value">The string source for the value.</param>
-        /// <param name="member">The prop that will receive the value.</param>
-        /// <returns>True if a value was assigned</returns>
+        /// <param name="style">The style object that will recieve the Value.</param>
+        /// <param name="value">The string source for the Value.</param>
+        /// <param name="member">The prop that will receive the Value.</param>
+        /// <returns>True if a Value was assigned</returns>
         public bool TryParse(Style style, string value, MemberInfo member) {
             if (!string.IsNullOrEmpty(this.SetMethod)) {
                 MethodInfo method

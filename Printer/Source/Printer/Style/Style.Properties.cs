@@ -14,8 +14,8 @@ namespace Leagueinator.Printer.Styles {
         [CSS] public UnitFloat? Right { get => right; [Validated] set => right = value; }
         [CSS] public UnitFloat? Top { get => top; [Validated] set => top = value; }
         [CSS] public UnitFloat? Bottom { get => bottom; [Validated] set => bottom = value; }
-        [CSS] public UnitFloat? Width { get => width; [Validated] set => width = value; }
-        [CSS] public UnitFloat? Height { get => this.height; [Validated] set => this.height = value; }
+        [CSS("auto")] public UnitFloat? Width { get => width; [Validated] set => width = value; }
+        [CSS("auto")] public UnitFloat? Height { get => this.height; [Validated] set => this.height = value; }
         [CSS] public Color? MarginColor { get => marginColor; set => marginColor = value; }
         [CSS("0px")] public Cardinal<UnitFloat>? Margin { get => margin; [Validated] set => margin = value; }
         [CSS] public Color? PaddingColor { get => paddingColor; set => paddingColor = value; }

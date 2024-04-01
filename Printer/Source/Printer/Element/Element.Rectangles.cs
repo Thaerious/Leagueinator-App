@@ -10,7 +10,7 @@ namespace Leagueinator.Printer.Elements {
 
         /// <summary>
         /// The element's parent content rectangle.
-        /// Setting this property overrides the getter and returns the set value.
+        /// Setting this property overrides the getter and returns the set Value.
         /// Typically the rectangle is set on the root element, and not set on child elements.
         /// </summary>
         public RectangleF ContainerRect {

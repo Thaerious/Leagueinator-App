@@ -6,12 +6,12 @@ namespace Leagueinator.CSSParser {
     public static class MultiParse {
 
         /// <summary>
-        /// Assign a value of type 'T' to target based on a source string.
+        /// Assign a Value of type 'T' to target based on a source string.
         /// </summary>
         /// <typeparam name="T">The type of object to generate.</typeparam>
         /// <param name="source">The string used to generate the new object.</param>
-        /// <param name="target">The reference to write the generated value to.</param>
-        /// <returns>True if a value was written, otherwise false.</returns>
+        /// <param name="target">The reference to write the generated Value to.</param>
+        /// <returns>True if a Value was written, otherwise false.</returns>
         /// <returns></returns>
         public static bool TryParse<T>(string source, out T? target) {
             var r = TryParse(source, typeof(T), out object? _target);
@@ -20,12 +20,12 @@ namespace Leagueinator.CSSParser {
         }
 
         /// <summary>
-        /// Assign a value of 'type' to 'target' based on the 'source' string.
+        /// Assign a Value of 'type' to 'target' based on the 'source' string.
         /// </summary>
         /// <param name="source">The string used to generate the new object.</param>
         /// <param name="type">The type of object to generate.</param>
-        /// <param name="target">The reference to write the generated value to.</param>
-        /// <returns>True if a value was written, otherwise false.</returns>
+        /// <param name="target">The reference to write the generated Value to.</param>
+        /// <returns>True if a Value was written, otherwise false.</returns>
         public static bool TryParse(string source, Type type, out object? target) {
             target = default;
 
@@ -110,7 +110,7 @@ namespace Leagueinator.CSSParser {
         }
 
         /// <summary>
-        /// Create a new object based on the value of a public property.
+        /// Create a new object based on the Value of a public property.
         /// The propery must have a public getter.
         /// The properties are searched without case and decoration.
         /// If a public property was not found target is set to default and false is returned.
@@ -118,7 +118,7 @@ namespace Leagueinator.CSSParser {
         /// <param name="source"></param>
         /// <param name="type"></param>
         /// <param name="target"></param>
-        /// <returns>True if value was assigned</returns>
+        /// <returns>True if Value was assigned</returns>
         private static bool ParsePublicProperty(string source, Type type, ref object? target) {
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Static).ToDictionary();
             var key = source.ToFlatCase();

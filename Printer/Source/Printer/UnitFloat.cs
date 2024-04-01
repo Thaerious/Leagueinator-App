@@ -1,57 +1,41 @@
-﻿using Leagueinator.Printer.Elements;
-using Leagueinator.Utility;
-using System.Diagnostics;
+﻿using Leagueinator.Utility;
 using System.Text.RegularExpressions;
 
 namespace Leagueinator.Printer {
     public class UnitFloat {
-        public enum Orientation { HORZ, VERT }
-
+        public delegate void UnitFloatDelegate(float value);
+        public event UnitFloatDelegate ValueChange = delegate { };
         public static readonly UnitFloat Default = new();
-        public string Unit { get; set; } = "auto";
-        internal Element? Element { get; set; } = default;
-        public Orientation Orient = Orientation.HORZ;
 
-        public float Value = 0f;
-
-        public UnitFloat() { }
-
-        public UnitFloat(float value, string unit) {
-            this.Value = value;
-            this.Unit = unit;
-        }
-
-        public UnitFloat(float value) : this(value, "px") {}
-
-        public void SetSource(Element element, Orientation orientation) {
-            this.Element = element;
-            this.Orient = orientation;
-        }
-
-        public static implicit operator float(UnitFloat? m) {
-            return m?.ToFloat() ?? 0f;
-        }
-
-        public float ToFloat() {
-            if (this is null) return 0;
-
-            switch (this.Unit) {
-                case "%":
-                    if (this.Orient == Orientation.HORZ) {
-                        return (this.Element?.ContainerRect.Width ?? 0f) * this.Value / 100f;
-                    }
-                    else {
-                        return (this.Element?.ContainerRect.Height ?? 0f) * this.Value / 100f;
-                    }
-
-                default: return this.Value;
+        public float? Value {
+            get => _value;
+            set {
+                if (value is null) throw new InvalidOperationException();
+                this._value = value;
+                this.ValueChange.Invoke((float)value);
             }
         }
 
-        //case "%h": return (this.Element?.ContainerRect.Height ?? 0f) * this.Value / 100f;
-        //case "%w": return (this.Element?.ContainerRect.Width ?? 0f) * this.Value / 100f;
-        //case "vh": return (this.Element?.Root.ContainerRect.Height ?? 0) * this.Value / 100f;
-        //case "vw": return (this.Element?.Root.ContainerRect.Width ?? 0) * this.Value / 100f;
+        public bool HasValue => this.Value != null;
+
+        public string Unit { get; init; } = "auto";
+
+        public float Factor { get; init; } = 0f;
+
+        public void ApplySource(float value) {
+            if (this.Unit == "%") {
+                this.Value = value * this.Factor / 100;
+            }
+            else if(this.Unit == "px") {
+                this.Value = this.Factor;
+            }
+        }
+
+        public static implicit operator float(UnitFloat? m) {
+            if (m is null) return 0f;
+            if (m.HasValue) return (float)m.Value!;
+            return 0f;
+        }
 
         public static bool TryParse(string input, out UnitFloat target) {
             if (input.IsEmpty()) {
@@ -59,17 +43,32 @@ namespace Leagueinator.Printer {
                 return false;
             }
 
+            if (input.Equals("auto") || input.IsEmpty()) {
+                target = new() {
+                    Factor = 0f,
+                    Unit = "auto"
+                };
+                return true;
+            }
+
             string pattern = @"(\d+)([a-zA-Z%]+)";
             Match match = Regex.Match(input, pattern);
 
-            var value = float.Parse(match.Groups[1].Value);
-            target = new(value, match.Groups[2].Value);
+            target = new() {
+                Factor = float.Parse(match.Groups[1].Value),
+                Unit = match.Groups[2].Value
+            };
 
             return true;
         }
 
         public override String ToString() {
-            return $"{this.Value}{this.Unit}";
+            return $"({this.Factor}, {this.Unit}) = {(float)this}f";
         }
+
+        private float? _value = default;
+
+        public enum Axis { MAJOR, MINOR }
+        public enum Dim { WIDTH, HEIGHT }
     }
 }

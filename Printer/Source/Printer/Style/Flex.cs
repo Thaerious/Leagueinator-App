@@ -2,23 +2,125 @@
 using System.Drawing.Drawing2D;
 using Leagueinator.Printer.Utility;
 using System.Diagnostics;
+using static Leagueinator.Printer.UnitFloat;
 
 namespace Leagueinator.Printer.Styles {
-    public class Flex(Element owner) : Style {
-        public Element Element { get; } = owner;
+
+    public static class ElementExt {
+
+        public static float Evaluate(this UnitFloat unitFloat, float source) {
+            if (unitFloat.Unit.Equals("px")) return unitFloat.Factor;
+            if (unitFloat.Unit.Equals("%")) {
+                return source * unitFloat.Factor / 100;
+            }
+
+            return 0f;
+        }
+
+        /// <summary>
+        /// Return a percent _value of a parent's dimension.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="dim"></param>
+        public static float ByParent(this Element element, Dim dim) {
+            if (dim == Dim.WIDTH) {
+                return (float)element.Parent!.Style.ContentBox().Width;
+            }
+            else {
+                return (float)element.Parent!.Style.ContentBox().Height;
+            }
+        }
+
+        /// <summary>
+        /// Return a percent _value of a parent's dimension.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="dim"></param>
+        public static float ByPercent(this Element element, Dim dim) {
+            RectangleF contentBox = element.Parent!.Style.ContentBox();
+
+            if (dim == Dim.WIDTH) {
+                return (float)contentBox.Width * element.Style.Width!.Factor / 100;
+            }
+            else {
+                return (float)contentBox.Height * element.Style.Height!.Factor / 100;
+            }
+        }
+
+        /// <summary>
+        /// Return the SUM of all child dimensions.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="dim"></param>
+        /// <returns></returns>
+        public static float BySum(this Element element, Dim dim) {
+            if (dim == Dim.WIDTH) {
+                return element.Children.Sum(c => (float)c.Style.OuterBox().Width);
+            }
+            else {
+                return element.Children.Sum(c => (float)c.Style.OuterBox().Height);
+            }
+        }
+
+        public static bool IsAuto(this Element element, Dim dim) {
+            if (dim == Dim.WIDTH) {
+                return element.Style.Width!.Unit.Equals("auto");
+            }
+            else {
+                return element.Style.Height!.Unit.Equals("auto");
+            }
+        }
+    }
+
+    public class Flex : Style {
+        public Element Element { get; }
         private PointF Translation = new();
         private int pageCount = 1;
-         
+        private bool isReady = false;
+
+        public Flex(Element owner) {
+            this.Element = owner;
+        }
+
+        /// <summary>
+        /// Called the first time DoLayout is invoked.
+        /// </summary>
+        private void MakeReady() {
+            if (!isReady) {
+                this.Width!.ValueChange += this.WidthValueChange;
+                this.Margin ??= new();
+                this.BorderSize ??= new();
+                this.Padding ??= new();
+                this.isReady = true;
+            }
+
+            foreach (Element child in Element.Children) child.Style.MakeReady();
+        }
+
         /// <summary>
         /// Begin the layout process, typcially only called on the root element.
         /// </summary>
         /// <returns></returns>
         public int DoLayout() {
-            Debug.WriteLine("\nDoLayout()");
+            MakeReady();
 
-            new ElementQueue(this.Element).Walk(e => e.Style.AssignUnitSources());
-            new ElementQueue(this.Element).Walk(e => e.Style.FillMajorAxis());
-            new ElementQueue(this.Element).Walk(e => e.Style.FillMinorAxis());
+            if (this.Flex_Axis == Enums.Flex_Axis.Column) {
+                EvaluateMajor(this.Element, Dim.WIDTH);
+                EvaluateMinor(this.Element, Dim.HEIGHT);
+            }
+            else {
+                EvaluateMajor(this.Element, Dim.HEIGHT);
+                EvaluateMinor(this.Element, Dim.WIDTH);
+            }
+
+            new ElementQueue(this.Element).Walk(ele => {
+                if (ele.IsRoot) return;
+                RectangleF contentBox = ele.Parent!.Style.ContentBox();
+                ele.Style.Padding!.Top.Value = ele.Style.Padding.Top.Evaluate(contentBox.Width);
+                ele.Style.Padding!.Right.Value = ele.Style.Padding.Top.Evaluate(contentBox.Width);
+                ele.Style.Padding!.Bottom.Value = ele.Style.Padding.Top.Evaluate(contentBox.Width);
+                ele.Style.Padding!.Left.Value = ele.Style.Padding.Top.Evaluate(contentBox.Width);
+            });
 
             this.pageCount = this.AssignPages();
             this.DoPos();
@@ -26,55 +128,90 @@ namespace Leagueinator.Printer.Styles {
             this.AssignInvokes();
             this.Element.Invalid = false;
 
-            Debug.WriteLine($" : {pageCount}\n");
+            Debug.WriteLine($" : {pageCount}");
             return pageCount;
         }
 
-        internal void FillMajorAxis() {
-            if (this.Flex_Axis == Enums.Flex_Axis.Column) {                
-                this.Width ??= new(100, "%") {
-                    Element = this.Element,
-                    Orient = UnitFloat.Orientation.HORZ
-                };
-            }
-            else if (this.Flex_Axis == Enums.Flex_Axis.Row) {
-                this.Height ??= new(100, "%") {
-                    Element = this.Element,
-                    Orient = UnitFloat.Orientation.VERT
-                };
-            }
+        private void WidthValueChange(float value) {
+            Debug.WriteLine($"{this.Element} WidthValueChange {value}");
+
+            this.Element.Children.SelectMany(child =>
+                    child.Style.Padding!
+                    .Concat(child.Style.Margin!)
+                    .Concat(child.Style.BorderSize!)
+            ).ToList()
+            .ForEach(uf => {
+                uf.ApplySource(value);
+            });
         }
 
-        internal void FillMinorAxis() {
-            if (this.Flex_Axis == Enums.Flex_Axis.Row) {
-                this.Width ??= new() {
-                    Value = this.Element.Children.Sum(e => e.Style.Width),
-                    Unit = "px",
-                    Element = this.Element,
-                    Orient = UnitFloat.Orientation.HORZ
-                };
+        public static void EvaluateMajor(Element element, Dim dim) {
+            UnitFloat unitFloat = dim == Dim.WIDTH ? element.Style.Width! : element.Style.Height!;
+
+            if (unitFloat.Unit.Equals("auto")) {
+                if (element.IsLeaf) {
+                    unitFloat.Value = 0;
+                }
+                else {
+                    foreach (Element child in element.Children) EvaluateMajor(child, dim);
+                    unitFloat.Value = element.BySum(dim);
+                    Debug.WriteLine($"EvaluateMajor({element}, {dim}) : {unitFloat}");
+                    return;
+                }
             }
-            else if (this.Flex_Axis == Enums.Flex_Axis.Column) {
-                this.Height ??= new() {
-                    Value = this.Element.Children.Sum(e => e.Style.Height),
-                    Unit = "px",
-                    Element = this.Element,
-                    Orient = UnitFloat.Orientation.HORZ
-                };
+
+            if (unitFloat.Unit.Equals("px")) {
+                unitFloat.Value = unitFloat.Factor;
             }
+            else /* % */ {
+                if (element.IsRoot) {
+                    unitFloat.Value = 0;
+                }
+                else if (element.IsLeaf && element.Parent!.IsAuto(dim)) {
+                        unitFloat.Value = 0;
+                }
+                else {
+                    unitFloat.Value = element.ByPercent(dim);
+                }
+            }
+
+            Debug.WriteLine($"EvaluateMajor({element}, {dim}) : {unitFloat}");
+            foreach (Element child in element.Children) EvaluateMajor(child, dim);
         }
 
-        internal void AssignUnitSources() {
-            this.Left?.SetSource(this.Element, UnitFloat.Orientation.HORZ);
-            this.Right?.SetSource(this.Element, UnitFloat.Orientation.HORZ);
-            this.Top?.SetSource(this.Element, UnitFloat.Orientation.VERT);
-            this.Bottom?.SetSource(this.Element, UnitFloat.Orientation.VERT);
+        public static void EvaluateMinor(Element element, Dim dim) {
+            UnitFloat unitFloat = dim == Dim.WIDTH ? element.Style.Width! : element.Style.Height!;
 
-            this.Margin ??= new();
-            this.BorderSize ??= new();
-            this.Padding ??= new();
+            if (unitFloat.Unit.Equals("px")) {
+                unitFloat.Value = unitFloat.Factor;
+            }
+            else if (element.IsRoot) {
+                unitFloat.Value = 0f;
+            }
+            else if(unitFloat.Unit.Equals("%")) {
+                unitFloat.Value =  element.ByPercent(dim);
+            }
+            else /* special case: branch & leaf -> auto */ {
+                if (dim == Dim.WIDTH) {
+                    float w = (float)element.Parent!.Style.ContentBox().Width;
+                    unitFloat.Value = w 
+                        - element.Style.Padding!.Left - element.Style.Padding!.Right
+                        - element.Style.BorderSize!.Left - element.Style.BorderSize!.Right
+                        - element.Style.Margin!.Left - element.Style.Margin!.Right;
+                }
+                else {
+                    float h = (float)element.Parent!.Style.ContentBox().Width;
+                    unitFloat.Value = h
+                        - element.Style.Padding!.Top - element.Style.Padding!.Bottom
+                        - element.Style.BorderSize!.Top - element.Style.BorderSize!.Bottom
+                        - element.Style.Margin!.Top - element.Style.Margin!.Bottom;
+                }
+            }
+
+            Debug.WriteLine($"EvaluateMinor({element}, {dim}) : {unitFloat}");
+            foreach (Element child in element.Children) EvaluateMinor(child, dim);
         }
-                       
+
         internal RectangleF ContentBox() {
             return new(
                 this.Translation.X + this.Margin!.Left + this.BorderSize!.Left + this.Padding!.Left,
@@ -85,13 +222,11 @@ namespace Leagueinator.Printer.Styles {
         }
 
         internal RectangleF PaddingBox() {
-            var contentBox = this.ContentBox();
-
             return new(
-                 this.Translation.X + this.Margin!.Left + this.BorderSize!.Left,
-                 this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top,
-                 contentBox.Width + Padding!.Right + Padding!.Left,
-                 contentBox.Height + Padding!.Top + Padding!.Bottom
+                this.Translation.X + this.Margin!.Left + this.BorderSize!.Left,
+                this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top,
+                this.Width + Padding!.Left + Padding!.Right,
+                this.Height + Padding!.Top + Padding!.Bottom
             );
         }
 
@@ -99,12 +234,13 @@ namespace Leagueinator.Printer.Styles {
             var paddingBox = this.PaddingBox();
 
             return new(
-                 this.Translation.X + this.Margin!.Left + this.BorderSize!.Left,
-                 this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top,
-                 paddingBox.Width + BorderSize.Left + BorderSize.Right,
-                 paddingBox.Height + BorderSize.Top + BorderSize.Bottom
+                this.Translation.X + this.Margin!.Left,
+                this.Translation.Y + this.Margin!.Top,
+                this.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right,
+                this.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom
             );
         }
+
 
         internal RectangleF OuterBox() {
             var borderBox = this.BorderBox();
@@ -112,14 +248,12 @@ namespace Leagueinator.Printer.Styles {
             return new(
                 this.Translation.X,
                 this.Translation.Y,
-                borderBox.Width + this.Margin!.Left + this.Margin.Right,
-                borderBox.Height + this.Margin!.Top + this.Margin.Bottom
+                this.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right + this.Margin!.Left + this.Margin.Right,
+                this.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom + this.Margin!.Top + this.Margin.Bottom
             );
         }
 
         internal int DoPos() {
-            Debug.WriteLine($"{this.Element} DoPos");
-
             if (this.Translate != null) {
                 this.Transform(this.Translate.X, this.Translate.Y);
             }
@@ -140,8 +274,6 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private void DoPosFlex(int page) {
-            Debug.WriteLine($"{this.Element} DoPosFlex");
-
             var children = this.CollectChildren(page);
             if (children.Count == 0) return;
 
@@ -183,7 +315,6 @@ namespace Leagueinator.Printer.Styles {
         /// <param name="this.Element"></param>
         /// <param name="children"></param>
         private void JustifyContent(List<Element> children) {
-            Debug.WriteLine($"{this.Element} JustifyContent");
             switch (this.Justify_Content) {
                 default:
                 case Enums.Justify_Content.Flex_start: {
@@ -304,7 +435,7 @@ namespace Leagueinator.Printer.Styles {
 
         public void DoDrawBackground(Graphics g, Element __, int page) {
             if (this.MarginColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.MarginColor), this.Element.OuterRect);
+                g.FillRectangle(new SolidBrush((Color)this.MarginColor), this.OuterBox());
             }
 
             if (this.PaddingColor != null) {
@@ -389,8 +520,6 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private void LineupElements(List<Element> children, PointF from) {
-            Debug.WriteLine($"{this.Element} LineupElements");
-
             PointF vector;
             if (this.Flex_Axis == Enums.Flex_Axis.Column) {
                 vector = new(0, 1);
@@ -402,7 +531,6 @@ namespace Leagueinator.Printer.Styles {
             PointF current = from;
             foreach (Element child in children) {
                 child.Style.Transform(current);
-                Debug.WriteLine($" - {child} {current} {child.Style.Translation} {child.Style.ContentBox()}");
                 var diff = new PointF(child.OuterRect.Width, child.OuterRect.Height).Scale(vector);
                 current = current.Translate(diff);
             }

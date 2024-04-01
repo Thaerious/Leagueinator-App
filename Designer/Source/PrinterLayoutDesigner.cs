@@ -70,8 +70,6 @@ namespace Leagueinator.Designer {
             else {
                 this.HndMenuNewClick(null, null);
             }
-
-            this.HndMenuRefreshClick(this, new EventArgs());
         }
 
         private void TXT_KeyPress(object sender, KeyPressEventArgs e) {
@@ -171,8 +169,8 @@ namespace Leagueinator.Designer {
                 Element root = XMLLoader.Load(xmlString);
                 styles.ApplyTo(root);
 
+                root.Style.DoLayout();
                 this.printerCanvas.RootElement = root;
-
                 this.printerCanvas.Invalidate(true);
             }
             catch (Exception ex) {
@@ -192,10 +190,10 @@ namespace Leagueinator.Designer {
             this.txtXML.Text = "<root>\n</root>";
 
             this.txtStyle.Text =
-                "root {" +
+                "root {\n" +
                 "\tWidth: 850px;\n" +
                 "\tHeight: 1100px;\n" +
-                "}";
+                "}\n";
 
             this.FilePath = null;
         }

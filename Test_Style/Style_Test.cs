@@ -106,7 +106,7 @@ namespace Test_Style {
 
             LoadedStyles styles = LoadSSResource("specificity.css");
             //var sortedKeys = styles
-            //                .OrderBy(pair => pair.Value)
+            //                .OrderBy(pair => pair.Factor)
             //                .Select(pair => pair.Key)
             //                .ToList();
 
