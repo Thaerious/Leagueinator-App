@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Printer.Aspects;
 using Leagueinator.Utility;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer.Elements {
     internal class TextElement : Element {
@@ -12,8 +11,10 @@ namespace Leagueinator.Printer.Elements {
         }
 
         private void TextElement_OnDraw(Graphics g, Element element, int page) {            
-            using Brush brush = new SolidBrush(Color.Black);
-            g.DrawString(this.Text, this.Style.Font, brush, this.ContentRect, this.Style.StringFormat);
+            //using Brush brush = new SolidBrush(Color.Black);
+            //Debug.WriteLine($"Draw String {this.Style.ContentBox()}");
+            //g.DrawRectangle(new Pen(Color.Black, 1), this.Style.ContentBox());
+            //g.DrawString(this.Text, this.Style.Font, brush, this.Style.ContentBox(), this.Style.StringFormat);
         }
 
         public string Text { get; [Validated] set; } = "";

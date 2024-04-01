@@ -24,7 +24,7 @@ namespace Leagueinator.Printer.Styles {
         [CSS] public Color? BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
         [CSS] public Cardinal<Color>? BorderColor { get => this.borderColor; set => this.borderColor = value; }
         [CSS][Inherited] public string? FontFamily { get => fontFamily; [Validated] set => fontFamily = value; }
-        [CSS][Inherited] public UnitFloat? FontSize { get => fontSize; [Validated] set => fontSize = value; }
+        [CSS("1px")][Inherited] public UnitFloat? FontSize { get => fontSize; [Validated] set => fontSize = value; }
         [CSS][Inherited] public FontStyle? FontStyle { get => this.fontStyle; set => this.fontStyle = value; }
         [CSS("Row")] public Flex_Axis? Flex_Axis { get => flex_Axis; [Validated] set => flex_Axis = value; }
         [CSS("Flex_Start")] public Justify_Content? Justify_Content { get => justify_Content; [Validated] set => justify_Content = value; }

@@ -87,6 +87,7 @@ namespace Leagueinator.Printer.Styles {
         /// </summary>
         private void MakeReady() {
             if (!isReady) {
+                this.Height!.ValueChange += this.HeightValueChange;
                 this.Width!.ValueChange += this.WidthValueChange;
                 this.Margin ??= new();
                 this.BorderSize ??= new();
@@ -109,8 +110,8 @@ namespace Leagueinator.Printer.Styles {
                 EvaluateMinor(this.Element, Dim.HEIGHT);
             }
             else {
-                EvaluateMajor(this.Element, Dim.HEIGHT);
                 EvaluateMinor(this.Element, Dim.WIDTH);
+                EvaluateMajor(this.Element, Dim.HEIGHT);
             }
 
             new ElementQueue(this.Element).Walk(ele => {
@@ -132,8 +133,12 @@ namespace Leagueinator.Printer.Styles {
             return pageCount;
         }
 
+        private void HeightValueChange(float value) {
+            Debug.WriteLine($" - {this.Element}.HeightValueChange({value});");
+        }
+
         private void WidthValueChange(float value) {
-            Debug.WriteLine($"{this.Element} WidthValueChange {value}");
+            Debug.WriteLine($" - {this.Element}.WidthValueChange({value});");
 
             this.Element.Children.SelectMany(child =>
                     child.Style.Padding!
@@ -168,7 +173,7 @@ namespace Leagueinator.Printer.Styles {
                     unitFloat.Value = 0;
                 }
                 else if (element.IsLeaf && element.Parent!.IsAuto(dim)) {
-                        unitFloat.Value = 0;
+                    unitFloat.Value = 0;
                 }
                 else {
                     unitFloat.Value = element.ByPercent(dim);
@@ -188,13 +193,13 @@ namespace Leagueinator.Printer.Styles {
             else if (element.IsRoot) {
                 unitFloat.Value = 0f;
             }
-            else if(unitFloat.Unit.Equals("%")) {
-                unitFloat.Value =  element.ByPercent(dim);
+            else if (unitFloat.Unit.Equals("%")) {
+                unitFloat.Value = element.ByPercent(dim);
             }
             else /* special case: branch & leaf -> auto */ {
                 if (dim == Dim.WIDTH) {
                     float w = (float)element.Parent!.Style.ContentBox().Width;
-                    unitFloat.Value = w 
+                    unitFloat.Value = w
                         - element.Style.Padding!.Left - element.Style.Padding!.Right
                         - element.Style.BorderSize!.Left - element.Style.BorderSize!.Right
                         - element.Style.Margin!.Left - element.Style.Margin!.Right;
@@ -259,7 +264,7 @@ namespace Leagueinator.Printer.Styles {
             }
 
             // position if absolute or flex position relative to parent
-            if (this.Position != Enums.Position.Fixed) { 
+            if (this.Position != Enums.Position.Fixed) {
                 this.Transform(this.Element.ContainerRect.TopLeft());
             }
 

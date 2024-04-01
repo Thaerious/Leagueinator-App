@@ -14,9 +14,10 @@ namespace Leagueinator.Printer.Styles {
         public Font Font {
             get {
                 string fontFamily = this.FontFamily ?? "Arial";
-                float fontSize = this.FontSize ?? new() { Factor = 12, Unit = "px" };
+                this.FontSize ??= new() { Factor = 12, Unit = "px" };
+                //this.FontSize.ApplySource(1);
                 FontStyle fontStyle = this.FontStyle ?? System.Drawing.FontStyle.Regular;
-                return new(fontFamily, fontSize, fontStyle);
+                return new(fontFamily, 12, fontStyle);
             }
         }
 

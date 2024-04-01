@@ -32,7 +32,8 @@ namespace Leagueinator.Printer.Elements {
             Debug.WriteLine("Element.Draw");
             Debug.WriteLine(this.Root.ToXML(
                 (ele, xml) => {
-                    xml.AppendLine($"border size {ele.Style.BorderSize}");
+                    xml.AppendLine($"content {ele.Style.ContentBox()}");
+                    xml.AppendLine($"outer {ele.Style.OuterBox()}");
                 }                
             ));
 
