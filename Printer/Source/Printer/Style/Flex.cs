@@ -1,10 +1,10 @@
 ﻿using Leagueinator.Printer.Elements;
 using System.Drawing.Drawing2D;
 using Leagueinator.Printer.Utility;
-using System.Diagnostics;
 using static Leagueinator.Printer.UnitFloat;
 
 namespace Leagueinator.Printer.Styles {
+
 
     public static class ElementExt {
 
@@ -106,11 +106,15 @@ namespace Leagueinator.Printer.Styles {
             MakeReady();
 
             if (this.Flex_Axis == Enums.Flex_Axis.Column) {
+                TabbedDebug.NextBlock("\nEvaluating Major Axis");
                 EvaluateMajor(this.Element, Dim.WIDTH);
+                TabbedDebug.NextBlock("\nEvaluating Minor Axis");
                 EvaluateMinor(this.Element, Dim.HEIGHT);
             }
             else {
+                TabbedDebug.NextBlock("\nEvaluating Minor Axis");
                 EvaluateMinor(this.Element, Dim.WIDTH);
+                TabbedDebug.NextBlock("\nEvaluating Major Axis");
                 EvaluateMajor(this.Element, Dim.HEIGHT);
             }
 
@@ -129,38 +133,46 @@ namespace Leagueinator.Printer.Styles {
             this.AssignInvokes();
             this.Element.Invalid = false;
 
-            Debug.WriteLine($" : {pageCount}");
+            TabbedDebug.WriteLine($" : {pageCount}");
             return pageCount;
         }
 
         private void HeightValueChange(float value) {
-            Debug.WriteLine($" - {this.Element}.HeightValueChange({value});");
+            TabbedDebug.WriteLine($" - {this.Element}.HeightValueChange({value});");
         }
 
         private void WidthValueChange(float value) {
-            Debug.WriteLine($" - {this.Element}.WidthValueChange({value});");
+            TabbedDebug.WriteLine($" - {this.Element}.WidthValueChange({value});");
 
-            this.Element.Children.SelectMany(child =>
-                    child.Style.Padding!
-                    .Concat(child.Style.Margin!)
-                    .Concat(child.Style.BorderSize!)
-            ).ToList()
-            .ForEach(uf => {
-                uf.ApplySource(value);
-            });
+            //this.Element.Children.SelectMany(child =>
+            //        child.Style.Padding!
+            //        .Concat(child.Style.Margin!)
+            //        .Concat(child.Style.BorderSize!)
+            //).ToList()
+            //.ForEach(uf => {
+            //    uf.ApplySource(value);
+            //});
         }
 
         public static void EvaluateMajor(Element element, Dim dim) {
-            UnitFloat unitFloat = dim == Dim.WIDTH ? element.Style.Width! : element.Style.Height!;
+            var type = element.IsLeaf ? "L" : element.IsRoot ? "R" : "B";
+            TabbedDebug.StartBlock($"EvaluateMajor({element}[{type}], {dim})");
+
+            UnitFloat unitFloat = 
+                dim == Dim.WIDTH
+                ? element.Style.Width!
+                : element.Style.Height!;
 
             if (unitFloat.Unit.Equals("auto")) {
                 if (element.IsLeaf) {
                     unitFloat.Value = 0;
                 }
                 else {
+                    TabbedDebug.StartBlock("Evaluating Children");
                     foreach (Element child in element.Children) EvaluateMajor(child, dim);
+                    TabbedDebug.EndBlock(": Done");
                     unitFloat.Value = element.BySum(dim);
-                    Debug.WriteLine($"EvaluateMajor({element}, {dim}) : {unitFloat}");
+                    TabbedDebug.EndBlock($": exit major {element} : {unitFloat}");
                     return;
                 }
             }
@@ -180,11 +192,14 @@ namespace Leagueinator.Printer.Styles {
                 }
             }
 
-            Debug.WriteLine($"EvaluateMajor({element}, {dim}) : {unitFloat}");
+            TabbedDebug.EndBlock($": {unitFloat}");
             foreach (Element child in element.Children) EvaluateMajor(child, dim);
         }
 
         public static void EvaluateMinor(Element element, Dim dim) {
+            var type = element.IsLeaf ? "L" : element.IsRoot ? "R" : "B";
+            TabbedDebug.StartBlock($"EvaluateMinor({element}[{type}], {dim})");
+
             UnitFloat unitFloat = dim == Dim.WIDTH ? element.Style.Width! : element.Style.Height!;
 
             if (unitFloat.Unit.Equals("px")) {
@@ -213,7 +228,7 @@ namespace Leagueinator.Printer.Styles {
                 }
             }
 
-            Debug.WriteLine($"EvaluateMinor({element}, {dim}) : {unitFloat}");
+            TabbedDebug.EndBlock($": {unitFloat}");
             foreach (Element child in element.Children) EvaluateMinor(child, dim);
         }
 

@@ -2,7 +2,7 @@
 using Leagueinator.Printer.Utility;
 
 namespace Leagueinator.Printer.Elements {
-    public partial class Element {
+    public partial class Element : TreeNode<Element> {
         /// <summary>
         /// The (x,y) translation of this element to account for paging.
         /// </summary>

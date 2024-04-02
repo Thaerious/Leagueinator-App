@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Leagueinator.Printer.Elements {
 
-    public partial class Element {
+    public partial class Element : TreeNode<Element>{
         public delegate void DrawDelegate(Graphics g, Element element, int page);
 
         /// <summary>
@@ -69,7 +69,6 @@ namespace Leagueinator.Printer.Elements {
             this.Style = new Flex(this);
             this.Style.Owner = this;
             this.Attributes = new(this);
-            this.Children = new(this._children);
 
             foreach (XAttribute xattr in attributes) {
                 this.Attributes[xattr.Name.ToString()] = xattr.Value;
@@ -96,30 +95,10 @@ namespace Leagueinator.Printer.Elements {
         }
 
         /// <summary>
-        /// Add a single child child to this.
-        /// If the child current already has a _parent an exception will be thrown.
-        /// be updated to this child.
-        /// </summary>
-        /// <param name="child"></param>
-        /// <returns></returns>
-        [Validated]
-        public void AddChild(Element child) {
-            if (child.Parent is not null) throw new InvalidOperationException("Child element already has a parent");
-            this._children.Add(child);
-            child.Parent = this;
-            this.InvalidateQueryEngine();
-        }
-
-        /// <summary>
         /// Remove all child elements from this child.
         /// </summary>
-        [Validated]
-        public void ClearChildren() {
-            foreach (var child in new List<Element>(this.Children)) {
-                this._children.Remove(child);
-                child.Parent = null;
-            }
-
+        public override void ClearChildren() {
+            base.ClearChildren();
             this.InvalidateQueryEngine();
         }
 
@@ -129,9 +108,8 @@ namespace Leagueinator.Printer.Elements {
         /// <param name="child"></param>
         /// <exception cref="Exception">If the child does not belong to this _parent.</exception>
         [Validated]
-        public void Detach(Element child) {
-            this._children.Remove(child);
-            child.Parent = null;
+        public override void Detach(Element child) {
+            base.Detach(child);
             this.InvalidateQueryEngine();
         }
 
@@ -157,6 +135,6 @@ namespace Leagueinator.Printer.Elements {
 
         public override string ToString() => this.Identifier;
 
-        private readonly List<Element> _children = new();
+        
     }
 }

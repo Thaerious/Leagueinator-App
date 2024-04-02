@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Printer.Query;
 
 namespace Leagueinator.Printer.Elements {
-    public partial class Element {
+    public partial class Element : TreeNode<Element> {
         private QueryEngine? queryEngine = null;
 
         public List<Element> this[string query] {

@@ -169,6 +169,8 @@ namespace Leagueinator.Designer {
                 Element root = XMLLoader.Load(xmlString);
                 styles.ApplyTo(root);
 
+                Debug.WriteLine(root.ToXML((e, x) => x.AppendLine($"{(e.Style.Width?.GetHashCode() ?? 0)}")));
+
                 root.Style.DoLayout();
                 this.printerCanvas.RootElement = root;
                 this.printerCanvas.Invalidate(true);
