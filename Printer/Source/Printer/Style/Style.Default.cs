@@ -12,7 +12,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private static void BuildDefault() {
-            _default = new Style() {
+            _default = new Style(null) {
                 Selector = "@default"
             };
 

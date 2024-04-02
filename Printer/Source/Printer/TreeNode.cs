@@ -1,4 +1,6 @@
 ﻿using Leagueinator.Printer.Aspects;
+using Leagueinator.Printer.Elements;
+using Leagueinator.Utility;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Printer {
@@ -80,15 +82,31 @@ namespace Leagueinator.Printer {
         /// A <see cref="List{TreeNode<T>}"/> containing the current TreeNode<T> followed by all descendant 
         /// TreeNode<T>s in the order they were encountered.
         /// </returns>
-        public List<T> AllDecendents() {
+        public List<T> AsList() {
             List<T> all = [];
             all.Add((T)this);
 
             foreach (TreeNode<T> child in this.Children) {
-                all.AddRange(child.AllDecendents());
+                all.AddRange(child.AsList());
             }
 
             return all;
+        }
+
+        public virtual XMLStringBuilder ToXML(Action<T, XMLStringBuilder>? action = null) {
+            action ??= (element, xml) => { };
+            XMLStringBuilder xml = new();
+
+            xml.OpenTag(this.ToString());
+            action((T)this, xml);
+
+            foreach (T child in this.Children) {
+                xml.AppendXML(child.ToXML(action));
+            }
+
+            xml.CloseTag();
+
+            return xml;
         }
 
         private readonly List<T> _children = [];

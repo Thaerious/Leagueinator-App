@@ -27,7 +27,7 @@ namespace Leagueinator.CSSParser {
         }
 
         /// <summary>
-        /// Treat the style selector as a commas seperated list and extract each style name.
+        /// Treat the Style selector as a commas seperated list and extract each Style name.
         /// </summary>
         /// <param name="context"></param>
         public override void EnterStyle([NotNull] global::StyleParser.StyleContext context) {
@@ -44,7 +44,7 @@ namespace Leagueinator.CSSParser {
             foreach (SelectorContext selector in list) {
                 string selectorText = CollectSelectorContext(selector);
 
-                var style = new Style() {
+                var style = new Style(null) {
                     Selector = selectorText,
                     Specificity = QueryEngine.Specificity(selectorText, -this.Styles.Count)
                 };

@@ -1,19 +1,10 @@
-﻿
-using Leagueinator.Printer.Aspects;
-using Leagueinator.Printer.Styles;
-using System.Collections.ObjectModel;
+﻿using Leagueinator.Printer.Styles;
 
 namespace Leagueinator.Printer.Elements {
 
-    public partial class Element : TreeNode<Element>{
-
-        public Flex Style { 
-            get; 
-            private set; 
-        }
-
-        public Attributes Attributes { get; init; }
-
+    public partial class Element : TreeNode<Element> {
+        public Style Style { get; private set; }
+        public Attributes Attributes { get; }
         public string TagName { get; init; } = "";
 
         public string Identifier {
@@ -30,13 +21,12 @@ namespace Leagueinator.Printer.Elements {
         public List<string> ClassList {
             get {
                 if (this.Attributes.TryGetValue("class", out string? value)) {
-                    return [.. value.Split()];
+                    return [.. (value ?? "").Split()];
                 }
                 return [];
             }
         }
 
-        private Element? _parent;
-        private Dictionary<string, string> _attributes = [];
+        private readonly Dictionary<string, string> _attributes = [];
     }
 }

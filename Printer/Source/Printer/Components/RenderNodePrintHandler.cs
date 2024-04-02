@@ -1,13 +1,13 @@
-﻿using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Styles;
 using System.Drawing.Printing;
 
 namespace Leagueinator.Printer.Components {
-    public class ElementPrintHandler : PrintDocument {
+    public class RenderNodePrintHandler : PrintDocument {
         private readonly int PageCount;
-        private readonly Element Root;
+        private readonly RenderNode Root;
         private int CurrentPage = 0;
 
-        public ElementPrintHandler(Element root) {
+        public RenderNodePrintHandler(RenderNode root) {
             this.PrintPage += this.HndPrintPage;
             this.Root = root;
         }

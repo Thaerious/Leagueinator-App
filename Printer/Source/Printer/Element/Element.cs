@@ -10,6 +10,8 @@ namespace Leagueinator.Printer.Elements {
     public partial class Element : TreeNode<Element>{
         public delegate void DrawDelegate(Graphics g, Element element, int page);
 
+        internal PointF PageOffset { get; set; } = new();
+
         /// <summary>
         /// Draw (paint) handlers.  Each draw delegate get's called when the draw method is called.
         /// Adding the same delegate multiple times is ignored.
@@ -28,45 +30,12 @@ namespace Leagueinator.Printer.Elements {
             }
         }
 
-        public virtual void Draw(Graphics g, int page) {
-            Debug.WriteLine("Element.Draw");
-            Debug.WriteLine(this.Root.ToXML(
-                (ele, xml) => {
-                    xml.AppendLine($"content {ele.Style.ContentBox()}");
-                    xml.AppendLine($"outer {ele.Style.OuterBox()}");
-                }                
-            ));
-
-            if (this.Invalid == true) this.Style.DoLayout();
-            this.Invalid = false;
-
-            Stack<Element> stack = [];
-            stack.Push(this);
-
-            while (stack.Count > 0) {
-                Element current = stack.Pop();
-                current._onDraw.Invoke(g, current, page);
-
-                if (current.Style.Overflow == Styles.Enums.Overflow.Visible) {
-                    foreach (Element child in current.Children) stack.Push(child);
-                }
-                else if (current.Style.Overflow == Styles.Enums.Overflow.Paged) {
-                    foreach (Element child in current.Children) {
-                        if (child.Style.Position == Styles.Enums.Position.Absolute) stack.Push(child);
-                        else if (child.Style.Position == Styles.Enums.Position.Fixed) stack.Push(child);
-                        else if (child.Style.Page == page) stack.Push(child);
-                        else if (child.TagName == TextElement.TAG_NAME) stack.Push(child);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Create a new current with a default name and classlist.
         /// </summary>
         public Element(string name, IEnumerable<XAttribute> attributes) : base() {
             this.TagName = name;
-            this.Style = new Flex(this);
+            this.Style = new Style(this);
             this.Style.Owner = this;
             this.Attributes = new(this);
 
@@ -113,7 +82,7 @@ namespace Leagueinator.Printer.Elements {
             this.InvalidateQueryEngine();
         }
 
-        public virtual XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
+        public override XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
             action ??= (element, xml) => { };
             XMLStringBuilder xml = new();
 

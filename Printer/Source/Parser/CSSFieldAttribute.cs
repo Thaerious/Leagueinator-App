@@ -21,9 +21,9 @@ namespace Leagueinator.CSSParser {
         }
 
         /// <summary>
-        /// Attempt to apply a Value to the style object
+        /// Attempt to apply a Value to the Style object
         /// </summary>
-        /// <param name="style">The style object that will recieve the Value.</param>
+        /// <param name="style">The Style object that will recieve the Value.</param>
         /// <param name="value">The string source for the Value.</param>
         /// <param name="member">The prop that will receive the Value.</param>
         /// <returns>True if a Value was assigned</returns>

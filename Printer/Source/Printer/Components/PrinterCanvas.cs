@@ -1,4 +1,4 @@
-﻿using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Styles;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -29,15 +29,15 @@ namespace Leagueinator.Printer.Components {
 
         public int Page { get; set; } = 0;
 
-        private Element? _rootElement = null;
+        private RenderNode? _rootElement = null;
         private PrinterCanvas outer;
 
-        public Element? RootElement {
+        public RenderNode? RootElement {
             get => this._rootElement;
             set {
                 this._rootElement = value;
                 if (this._rootElement == null) return;
-                this.outer.SetDims(this._rootElement?.Style.Width, this._rootElement?.Style.Height);
+                this.outer.SetDims(this._rootElement.Size.Width, this._rootElement.Size.Height);
             }
         }
 
@@ -193,14 +193,14 @@ namespace Leagueinator.Printer.Components {
             set => this.inner.Page = value;
         }
 
-        public Element? RootElement {
+        public RenderNode? RenderNode {
             get => this.inner.RootElement;
             set => this.inner.RootElement = value;
         }
         public TimeSpan RepaintTime { get => this.inner.RepaintTime; }
 
         protected override void OnPaint(PaintEventArgs e) {
-            Console.WriteLine($"PrinterCanvas.OnPaint() : {this.RootElement is not null}");
+            Console.WriteLine($"PrinterCanvas.OnPaint() : {this.RenderNode is not null}");
             base.OnPaint(e);
         }
 
@@ -208,9 +208,9 @@ namespace Leagueinator.Printer.Components {
             base.OnResize(e);
             this.SetDims(this.inner.dimX, this.inner.dimY);
 
-            if (this.RootElement != null) {
-                this.inner.dimX = this.RootElement.Style.Width;
-                this.inner.dimY = this.RootElement.Style.Height;
+            if (this.RenderNode != null) {
+                this.inner.dimX = this.RenderNode.Size.Width;
+                this.inner.dimY = this.RenderNode.Size.Height;
             }
         }
 

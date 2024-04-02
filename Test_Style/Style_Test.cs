@@ -35,7 +35,7 @@ namespace Test_Style {
         ///// <summary>
         ///// Parameters can have a default value set in the CSS annotation, 
         ///// they will be used if the parameter is null after other propagation methods.
-        ///// The default style only exists on a style that is on an xml element.
+        ///// The default Style only exists on a Style that is on an xml element.
         ///// </summary>
         //[TestMethod]
         //public void Default_Values_Location() {
@@ -43,11 +43,11 @@ namespace Test_Style {
         //}
 
         ///// <summary>
-        ///// AllDecendents elements inherit default values.
+        ///// AsList elements inherit default values.
         ///// </summary>
         //[TestMethod]
         //public void Inherited_Default_Value() {
-        //    Elements xml = LoadResources("layout.xml", "style.css");
+        //    Elements xml = LoadResources("layout.xml", "Style.css");
         //    Assert.AreEqual(new Point(0, 0), xml.Styles.Translate);
         //}
 

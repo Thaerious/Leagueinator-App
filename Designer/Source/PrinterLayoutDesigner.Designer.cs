@@ -111,7 +111,7 @@ namespace Leagueinator.Designer {
             this.printerCanvas.Margin = new Padding(0);
             this.printerCanvas.Name = "printerCanvas";
             this.printerCanvas.Page = 0;
-            this.printerCanvas.RootElement = null;
+            this.printerCanvas.RenderNode = null;
             this.printerCanvas.Size = new Size(843, 784);
             this.printerCanvas.SubGridSize = 25;
             this.printerCanvas.TabIndex = 1;

@@ -60,7 +60,7 @@ namespace Leagueinator.Forms {
             this.printerCanvas1.Location = new Point(0, 34);
             this.printerCanvas1.Name = "printerCanvas1";
             this.printerCanvas1.Page = 0;
-            this.printerCanvas1.RootElement = null;
+            this.printerCanvas1.RenderNode = null;
             this.printerCanvas1.Size = new Size(870, 944);
             this.printerCanvas1.SubGridSize = 0;
             this.printerCanvas1.TabIndex = 1;

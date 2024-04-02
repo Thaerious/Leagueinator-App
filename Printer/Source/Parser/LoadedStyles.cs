@@ -27,7 +27,7 @@ namespace Leagueinator.CSSParser {
             this.ApplyParentStyles(root);
 
             // apply default styles
-            foreach (Element element in root.AllDecendents()) {
+            foreach (Element element in root.AsList()) {
                 element.Style.MergeWith(Style.Default);
             }
         }

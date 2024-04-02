@@ -2,6 +2,7 @@
 using Leagueinator.Printer;
 using Leagueinator.Printer.Components;
 using Leagueinator.Printer.Elements;
+using Leagueinator.Printer.Styles;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Reflection;
@@ -74,7 +75,7 @@ namespace Leagueinator.Designer {
 
         private void TXT_KeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar == '\t') {
-                int tabSize = 4; // Set your desired tab size
+                int tabSize = 4; // Set your desired tab Size
                 e.Handled = true; // Prevent the default tab behavior
 
                 TextBox? textBox = sender as TextBox;
@@ -141,11 +142,11 @@ namespace Leagueinator.Designer {
         }
 
         private void HndMenuPrintClick(object sender, EventArgs e) {
-            if (this.printerCanvas.RootElement == null) return;
+            if (this.printerCanvas.RenderNode == null) return;
 
             using PrintDialog dialog = new PrintDialog();
-            ElementPrintHandler printHandler = new ElementPrintHandler(this.printerCanvas.RootElement);
-            dialog.Document = new ElementPrintHandler(this.printerCanvas.RootElement);
+            RenderNodePrintHandler printHandler = new RenderNodePrintHandler(this.printerCanvas.RenderNode);
+            dialog.Document = new RenderNodePrintHandler(this.printerCanvas.RenderNode);
 
             if (dialog.ShowDialog() == DialogResult.OK) {
                 printHandler.Print();
@@ -153,11 +154,11 @@ namespace Leagueinator.Designer {
         }
 
         private void HndMenuPreviewClick(object sender, EventArgs e) {
-            if (this.printerCanvas.RootElement == null) return;
+            if (this.printerCanvas.RenderNode == null) return;
 
             using PrintPreviewDialog dialog = new PrintPreviewDialog();
             PrintDocument printDocument = new PrintDocument();
-            dialog.Document = new ElementPrintHandler(this.printerCanvas.RootElement);
+            dialog.Document = new RenderNodePrintHandler(this.printerCanvas.RenderNode);
         }
 
         private void HndMenuRefreshClick(object? sender, EventArgs? e) {
@@ -169,10 +170,10 @@ namespace Leagueinator.Designer {
                 Element root = XMLLoader.Load(xmlString);
                 styles.ApplyTo(root);
 
-                Debug.WriteLine(root.ToXML((e, x) => x.AppendLine($"{(e.Style.Width?.GetHashCode() ?? 0)}")));
+                Flex flex = new();
 
-                root.Style.DoLayout();
-                this.printerCanvas.RootElement = root;
+                (int pages, RenderNode renderNode) = flex.DoLayout(root);
+                this.printerCanvas.RenderNode = renderNode;
                 this.printerCanvas.Invalidate(true);
             }
             catch (Exception ex) {
@@ -206,14 +207,7 @@ namespace Leagueinator.Designer {
         }
 
         private void HndMenuPrintTarget(object sender, EventArgs e) {
-            List<Element> targets = this.printerCanvas.RootElement["#target"];
-            if (targets.Count == 0) {
-                Console.WriteLine("#target is null");
-            }
-            else {
-                Console.WriteLine(targets[0].ToXML());
-                Console.WriteLine(targets[0].Style);
-            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -8,8 +8,8 @@ using Leagueinator.Utility;
 
 namespace Leagueinator.Printer.Styles {
 
-    public partial class Style : IComparable<Style> {
-        public int Page { get; internal set; } = 0;
+    public partial class Style(Element? owner) : IComparable<Style> {
+        public Element? Element { get; } = owner;
 
         public Font Font {
             get {

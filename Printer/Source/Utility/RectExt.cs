@@ -17,12 +17,12 @@
             return new PointF(rect.Left, rect.Top);
         }
 
-        public static PointF Translate(this PointF left, PointF right) {
-            return new(left.X + right.X, left.Y + right.Y);
+        public static PointF Translate(this PointF target, PointF source) {
+            return new(target.X + source.X, target.Y + source.Y);
         }
 
-        public static PointF Translate(this PointF left, float x, float y) {
-            return left.Translate(new PointF(x, y));
+        public static PointF Translate(this PointF target, float x, float y) {
+            return target.Translate(new PointF(x, y));
         }
 
         public static PointF Scale(this PointF left, float amount) {

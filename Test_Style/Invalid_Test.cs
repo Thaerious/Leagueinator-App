@@ -35,7 +35,7 @@ namespace Test_Style {
         }
 
         /// <summary>
-        /// Modifying a style will cause the document tree to become _invalid.
+        /// Modifying a Style will cause the document tree to become _invalid.
         /// </summary>
         [TestMethod]
         public void Modify_Tree() {

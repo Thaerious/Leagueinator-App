@@ -5,23 +5,23 @@ namespace Leagueinator.Printer.Styles {
         private static int indent = 0;
 
         public static void StartBlock(string s = "") {
-            Debug.WriteLine($"{new string('\t', indent)}{s}");
+            if (indent == 0) {
+                Debug.WriteLine($"{s}");
+                indent++;
+                return;
+            }
+            var line = string.Concat(Enumerable.Repeat("   ", indent - 1));
+            Debug.WriteLine($"{line}|--{s}");
             indent++;
         }
 
-        public static void NextBlock(string s = "") {
+        public static void EndBlock() {
             if (indent > 0) indent--;
-            Debug.WriteLine($"{new string('\t', indent)}{s}");
-            indent++;
-        }
-
-        public static void EndBlock(string s = "") {
-            if (indent > 0) indent--;
-            Debug.WriteLine($"{new string('\t', indent)}{s}");
         }
 
         public static void WriteLine(string s) {
-            Debug.WriteLine($"{new string('\t', indent)}{s}");
+            var line = String.Concat(Enumerable.Repeat("   | ", indent - 1));
+            Debug.WriteLine($"{line}{s}");
         }
     }
 }
