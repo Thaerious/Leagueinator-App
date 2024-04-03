@@ -80,7 +80,7 @@ namespace Leagueinator.Printer.Query {
         }
 
         public void AddAll(Element root) {
-            ElementQueue queue = new(root);
+            TreeWalker<Element> queue = new(root);
             queue.Walk(e => this.Add(e));
         }
 

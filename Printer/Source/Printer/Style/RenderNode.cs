@@ -60,9 +60,10 @@ namespace Leagueinator.Printer.Styles {
                 RenderNode current = stack.Pop();
                 TabbedDebug.StartBlock($"RenderNode.Draw() {current} {current.Children.Count}");
 
+                current.DoDrawBackground(g);
+                current.DoDrawBorders(g);
+
                 if (current.Style.Overflow == Styles.Enums.Overflow.Visible) {
-                    current.DoDrawBackground(g);
-                    current.DoDrawBorders(g);
                     foreach (RenderNode child in current.Children) stack.Push(child);
                 }
                 else if (current.Style.Overflow == Styles.Enums.Overflow.Paged) {

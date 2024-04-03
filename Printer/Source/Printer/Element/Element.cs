@@ -48,7 +48,7 @@ namespace Leagueinator.Printer.Elements {
             get {
                 StringBuilder sb = new();
 
-                new ElementQueue(this).Walk(current => {
+                new TreeWalker<Element>(this).Walk(current => {
                     if (current is TextElement textElement) {
                         sb.Append(textElement.Text);
                     }
