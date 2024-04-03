@@ -1,6 +1,8 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
 using System.Diagnostics;
+using System.Drawing;
+using System.Xml.Linq;
 
 namespace Leagueinator.Printer.Styles {
     public class Flex {
@@ -19,7 +21,7 @@ namespace Leagueinator.Printer.Styles {
             SecondPass();
 
             Debug.WriteLine(root.ToXML((node, xml) => {
-                xml.AppendLine(node.Size.ToString());
+                xml.AppendLine($"{node.Size} {node.Translation}");
             }));
 
             this.pageCount = this.AssignPages(root);
@@ -170,7 +172,10 @@ namespace Leagueinator.Printer.Styles {
         }
 
         internal void DoPos(RenderNode root) {
-            if (root.IsRoot) return;
+            if (root.IsRoot) {
+                foreach (RenderNode child in root.Children) DoPos(child);
+                return;
+            }
 
             if (root.Style.Translate != null && !root.IsRoot) {
                 if (root.Style.Translate.X.Factor.Equals("%")) {
@@ -196,8 +201,10 @@ namespace Leagueinator.Printer.Styles {
                 this.DoPosFlex(root, page);
             }
 
-            //this.DoPosAbsolute(node.ContentBox(), Enums.Position.Absolute);
-            //this.DoPosAbsolute(node.ContentBox(), Enums.Position.Fixed);
+            root.DoPosAbsolute(Enums.Position.Absolute);
+            root.DoPosAbsolute(Enums.Position.Fixed);
+
+            foreach (RenderNode child in root.Children) DoPos(child);
         }
 
         /// <summary>
@@ -211,8 +218,6 @@ namespace Leagueinator.Printer.Styles {
 
             this.JustifyContent(root, children);
             root.AlignItems(children);
-
-            //foreach (Element child in children) child.Style.DoPos(node); // todo move this
         }
 
 
@@ -359,14 +364,16 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public static void Translate(this RenderNode node, float x, float y) {
-            node.Translation.Translate(x, y);
+            node.Translate(new(x, y));
         }
 
         public static void Translate(this RenderNode node, PointF point) {
-            node.Translation.Translate(point);
+            node.Translation = node.Translation.Translate(point);
         }
 
-        private static void LineupElements(this RenderNode root, List<RenderNode> children, PointF from) {
+        public static void LineupElements(this RenderNode root, List<RenderNode> children, PointF from) {
+            TabbedDebug.StartBlock($"LineupElements {root}");
+
             PointF vector;
             if (root.Style.Flex_Axis == Enums.Flex_Axis.Column) {
                 vector = new(0, 1);
@@ -379,8 +386,10 @@ namespace Leagueinator.Printer.Styles {
             foreach (RenderNode child in children) {
                 child.Translate(current);
                 var diff = new PointF(child.OuterBox().Width, child.OuterBox().Height).Scale(vector);
+                TabbedDebug.WriteLine($"Translate {root} {diff}");
                 current = current.Translate(diff);
             }
+            TabbedDebug.EndBlock();
         }
 
         public static void SpaceEvenly(this RenderNode root, List<RenderNode> children) {
@@ -404,7 +413,7 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        private static void SpaceBetween(this RenderNode root, List<RenderNode> children) {
+        public static void SpaceBetween(this RenderNode root, List<RenderNode> children) {
             if (root.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                 float spaceBetween = root.WidthRemaining(children) / (children.Count - 1);
                 float dx = 0;
@@ -425,7 +434,7 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        private static void SpaceAround(this RenderNode root, List<RenderNode> children) {
+        public static void SpaceAround(this RenderNode root, List<RenderNode> children) {
             if (root.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                 float spaceAround = root.WidthRemaining(children) / (children.Count * 2);
                 float dx = spaceAround;
@@ -446,7 +455,7 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        private static void DoPosAbsolute(this RenderNode root, RectangleF reference, Enums.Position position) {
+        public static void DoPosAbsolute(this RenderNode root, Enums.Position position) {
             root.Children
             .Where(child => child.Style.Position == position)
             .ToList()
@@ -483,7 +492,7 @@ namespace Leagueinator.Printer.Styles {
             });
         }
 
-        private static void AlignItems(this RenderNode root, List<RenderNode> children) {
+        public static void AlignItems(this RenderNode root, List<RenderNode> children) {
             switch (root.Style.Flex_Axis) {
                 case Enums.Flex_Axis.Row:
                     switch (root.Style.Align_Items) {

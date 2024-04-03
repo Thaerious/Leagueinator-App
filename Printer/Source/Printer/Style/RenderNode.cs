@@ -58,7 +58,7 @@ namespace Leagueinator.Printer.Styles {
 
             while (stack.Count > 0) {
                 RenderNode current = stack.Pop();
-                TabbedDebug.StartBlock($"RenderNode.Draw() {current} {current.Children.Count}");
+                TabbedDebug.WriteLine($"RenderNode.Draw() {current} {current.Children.Count}");
 
                 current.DoDrawBackground(g);
                 current.DoDrawBorders(g);
@@ -75,6 +75,7 @@ namespace Leagueinator.Printer.Styles {
                     }
                 }
             }
+            TabbedDebug.EndBlock();
         }
 
         public void DoDrawBackground(Graphics g) {
@@ -145,5 +146,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public override string ToString() => this.Element.ToString();
+
+
     }
 }

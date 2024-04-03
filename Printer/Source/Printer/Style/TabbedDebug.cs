@@ -10,7 +10,7 @@ namespace Leagueinator.Printer.Styles {
                 indent++;
                 return;
             }
-            var line = string.Concat(Enumerable.Repeat("   ", indent - 1));
+            var line = string.Concat(Enumerable.Repeat(":  ", indent - 1));
             Debug.WriteLine($"{line}|--{s}");
             indent++;
         }
@@ -20,8 +20,8 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public static void WriteLine(string s) {
-            var line = String.Concat(Enumerable.Repeat("   | ", indent - 1));
-            Debug.WriteLine($"{line}{s}");
+            var line = String.Concat(Enumerable.Repeat(":  ", indent - 1));
+            Debug.WriteLine($"{line}| {s}");
         }
     }
 }
