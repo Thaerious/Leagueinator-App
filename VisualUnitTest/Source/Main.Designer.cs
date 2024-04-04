@@ -29,7 +29,6 @@
             this.tabPageActual = new TabPage();
             this.CanvasActual = new Printer.Components.PrinterCanvas();
             this.tabPageExpected = new TabPage();
-            this.CanvasExpected = new Printer.Components.PrinterCanvas();
             this.tabControlModel = new TabControl();
             this.tabPageXML = new TabPage();
             this.RichTextXML = new RichTextBox();
@@ -39,14 +38,18 @@
             this.menuStrip = new MenuStrip();
             this.fileToolStripMenuItem = new ToolStripMenuItem();
             this.loadToolStripMenuItem = new ToolStripMenuItem();
+            this.saveToolStripMenuItem = new ToolStripMenuItem();
             this.closeToolStripMenuItem = new ToolStripMenuItem();
             this.testToolStripMenuItem = new ToolStripMenuItem();
             this.addToolStripMenuItem = new ToolStripMenuItem();
+            this.duplicateToolStripMenuItem = new ToolStripMenuItem();
             this.removeToolStripMenuItem = new ToolStripMenuItem();
             this.renameToolStripMenuItem = new ToolStripMenuItem();
             this.runSelectedToolStripMenuItem = new ToolStripMenuItem();
             this.runAllToolStripMenuItem = new ToolStripMenuItem();
+            this.acceptActualToolStripMenuItem = new ToolStripMenuItem();
             this.FolderDialog = new FolderBrowserDialog();
+            this.PanelExpected = new Panel();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -131,7 +134,7 @@
             // 
             // tabPageExpected
             // 
-            this.tabPageExpected.Controls.Add(this.CanvasExpected);
+            this.tabPageExpected.Controls.Add(this.PanelExpected);
             this.tabPageExpected.Location = new Point(4, 34);
             this.tabPageExpected.Name = "tabPageExpected";
             this.tabPageExpected.Padding = new Padding(3);
@@ -139,20 +142,6 @@
             this.tabPageExpected.TabIndex = 1;
             this.tabPageExpected.Text = "Expected";
             this.tabPageExpected.UseVisualStyleBackColor = true;
-            // 
-            // CanvasExpected
-            // 
-            this.CanvasExpected.Dock = DockStyle.Fill;
-            this.CanvasExpected.GridSize = 0;
-            this.CanvasExpected.InnerBorder = BorderStyle.None;
-            this.CanvasExpected.Location = new Point(3, 3);
-            this.CanvasExpected.Name = "CanvasExpected";
-            this.CanvasExpected.Page = 0;
-            this.CanvasExpected.RenderNode = null;
-            this.CanvasExpected.Size = new Size(639, 865);
-            this.CanvasExpected.SubGridSize = 0;
-            this.CanvasExpected.TabIndex = 0;
-            this.CanvasExpected.ToBack = false;
             // 
             // tabControlModel
             // 
@@ -232,7 +221,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadToolStripMenuItem, this.closeToolStripMenuItem });
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadToolStripMenuItem, this.saveToolStripMenuItem, this.closeToolStripMenuItem });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new Size(54, 29);
             this.fileToolStripMenuItem.Text = "File";
@@ -244,6 +233,14 @@
             this.loadToolStripMenuItem.Text = "Load Directory";
             this.loadToolStripMenuItem.Click += this.HndMenuLoadClick;
             // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+            this.saveToolStripMenuItem.Size = new Size(230, 34);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += this.HndMenuSave;
+            // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
@@ -253,7 +250,7 @@
             // 
             // testToolStripMenuItem
             // 
-            this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem });
+            this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.duplicateToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem, this.acceptActualToolStripMenuItem });
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
             this.testToolStripMenuItem.Size = new Size(58, 29);
             this.testToolStripMenuItem.Text = "Test";
@@ -261,28 +258,38 @@
             // addToolStripMenuItem
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.ShortcutKeys = Keys.F2;
-            this.addToolStripMenuItem.Size = new Size(270, 34);
+            this.addToolStripMenuItem.ShortcutKeys = Keys.F3;
+            this.addToolStripMenuItem.Size = new Size(253, 34);
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += this.HndMenuAddTest;
+            // 
+            // duplicateToolStripMenuItem
+            // 
+            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.D;
+            this.duplicateToolStripMenuItem.Size = new Size(253, 34);
+            this.duplicateToolStripMenuItem.Text = "Duplicate";
+            this.duplicateToolStripMenuItem.Click += this.HndMenuDuplicate;
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new Size(270, 34);
+            this.removeToolStripMenuItem.Size = new Size(253, 34);
             this.removeToolStripMenuItem.Text = "Remove";
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new Size(270, 34);
+            this.renameToolStripMenuItem.ShortcutKeys = Keys.F2;
+            this.renameToolStripMenuItem.Size = new Size(253, 34);
             this.renameToolStripMenuItem.Text = "Rename";
+            this.renameToolStripMenuItem.Click += this.HndMenuRenameTest;
             // 
             // runSelectedToolStripMenuItem
             // 
             this.runSelectedToolStripMenuItem.Name = "runSelectedToolStripMenuItem";
             this.runSelectedToolStripMenuItem.ShortcutKeys = Keys.F5;
-            this.runSelectedToolStripMenuItem.Size = new Size(270, 34);
+            this.runSelectedToolStripMenuItem.Size = new Size(253, 34);
             this.runSelectedToolStripMenuItem.Text = "Run Selected";
             this.runSelectedToolStripMenuItem.Click += this.HndMenuRunSelected;
             // 
@@ -290,8 +297,24 @@
             // 
             this.runAllToolStripMenuItem.Name = "runAllToolStripMenuItem";
             this.runAllToolStripMenuItem.ShortcutKeys = Keys.F6;
-            this.runAllToolStripMenuItem.Size = new Size(270, 34);
+            this.runAllToolStripMenuItem.Size = new Size(253, 34);
             this.runAllToolStripMenuItem.Text = "Run All";
+            // 
+            // acceptActualToolStripMenuItem
+            // 
+            this.acceptActualToolStripMenuItem.Name = "acceptActualToolStripMenuItem";
+            this.acceptActualToolStripMenuItem.ShortcutKeys = Keys.F3;
+            this.acceptActualToolStripMenuItem.Size = new Size(253, 34);
+            this.acceptActualToolStripMenuItem.Text = "Accept Actual";
+            this.acceptActualToolStripMenuItem.Click += this.HndAcceptActual;
+            // 
+            // PanelExpected
+            // 
+            this.PanelExpected.Dock = DockStyle.Fill;
+            this.PanelExpected.Location = new Point(3, 3);
+            this.PanelExpected.Name = "PanelExpected";
+            this.PanelExpected.Size = new Size(639, 865);
+            this.PanelExpected.TabIndex = 0;
             // 
             // Main
             // 
@@ -341,10 +364,13 @@
         private ToolStripMenuItem runSelectedToolStripMenuItem;
         private ToolStripMenuItem runAllToolStripMenuItem;
         private Printer.Components.PrinterCanvas CanvasActual;
-        private Printer.Components.PrinterCanvas CanvasExpected;
         private RichTextBox RichTextXML;
         private RichTextBox RichTextStyle;
         private ListBox ListBoxFile;
         private FolderBrowserDialog FolderDialog;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem duplicateToolStripMenuItem;
+        private ToolStripMenuItem acceptActualToolStripMenuItem;
+        private Panel PanelExpected;
     }
 }

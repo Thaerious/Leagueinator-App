@@ -52,13 +52,11 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public virtual void Draw(Graphics g, int page) {
-            TabbedDebug.ResetBlock($"RenderNode.Draw()");
             Stack<RenderNode> stack = [];
             stack.Push(this);
 
             while (stack.Count > 0) {
                 RenderNode current = stack.Pop();
-                TabbedDebug.WriteLine($"RenderNode.Draw() {current} {current.Children.Count}");
 
                 current.DoDrawBackground(g);
                 current.DoDrawBorders(g);
@@ -75,7 +73,6 @@ namespace Leagueinator.Printer.Styles {
                     }
                 }
             }
-            TabbedDebug.EndBlock();
         }
 
         public void DoDrawBackground(Graphics g) {

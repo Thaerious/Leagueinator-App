@@ -33,6 +33,7 @@
             this.TextName.Name = "TextName";
             this.TextName.Size = new Size(309, 31);
             this.TextName.TabIndex = 0;
+            this.TextName.KeyDown += this.HndKeyDown;
             // 
             // ButtonOk
             // 
