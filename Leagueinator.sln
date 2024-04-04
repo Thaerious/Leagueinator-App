@@ -32,7 +32,7 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "XML_Designer", "Designer_In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speed_Style", "Speed_Style\Speed_Style.csproj", "{88E2A59B-2574-451A-A404-9EDD4316CD11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualUnitTest", "VisualUnitTest\VisualUnitTest.csproj", "{DB053130-2276-45A6-97A1-425E1D6FFBE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualUnitTest", "VisualUnitTest\VisualUnitTest.csproj", "{DB053130-2276-45A6-97A1-425E1D6FFBE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
