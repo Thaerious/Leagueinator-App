@@ -52,7 +52,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public virtual void Draw(Graphics g, int page) {
-            TabbedDebug.StartBlock($"RenderNode.Draw()");
+            TabbedDebug.ResetBlock($"RenderNode.Draw()");
             Stack<RenderNode> stack = [];
             stack.Push(this);
 

@@ -4,6 +4,11 @@ namespace Leagueinator.Printer.Styles {
     public static class TabbedDebug {
         private static int indent = 0;
 
+        public static void ResetBlock(string s = "") {
+            indent = 0;
+            StartBlock(s);
+        }
+
         public static void StartBlock(string s = "") {
             if (indent == 0) {
                 Debug.WriteLine($"{s}");
