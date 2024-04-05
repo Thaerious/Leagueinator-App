@@ -29,12 +29,13 @@
             this.tabPageActual = new TabPage();
             this.CanvasActual = new Printer.Components.PrinterCanvas();
             this.tabPageExpected = new TabPage();
+            this.PanelExpected = new Panel();
             this.tabControlModel = new TabControl();
             this.tabPageXML = new TabPage();
-            this.RichTextXML = new RichTextBox();
+            this.RichTextXML = new CustomRichTextBox();
             this.tabPageStyle = new TabPage();
             this.RichTextStyle = new RichTextBox();
-            this.ListBoxFile = new ListBox();
+            this.FlowPanelTestCards = new FlowLayoutPanel();
             this.menuStrip = new MenuStrip();
             this.fileToolStripMenuItem = new ToolStripMenuItem();
             this.loadToolStripMenuItem = new ToolStripMenuItem();
@@ -48,8 +49,8 @@
             this.runSelectedToolStripMenuItem = new ToolStripMenuItem();
             this.runAllToolStripMenuItem = new ToolStripMenuItem();
             this.acceptActualToolStripMenuItem = new ToolStripMenuItem();
+            this.clearResultsToolStripMenuItem = new ToolStripMenuItem();
             this.FolderDialog = new FolderBrowserDialog();
-            this.PanelExpected = new Panel();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -67,10 +68,10 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 400F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 415F));
             this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.splitContainer1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.ListBoxFile, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.FlowPanelTestCards, 0, 0);
             this.tableLayoutPanel1.Dock = DockStyle.Fill;
             this.tableLayoutPanel1.Location = new Point(0, 33);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -82,7 +83,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = DockStyle.Fill;
-            this.splitContainer1.Location = new Point(403, 3);
+            this.splitContainer1.Location = new Point(418, 3);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -92,8 +93,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControlModel);
-            this.splitContainer1.Size = new Size(1323, 909);
-            this.splitContainer1.SplitterDistance = 653;
+            this.splitContainer1.Size = new Size(1308, 909);
+            this.splitContainer1.SplitterDistance = 644;
             this.splitContainer1.TabIndex = 0;
             // 
             // tabControlView
@@ -104,7 +105,7 @@
             this.tabControlView.Location = new Point(0, 0);
             this.tabControlView.Name = "tabControlView";
             this.tabControlView.SelectedIndex = 0;
-            this.tabControlView.Size = new Size(653, 909);
+            this.tabControlView.Size = new Size(644, 909);
             this.tabControlView.TabIndex = 0;
             // 
             // tabPageActual
@@ -113,7 +114,7 @@
             this.tabPageActual.Location = new Point(4, 34);
             this.tabPageActual.Name = "tabPageActual";
             this.tabPageActual.Padding = new Padding(3);
-            this.tabPageActual.Size = new Size(645, 871);
+            this.tabPageActual.Size = new Size(636, 871);
             this.tabPageActual.TabIndex = 0;
             this.tabPageActual.Text = "Acutal";
             this.tabPageActual.UseVisualStyleBackColor = true;
@@ -121,16 +122,16 @@
             // CanvasActual
             // 
             this.CanvasActual.Dock = DockStyle.Fill;
-            this.CanvasActual.GridSize = 0;
+            this.CanvasActual.GridSize = 100;
             this.CanvasActual.InnerBorder = BorderStyle.None;
             this.CanvasActual.Location = new Point(3, 3);
             this.CanvasActual.Name = "CanvasActual";
             this.CanvasActual.Page = 0;
             this.CanvasActual.RenderNode = null;
-            this.CanvasActual.Size = new Size(639, 865);
-            this.CanvasActual.SubGridSize = 0;
+            this.CanvasActual.Size = new Size(630, 865);
+            this.CanvasActual.SubGridSize = 25;
             this.CanvasActual.TabIndex = 0;
-            this.CanvasActual.ToBack = false;
+            this.CanvasActual.ToBack = true;
             // 
             // tabPageExpected
             // 
@@ -138,10 +139,18 @@
             this.tabPageExpected.Location = new Point(4, 34);
             this.tabPageExpected.Name = "tabPageExpected";
             this.tabPageExpected.Padding = new Padding(3);
-            this.tabPageExpected.Size = new Size(645, 871);
+            this.tabPageExpected.Size = new Size(639, 871);
             this.tabPageExpected.TabIndex = 1;
             this.tabPageExpected.Text = "Expected";
             this.tabPageExpected.UseVisualStyleBackColor = true;
+            // 
+            // PanelExpected
+            // 
+            this.PanelExpected.Dock = DockStyle.Fill;
+            this.PanelExpected.Location = new Point(3, 3);
+            this.PanelExpected.Name = "PanelExpected";
+            this.PanelExpected.Size = new Size(633, 865);
+            this.PanelExpected.TabIndex = 0;
             // 
             // tabControlModel
             // 
@@ -151,7 +160,7 @@
             this.tabControlModel.Location = new Point(0, 0);
             this.tabControlModel.Name = "tabControlModel";
             this.tabControlModel.SelectedIndex = 0;
-            this.tabControlModel.Size = new Size(666, 909);
+            this.tabControlModel.Size = new Size(660, 909);
             this.tabControlModel.TabIndex = 0;
             // 
             // tabPageXML
@@ -160,7 +169,7 @@
             this.tabPageXML.Location = new Point(4, 34);
             this.tabPageXML.Name = "tabPageXML";
             this.tabPageXML.Padding = new Padding(3);
-            this.tabPageXML.Size = new Size(658, 871);
+            this.tabPageXML.Size = new Size(652, 871);
             this.tabPageXML.TabIndex = 0;
             this.tabPageXML.Text = "XML";
             this.tabPageXML.UseVisualStyleBackColor = true;
@@ -172,7 +181,7 @@
             this.RichTextXML.Font = new Font("Consolas", 12F);
             this.RichTextXML.Location = new Point(3, 3);
             this.RichTextXML.Name = "RichTextXML";
-            this.RichTextXML.Size = new Size(652, 865);
+            this.RichTextXML.Size = new Size(646, 865);
             this.RichTextXML.TabIndex = 1;
             this.RichTextXML.Text = "";
             // 
@@ -182,7 +191,7 @@
             this.tabPageStyle.Location = new Point(4, 34);
             this.tabPageStyle.Name = "tabPageStyle";
             this.tabPageStyle.Padding = new Padding(3);
-            this.tabPageStyle.Size = new Size(658, 871);
+            this.tabPageStyle.Size = new Size(654, 871);
             this.tabPageStyle.TabIndex = 1;
             this.tabPageStyle.Text = "Style";
             this.tabPageStyle.UseVisualStyleBackColor = true;
@@ -194,20 +203,18 @@
             this.RichTextStyle.Font = new Font("Consolas", 12F);
             this.RichTextStyle.Location = new Point(3, 3);
             this.RichTextStyle.Name = "RichTextStyle";
-            this.RichTextStyle.Size = new Size(652, 865);
+            this.RichTextStyle.Size = new Size(648, 865);
             this.RichTextStyle.TabIndex = 0;
             this.RichTextStyle.Text = "";
             // 
-            // ListBoxFile
+            // FlowPanelTestCards
             // 
-            this.ListBoxFile.Dock = DockStyle.Fill;
-            this.ListBoxFile.Font = new Font("Consolas", 12F);
-            this.ListBoxFile.FormattingEnabled = true;
-            this.ListBoxFile.ItemHeight = 28;
-            this.ListBoxFile.Location = new Point(3, 3);
-            this.ListBoxFile.Name = "ListBoxFile";
-            this.ListBoxFile.Size = new Size(394, 909);
-            this.ListBoxFile.TabIndex = 1;
+            this.FlowPanelTestCards.AutoScroll = true;
+            this.FlowPanelTestCards.Dock = DockStyle.Fill;
+            this.FlowPanelTestCards.Location = new Point(3, 3);
+            this.FlowPanelTestCards.Name = "FlowPanelTestCards";
+            this.FlowPanelTestCards.Size = new Size(409, 909);
+            this.FlowPanelTestCards.TabIndex = 1;
             // 
             // menuStrip
             // 
@@ -250,7 +257,7 @@
             // 
             // testToolStripMenuItem
             // 
-            this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.duplicateToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem, this.acceptActualToolStripMenuItem });
+            this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.duplicateToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem, this.acceptActualToolStripMenuItem, this.clearResultsToolStripMenuItem });
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
             this.testToolStripMenuItem.Size = new Size(58, 29);
             this.testToolStripMenuItem.Text = "Test";
@@ -259,7 +266,7 @@
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.ShortcutKeys = Keys.F3;
-            this.addToolStripMenuItem.Size = new Size(253, 34);
+            this.addToolStripMenuItem.Size = new Size(255, 34);
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += this.HndMenuAddTest;
             // 
@@ -267,21 +274,23 @@
             // 
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
             this.duplicateToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.D;
-            this.duplicateToolStripMenuItem.Size = new Size(253, 34);
+            this.duplicateToolStripMenuItem.Size = new Size(255, 34);
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += this.HndMenuDuplicate;
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new Size(253, 34);
+            this.removeToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Delete;
+            this.removeToolStripMenuItem.Size = new Size(255, 34);
             this.removeToolStripMenuItem.Text = "Remove";
+            this.removeToolStripMenuItem.Click += this.HndMenuDelete;
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
             this.renameToolStripMenuItem.ShortcutKeys = Keys.F2;
-            this.renameToolStripMenuItem.Size = new Size(253, 34);
+            this.renameToolStripMenuItem.Size = new Size(255, 34);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += this.HndMenuRenameTest;
             // 
@@ -289,7 +298,7 @@
             // 
             this.runSelectedToolStripMenuItem.Name = "runSelectedToolStripMenuItem";
             this.runSelectedToolStripMenuItem.ShortcutKeys = Keys.F5;
-            this.runSelectedToolStripMenuItem.Size = new Size(253, 34);
+            this.runSelectedToolStripMenuItem.Size = new Size(255, 34);
             this.runSelectedToolStripMenuItem.Text = "Run Selected";
             this.runSelectedToolStripMenuItem.Click += this.HndMenuRunSelected;
             // 
@@ -297,24 +306,24 @@
             // 
             this.runAllToolStripMenuItem.Name = "runAllToolStripMenuItem";
             this.runAllToolStripMenuItem.ShortcutKeys = Keys.F6;
-            this.runAllToolStripMenuItem.Size = new Size(253, 34);
+            this.runAllToolStripMenuItem.Size = new Size(255, 34);
             this.runAllToolStripMenuItem.Text = "Run All";
+            this.runAllToolStripMenuItem.Click += this.HndMenuRunAll;
             // 
             // acceptActualToolStripMenuItem
             // 
             this.acceptActualToolStripMenuItem.Name = "acceptActualToolStripMenuItem";
             this.acceptActualToolStripMenuItem.ShortcutKeys = Keys.F3;
-            this.acceptActualToolStripMenuItem.Size = new Size(253, 34);
+            this.acceptActualToolStripMenuItem.Size = new Size(255, 34);
             this.acceptActualToolStripMenuItem.Text = "Accept Actual";
             this.acceptActualToolStripMenuItem.Click += this.HndAcceptActual;
             // 
-            // PanelExpected
+            // clearResultsToolStripMenuItem
             // 
-            this.PanelExpected.Dock = DockStyle.Fill;
-            this.PanelExpected.Location = new Point(3, 3);
-            this.PanelExpected.Name = "PanelExpected";
-            this.PanelExpected.Size = new Size(639, 865);
-            this.PanelExpected.TabIndex = 0;
+            this.clearResultsToolStripMenuItem.Name = "clearResultsToolStripMenuItem";
+            this.clearResultsToolStripMenuItem.Size = new Size(255, 34);
+            this.clearResultsToolStripMenuItem.Text = "Clear Results";
+            this.clearResultsToolStripMenuItem.Click += this.HndMenuClearResults;
             // 
             // Main
             // 
@@ -325,7 +334,7 @@
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "Main";
-            this.Text = "Form1";
+            this.Text = "Visual Unit Tester";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -364,13 +373,14 @@
         private ToolStripMenuItem runSelectedToolStripMenuItem;
         private ToolStripMenuItem runAllToolStripMenuItem;
         private Printer.Components.PrinterCanvas CanvasActual;
-        private RichTextBox RichTextXML;
         private RichTextBox RichTextStyle;
-        private ListBox ListBoxFile;
-        private FolderBrowserDialog FolderDialog;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem duplicateToolStripMenuItem;
         private ToolStripMenuItem acceptActualToolStripMenuItem;
         private Panel PanelExpected;
+        private FlowLayoutPanel FlowPanelTestCards;
+        internal FolderBrowserDialog FolderDialog;
+        private ToolStripMenuItem clearResultsToolStripMenuItem;
+        private CustomRichTextBox RichTextXML;
     }
 }

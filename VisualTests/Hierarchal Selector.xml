@@ -1,0 +1,13 @@
+<doc>
+	<desc>
+		Selector: page *
+	</desc>
+
+	<root>
+		<page>
+			<container>
+				<leaf/>
+			</container>
+		</page>
+	</root>
+</doc>

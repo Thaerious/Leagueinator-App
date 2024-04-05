@@ -44,8 +44,6 @@ namespace Leagueinator.Printer.Components {
         public TimeSpan RepaintTime { get; private set; }
 
         protected override void OnPaint(PaintEventArgs e) {
-            Console.WriteLine($"InnerCanvas.OnPaint() : {this.RootElement is not null}");
-
             if (this.RootElement is null) return;
 
             var stopwatch = new Stopwatch();

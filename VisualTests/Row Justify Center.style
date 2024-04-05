@@ -1,0 +1,32 @@
+root{
+	width: 800px;
+	height: 1100px;
+	border: 1px solid black;
+     	justify-content: center;
+	flex-axis: column;
+}
+
+page{
+	width: 600px;
+	height: 600px;
+	border: 1px solid black;
+	background-color: yellow;
+     	justify-content: center;
+	flex-axis: column;
+}
+
+container{
+	width: 125px;
+	height: 125px;
+	border: 25px solid black;
+	background-color: lightyellow;
+	flex-axis: column;
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+	border: 25px solid black;
+	background-color: yellow;
+	flex-axis: column;
+}

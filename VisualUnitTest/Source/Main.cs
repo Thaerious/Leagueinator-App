@@ -3,57 +3,115 @@ using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
-using System.Diagnostics;
+using VisualUnitTest.Source;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class Main : Form {
-        private int TestIndex = -1;
-        private string TestName => (string)this.ListBoxFile.Items[TestIndex];
-        private Bitmap? Bitmap = null;
+        private TestCard? activeTestCard;
+        TestCard? ActiveTestCard {
+            get => activeTestCard;
+            set {
+                if (this.activeTestCard is not null) {
+                    this.activeTestCard.BackColor = SystemColors.Control;
+                }
+                if (value is not null) {
+                    value.BackColor = SystemColors.ActiveCaption;
+                }
+                activeTestCard = value;
+            }
+        }
+
+        public bool IsReady {
+            get {
+                if (this.FolderDialog.SelectedPath.IsEmpty()) return false;
+                if (this.ActiveTestCard is null) return false;
+                return true;
+            }
+        }
 
         public Main() {
             InitializeComponent();
-            this.ListBoxFile.SelectedIndexChanged += this.HndChangeSelectedTest;
             this.PanelExpected.Paint += this.HndPanelPaint;
         }
 
         private void HndPanelPaint(object? sender, PaintEventArgs e) {
             e.Graphics.Clear(Color.White);
-            if (this.Bitmap == null) return;
-            e.Graphics.DrawImage(this.Bitmap, 0, 0);
+            if (!this.IsReady) return;
+            Paths paths = new(this, this.ActiveTestCard!.TestName);
+            if (!File.Exists(paths.BMP)) return;
+            Bitmap expected = LoadBitmap(paths.BMP);
+            e.Graphics.DrawImage(expected, 0, 0);
+            expected.Dispose();
         }
 
-        private void HndChangeSelectedTest(object? sender, EventArgs e) {
-            if (this.TestIndex != -1) SaveTest(TestName);
-            this.TestIndex = ListBoxFile.SelectedIndex;
-            this.LoadTest();
+        private void AddTestCard(string text) {
+            TestCard card = new TestCard {
+                TestName = text
+            };
+
+            this.FlowPanelTestCards.Controls.Add(card);
+            card.Click += this.CardClick;
+
+            this.SetupCard(card);
+        }
+
+        private void SetupCard(TestCard card) {
+            Paths paths = new(this, card.TestName);
+            if (File.Exists(paths.BMP)) card.Status = Status.UNTESTED;
+            else card.Status = Status.NO_TEST;
+
+            card.ButtonFail.Click += (s, e) => {
+                if (File.Exists(paths.BMP)) File.Delete(paths.BMP);
+                card.Status = Status.FAIL;
+                this.PanelExpected.Invalidate();
+            };
+
+            card.ButtonPass.Click += (s, e) => {
+                this.CreateBitmapFile();
+                this.LoadTextBoxes();
+                this.PanelExpected.Invalidate();
+                card.Status = Status.PASS;
+            };
+
+            var desc = XMLLoader.Load(File.ReadAllText(paths.XML))["desc"];
+            if (desc.Count > 0) {
+                if (desc[0].InnerText is not null) card.ToolTipText = desc[0].InnerText!;
+            }
+        }
+
+        private void CardClick(object? sender, EventArgs? _) {
+            if (this.ActiveTestCard != null) this.SaveTest();
+            this.ActiveTestCard = sender as TestCard;
+            this.LoadTextBoxes();
             this.DrawActual();
             this.PanelExpected.Invalidate();
         }
 
+        /// <summary>
+        /// Save the contents of the xml and style text boxes.
+        /// The filename is either provided by the name field or the
+        /// active text card.
+        /// </summary>
+        /// <param name="name"></param>
         private void SaveTest(string? name = null) {
-            if (name == null && TestIndex == -1) return;
-            name ??= TestName;
+            if (!this.IsReady) return;
+            Paths paths = new(this, name ?? ActiveTestCard!.TestName);
 
-            string xmlFile = Path.Join(this.FolderDialog.SelectedPath, $"{name}.xml");
-            string styleFile = Path.Join(this.FolderDialog.SelectedPath, $"{name}.style");
-
-            File.WriteAllText(xmlFile, this.RichTextXML.Text);
-            File.WriteAllText(styleFile, this.RichTextStyle.Text);
+            File.WriteAllText(paths.XML, this.RichTextXML.Text);
+            File.WriteAllText(paths.Style, this.RichTextStyle.Text);
         }
 
-        private void LoadTest(string? name = null) {
-            if (name == null && TestIndex == -1) return;
-            name ??= TestName;
+        /// <summary>
+        /// Load the named test into the xml and style text boxes.
+        /// If the name is omitted get the name from the active test card.
+        /// </summary>
+        /// <param name="name"></param>
+        private void LoadTextBoxes(string? name = null) {
+            if (!this.IsReady) return;
+            Paths paths = new(this, name ?? ActiveTestCard!.TestName);
 
-            string xmlFile = Path.Join(this.FolderDialog.SelectedPath, $"{name}.xml");
-            string styleFile = Path.Join(this.FolderDialog.SelectedPath, $"{name}.style");
-            string bmpFile = Path.Join(this.FolderDialog.SelectedPath, $"{name}.bmp");
-
-            this.RichTextXML.Text = File.ReadAllText(xmlFile);
-            this.RichTextStyle.Text = File.ReadAllText(styleFile);
-            if (File.Exists(bmpFile)) this.LoadExpected(bmpFile);
-            else this.ClearExpected();
+            this.RichTextXML.Text = File.ReadAllText(paths.XML);
+            this.RichTextStyle.Text = File.ReadAllText(paths.Style);
         }
 
         private void HndMenuCloseClick(object sender, EventArgs e) {
@@ -63,41 +121,42 @@ namespace Leagueinator.VisualUnitTest {
 
         private void HndMenuLoadClick(object sender, EventArgs e) {
             if (this.FolderDialog.ShowDialog() == DialogResult.OK) {
-                this.LoadDirPath();
+                this.LoadDirectory();
             };
         }
+
         private void HndMenuAddTest(object sender, EventArgs e) {
             if (this.FolderDialog.SelectedPath.IsEmpty()) return;
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK) {
-                string xmlPath = Path.Join(this.FolderDialog.SelectedPath, $"{dialog.TestName}.xml");
-                string stylePath = Path.Join(this.FolderDialog.SelectedPath, $"{dialog.TestName}.style");
-                File.CreateText(xmlPath);
-                File.CreateText(stylePath);
-                this.ListBoxFile.Items.Add(dialog.TestName);
+                Paths paths = new(this, dialog.TestName);
+                File.CreateText(paths.XML).Close();
+                File.CreateText(paths.Style).Close();
+                this.AddTestCard(dialog.TestName);
             }
         }
 
-        private void LoadDirPath() {
-            this.ListBoxFile.Items.Clear();
+        private void LoadDirectory() {
+            this.FlowPanelTestCards.Controls.Clear();
             string[] files = Directory.GetFiles(this.FolderDialog.SelectedPath, "*.xml");
 
             foreach (string file in files) {
                 var filename = Path.GetFileNameWithoutExtension(file);
-                this.ListBoxFile.Items.Add(filename);
+                this.AddTestCard(filename);
             }
 
             if (files.Length > 0) {
-                this.ListBoxFile.SelectedIndex = 0;
-                this.TestIndex = 0;
+                this.CardClick(this.FlowPanelTestCards.Controls[0], null);
             }
+
+            this.Text = this.FolderDialog.SelectedPath;
         }
 
         private void DrawActual() {
             try {
                 LoadedStyles styles = StyleLoader.Load(this.RichTextStyle.Text);
-                Element root = XMLLoader.Load(this.RichTextXML.Text);
+                Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
                 styles.ApplyTo(root);
 
                 Flex flex = new();
@@ -111,45 +170,37 @@ namespace Leagueinator.VisualUnitTest {
             }
         }
 
-        private void ClearExpected() {            
-            this.Bitmap?.Dispose();
-            this.Bitmap = null;
-        }
-
-        private void LoadExpected(string imagePath) {
-            try {
-                this.ClearExpected();
-                this.Bitmap = new Bitmap(imagePath);
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+        private static Bitmap LoadBitmap(string imagePath) {
+            using FileStream stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, (int)stream.Length);
+            using MemoryStream ms = new MemoryStream(bytes);
+            return new Bitmap(ms);
         }
 
         private void HndMenuRunSelected(object sender, EventArgs e) {
-            DrawActual();
+            if (!this.IsReady) return;
+            this.RunTest(this.ActiveTestCard!);
         }
 
         private void HndMenuRenameTest(object sender, EventArgs e) {
-            if (this.FolderDialog.SelectedPath.IsEmpty()) return;
-            string currentName = this.TestName;
+            if (!this.IsReady) return;
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK) {
-                string fromXMLPath = Path.Join(this.FolderDialog.SelectedPath, $"{this.TestName}.xml");
-                string fromStylePath = Path.Join(this.FolderDialog.SelectedPath, $"{this.TestName}.style");
-                string toXMLPath = Path.Join(this.FolderDialog.SelectedPath, $"{dialog.TestName}.xml");
-                string toStylePath = Path.Join(this.FolderDialog.SelectedPath, $"{dialog.TestName}.style");
+                Paths pathsFrom = new(this, ActiveTestCard!.TestName);
+                Paths pathsTo = new(this, dialog.TestName);
 
-                if (File.Exists(toXMLPath)) {
+                if (File.Exists(pathsTo.XML)) {
                     MessageBox.Show("Test Already Exists", "Warning", MessageBoxButtons.OK);
                     return;
                 }
 
-                File.Move(fromXMLPath, toXMLPath);
-                File.Move(fromStylePath, toStylePath);
+                this.ActiveTestCard.TestName = dialog.TestName;
 
-                this.ListBoxFile.Items[this.TestIndex] = dialog.TestName;
+                File.Move(pathsFrom.XML, pathsTo.XML);
+                File.Move(pathsFrom.Style, pathsTo.Style);
+                if (File.Exists(pathsFrom.BMP)) File.Move(pathsFrom.BMP, pathsTo.BMP);
             }
         }
 
@@ -159,36 +210,137 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         private void HndMenuDuplicate(object sender, EventArgs e) {
-            if (this.FolderDialog.SelectedPath.IsEmpty()) return;
+            if (!this.IsReady) return;
+
             this.SaveTest();
             this.DrawActual();
 
-            string newName = $"copy - {this.TestName}";
-            string xmlPath = Path.Join(this.FolderDialog.SelectedPath, $"{newName}.xml");
-            string stylePath = Path.Join(this.FolderDialog.SelectedPath, $"{newName}.style");
+            Paths paths;
+            int i = 1;
+            do {
+                paths = new(this, $"copy ({i++}) of {this.ActiveTestCard!.TestName}");
+            } while (File.Exists(paths.XML));
 
-            if (File.Exists(xmlPath)) {
-                MessageBox.Show("Test Already Exists", "Warning", MessageBoxButtons.OK);
-                return;
-            }
+            File.WriteAllText(paths.XML, this.RichTextXML.Text);
+            File.WriteAllText(paths.Style, this.RichTextStyle.Text);
 
-            File.WriteAllText(xmlPath, this.RichTextXML.Text);
-            File.WriteAllText(stylePath, this.RichTextStyle.Text);
-
-            this.ListBoxFile.Items.Add(newName);
+            this.AddTestCard(paths.TestName);
         }
 
         private void HndAcceptActual(object sender, EventArgs e) {
-            this.CreateExpected();
-            this.LoadTest();
+            this.CreateBitmapFile();
+            this.LoadTextBoxes();
             this.PanelExpected.Invalidate();
         }
 
-        private void CreateExpected() {
-            Bitmap bmp = new Bitmap(CanvasActual.Width, CanvasActual.Height);
-            CanvasActual.DrawToBitmap(bmp, new Rectangle(Point.Empty, CanvasActual.Size));
-            string imagePath = Path.Join(this.FolderDialog.SelectedPath, $"{this.TestName}.bmp");
-            bmp.Save(imagePath, System.Drawing.Imaging.ImageFormat.Bmp);
+        /// <summary>
+        /// Create a new bitmap file from the currently selected test card.
+        /// This file is used as the 'expected' bitmap during the test runs.
+        /// </summary>
+        private void CreateBitmapFile() {
+            if (!this.IsReady) return;
+
+            try {
+                Paths paths = new(this, this.ActiveTestCard!.TestName);
+                using Bitmap bmp = this.CreateBitmapFromCard(this.ActiveTestCard);
+                bmp.Save(paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
+            } catch { }
         }
+
+        /// <summary>
+        /// Create a new bitmap from a test card.
+        /// Remember to dispose the bitmap after use.
+        /// </summary>
+        /// <param name="card"></param>
+        /// <returns></returns>
+        private Bitmap CreateBitmapFromCard(TestCard card) {
+            if (this.FolderDialog.SelectedPath.IsEmpty()) throw new InvalidOperationException("Directory Not Loaded");
+            Paths paths = new(this, card.TestName);
+
+            LoadedStyles styles = StyleLoader.Load(File.ReadAllText(paths.Style));
+            Element root = XMLLoader.Load(File.ReadAllText(paths.XML))["root"][0];
+            styles.ApplyTo(root);
+            Flex flex = new();
+            (int pages, RenderNode renderNode) = flex.DoLayout(root);
+
+            if ((int)renderNode.Size.Width <= 0) throw new InvalidOperationException();
+            if ((int)renderNode.Size.Height <= 0) throw new InvalidOperationException();
+
+            Bitmap bitmap = new Bitmap((int)renderNode.Size.Width, (int)renderNode.Size.Height);
+            Size size = new((int)renderNode.Size.Width, (int)renderNode.Size.Height);
+
+            using Graphics graphics = Graphics.FromImage(bitmap);
+            graphics.FillRectangle(Brushes.White, 0, 0, size.Width, size.Height);
+            renderNode.Draw(graphics, 0);
+
+            return bitmap;
+        }
+
+        private void HndMenuDelete(object sender, EventArgs e) {
+            if (!this.IsReady) return;
+            Paths paths = new(this, this.ActiveTestCard!.TestName);
+
+            if (File.Exists(paths.XML)) File.Delete(paths.XML);
+            if (File.Exists(paths.Style)) File.Delete(paths.Style);
+            if (File.Exists(paths.BMP)) File.Delete(paths.BMP);
+
+            this.FlowPanelTestCards.Controls.Remove(this.ActiveTestCard);
+        }
+
+        private void RunTest(TestCard card) {
+            Paths paths = new(this, card.TestName);
+
+            if (!File.Exists(paths.BMP)) {
+                card.Status = Status.NO_TEST;
+                return;
+            }
+
+            try {
+                using Bitmap actual = this.CreateBitmapFromCard(card);
+                using Bitmap expected = new Bitmap(paths.BMP);
+
+                if (AreBitmapsIdentical(actual, expected)) card.Status = Status.PASS;
+                else card.Status = Status.FAIL;
+            }
+            catch {
+                card.Status = Status.FAIL;
+            }
+        }
+
+
+        private void HndMenuRunAll(object sender, EventArgs e) {
+            foreach (TestCard card in this.FlowPanelTestCards.Controls) this.RunTest(card);
+        }
+
+        public static bool AreBitmapsIdentical(Bitmap bmp1, Bitmap bmp2) {
+            // Check if the dimensions are different
+            if (bmp1.Width != bmp2.Width || bmp1.Height != bmp2.Height) {
+                return false;
+            }
+
+            // Compare pixel data
+            for (int y = 0; y < bmp1.Height; y++) {
+                for (int x = 0; x < bmp1.Width; x++) {
+                    // If at least one pixel does not match, the bitmaps are not identical
+                    if (bmp1.GetPixel(x, y) != bmp2.GetPixel(x, y)) {
+                        return false;
+                    }
+                }
+            }
+
+            // If all pixels match, the bitmaps are identical
+            return true;
+        }
+
+        private void HndMenuClearResults(object sender, EventArgs e) {
+            foreach (TestCard card in this.FlowPanelTestCards.Controls) card.Status = Status.UNTESTED;
+        }
+    }
+
+    readonly struct Paths(Main main, string name) {
+        public readonly string XML = Path.Join(main.FolderDialog.SelectedPath, $"{name}.xml");
+        public readonly string Style = Path.Join(main.FolderDialog.SelectedPath, $"{name}.style");
+        public readonly string BMP = Path.Join(main.FolderDialog.SelectedPath, $"{name}.bmp");
+        public readonly string TestName = name;
     }
 }

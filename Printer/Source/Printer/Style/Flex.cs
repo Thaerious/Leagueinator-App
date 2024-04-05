@@ -1,10 +1,9 @@
-﻿using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Aspects;
+using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
-using System.Diagnostics;
-using System.Drawing;
-using System.Xml.Linq;
 
 namespace Leagueinator.Printer.Styles {
+    [DebugTrace]
     public class Flex {
         private int pageCount = 1;
         private Queue<RenderNode> deferred = [];
@@ -148,52 +147,50 @@ namespace Leagueinator.Printer.Styles {
         }
 
         internal void DoPos(RenderNode root) {
-            if (root.IsRoot) {
-                foreach (RenderNode child in root.Children) DoPos(child);
-                return;
-            }
+            new TreeWalker<RenderNode>(root).Walk(current => {
+                if (current.IsRoot) return;
 
-            if (root.Style.Translate != null && !root.IsRoot) {
-                if (root.Style.Translate.X.Factor.Equals("%")) {
-                    root.Translation.X += root.Parent!.Size.Width * root.Parent!.Style.Translate!.X.Factor / 100;
+                if (current.Style.Translate != null && !current.IsRoot) {
+                    if (current.Style.Translate.X.Factor.Equals("%")) {
+                        current.Translation.X += current.Parent!.Size.Width * current.Parent!.Style.Translate!.X.Factor / 100;
+                    }
+                    else {
+                        current.Translation.X += current.Style.Translate!.X.Factor;
+                    }
+                    if (current.Style.Translate.Y.Factor.Equals("%")) {
+                        current.Translation.X += current.Parent!.Size.Height * current.Parent!.Style.Translate!.Y.Factor / 100;
+                    }
+                    else {
+                        current.Translation.Y += current.Style.Translate!.Y.Factor;
+                    }
                 }
-                else {
-                    root.Translation.X += root.Style.Translate!.X.Factor;
+
+                // if absolute or flex, then position relative to parent
+                if (current.Style.Position != Enums.Position.Fixed) {
+                    current.Translation.Translate(current.Parent!.ContentBox().TopLeft());
                 }
-                if (root.Style.Translate.Y.Factor.Equals("%")) {
-                    root.Translation.X += root.Parent!.Size.Height * root.Parent!.Style.Translate!.Y.Factor / 100;
+
+                // Position flex elements by page
+                for (int page = 0; page < this.pageCount; page++) {
+                    this.DoPosFlex(current, page);
                 }
-                else {
-                    root.Translation.Y += root.Style.Translate!.Y.Factor;
-                }
-            }
 
-            // position if absolute or flex position relative to parent
-            if (root.Style.Position != Enums.Position.Fixed) {
-                root.Translation.Translate(root.Parent!.ContentBox().TopLeft());
-            }
-
-            for (int page = 0; page < this.pageCount; page++) {
-                this.DoPosFlex(root, page);
-            }
-
-            root.DoPosAbsolute(Enums.Position.Absolute);
-            root.DoPosAbsolute(Enums.Position.Fixed);
-
-            foreach (RenderNode child in root.Children) DoPos(child);
+                current.DoPosAbsolute(Enums.Position.Absolute);
+                current.DoPosAbsolute(Enums.Position.Fixed);
+            });
         }
 
         /// <summary>
         /// Position all child nodes of node using justify content and align items.
         /// </summary>
-        /// <param name="root"></param>
+        /// <param name="node"></param>
         /// <param name="page"></param>
-        private void DoPosFlex(RenderNode root, int page) {
-            var children = this.CollectChildren(root, page);
+        private void DoPosFlex(RenderNode node, int page) {
+            var children = this.CollectChildren(node, page);
             if (children.Count == 0) return;
 
-            this.JustifyContent(root, children);
-            root.AlignItems(children);
+            this.JustifyContent(node, children);
+            node.AlignItems(children);
         }
 
 
@@ -202,51 +199,28 @@ namespace Leagueinator.Printer.Styles {
         /// </summary>
         /// <param name="this.Element"></param>
         /// <param name="children"></param>
-        private void JustifyContent(RenderNode root, List<RenderNode> children) {
-            switch (root.Style.Justify_Content) {
+        private void JustifyContent(RenderNode node, List<RenderNode> children) {
+            switch (node.Style.Justify_Content) {
                 default:
-                case Enums.Justify_Content.Flex_start: {
-                        root.LineupElements(children, new PointF(0, 0));
-                        break;
-                    }
-
-                case Enums.Justify_Content.Flex_end: {
-                        PointF from;
-
-                        if (root.Style.Flex_Axis == Enums.Flex_Axis.Row) {
-                            from = new PointF(root.WidthRemaining(children), 0);
-                        }
-                        else {
-                            from = new PointF(0, root.HeightRemaining(children));
-                        }
-
-                        root.LineupElements(children, from);
-                        break;
-                    }
-
-                case Enums.Justify_Content.Center: {
-                        PointF from;
-
-                        if (root.Style.Flex_Axis == Enums.Flex_Axis.Row) {
-                            from = new PointF(root.WidthRemaining(children) / 2, 0);
-                        }
-                        else {
-                            from = new PointF(0, root.HeightRemaining(children) / 2);
-                        }
-
-                        root.LineupElements(children, from);
-                        break;
-                    }
+                case Enums.Justify_Content.Flex_start:
+                    node.JustifyStart(children);
+                    break;
+                case Enums.Justify_Content.Flex_end:
+                    node.JustifyEnd(children);
+                    break;
+                case Enums.Justify_Content.Center:
+                    node.JustifyCenter(children);
+                    break;
 
                 case Enums.Justify_Content.Space_evenly:
-                    root.SpaceEvenly(children);
+                    node.SpaceEvenly(children);
                     break;
                 case Enums.Justify_Content.Space_between:
-                    root.SpaceBetween(children);
+                    node.SpaceBetween(children);
                     break;
 
                 case Enums.Justify_Content.Space_around:
-                    root.SpaceAround(children);
+                    node.SpaceAround(children);
                     break;
             }
         }
@@ -369,18 +343,20 @@ namespace Leagueinator.Printer.Styles {
                 float spaceBetween = root.HeightRemaining(children) / (children.Count + 1);
                 float dy = spaceBetween;
 
-                foreach (var childNode in children) {
-                    childNode.Translate(0, dy);
-                    dy = dy + spaceBetween + childNode.OuterBox().Height;
+                foreach (var child in children) {
+                    child.Translate(root.ContentBox().TopLeft());
+                    child.Translate(0, dy);
+                    dy = dy + spaceBetween + child.OuterBox().Height;
                 }
             }
             else {
                 float spaceBetween = root.WidthRemaining(children) / (children.Count + 1);
                 float dx = spaceBetween;
 
-                foreach (var childElement in children) {
-                    childElement.Translate(dx, 0);
-                    dx = dx + spaceBetween + childElement.OuterBox().Width;
+                foreach (var child in children) {
+                    child.Translate(root.ContentBox().TopLeft());
+                    child.Translate(dx, 0);
+                    dx = dx + spaceBetween + child.OuterBox().Width;
                 }
             }
         }
@@ -391,6 +367,7 @@ namespace Leagueinator.Printer.Styles {
                 float dx = 0;
 
                 foreach (var child in children) {
+                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(dx, 0);
                     dx = dx + spaceBetween + child.OuterBox().Width;
                 }
@@ -400,6 +377,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = 0;
 
                 foreach (var child in children) {
+                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(0, dy);
                     dy = dy + spaceBetween + child.OuterBox().Height;
                 }
@@ -407,11 +385,13 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public static void SpaceAround(this RenderNode root, List<RenderNode> children) {
+           
             if (root.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                 float spaceAround = root.WidthRemaining(children) / (children.Count * 2);
                 float dx = spaceAround;
 
                 foreach (var child in children) {
+                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(dx, 0);
                     dx = dx + (2 * spaceAround) + child.OuterBox().Width;
                 }
@@ -421,6 +401,7 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceAround;
 
                 foreach (var child in children) {
+                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(0, dy);
                     dy = dy + (2 * spaceAround) + child.OuterBox().Height;
                 }
@@ -464,33 +445,66 @@ namespace Leagueinator.Printer.Styles {
             });
         }
 
-        public static void AlignItems(this RenderNode root, List<RenderNode> children) {
-            switch (root.Style.Flex_Axis) {
+        public static void AlignItems(this RenderNode node, List<RenderNode> children) {
+            switch (node.Style.Flex_Axis) {
                 case Enums.Flex_Axis.Row:
-                    switch (root.Style.Align_Items) {
+                    switch (node.Style.Align_Items) {
                         case Enums.Align_Items.Flex_start:
                             break;
                         case Enums.Align_Items.Flex_end:
-                            children.ForEach(c => c.Translate(0, root.ContentBox().Height - c.OuterBox().Height));
+                            children.ForEach(c => c.Translate(0, node.ContentBox().Height - c.OuterBox().Height));
                             break;
                         case Enums.Align_Items.Center:
-                            children.ForEach(c => c.Translate(0, (root.ContentBox().Height / 2) - (c.OuterBox().Height / 2)));
+                            children.ForEach(c => c.Translate(0, (node.ContentBox().Height / 2) - (c.OuterBox().Height / 2)));
                             break;
                     }
                     break;
                 case Enums.Flex_Axis.Column:
-                    switch (root.Style.Align_Items) {
+                    switch (node.Style.Align_Items) {
                         case Enums.Align_Items.Flex_start:
                             break;
                         case Enums.Align_Items.Flex_end:
-                            children.ForEach(c => c.Translate(root.ContentBox().Width - c.OuterBox().Width, 0));
+                            children.ForEach(c => c.Translate(node.ContentBox().Width - c.OuterBox().Width, 0));
                             break;
                         case Enums.Align_Items.Center:
-                            children.ForEach(c => c.Translate((root.ContentBox().Width / 2) - (c.OuterBox().Width / 2), 0));
+                            children.ForEach(c => c.Translate((node.ContentBox().Width / 2) - (c.OuterBox().Width / 2), 0));
                             break;
                     }
                     break;
             }
+        }
+
+        [DebugTrace]
+        public static void JustifyCenter(this RenderNode node, List<RenderNode> children) {
+            PointF from;
+
+            if (node.Style.Flex_Axis == Enums.Flex_Axis.Row) {
+                from = new PointF(node.WidthRemaining(children) / 2, 0);
+            }
+            else {
+                from = new PointF(0, node.HeightRemaining(children) / 2);
+            }
+
+            from = from.Translate(node.ContentBox().TopLeft());
+            node.LineupElements(children, from);
+        }
+
+        public static void JustifyEnd(this RenderNode node, List<RenderNode> children) {
+            PointF from;
+
+            if (node.Style.Flex_Axis == Enums.Flex_Axis.Row) {
+                from = new PointF(node.WidthRemaining(children), 0);
+            }
+            else {
+                from = new PointF(0, node.HeightRemaining(children));
+            }
+
+            from = from.Translate(node.ContentBox().TopLeft());
+            node.LineupElements(children, from);
+        }
+
+        public static void JustifyStart(this RenderNode node, List<RenderNode> children) {
+            node.LineupElements(children, node.ContentBox().TopLeft());
         }
     }
 }

@@ -1,19 +1,22 @@
-xml{
+root{
 	width: 800px;
 	height: 1100px;
-	border: 1px solid black;
 }
 
-root{
+*{
 	width: 50%;
 	height: 50%;
 	border: 1px solid black;
-	background-color: lightyellow;
+}
+
+page{
+	background-color: yellow;
 }
 
 container{
-	width: 50%;
-	height: 50%;
-	border: 25px solid black;
+	background-color: lightyellow;
+}
+
+leaf{
 	background-color: yellow;
 }
