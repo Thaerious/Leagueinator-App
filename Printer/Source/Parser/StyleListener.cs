@@ -15,34 +15,49 @@ namespace Leagueinator.CSSParser {
         public readonly LoadedStyles Styles = new();
         private readonly List<Style> currentStyles = new();
 
-        private static string CollectSelectorContext(SelectorContext selector) {
-            string input = selector.GetText();
-            string pattern = "(>)";
+        /// <summary>
+        /// Retrieves the text for the input context with spaces between the tokens.
+        /// </summary>
+        /// <param name="inputContext"></param>
+        /// <param name="sb"></param>
+        /// <returns></returns>
+        public static string GetText(RuleContext inputContext, StringBuilder? sb = null) {
+            sb ??= new();
+            
+            if (inputContext.ChildCount == 0) {
+                return string.Empty;
+            }
 
-            string[] result = Regex.Split(input, pattern)
-                                   .Where(s => !string.IsNullOrEmpty(s)) 
-                                   .ToArray();
+            for (int i = 0; i < inputContext.ChildCount; i++) {
+                if (inputContext.GetChild(i) is RuleContext childContext) {
+                    GetText(childContext, sb);
+                }
+                else {
+                    sb.Append(inputContext.GetChild(i).GetText());
+                    sb.Append(' ');
+                }
+            }
 
-            return result.DelString(" ");
+            return sb.ToString().Trim();
         }
 
         /// <summary>
-        /// Treat the Style selector as a commas seperated list and extract each Style name.
+        /// Treat the Style selector as a commas seperated selectorList and extract each Style name.
         /// </summary>
         /// <param name="context"></param>
         public override void EnterStyle([NotNull] global::StyleParser.StyleContext context) {
-            List<SelectorContext> list = [];
+            List<SelectorContext> selectorList = [];
             SelectorsContext current = context.selectors();
 
             while (current != null) {
-                list.Add(current.selector());
+                selectorList.Add(current.selector());
                 current = current.selectors();
             }
 
-            list.Reverse();
+            selectorList.Reverse();
 
-            foreach (SelectorContext selector in list) {
-                string selectorText = CollectSelectorContext(selector);
+            foreach (SelectorContext selector in selectorList) {
+                string selectorText = GetText(selector);
 
                 var style = new Style(null) {
                     Selector = selectorText,

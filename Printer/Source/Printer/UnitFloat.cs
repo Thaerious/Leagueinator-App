@@ -35,7 +35,7 @@ namespace Leagueinator.Printer {
         }
 
         public override String ToString() {
-            return $"({this.Factor}, {this.Unit})";
+            return $"{this.Factor}{this.Unit}";
         }
     }
 }

@@ -3,14 +3,7 @@ root{
 	height: 1100px;
 }
 
-page{
-	width: 50%;
-	height: 50%;
-	border: 1px solid black;
-	background-color: yellow;
-}
-
-page *{
+page, page *{
 	width: 50%;
 	height: 50%;
 	border: 1px solid black;
@@ -20,6 +13,6 @@ container{
 	background-color: lightyellow;
 }
 
-leaf{
+leaf, page{
 	background-color: yellow;
 }

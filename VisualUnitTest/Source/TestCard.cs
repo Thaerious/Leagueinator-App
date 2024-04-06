@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace VisualUnitTest.Source {
-    public enum Status { PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
+    public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
 
     public partial class TestCard : UserControl {
 
@@ -46,6 +46,12 @@ namespace VisualUnitTest.Source {
                         this.ButtonFail.BackColor = SystemColors.ControlDark;
                         this.ButtonFail.Enabled = false;
                     break;
+                    case Status.PENDING:
+                        this.ButtonPass.BackColor = Color.SkyBlue;
+                        this.ButtonPass.Text = "?";
+                        this.ButtonFail.BackColor = Color.SkyBlue;
+                        this.ButtonFail.Text = "?";
+                        break;
                 }
             }
         }

@@ -1,0 +1,11 @@
+root * {
+    width: 50px;
+}
+
+a b c {
+    width: 50px;
+}
+
+root > div > deep {
+    width: 50px;
+}

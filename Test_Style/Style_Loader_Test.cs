@@ -12,16 +12,15 @@ namespace Test_Style {
         public void Sanity() {
             LoadedStyles styles = LoadSSResource("style_loader.css");
 
-            Assert.IsTrue(styles[0].Selector.Equals(".parent"));
-            Assert.IsTrue(styles[1].Selector.Equals(".child"));
-            Assert.IsTrue(styles[2].Selector.Equals("parent > child > deepchild"));
-            Assert.IsTrue(styles[3].Selector.Equals("*"));
-
             foreach (Style style in styles.AsList()) {
                 Debug.WriteLine($"{style.Selector} [{style.Specificity.DelString()}]");
             }
             Debug.WriteLine($"--------------------\n{styles.AsList().Count} Style{(styles.AsList().Count == 1 ? "" : "s")}");
 
+            Assert.IsTrue(styles[0].Selector.Equals(".parent"));
+            Assert.IsTrue(styles[1].Selector.Equals(".child"));
+            Assert.IsTrue(styles[2].Selector.Equals("parent > child > deepchild"));
+            Assert.IsTrue(styles[3].Selector.Equals("*"));
         }
 
         [TestMethod]

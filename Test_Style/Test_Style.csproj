@@ -21,6 +21,8 @@
     <None Remove="Assets\query_engine_2.xml" />
     <None Remove="Assets\query_engine_3.xml" />
     <None Remove="Assets\query_engine_4.xml" />
+    <None Remove="Assets\selector.css" />
+    <None Remove="Assets\selector.xml" />
     <None Remove="Assets\specificity.css" />
     <None Remove="Assets\specificity.xml" />
     <None Remove="Assets\style.css" />
@@ -32,6 +34,8 @@
     <EmbeddedResource Include="Assets\border.xml" />
     <EmbeddedResource Include="Assets\document.xml" />
     <EmbeddedResource Include="Assets\query_engine_4.xml" />
+    <EmbeddedResource Include="Assets\selector.css" />
+    <EmbeddedResource Include="Assets\selector.xml" />
     <EmbeddedResource Include="Assets\specificity.xml" />
     <EmbeddedResource Include="Assets\query_engine_3.xml" />
     <EmbeddedResource Include="Assets\query_engine_2.xml" />

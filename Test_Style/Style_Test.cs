@@ -89,7 +89,7 @@ namespace Test_Style {
         }
 
         /// <summary>
-        /// Name > WildCard
+        /// Name > *
         /// </summary>
         [TestMethod]
         public void Specificity_Name_WildCard() {
@@ -165,6 +165,22 @@ namespace Test_Style {
             styles.ApplyTo(element);
 
             Assert.AreEqual(Position.Flex, element.Style.Position);
+        }
+
+        /// <summary>
+        /// Selector: root *
+        /// </summary>
+        [TestMethod]
+        public void Selector_Hierarchal_Wildcard() {
+            LoadResources("selector.xml", "selector.css", out Element xml, out LoadedStyles styles);
+
+            foreach (Style style in styles) {
+                Debug.WriteLine(style);
+            }
+
+            Assert.AreEqual("50px", xml["t1"][0].Style.Width?.ToString());
+            Assert.AreEqual("50px", xml["t2"][0].Style.Width?.ToString());
+            Assert.AreEqual("50px", xml["t3"][0].Style.Width?.ToString());
         }
     }
 }

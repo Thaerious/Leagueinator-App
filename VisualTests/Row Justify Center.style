@@ -2,25 +2,23 @@ root{
 	width: 800px;
 	height: 1100px;
 	border: 1px solid black;
-     	justify-content: center;
-	flex-axis: column;
+     justify-content: center;
 }
 
 page{
-	width: 600px;
-	height: 600px;
+	width: 500px;
+	height: 500px;
 	border: 1px solid black;
 	background-color: yellow;
-     	justify-content: center;
-	flex-axis: column;
+     justify-content: center;
 }
 
 container{
-	width: 125px;
-	height: 125px;
+	width: 150px;
+	height: 250px;
 	border: 25px solid black;
 	background-color: lightyellow;
-	flex-axis: column;
+     justify-content: center;
 }
 
 leaf{
@@ -28,5 +26,5 @@ leaf{
 	height: 25px;
 	border: 25px solid black;
 	background-color: yellow;
-	flex-axis: column;
+     justify-content: center;
 }

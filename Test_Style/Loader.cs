@@ -11,6 +11,11 @@ namespace Test_Style {
             ss.ApplyTo(element);
             return element;
         }
+        public static void LoadResources(string xmlName, string cssName, out Element element, out LoadedStyles styles) {
+            element = LoadXMLResource(xmlName);
+            styles = LoadSSResource(cssName);
+            styles.ApplyTo(element);
+        }
 
         public static Element LoadXMLResource(string xmlName) {
             Assembly assembly = Assembly.GetExecutingAssembly();

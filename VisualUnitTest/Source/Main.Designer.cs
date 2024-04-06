@@ -41,6 +41,7 @@
             this.loadToolStripMenuItem = new ToolStripMenuItem();
             this.saveToolStripMenuItem = new ToolStripMenuItem();
             this.closeToolStripMenuItem = new ToolStripMenuItem();
+            this.autoFormatToolStripMenuItem = new ToolStripMenuItem();
             this.testToolStripMenuItem = new ToolStripMenuItem();
             this.addToolStripMenuItem = new ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new ToolStripMenuItem();
@@ -68,7 +69,7 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 415F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 450F));
             this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.splitContainer1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.FlowPanelTestCards, 0, 0);
@@ -83,7 +84,7 @@
             // splitContainer1
             // 
             this.splitContainer1.Dock = DockStyle.Fill;
-            this.splitContainer1.Location = new Point(418, 3);
+            this.splitContainer1.Location = new Point(453, 3);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -93,8 +94,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControlModel);
-            this.splitContainer1.Size = new Size(1308, 909);
-            this.splitContainer1.SplitterDistance = 644;
+            this.splitContainer1.Size = new Size(1273, 909);
+            this.splitContainer1.SplitterDistance = 626;
             this.splitContainer1.TabIndex = 0;
             // 
             // tabControlView
@@ -105,7 +106,7 @@
             this.tabControlView.Location = new Point(0, 0);
             this.tabControlView.Name = "tabControlView";
             this.tabControlView.SelectedIndex = 0;
-            this.tabControlView.Size = new Size(644, 909);
+            this.tabControlView.Size = new Size(626, 909);
             this.tabControlView.TabIndex = 0;
             // 
             // tabPageActual
@@ -114,7 +115,7 @@
             this.tabPageActual.Location = new Point(4, 34);
             this.tabPageActual.Name = "tabPageActual";
             this.tabPageActual.Padding = new Padding(3);
-            this.tabPageActual.Size = new Size(636, 871);
+            this.tabPageActual.Size = new Size(618, 871);
             this.tabPageActual.TabIndex = 0;
             this.tabPageActual.Text = "Acutal";
             this.tabPageActual.UseVisualStyleBackColor = true;
@@ -128,7 +129,7 @@
             this.CanvasActual.Name = "CanvasActual";
             this.CanvasActual.Page = 0;
             this.CanvasActual.RenderNode = null;
-            this.CanvasActual.Size = new Size(630, 865);
+            this.CanvasActual.Size = new Size(612, 865);
             this.CanvasActual.SubGridSize = 25;
             this.CanvasActual.TabIndex = 0;
             this.CanvasActual.ToBack = true;
@@ -139,7 +140,7 @@
             this.tabPageExpected.Location = new Point(4, 34);
             this.tabPageExpected.Name = "tabPageExpected";
             this.tabPageExpected.Padding = new Padding(3);
-            this.tabPageExpected.Size = new Size(639, 871);
+            this.tabPageExpected.Size = new Size(636, 871);
             this.tabPageExpected.TabIndex = 1;
             this.tabPageExpected.Text = "Expected";
             this.tabPageExpected.UseVisualStyleBackColor = true;
@@ -149,7 +150,7 @@
             this.PanelExpected.Dock = DockStyle.Fill;
             this.PanelExpected.Location = new Point(3, 3);
             this.PanelExpected.Name = "PanelExpected";
-            this.PanelExpected.Size = new Size(633, 865);
+            this.PanelExpected.Size = new Size(630, 865);
             this.PanelExpected.TabIndex = 0;
             // 
             // tabControlModel
@@ -160,7 +161,7 @@
             this.tabControlModel.Location = new Point(0, 0);
             this.tabControlModel.Name = "tabControlModel";
             this.tabControlModel.SelectedIndex = 0;
-            this.tabControlModel.Size = new Size(660, 909);
+            this.tabControlModel.Size = new Size(643, 909);
             this.tabControlModel.TabIndex = 0;
             // 
             // tabPageXML
@@ -169,7 +170,7 @@
             this.tabPageXML.Location = new Point(4, 34);
             this.tabPageXML.Name = "tabPageXML";
             this.tabPageXML.Padding = new Padding(3);
-            this.tabPageXML.Size = new Size(652, 871);
+            this.tabPageXML.Size = new Size(635, 871);
             this.tabPageXML.TabIndex = 0;
             this.tabPageXML.Text = "XML";
             this.tabPageXML.UseVisualStyleBackColor = true;
@@ -181,7 +182,7 @@
             this.RichTextXML.Font = new Font("Consolas", 12F);
             this.RichTextXML.Location = new Point(3, 3);
             this.RichTextXML.Name = "RichTextXML";
-            this.RichTextXML.Size = new Size(646, 865);
+            this.RichTextXML.Size = new Size(629, 865);
             this.RichTextXML.TabIndex = 1;
             this.RichTextXML.Text = "";
             // 
@@ -191,7 +192,7 @@
             this.tabPageStyle.Location = new Point(4, 34);
             this.tabPageStyle.Name = "tabPageStyle";
             this.tabPageStyle.Padding = new Padding(3);
-            this.tabPageStyle.Size = new Size(654, 871);
+            this.tabPageStyle.Size = new Size(652, 871);
             this.tabPageStyle.TabIndex = 1;
             this.tabPageStyle.Text = "Style";
             this.tabPageStyle.UseVisualStyleBackColor = true;
@@ -203,7 +204,7 @@
             this.RichTextStyle.Font = new Font("Consolas", 12F);
             this.RichTextStyle.Location = new Point(3, 3);
             this.RichTextStyle.Name = "RichTextStyle";
-            this.RichTextStyle.Size = new Size(648, 865);
+            this.RichTextStyle.Size = new Size(646, 865);
             this.RichTextStyle.TabIndex = 0;
             this.RichTextStyle.Text = "";
             // 
@@ -213,7 +214,7 @@
             this.FlowPanelTestCards.Dock = DockStyle.Fill;
             this.FlowPanelTestCards.Location = new Point(3, 3);
             this.FlowPanelTestCards.Name = "FlowPanelTestCards";
-            this.FlowPanelTestCards.Size = new Size(409, 909);
+            this.FlowPanelTestCards.Size = new Size(444, 909);
             this.FlowPanelTestCards.TabIndex = 1;
             // 
             // menuStrip
@@ -228,7 +229,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadToolStripMenuItem, this.saveToolStripMenuItem, this.closeToolStripMenuItem });
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadToolStripMenuItem, this.saveToolStripMenuItem, this.closeToolStripMenuItem, this.autoFormatToolStripMenuItem });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new Size(54, 29);
             this.fileToolStripMenuItem.Text = "File";
@@ -236,7 +237,7 @@
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new Size(230, 34);
+            this.loadToolStripMenuItem.Size = new Size(275, 34);
             this.loadToolStripMenuItem.Text = "Load Directory";
             this.loadToolStripMenuItem.Click += this.HndMenuLoadClick;
             // 
@@ -244,16 +245,24 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            this.saveToolStripMenuItem.Size = new Size(230, 34);
+            this.saveToolStripMenuItem.Size = new Size(275, 34);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += this.HndMenuSave;
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new Size(230, 34);
+            this.closeToolStripMenuItem.Size = new Size(275, 34);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += this.HndMenuCloseClick;
+            // 
+            // autoFormatToolStripMenuItem
+            // 
+            this.autoFormatToolStripMenuItem.Name = "autoFormatToolStripMenuItem";
+            this.autoFormatToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.F;
+            this.autoFormatToolStripMenuItem.Size = new Size(275, 34);
+            this.autoFormatToolStripMenuItem.Text = "Auto Format";
+            this.autoFormatToolStripMenuItem.Click += this.HndMenuAutoFormat;
             // 
             // testToolStripMenuItem
             // 
@@ -382,5 +391,6 @@
         internal FolderBrowserDialog FolderDialog;
         private ToolStripMenuItem clearResultsToolStripMenuItem;
         private CustomRichTextBox RichTextXML;
+        private ToolStripMenuItem autoFormatToolStripMenuItem;
     }
 }

@@ -31,11 +31,7 @@ namespace Leagueinator.Printer.Elements {
 
         public override XMLStringBuilder ToXML(Action<Element, XMLStringBuilder>? action = null) {
             action ??= (element, xml) => { };
-
-            return base.ToXML((e, xml) => {
-                action(this, xml);
-                xml.AppendLine(this.Text);
-            });
+            return new XMLStringBuilder().AppendLine(this.Text);
         }
     }
 }

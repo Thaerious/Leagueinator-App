@@ -3,7 +3,7 @@ using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
 
 namespace Leagueinator.Printer.Styles {
-    [DebugTrace]
+    //[DebugTrace]
     public class Flex {
         private int pageCount = 1;
         private Queue<RenderNode> deferred = [];
@@ -474,7 +474,7 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        [DebugTrace]
+        //[DebugTrace]
         public static void JustifyCenter(this RenderNode node, List<RenderNode> children) {
             PointF from;
 

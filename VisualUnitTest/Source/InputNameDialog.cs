@@ -12,8 +12,9 @@ namespace Leagueinator.VisualUnitTest {
             InitializeComponent();
         }
 
-        public DialogResult Show(string name) {
+        public DialogResult ShowDialog(string name) {
             this.TextName.Text = name;
+            this.TextName.SelectAll();
             return this.ShowDialog();
         }
 

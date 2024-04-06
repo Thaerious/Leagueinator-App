@@ -2,11 +2,11 @@
 	<desc>
 		All element sizes defined by px
 	</desc>
-
 	<root>
 		<page>
 			<container>
-				<leaf/>
+				<leaf>
+				</leaf>
 			</container>
 		</page>
 	</root>
