@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class DirectoryCard : Card {
@@ -8,13 +10,21 @@ namespace Leagueinator.VisualUnitTest {
 
         public readonly List<Card> Cards = [];
 
-        public DirectoryCard(string directory) {
+        private Bitmap folderImage;
+
+        public DirectoryCard(string directory) : base(){
             InitializeComponent();
             this.Directory = directory;
-            this.Label.BackColor = Color.Transparent;
-            this.Label.Click += (s, e) => this.Click.Invoke(this, e);
-            base.Click += (s, e) => this.Click.Invoke(this, e);            
-            this.ToolTip.SetToolTip(this, "No description provided.");
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using Stream stream = assembly.GetManifestResourceStream("VisualUnitTest.Assets.folder.png")!;
+            foreach(String s in assembly.GetManifestResourceNames()) Debug.WriteLine(s);
+            folderImage = new Bitmap(stream);
+        }
+
+        protected override void OnPaint(PaintEventArgs e) {
+            base.OnPaint(e);            
+            e.Graphics.DrawImage(folderImage, new Point(0, 0));
         }
 
         public string Directory { get; }

@@ -25,8 +25,6 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.Label = new Label();
-            this.ButtonPass = new Button();
-            this.ButtonFail = new Button();
             this.ToolTip = new ToolTip(this.components);
             this.SuspendLayout();
             // 
@@ -41,34 +39,12 @@
             this.Label.TabIndex = 0;
             this.Label.Text = "label1";
             // 
-            // ButtonPass
-            // 
-            this.ButtonPass.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.ButtonPass.Location = new Point(301, 7);
-            this.ButtonPass.Name = "ButtonPass";
-            this.ButtonPass.Size = new Size(41, 43);
-            this.ButtonPass.TabIndex = 1;
-            this.ButtonPass.Text = "✓";
-            this.ButtonPass.UseVisualStyleBackColor = true;
-            // 
-            // ButtonFail
-            // 
-            this.ButtonFail.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.ButtonFail.Location = new Point(348, 7);
-            this.ButtonFail.Name = "ButtonFail";
-            this.ButtonFail.Size = new Size(41, 43);
-            this.ButtonFail.TabIndex = 2;
-            this.ButtonFail.Text = "✗";
-            this.ButtonFail.UseVisualStyleBackColor = true;
-            // 
             // Card
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;
             this.BackgroundImageLayout = ImageLayout.None;
-            this.Controls.Add(this.ButtonFail);
-            this.Controls.Add(this.ButtonPass);
             this.Controls.Add(this.Label);
             this.Name = "Card";
             this.Size = new Size(400, 55);
@@ -79,8 +55,6 @@
         #endregion
 
         private Label Label;
-        public Button ButtonPass;
-        public Button ButtonFail;
         private ToolTip ToolTip;
     }
 }

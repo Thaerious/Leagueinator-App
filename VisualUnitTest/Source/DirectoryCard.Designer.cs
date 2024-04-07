@@ -25,51 +25,33 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryCard));
-            this.Label = new Label();
             this.ToolTip = new ToolTip(this.components);
-            this.pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
+            this.label1 = new Label();
             this.SuspendLayout();
             // 
-            // Label
+            // label1
             // 
-            this.Label.AutoSize = true;
-            this.Label.BackColor = SystemColors.Control;
-            this.Label.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.Label.Location = new Point(3, 12);
-            this.Label.Name = "Label";
-            this.Label.Size = new Size(105, 33);
-            this.Label.TabIndex = 0;
-            this.Label.Text = "label1";
+            this.label1.Image = (Image)resources.GetObject("label1.Image");
+            this.label1.Location = new Point(320, -2);
+            this.label1.Name = "label1";
+            this.label1.RightToLeft = RightToLeft.Yes;
+            this.label1.Size = new Size(77, 57);
+            this.label1.TabIndex = 1;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.InitialImage = (Image)resources.GetObject("pictureBox1.InitialImage");
-            this.pictureBox1.Location = new Point(337, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new Size(45, 42);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
-            // CurrentDirectoryCard
+            // DirectoryCard
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;
-            this.BackgroundImageLayout = ImageLayout.None;
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.Label);
+            this.Controls.Add(this.label1);
             this.Name = "DirectoryCard";
-            this.Size = new Size(400, 55);
-            ((System.ComponentModel.ISupportInitialize)this.pictureBox1).EndInit();
+            this.Controls.SetChildIndex(this.label1, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
-
-        private Label Label;
         private ToolTip ToolTip;
-        private PictureBox pictureBox1;
+        private Label label1;
     }
 }

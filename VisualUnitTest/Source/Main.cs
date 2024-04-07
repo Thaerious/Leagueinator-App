@@ -35,6 +35,10 @@ namespace Leagueinator.VisualUnitTest {
                 foreach (Card card in value.Cards) {
                     this.FlowPanelTestCards.Controls.Add(card);
                 }
+
+                if (value.Cards.Count > 0) {
+                    this.HndCardClick(this.FlowPanelTestCards.Controls[0], null);
+                }
             }
         }
 
@@ -46,6 +50,7 @@ namespace Leagueinator.VisualUnitTest {
             get {
                 if (this.FolderDialog.SelectedPath.IsEmpty()) return false;
                 if (this.ActiveTestCard is null) return false;
+                if (this.CurrentDirectoryCard is null) return false;
                 return true;
             }
         }
@@ -53,6 +58,19 @@ namespace Leagueinator.VisualUnitTest {
         public Main() {
             InitializeComponent();
             this.PanelExpected.Paint += this.HndPanelPaint;
+        }
+
+        /// <summary>
+        /// Add a new card to the current directory card and card flow panel.
+        /// </summary>
+        /// <param name="text"></param>
+        private void AddTestCard(string text) {
+            if (!this.IsReady) return;
+
+            TestCard card = new() { Text = text };
+            this.CurrentDirectoryCard!.Cards.Add(card);
+            card.Click += this.HndCardClick;
+            this.SetupCard(card);
         }
 
         private void HndPanelPaint(object? sender, PaintEventArgs e) {
@@ -148,20 +166,23 @@ namespace Leagueinator.VisualUnitTest {
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK) {
-                Paths paths = new(this.ActiveDir, dialog.Text);
+                Paths paths = new(this.ActiveDir, dialog.TestName);
                 File.CreateText(paths.XML).Close();
                 File.CreateText(paths.Style).Close();
-
-                TestCard card = new() { Text = Path.GetFileNameWithoutExtension(file) };
+                this.AddTestCard(dialog.Text);
             }
         }
 
+        /// <summary>
+        /// Create a new directory card, populating it with tests from the provided path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private DirectoryCard LoadDirectory(string path) {
-            DirectoryCard dirCard  = new(this.FolderDialog.SelectedPath) { Text = path };
+            DirectoryCard dirCard  = new(this.FolderDialog.SelectedPath) { Text = Path.GetFileNameWithoutExtension(path) };
             
-
             foreach (string directory in Directory.GetDirectories(path)) {
-                dirCard.Cards.Add(this.LoadDirectory(Path.Join(path, directory)));
+                dirCard.Cards.Add(this.LoadDirectory(directory));
             }
 
             string[] files = Directory.GetFiles(this.FolderDialog.SelectedPath, "*.xml");
@@ -171,10 +192,6 @@ namespace Leagueinator.VisualUnitTest {
                 dirCard.Cards.Add(card);
                 card.Click += this.HndCardClick;
                 this.SetupCard(card);
-            }
-
-            if (dirCard.Cards.Count > 0) {
-                this.HndCardClick(this.FlowPanelTestCards.Controls[0], null);
             }
 
             this.Text = this.FolderDialog.SelectedPath;
@@ -253,7 +270,7 @@ namespace Leagueinator.VisualUnitTest {
             File.WriteAllText(paths.XML, this.RichTextXML.Text);
             File.WriteAllText(paths.Style, this.RichTextStyle.Text);
 
-            this.AddTestCard(paths.Text);
+            this.AddTestCard(paths.TestName);
         }
 
         private void HndAcceptActual(object sender, EventArgs e) {
@@ -383,6 +400,6 @@ namespace Leagueinator.VisualUnitTest {
         public readonly string XML = Path.Join(path, $"{name}.xml");
         public readonly string Style = Path.Join(path, $"{name}.style");
         public readonly string BMP = Path.Join(path, $"{name}.bmp");
-        public readonly string Text = name;
+        public readonly string TestName = name;
     }
 }

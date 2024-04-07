@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\folder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\folder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Printer\Printer.csproj" />
   </ItemGroup>
 
