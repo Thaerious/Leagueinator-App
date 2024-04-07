@@ -1,5 +1,5 @@
 ﻿namespace Leagueinator.VisualUnitTest {
-    partial class TestCard {
+    partial class Card {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -61,7 +61,7 @@
             this.ButtonFail.Text = "✗";
             this.ButtonFail.UseVisualStyleBackColor = true;
             // 
-            // TestCard
+            // Card
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
@@ -70,7 +70,7 @@
             this.Controls.Add(this.ButtonFail);
             this.Controls.Add(this.ButtonPass);
             this.Controls.Add(this.Label);
-            this.Name = "TestCard";
+            this.Name = "Card";
             this.Size = new Size(400, 55);
             this.ResumeLayout(false);
             this.PerformLayout();

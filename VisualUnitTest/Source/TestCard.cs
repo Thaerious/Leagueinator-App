@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace VisualUnitTest.Source {
+namespace Leagueinator.VisualUnitTest {
     public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
 
-    public partial class TestCard : UserControl {
+    public partial class TestCard : Card {
 
         public new EventHandler Click = delegate { };
 
@@ -56,11 +56,6 @@ namespace VisualUnitTest.Source {
             }
         }
 
-        public string ToolTipText {
-            get => this.ToolTip.GetToolTip(this) ?? "";
-            set => this.ToolTip.SetToolTip(this, value);
-        }
-
         public TestCard() {
             InitializeComponent();
             this.Label.BackColor = Color.Transparent;
@@ -68,11 +63,6 @@ namespace VisualUnitTest.Source {
             base.Click += (s, e) => this.Click.Invoke(this, e);
 
             this.ToolTip.SetToolTip(this, "No description provided.");
-        }
-
-        public string TestName {
-            get => this.Label.Text;
-            set => this.Label.Text = value;
         }
 
         private Status _status = Status.NOT_SET;

@@ -1,5 +1,5 @@
 ﻿namespace Leagueinator.VisualUnitTest {
-    partial class TestCard {
+    partial class DirectoryCard {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -24,10 +24,11 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryCard));
             this.Label = new Label();
-            this.ButtonPass = new Button();
-            this.ButtonFail = new Button();
             this.ToolTip = new ToolTip(this.components);
+            this.pictureBox1 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
             this.SuspendLayout();
             // 
             // Label
@@ -41,37 +42,26 @@
             this.Label.TabIndex = 0;
             this.Label.Text = "label1";
             // 
-            // ButtonPass
+            // pictureBox1
             // 
-            this.ButtonPass.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.ButtonPass.Location = new Point(301, 7);
-            this.ButtonPass.Name = "ButtonPass";
-            this.ButtonPass.Size = new Size(41, 43);
-            this.ButtonPass.TabIndex = 1;
-            this.ButtonPass.Text = "✓";
-            this.ButtonPass.UseVisualStyleBackColor = true;
+            this.pictureBox1.InitialImage = (Image)resources.GetObject("pictureBox1.InitialImage");
+            this.pictureBox1.Location = new Point(337, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new Size(45, 42);
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
             // 
-            // ButtonFail
-            // 
-            this.ButtonFail.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.ButtonFail.Location = new Point(348, 7);
-            this.ButtonFail.Name = "ButtonFail";
-            this.ButtonFail.Size = new Size(41, 43);
-            this.ButtonFail.TabIndex = 2;
-            this.ButtonFail.Text = "✗";
-            this.ButtonFail.UseVisualStyleBackColor = true;
-            // 
-            // TestCard
+            // CurrentDirectoryCard
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;
             this.BackgroundImageLayout = ImageLayout.None;
-            this.Controls.Add(this.ButtonFail);
-            this.Controls.Add(this.ButtonPass);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.Label);
-            this.Name = "TestCard";
+            this.Name = "DirectoryCard";
             this.Size = new Size(400, 55);
+            ((System.ComponentModel.ISupportInitialize)this.pictureBox1).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -79,8 +69,7 @@
         #endregion
 
         private Label Label;
-        public Button ButtonPass;
-        public Button ButtonFail;
         private ToolTip ToolTip;
+        private PictureBox pictureBox1;
     }
 }
