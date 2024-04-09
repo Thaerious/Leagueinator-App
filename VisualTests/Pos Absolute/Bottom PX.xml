@@ -1,7 +1,9 @@
 <root>
 	<page>
 		<container>
-			<leaf/>
+			<leaf id="1"/>
+			<leaf id="2"/>
+			<leaf id="3"/>
 		</container>
 	</page>
 </root>

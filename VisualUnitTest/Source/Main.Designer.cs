@@ -49,7 +49,6 @@
             this.renameToolStripMenuItem = new ToolStripMenuItem();
             this.runSelectedToolStripMenuItem = new ToolStripMenuItem();
             this.runAllToolStripMenuItem = new ToolStripMenuItem();
-            this.acceptActualToolStripMenuItem = new ToolStripMenuItem();
             this.clearResultsToolStripMenuItem = new ToolStripMenuItem();
             this.FolderDialog = new FolderBrowserDialog();
             this.tableLayoutPanel1.SuspendLayout();
@@ -140,7 +139,7 @@
             this.tabPageExpected.Location = new Point(4, 34);
             this.tabPageExpected.Name = "tabPageExpected";
             this.tabPageExpected.Padding = new Padding(3);
-            this.tabPageExpected.Size = new Size(636, 871);
+            this.tabPageExpected.Size = new Size(618, 871);
             this.tabPageExpected.TabIndex = 1;
             this.tabPageExpected.Text = "Expected";
             this.tabPageExpected.UseVisualStyleBackColor = true;
@@ -150,7 +149,7 @@
             this.PanelExpected.Dock = DockStyle.Fill;
             this.PanelExpected.Location = new Point(3, 3);
             this.PanelExpected.Name = "PanelExpected";
-            this.PanelExpected.Size = new Size(630, 865);
+            this.PanelExpected.Size = new Size(612, 865);
             this.PanelExpected.TabIndex = 0;
             // 
             // tabControlModel
@@ -192,7 +191,7 @@
             this.tabPageStyle.Location = new Point(4, 34);
             this.tabPageStyle.Name = "tabPageStyle";
             this.tabPageStyle.Padding = new Padding(3);
-            this.tabPageStyle.Size = new Size(652, 871);
+            this.tabPageStyle.Size = new Size(635, 871);
             this.tabPageStyle.TabIndex = 1;
             this.tabPageStyle.Text = "Style";
             this.tabPageStyle.UseVisualStyleBackColor = true;
@@ -204,7 +203,7 @@
             this.RichTextStyle.Font = new Font("Consolas", 12F);
             this.RichTextStyle.Location = new Point(3, 3);
             this.RichTextStyle.Name = "RichTextStyle";
-            this.RichTextStyle.Size = new Size(646, 865);
+            this.RichTextStyle.Size = new Size(629, 865);
             this.RichTextStyle.TabIndex = 0;
             this.RichTextStyle.Text = "";
             // 
@@ -266,7 +265,7 @@
             // 
             // testToolStripMenuItem
             // 
-            this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.duplicateToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem, this.acceptActualToolStripMenuItem, this.clearResultsToolStripMenuItem });
+            this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.duplicateToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem, this.clearResultsToolStripMenuItem });
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
             this.testToolStripMenuItem.Size = new Size(58, 29);
             this.testToolStripMenuItem.Text = "Test";
@@ -275,7 +274,7 @@
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.ShortcutKeys = Keys.F3;
-            this.addToolStripMenuItem.Size = new Size(255, 34);
+            this.addToolStripMenuItem.Size = new Size(270, 34);
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += this.HndMenuAddTest;
             // 
@@ -283,7 +282,7 @@
             // 
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
             this.duplicateToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.D;
-            this.duplicateToolStripMenuItem.Size = new Size(255, 34);
+            this.duplicateToolStripMenuItem.Size = new Size(270, 34);
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += this.HndMenuDuplicate;
             // 
@@ -291,7 +290,7 @@
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             this.removeToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Delete;
-            this.removeToolStripMenuItem.Size = new Size(255, 34);
+            this.removeToolStripMenuItem.Size = new Size(270, 34);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += this.HndMenuDelete;
             // 
@@ -299,7 +298,7 @@
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
             this.renameToolStripMenuItem.ShortcutKeys = Keys.F2;
-            this.renameToolStripMenuItem.Size = new Size(255, 34);
+            this.renameToolStripMenuItem.Size = new Size(270, 34);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += this.HndMenuRenameTest;
             // 
@@ -307,7 +306,7 @@
             // 
             this.runSelectedToolStripMenuItem.Name = "runSelectedToolStripMenuItem";
             this.runSelectedToolStripMenuItem.ShortcutKeys = Keys.F5;
-            this.runSelectedToolStripMenuItem.Size = new Size(255, 34);
+            this.runSelectedToolStripMenuItem.Size = new Size(270, 34);
             this.runSelectedToolStripMenuItem.Text = "Run Selected";
             this.runSelectedToolStripMenuItem.Click += this.HndMenuRunSelected;
             // 
@@ -315,22 +314,14 @@
             // 
             this.runAllToolStripMenuItem.Name = "runAllToolStripMenuItem";
             this.runAllToolStripMenuItem.ShortcutKeys = Keys.F6;
-            this.runAllToolStripMenuItem.Size = new Size(255, 34);
+            this.runAllToolStripMenuItem.Size = new Size(270, 34);
             this.runAllToolStripMenuItem.Text = "Run All";
             this.runAllToolStripMenuItem.Click += this.HndMenuRunAll;
-            // 
-            // acceptActualToolStripMenuItem
-            // 
-            this.acceptActualToolStripMenuItem.Name = "acceptActualToolStripMenuItem";
-            this.acceptActualToolStripMenuItem.ShortcutKeys = Keys.F3;
-            this.acceptActualToolStripMenuItem.Size = new Size(255, 34);
-            this.acceptActualToolStripMenuItem.Text = "Accept Actual";
-            this.acceptActualToolStripMenuItem.Click += this.HndAcceptActual;
             // 
             // clearResultsToolStripMenuItem
             // 
             this.clearResultsToolStripMenuItem.Name = "clearResultsToolStripMenuItem";
-            this.clearResultsToolStripMenuItem.Size = new Size(255, 34);
+            this.clearResultsToolStripMenuItem.Size = new Size(270, 34);
             this.clearResultsToolStripMenuItem.Text = "Clear Results";
             this.clearResultsToolStripMenuItem.Click += this.HndMenuClearResults;
             // 
@@ -385,7 +376,6 @@
         private RichTextBox RichTextStyle;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem duplicateToolStripMenuItem;
-        private ToolStripMenuItem acceptActualToolStripMenuItem;
         private Panel PanelExpected;
         private FlowLayoutPanel FlowPanelTestCards;
         internal FolderBrowserDialog FolderDialog;

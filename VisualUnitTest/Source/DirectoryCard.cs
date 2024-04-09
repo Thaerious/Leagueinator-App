@@ -1,32 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Diagnostics;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class DirectoryCard : Card {
+        public delegate void CardCopyEvent(TestCard from, DirectoryCard to);
+        public event CardCopyEvent OnCopy = delegate { };
 
-        public new EventHandler Click = delegate { };
-
-        public readonly List<Card> Cards = [];
-
-        private Bitmap folderImage;
-
-        public DirectoryCard(string directory) : base(){
+        public DirectoryCard(string directory) : base() {
             InitializeComponent();
-            this.Directory = directory;
+            this.DirPath = directory;
+            this.AllowDrop = true;
 
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            using Stream stream = assembly.GetManifestResourceStream("VisualUnitTest.Assets.folder.png")!;
-            foreach(String s in assembly.GetManifestResourceNames()) Debug.WriteLine(s);
-            folderImage = new Bitmap(stream);
+            this.DragEnter += this.HndDragEnter;
+            this.DragDrop += this.HndDragDrop;
         }
 
-        protected override void OnPaint(PaintEventArgs e) {
-            base.OnPaint(e);            
-            e.Graphics.DrawImage(folderImage, new Point(0, 0));
+        private void HndDragDrop(object? sender, DragEventArgs e) {
+            if (e.Data is null) return;
+            TestCard? data = (TestCard?)e.Data.GetData(typeof(TestCard));            
+            if (data == null) return;
+            Debug.WriteLine($"DirectoryCard.HndDragDrop {data.Text}");
+            this.OnCopy.Invoke(data, this);            
         }
 
-        public string Directory { get; }
+        private void HndDragEnter(object? sender, DragEventArgs e) {
+            if (e.Data is null) return;
+
+            if (e.Data.GetDataPresent(typeof(TestCard))) {
+                e.Effect = DragDropEffects.Copy;
+            }
+            else {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        public List<Card> Cards {
+            get {
+                List<Card> cards = [];
+                foreach (string directory in Directory.GetDirectories(this.DirPath)) {
+                    cards.Add(new DirectoryCard(directory) { Text = Path.GetFileNameWithoutExtension(directory) });
+                }
+
+                string[] files = Directory.GetFiles(this.DirPath, "*.xml");
+
+                foreach (string file in files) {
+                    TestCard card = new(this, Path.GetFileNameWithoutExtension(file));
+                    cards.Add(card);
+                }
+
+                return cards;
+            }
+        }
+
+        public string DirPath { get; }
     }
 }

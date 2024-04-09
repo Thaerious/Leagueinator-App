@@ -32,14 +32,15 @@
             // label1
             // 
             this.label1.Image = (Image)resources.GetObject("label1.Image");
-            this.label1.Location = new Point(320, -2);
+            this.label1.Location = new Point(321, 0);
             this.label1.Name = "label1";
             this.label1.RightToLeft = RightToLeft.Yes;
-            this.label1.Size = new Size(77, 57);
+            this.label1.Size = new Size(76, 55);
             this.label1.TabIndex = 1;
             // 
             // DirectoryCard
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;

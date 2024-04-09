@@ -30,17 +30,6 @@
             this.ToolTip = new ToolTip(this.components);
             this.SuspendLayout();
             // 
-            // Label
-            // 
-            this.Label.AutoSize = true;
-            this.Label.BackColor = SystemColors.Control;
-            this.Label.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.Label.Location = new Point(3, 12);
-            this.Label.Name = "Label";
-            this.Label.Size = new Size(105, 33);
-            this.Label.TabIndex = 0;
-            this.Label.Text = "label1";
-            // 
             // ButtonPass
             // 
             this.ButtonPass.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);

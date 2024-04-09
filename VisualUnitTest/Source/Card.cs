@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+﻿using System.ComponentModel;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class Card : UserControl {
         public new EventHandler Click = delegate { };
+        private int HoverCount = 0;
 
         public Card() {
             InitializeComponent();
@@ -19,7 +11,34 @@ namespace Leagueinator.VisualUnitTest {
             this.Label.Click += (s, e) => this.Click.Invoke(this, e);
             base.Click += (s, e) => this.Click.Invoke(this, e);
             this.ToolTip.SetToolTip(this, "No description provided.");
+            this.Text = "NOT SET";
+
+            foreach (Control child in this.Controls) {
+                child.MouseEnter += this.HndMouseEnter;
+                child.MouseLeave += this.HndMouseLeave;
+            }
+
+            this.MouseEnter += this.HndMouseEnter;
+            this.MouseLeave += this.HndMouseLeave;
         }
+
+        public Color IdleColor {
+            get => _idleColor;
+            set {
+                _idleColor = value;
+                if (this.HoverCount == 0) this.BackColor = value;
+            }
+        }
+        private void HndMouseEnter(object? sender, EventArgs e) {
+            if (HoverCount++ == 0) this.BackColor = this.HoverColor;
+        }
+
+        private void HndMouseLeave(object? sender, EventArgs e) {
+            if (--HoverCount == 0) this.BackColor = this.IdleColor;
+        }
+
+        [Category("Appearance")]
+        public Color HoverColor { get; set; } = Color.FromArgb(210, 210, 230);
 
         public string ToolTipText {
             get => this.ToolTip.GetToolTip(this) ?? "";
@@ -30,5 +49,7 @@ namespace Leagueinator.VisualUnitTest {
             get => this.Label.Text;
             set => this.Label.Text = value;
         }
+
+        private Color _idleColor = SystemColors.Control;
     }
 }

@@ -23,9 +23,6 @@ namespace Leagueinator.VisualUnitTest {
                 int selectionLength = richTextBox.SelectionLength;
                 int selectionEnd = selectionStart + selectionLength;
 
-                Debug.WriteLine($"{selectionStart} {selectionLength} {selectionEnd} ");
-
-
                 // Calculate start and end lines of the selection
                 int startLine = richTextBox.GetLineFromCharIndex(selectionStart);
                 int endLine = richTextBox.GetLineFromCharIndex(selectionEnd - 1); // Adjusted to ensure we don't jump to the next line

@@ -4,53 +4,94 @@ using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
 using System.Diagnostics;
-using System.IO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class Main : Form {
         private TestCard? activeTestCard;
-        private DirectoryCard? currentDirectoryCard;
+        private DirectoryCard? _activeDirCard;
 
         TestCard? ActiveTestCard {
             get => activeTestCard;
             set {
                 if (this.activeTestCard is not null) {
-                    this.activeTestCard.BackColor = SystemColors.Control;
+                    this.activeTestCard.IdleColor = SystemColors.Control;
                 }
                 if (value is not null) {
-                    value.BackColor = SystemColors.ActiveCaption;
+                    value.IdleColor = SystemColors.ActiveCaption;
                 }
                 activeTestCard = value;
             }
         }
 
-        public DirectoryCard? CurrentDirectoryCard {
-            get => currentDirectoryCard;
+        public DirectoryCard? ActiveDirCard {
+            get => _activeDirCard;
             set {
                 if (value is null) throw new InvalidOperationException("Can not set DirectoryCard to null.");
-                this.FlowPanelTestCards.Controls.Clear();
-                currentDirectoryCard = value;
 
-                foreach (Card card in value.Cards) {
+                this.FlowPanelTestCards.Controls.Clear();
+
+                if (_activeDirCard is not null && value.DirPath != this.FolderDialog.SelectedPath) {
+                    DirectoryCard upDirCard = new(this._activeDirCard.DirPath) { Text = ".." };
+                    upDirCard.Click += this.HndDirCardClick;
+                    this.FlowPanelTestCards.Controls.Add(upDirCard);
+                    upDirCard.OnCopy += this.HndOnCopy;
+                }
+
+                _activeDirCard = value;
+
+                foreach (DirectoryCard card in value.Cards.OfType<DirectoryCard>()) {
+                    card.Click += this.HndDirCardClick;
                     this.FlowPanelTestCards.Controls.Add(card);
+                    card.OnCopy += this.HndOnCopy;
+                }
+
+                foreach (TestCard card in value.Cards.OfType<TestCard>()) {
+                    this.FlowPanelTestCards.Controls.Add(card);
+                    card.Click += this.HndTestCardClick;
+
+                    card.ButtonFail.Click += (s, e) => {
+                        card.DeleteBitmap();
+                        this.PanelExpected.Invalidate();
+                    };
+
+                    card.ButtonPass.Click += (s, e) => {
+                        if (!card.CreateBitmap(out Bitmap? bitmap)) return;
+                        bitmap!.Save(card.Paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
+                        this.PanelExpected.Invalidate();
+                    };
                 }
 
                 if (value.Cards.Count > 0) {
-                    this.HndCardClick(this.FlowPanelTestCards.Controls[0], null);
+                    this.HndTestCardClick(this.FlowPanelTestCards.Controls[0], null);
                 }
             }
         }
 
+        public void HndOnCopy(TestCard from, DirectoryCard dir) {
+            Paths to = new(dir.DirPath, from.Text);
+
+            if (File.Exists(to.XML)) {
+                MessageBox.Show("Test Already Exists", "Warning", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (File.Exists(from.Paths.XML)) File.Move(from.Paths.XML, to.XML);
+            if (File.Exists(from.Paths.Style)) File.Move(from.Paths.Style, to.Style);
+            if (File.Exists(from.Paths.BMP)) File.Move(from.Paths.BMP, to.BMP);
+            if (File.Exists(from.Paths.Status)) File.Move(from.Paths.Status, to.Status);
+
+            this.FlowPanelTestCards.Controls.Remove(from);
+        }
+
         public string ActiveDir {
-            get => this.FolderDialog.SelectedPath;
+            get => this.ActiveDirCard?.DirPath ?? "";
         }
 
         public bool IsReady {
             get {
                 if (this.FolderDialog.SelectedPath.IsEmpty()) return false;
                 if (this.ActiveTestCard is null) return false;
-                if (this.CurrentDirectoryCard is null) return false;
+                if (this.ActiveDirCard is null) return false;
                 return true;
             }
         }
@@ -61,66 +102,53 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         /// <summary>
-        /// Add a new card to the current directory card and card flow panel.
+        /// Add a new card dir the flow panel.
         /// </summary>
         /// <param name="text"></param>
         private void AddTestCard(string text) {
-            if (!this.IsReady) return;
+            if (this.ActiveDirCard is null) return;
 
-            TestCard card = new() { Text = text };
-            this.CurrentDirectoryCard!.Cards.Add(card);
-            card.Click += this.HndCardClick;
-            this.SetupCard(card);
+            TestCard card = new(this.ActiveDirCard, text);
+            this.ActiveDirCard!.Cards.Add(card);
+            card.Click += this.HndTestCardClick;
+            this.FlowPanelTestCards.Controls.Add(card);
+
+            card.ButtonFail.Click += (s, e) => {
+                card.DeleteBitmap();
+                this.PanelExpected.Invalidate();
+            };
+
+            card.ButtonPass.Click += (s, e) => {
+                if (!card.CreateBitmap(out Bitmap? bitmap)) return;
+                bitmap!.Save(card.Paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
+                this.PanelExpected.Invalidate();
+            };
         }
 
         private void HndPanelPaint(object? sender, PaintEventArgs e) {
             e.Graphics.Clear(Color.White);
             if (!this.IsReady) return;
-            Paths paths = new(this.ActiveDir, this.ActiveTestCard!.Text);
+            Paths paths = this.ActiveTestCard!.Paths;
             if (!File.Exists(paths.BMP)) return;
             Bitmap expected = LoadBitmap(paths.BMP);
             e.Graphics.DrawImage(expected, 0, 0);
             expected.Dispose();
         }
 
-        private void SetupCard(TestCard card) {
-            Paths paths = new(this.ActiveDir, card.Text);
-
-            if (File.Exists(paths.BMP)) card.Status = Status.UNTESTED;
-            else card.Status = Status.NO_TEST;
-
-            card.ButtonFail.Click += (s, e) => {
-                if (File.Exists(paths.BMP)) File.Delete(paths.BMP);
-                card.Status = Status.FAIL;
-                this.PanelExpected.Invalidate();
-            };
-
-            card.ButtonPass.Click += (s, e) => {
-                Bitmap bmp = this.CreateBitmapFromCard(card);
-                bmp.Save(paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
-                Debug.WriteLine($"Save bitmap {paths.BMP}");
-                this.LoadTextBoxes();
-                this.PanelExpected.Invalidate();
-                card.Status = Status.PASS;
-            };
-
-            try {
-                var desc = XMLLoader.Load(File.ReadAllText(paths.XML))["desc"];
-                if (desc.Count > 0) {
-                    if (desc[0].InnerText is not null) card.ToolTipText = desc[0].InnerText!;
-                }
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK);
-            }
-        }
-
-        private void HndCardClick(object? sender, EventArgs? _ = null) {
+        private void HndTestCardClick(object? sender, EventArgs? _ = null) {
             if (this.ActiveTestCard != null) this.SaveTest();
             this.ActiveTestCard = sender as TestCard;
             this.LoadTextBoxes();
             this.DrawActual();
             this.PanelExpected.Invalidate();
+        }
+
+        private void HndDirCardClick(object? sender, EventArgs? _ = null) {
+            if (sender == null) return;
+
+            // Directly cast sender dir DirectoryCard
+            DirectoryCard card = (DirectoryCard)sender;
+            this.ActiveDirCard = card;
         }
 
         /// <summary>
@@ -131,8 +159,7 @@ namespace Leagueinator.VisualUnitTest {
         /// <param name="name"></param>
         private void SaveTest(string? name = null) {
             if (!this.IsReady) return;
-            Paths paths = new(this.ActiveDir, name ?? ActiveTestCard!.Text);
-
+            Paths paths = this.ActiveTestCard!.Paths;
             File.WriteAllText(paths.XML, this.RichTextXML.Text);
             File.WriteAllText(paths.Style, this.RichTextStyle.Text);
         }
@@ -144,7 +171,7 @@ namespace Leagueinator.VisualUnitTest {
         /// <param name="name"></param>
         private void LoadTextBoxes(string? name = null) {
             if (!this.IsReady) return;
-            Paths paths = new(this.ActiveDir, name ?? ActiveTestCard!.Text);
+            Paths paths = this.ActiveTestCard!.Paths;
 
             this.RichTextXML.Text = File.ReadAllText(paths.XML);
             this.RichTextStyle.Text = File.ReadAllText(paths.Style);
@@ -157,7 +184,9 @@ namespace Leagueinator.VisualUnitTest {
 
         private void HndMenuLoadClick(object sender, EventArgs e) {
             if (this.FolderDialog.ShowDialog() == DialogResult.OK) {
-                this.CurrentDirectoryCard = this.LoadDirectory(this.FolderDialog.SelectedPath);
+                this.ActiveDirCard = new(this.FolderDialog.SelectedPath);
+                this.Text = this.FolderDialog.SelectedPath;
+                this.ActiveDirCard.OnCopy += this.HndOnCopy;
             };
         }
 
@@ -166,40 +195,14 @@ namespace Leagueinator.VisualUnitTest {
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK) {
-                Paths paths = new(this.ActiveDir, dialog.TestName);
-                File.CreateText(paths.XML).Close();
-                File.CreateText(paths.Style).Close();
-                this.AddTestCard(dialog.Text);
+                this.AddTestCard(dialog.TestName);
             }
-        }
-
-        /// <summary>
-        /// Create a new directory card, populating it with tests from the provided path.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private DirectoryCard LoadDirectory(string path) {
-            DirectoryCard dirCard  = new(this.FolderDialog.SelectedPath) { Text = Path.GetFileNameWithoutExtension(path) };
-            
-            foreach (string directory in Directory.GetDirectories(path)) {
-                dirCard.Cards.Add(this.LoadDirectory(directory));
-            }
-
-            string[] files = Directory.GetFiles(this.FolderDialog.SelectedPath, "*.xml");
-
-            foreach (string file in files) {
-                TestCard card = new() { Text = Path.GetFileNameWithoutExtension(file) };
-                dirCard.Cards.Add(card);
-                card.Click += this.HndCardClick;
-                this.SetupCard(card);
-            }
-
-            this.Text = this.FolderDialog.SelectedPath;
-            return dirCard;
         }
 
         private void DrawActual() {
             try {
+                if (!this.IsReady) return;
+
                 LoadedStyles styles = StyleLoader.Load(this.RichTextStyle.Text);
                 Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
                 styles.ApplyTo(root);
@@ -212,6 +215,7 @@ namespace Leagueinator.VisualUnitTest {
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine(ex);
             }
         }
 
@@ -225,8 +229,8 @@ namespace Leagueinator.VisualUnitTest {
 
         async private void HndMenuRunSelected(object sender, EventArgs e) {
             if (!this.IsReady) return;
-            Paths paths = new(this.ActiveDir, this.ActiveTestCard!.Text);
-            this.ActiveTestCard.Status = await DoTest(paths);
+            this.ActiveTestCard!.Status = Status.PENDING;
+            this.ActiveTestCard.Status = this.ActiveTestCard.DoTest();
         }
 
         private void HndMenuRenameTest(object sender, EventArgs e) {
@@ -234,19 +238,7 @@ namespace Leagueinator.VisualUnitTest {
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog(ActiveTestCard!.Text) == DialogResult.OK) {
-                Paths pathsFrom = new(this.ActiveDir, ActiveTestCard!.Text);
-                Paths pathsTo = new(this.ActiveDir, dialog.Text);
-
-                if (File.Exists(pathsTo.XML)) {
-                    MessageBox.Show("Test Already Exists", "Warning", MessageBoxButtons.OK);
-                    return;
-                }
-
-                this.ActiveTestCard.Text = dialog.Text;
-
-                File.Move(pathsFrom.XML, pathsTo.XML);
-                File.Move(pathsFrom.Style, pathsTo.Style);
-                if (File.Exists(pathsFrom.BMP)) File.Move(pathsFrom.BMP, pathsTo.BMP);
+                this.ActiveTestCard.Rename(dialog.TestName);
             }
         }
 
@@ -273,81 +265,16 @@ namespace Leagueinator.VisualUnitTest {
             this.AddTestCard(paths.TestName);
         }
 
-        private void HndAcceptActual(object sender, EventArgs e) {
-            if (!this.IsReady) return;
-
-            Paths paths = new(this.ActiveDir, this.ActiveTestCard!.Text);
-            using Bitmap bmp = CreateBitmapFromSource(paths);
-            bmp.Save(paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
-            this.LoadTextBoxes();
-            this.PanelExpected.Invalidate();
-        }
-
-        /// <summary>
-        /// Create a new bitmap from a test card.
-        /// Remember to dispose the bitmap after use.
-        /// </summary>
-        /// <param name="card"></param>
-        /// <returns></returns>
-        private Bitmap CreateBitmapFromCard(TestCard card) {
-            if (this.FolderDialog.SelectedPath.IsEmpty()) throw new InvalidOperationException("Directory Not Loaded");
-            return CreateBitmapFromSource(new Paths(this.ActiveDir, card.Text));
-        }
-
-        private static Bitmap CreateBitmapFromSource(Paths paths) {
-            LoadedStyles styles = StyleLoader.Load(File.ReadAllText(paths.Style));
-            Element root = XMLLoader.Load(File.ReadAllText(paths.XML))["root"][0];
-            styles.ApplyTo(root);
-            Flex flex = new();
-            (int pages, RenderNode renderNode) = flex.DoLayout(root);
-
-            if ((int)renderNode.Size.Width <= 0) throw new InvalidOperationException();
-            if ((int)renderNode.Size.Height <= 0) throw new InvalidOperationException();
-
-            Bitmap bitmap = new Bitmap((int)renderNode.Size.Width, (int)renderNode.Size.Height);
-            Size size = new((int)renderNode.Size.Width, (int)renderNode.Size.Height);
-
-            using Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(Brushes.White, 0, 0, size.Width, size.Height);
-            renderNode.Draw(graphics, 0);
-
-            return bitmap;
-        }
-
         private void HndMenuDelete(object sender, EventArgs e) {
             if (!this.IsReady) return;
-            Paths paths = new(this.ActiveDir, this.ActiveTestCard!.Text);
-
-            if (File.Exists(paths.XML)) File.Delete(paths.XML);
-            if (File.Exists(paths.Style)) File.Delete(paths.Style);
-            if (File.Exists(paths.BMP)) File.Delete(paths.BMP);
-
+            this.ActiveTestCard!.DeleteFiles();
             this.FlowPanelTestCards.Controls.Remove(this.ActiveTestCard);
-        }
-
-        public static async Task<Status> DoTest(Paths paths) {
-            Status result = await Task.Run(() => {
-                if (!File.Exists(paths.BMP)) return Status.NO_TEST;
-
-                try {
-                    using Bitmap actual = CreateBitmapFromSource(paths);
-                    using Bitmap expected = new Bitmap(paths.BMP);
-
-                    if (AreBitmapsIdentical(actual, expected)) return Status.PASS;
-                    else return Status.FAIL;
-                }
-                catch {
-                    return Status.FAIL;
-                }
-            });
-
-            return result;
         }
 
         async private void HndMenuRunAll(object sender, EventArgs e) {
             // Ensure all test Cards are marked as pending before starting.
             Action setStatusPending = () => {
-                foreach (TestCard card in FlowPanelTestCards.Controls) {
+                foreach (TestCard card in FlowPanelTestCards.Controls.OfType<TestCard>()) {
                     card.Status = Status.PENDING;
                 }
             };
@@ -355,51 +282,34 @@ namespace Leagueinator.VisualUnitTest {
             // Run the status update on the UI thread.
             Invoke(setStatusPending);
 
-            // Invalidate the control to refresh the UI.
+            // Invalidate the control dir refresh the UI.
             Invalidate();
 
-            foreach (TestCard card in FlowPanelTestCards.Controls) {
-                card.Status = await DoTest(new Paths(this.ActiveDir, card.Text));
+            foreach (TestCard card in FlowPanelTestCards.Controls.OfType<TestCard>()) {
+                card.Status = await Task.Run(() => card.DoTest());
             }
 
             // Consider refreshing UI or notifying the user upon completion.
         }
 
-        public static bool AreBitmapsIdentical(Bitmap bmp1, Bitmap bmp2) {
-            // Check if the dimensions are different
-            if (bmp1.Width != bmp2.Width || bmp1.Height != bmp2.Height) {
-                return false;
-            }
-
-            // Compare pixel data
-            for (int y = 0; y < bmp1.Height; y++) {
-                for (int x = 0; x < bmp1.Width; x++) {
-                    // If at least one pixel does not match, the bitmaps are not identical
-                    if (bmp1.GetPixel(x, y) != bmp2.GetPixel(x, y)) {
-                        return false;
-                    }
-                }
-            }
-
-            // If all pixels match, the bitmaps are identical
-            return true;
-        }
-
         private void HndMenuClearResults(object sender, EventArgs e) {
-            foreach (TestCard card in this.FlowPanelTestCards.Controls) card.Status = Status.UNTESTED;
+            foreach (TestCard card in FlowPanelTestCards.Controls.OfType<TestCard>()) {
+                card.Status = Status.UNTESTED;
+            }
         }
 
         private void HndMenuAutoFormat(object sender, EventArgs e) {
             Element root = XMLLoader.Load(this.RichTextXML.Text);
             this.RichTextXML.Text = root.ToXML().ToString();
-            Debug.WriteLine(root.ToXML().ToString());
         }
     }
 
-    public readonly struct Paths(string path, string name) {
-        public readonly string XML = Path.Join(path, $"{name}.xml");
-        public readonly string Style = Path.Join(path, $"{name}.style");
-        public readonly string BMP = Path.Join(path, $"{name}.bmp");
+    public readonly struct Paths(string dir, string name) {
+        public readonly string Dir = dir;
+        public readonly string XML = Path.Join(dir, $"{name}.xml");
+        public readonly string Style = Path.Join(dir, $"{name}.style");
+        public readonly string BMP = Path.Join(dir, $"{name}.bmp");
+        public readonly string Status = Path.Join(dir, $"{name}.status");
         public readonly string TestName = name;
     }
 }
