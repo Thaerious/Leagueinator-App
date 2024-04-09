@@ -3,13 +3,19 @@
 namespace Leagueinator.VisualUnitTest {
     public partial class Card : UserControl {
         public new EventHandler Click = delegate { };
+        public new MouseEventHandler MouseDown = delegate { };
         private int HoverCount = 0;
 
         public Card() {
             InitializeComponent();
             this.Label.BackColor = Color.Transparent;
+
             this.Label.Click += (s, e) => this.Click.Invoke(this, e);
             base.Click += (s, e) => this.Click.Invoke(this, e);
+
+            this.Label.MouseDown += (s, e) => this.MouseDown.Invoke(this, e);
+            base.MouseDown += (s, e) => this.MouseDown.Invoke(this, e);
+
             this.ToolTip.SetToolTip(this, "No description provided.");
             this.Text = "NOT SET";
 

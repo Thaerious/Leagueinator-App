@@ -9,9 +9,6 @@ namespace Leagueinator.VisualUnitTest {
     public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
 
     public partial class TestCard : Card {
-
-        public new EventHandler Click = delegate { };
-
         public readonly DirectoryCard ParentCard;
 
         public Paths Paths {
@@ -24,11 +21,8 @@ namespace Leagueinator.VisualUnitTest {
             this.Text = testName;
             this.Label.BackColor = Color.Transparent;
 
-            //this.Label.Click += (s, e) => this.Click.Invoke(this, e);
-            //base.Click += (s, e) => this.Click.Invoke(this, e);
-
-            this.MouseDown += (s, e) => Debug.WriteLine("MOUSE DOWN");
-            this.Label.MouseDown += (s, e) => Debug.WriteLine("MOUSE DOWN");
+            this.MouseDown += HndDragStart;
+            this.Label.MouseDown += HndDragStart;
 
             this.ButtonFail.Click += (s, e) => {
                 this.Status = Status.NO_TEST;
@@ -41,9 +35,9 @@ namespace Leagueinator.VisualUnitTest {
             if (!File.Exists(this.Paths.BMP)) {
                 this.Status = Status.NO_TEST;
             }
-            else if (File.Exists(this.Paths.Status)){
+            else if (File.Exists(this.Paths.Status)) {
                 var statusText = File.ReadAllText(this.Paths.Status);
-                this.Status = (Status) Enum.Parse(typeof(Status), statusText);
+                this.Status = (Status)Enum.Parse(typeof(Status), statusText);
             }
             else {
                 this.Status = Status.NO_TEST;
