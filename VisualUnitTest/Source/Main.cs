@@ -34,7 +34,7 @@ namespace Leagueinator.VisualUnitTest {
                     DirectoryCard upDirCard = new(this._activeDirCard.DirPath) { Text = ".." };
                     upDirCard.Click += this.HndDirCardClick;
                     this.FlowPanelTestCards.Controls.Add(upDirCard);
-                    upDirCard.OnCopy += this.HndOnCopy;
+                    upDirCard.OnCopy += this.HndCopyTestCard;
                 }
 
                 _activeDirCard = value;
@@ -42,7 +42,7 @@ namespace Leagueinator.VisualUnitTest {
                 foreach (DirectoryCard card in value.Cards.OfType<DirectoryCard>()) {
                     card.Click += this.HndDirCardClick;
                     this.FlowPanelTestCards.Controls.Add(card);
-                    card.OnCopy += this.HndOnCopy;
+                    card.OnCopy += this.HndCopyTestCard;
                 }
 
                 foreach (TestCard card in value.Cards.OfType<TestCard>()) {
@@ -67,20 +67,15 @@ namespace Leagueinator.VisualUnitTest {
             }
         }
 
-        public void HndOnCopy(TestCard from, DirectoryCard dir) {
-            Paths to = new(dir.DirPath, from.Text);
-
-            if (File.Exists(to.XML)) {
-                MessageBox.Show("Test Already Exists", "Warning", MessageBoxButtons.OK);
-                return;
+        public void HndCopyTestCard(TestCard from, DirectoryCard dir) {
+            try {
+                from.MoveFiles(dir);
+                this.FlowPanelTestCards.Controls.Remove(from);
             }
-
-            if (File.Exists(from.Paths.XML)) File.Move(from.Paths.XML, to.XML);
-            if (File.Exists(from.Paths.Style)) File.Move(from.Paths.Style, to.Style);
-            if (File.Exists(from.Paths.BMP)) File.Move(from.Paths.BMP, to.BMP);
-            if (File.Exists(from.Paths.Status)) File.Move(from.Paths.Status, to.Status);
-
-            this.FlowPanelTestCards.Controls.Remove(from);
+            catch (Exception ex) {
+                Debug.WriteLine(ex);
+                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public string ActiveDir {
@@ -186,7 +181,7 @@ namespace Leagueinator.VisualUnitTest {
             if (this.FolderDialog.ShowDialog() == DialogResult.OK) {
                 this.ActiveDirCard = new(this.FolderDialog.SelectedPath);
                 this.Text = this.FolderDialog.SelectedPath;
-                this.ActiveDirCard.OnCopy += this.HndOnCopy;
+                this.ActiveDirCard.OnCopy += this.HndCopyTestCard;
             };
         }
 
@@ -266,9 +261,16 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         private void HndMenuDelete(object sender, EventArgs e) {
-            if (!this.IsReady) return;
-            this.ActiveTestCard!.DeleteFiles();
-            this.FlowPanelTestCards.Controls.Remove(this.ActiveTestCard);
+            try {
+                if (!this.IsReady) return;
+                this.ActiveTestCard!.DeleteFiles();
+                this.FlowPanelTestCards.Controls.Remove(this.ActiveTestCard);
+                this.ActiveTestCard = null;
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine(ex);
+            }
         }
 
         async private void HndMenuRunAll(object sender, EventArgs e) {

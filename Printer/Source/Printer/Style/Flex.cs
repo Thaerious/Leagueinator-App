@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Printer.Aspects;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer.Styles {
     //[DebugTrace]
@@ -165,18 +166,18 @@ namespace Leagueinator.Printer.Styles {
                     }
                 }
 
-                // if absolute or flex, then position relative to parent
-                if (current.Style.Position != Enums.Position.Fixed) {
-                    current.Translation.Translate(current.Parent!.ContentBox().TopLeft());
-                }
-
                 // Position flex elements by page
                 for (int page = 0; page < this.pageCount; page++) {
                     this.DoPosFlex(current, page);
                 }
 
-                current.DoPosAbsolute(Enums.Position.Absolute);
-                current.DoPosAbsolute(Enums.Position.Fixed);
+                if (current.Style.Position == Enums.Position.Absolute) current.DoPosAbsolute();
+                if (current.Style.Position == Enums.Position.Fixed) current.DoPosFixed();
+
+                // if absolute or flex, then position relative to parent
+                if (current.Style.Position != Enums.Position.Fixed) {
+                    current.Translation = current.Translation.Translate(current.Parent!.ContentBox().TopLeft());
+                }
             });
         }
 
@@ -385,7 +386,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public static void SpaceAround(this RenderNode root, List<RenderNode> children) {
-           
+
             if (root.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                 float spaceAround = root.WidthRemaining(children) / (children.Count * 2);
                 float dx = spaceAround;
@@ -408,41 +409,41 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        public static void DoPosAbsolute(this RenderNode root, Enums.Position position) {
-            root.Children
-            .Where(child => child.Style.Position == position)
-            .ToList()
-            .ForEach(child => {
-                float x = 0f, y = 0f;
-                Style cStyle = child.Style;
+        public static void DoPosFixed(this RenderNode root) {
+        }
 
-                if (cStyle.Left != null) {
-                    if (cStyle.Left.Unit.Equals("px")) x = cStyle.Left.Factor;
-                    else x = cStyle.Left.Factor * root.Size.Width / 100;
-                }
-                if (cStyle.Right != null) {
-                    if (cStyle.Right.Unit.Equals("px")) {
-                        x = root.Size.Width - child.OuterBox().Width - cStyle.Right.Factor;
-                    }
-                    else {
-                        x = root.Size.Width - child.OuterBox().Width - (cStyle.Right.Factor * root.Size.Width / 100);
-                    }
-                }
-                if (cStyle.Top != null) {
-                    if (cStyle.Top.Unit.Equals("px")) y = cStyle.Top.Factor;
-                    else y = cStyle.Top.Factor * root.Size.Height / 100;
-                }
-                if (cStyle.Bottom != null) {
-                    if (cStyle.Bottom.Unit.Equals("px")) {
-                        y = root.Size.Height - child.OuterBox().Height - cStyle.Bottom.Factor;
-                    }
-                    else {
-                        y = root.Size.Height - child.OuterBox().Height - (cStyle.Bottom.Factor * root.Size.Height / 100);
-                    }
-                }
+        public static void DoPosAbsolute(this RenderNode node) {
+            Debug.WriteLine($"DoPosAbsolute {node}");
+            if (node.IsRoot) return;
+            Debug.WriteLine(node.Parent.ContentBox());
+            float x = 0f, y = 0f;
 
-                child.Translate(x, y);
-            });
+            if (node.Style.Left != null) {
+                if (node.Style.Left.Unit.Equals("px")) x = node.Style.Left.Factor;
+                else x = node.Style.Left.Factor * node.Parent!.ContentBox().Width / 100;
+            }
+            if (node.Style.Right != null) {
+                if (node.Style.Right.Unit.Equals("px")) {
+                    x = node.Parent!.ContentBox().Width - node.Size.Width - node.Style.Right.Factor;
+                }
+                else {
+                    x = node.Parent!.ContentBox().Width - node.Size.Width - (node.Style.Right.Factor * node.Size.Width / 100);
+                }
+            }
+            if (node.Style.Top != null) {
+                if (node.Style.Top.Unit.Equals("px")) y = node.Style.Top.Factor;
+                else y = node.Style.Top.Factor * node.Size.Height / 100;
+            }
+            if (node.Style.Bottom != null) {
+                if (node.Style.Bottom.Unit.Equals("px")) {
+                    y = node.Parent!.ContentBox().Height - node.Size.Height - node.Style.Bottom.Factor;
+                }
+                else {
+                    y = node.Parent!.ContentBox().Height - node.Size.Height - (node.Style.Bottom.Factor * node.Size.Height / 100);
+                }
+            }
+
+            node.Translate(x, y);
         }
 
         public static void AlignItems(this RenderNode node, List<RenderNode> children) {

@@ -9,7 +9,8 @@ namespace Leagueinator.VisualUnitTest {
     public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
 
     public partial class TestCard : Card {
-        public readonly DirectoryCard ParentCard;
+        
+        public DirectoryCard ParentCard => this._parentCard;
 
         public Paths Paths {
             get => new(this.ParentCard.DirPath, this.Text);
@@ -17,7 +18,7 @@ namespace Leagueinator.VisualUnitTest {
 
         public TestCard(DirectoryCard parent, string testName) : base() {
             InitializeComponent();
-            this.ParentCard = parent;
+            this._parentCard = parent;
             this.Text = testName;
             this.Label.BackColor = Color.Transparent;
 
@@ -48,7 +49,6 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         private void HndDragStart(object? sender, MouseEventArgs e) {
-            Debug.WriteLine("HndDragStart");
             this.Click.Invoke(this, e);
             this.DoDragDrop(this, DragDropEffects.Copy);
         }
@@ -146,6 +146,23 @@ namespace Leagueinator.VisualUnitTest {
             if (File.Exists(this.Paths.XML)) File.Delete(this.Paths.XML);
             if (File.Exists(this.Paths.Style)) File.Delete(this.Paths.Style);
             if (File.Exists(this.Paths.BMP)) File.Delete(this.Paths.BMP);
+            if (File.Exists(this.Paths.Status)) File.Delete(this.Paths.Status);
+        }
+
+        internal void MoveFiles(DirectoryCard dirCard) {
+            if (File.Exists(Path.Join(dirCard.DirPath, this.Text + ".xml"))) {
+                MessageBox.Show("Test Already Exists", "Warning", MessageBoxButtons.OK);
+                return;
+            }
+
+            Paths to = new(dirCard.DirPath, this.Text);
+
+            if (File.Exists(this.Paths.XML)) File.Move(this.Paths.XML, to.XML);
+            if (File.Exists(this.Paths.Style)) File.Move(this.Paths.Style, to.Style);
+            if (File.Exists(this.Paths.BMP)) File.Move(this.Paths.BMP, to.BMP);
+            if (File.Exists(this.Paths.Status)) File.Move(this.Paths.Status, to.Status);
+
+            this._parentCard = dirCard;
         }
 
         public Status DoTest() {
@@ -193,5 +210,6 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         private Status _status = Status.NOT_SET;
+        private DirectoryCard _parentCard;
     }
 }
