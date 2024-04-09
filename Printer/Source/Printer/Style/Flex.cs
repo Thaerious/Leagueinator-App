@@ -168,11 +168,13 @@ namespace Leagueinator.Printer.Styles {
 
                 // Position flex elements by page
                 for (int page = 0; page < this.pageCount; page++) {
-                    this.DoPosFlex(current, page);
+                    if (current.Style.Position == Enums.Position.Flex) {
+                        this.DoPosFlex(current, page);
+                    }
                 }
 
-                if (current.Style.Position == Enums.Position.Absolute) current.DoPosAbsolute();
-                if (current.Style.Position == Enums.Position.Fixed) current.DoPosFixed();
+                if (current.Style.Position == Enums.Position.Absolute) current.DoPosAbsolute(current.Parent!);
+                if (current.Style.Position == Enums.Position.Fixed) current.DoPosAbsolute(current.Root);
 
                 // if absolute or flex, then position relative to parent
                 if (current.Style.Position != Enums.Position.Fixed) {
@@ -345,7 +347,6 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceBetween;
 
                 foreach (var child in children) {
-                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(0, dy);
                     dy = dy + spaceBetween + child.OuterBox().Height;
                 }
@@ -355,7 +356,6 @@ namespace Leagueinator.Printer.Styles {
                 float dx = spaceBetween;
 
                 foreach (var child in children) {
-                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(dx, 0);
                     dx = dx + spaceBetween + child.OuterBox().Width;
                 }
@@ -368,7 +368,6 @@ namespace Leagueinator.Printer.Styles {
                 float dx = 0;
 
                 foreach (var child in children) {
-                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(dx, 0);
                     dx = dx + spaceBetween + child.OuterBox().Width;
                 }
@@ -378,7 +377,6 @@ namespace Leagueinator.Printer.Styles {
                 float dy = 0;
 
                 foreach (var child in children) {
-                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(0, dy);
                     dy = dy + spaceBetween + child.OuterBox().Height;
                 }
@@ -392,7 +390,6 @@ namespace Leagueinator.Printer.Styles {
                 float dx = spaceAround;
 
                 foreach (var child in children) {
-                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(dx, 0);
                     dx = dx + (2 * spaceAround) + child.OuterBox().Width;
                 }
@@ -402,32 +399,26 @@ namespace Leagueinator.Printer.Styles {
                 float dy = spaceAround;
 
                 foreach (var child in children) {
-                    child.Translate(root.ContentBox().TopLeft());
                     child.Translate(0, dy);
                     dy = dy + (2 * spaceAround) + child.OuterBox().Height;
                 }
             }
         }
 
-        public static void DoPosFixed(this RenderNode root) {
-        }
-
-        public static void DoPosAbsolute(this RenderNode node) {
-            Debug.WriteLine($"DoPosAbsolute {node}");
+        public static void DoPosAbsolute(this RenderNode node, RenderNode relative) {
             if (node.IsRoot) return;
-            Debug.WriteLine(node.Parent.ContentBox());
             float x = 0f, y = 0f;
 
             if (node.Style.Left != null) {
                 if (node.Style.Left.Unit.Equals("px")) x = node.Style.Left.Factor;
-                else x = node.Style.Left.Factor * node.Parent!.ContentBox().Width / 100;
+                else x = node.Style.Left.Factor * relative.ContentBox().Width / 100;
             }
             if (node.Style.Right != null) {
                 if (node.Style.Right.Unit.Equals("px")) {
-                    x = node.Parent!.ContentBox().Width - node.Size.Width - node.Style.Right.Factor;
+                    x = relative.ContentBox().Width - node.Size.Width - node.Style.Right.Factor;
                 }
                 else {
-                    x = node.Parent!.ContentBox().Width - node.Size.Width - (node.Style.Right.Factor * node.Size.Width / 100);
+                    x = relative.ContentBox().Width - node.Size.Width - (node.Style.Right.Factor * node.Size.Width / 100);
                 }
             }
             if (node.Style.Top != null) {
@@ -436,10 +427,10 @@ namespace Leagueinator.Printer.Styles {
             }
             if (node.Style.Bottom != null) {
                 if (node.Style.Bottom.Unit.Equals("px")) {
-                    y = node.Parent!.ContentBox().Height - node.Size.Height - node.Style.Bottom.Factor;
+                    y = relative.ContentBox().Height - node.Size.Height - node.Style.Bottom.Factor;
                 }
                 else {
-                    y = node.Parent!.ContentBox().Height - node.Size.Height - (node.Style.Bottom.Factor * node.Size.Height / 100);
+                    y = relative.ContentBox().Height - node.Size.Height - (node.Style.Bottom.Factor * node.Size.Height / 100);
                 }
             }
 
@@ -486,7 +477,6 @@ namespace Leagueinator.Printer.Styles {
                 from = new PointF(0, node.HeightRemaining(children) / 2);
             }
 
-            from = from.Translate(node.ContentBox().TopLeft());
             node.LineupElements(children, from);
         }
 
@@ -500,12 +490,11 @@ namespace Leagueinator.Printer.Styles {
                 from = new PointF(0, node.HeightRemaining(children));
             }
 
-            from = from.Translate(node.ContentBox().TopLeft());
             node.LineupElements(children, from);
         }
 
         public static void JustifyStart(this RenderNode node, List<RenderNode> children) {
-            node.LineupElements(children, node.ContentBox().TopLeft());
+            node.LineupElements(children, new());
         }
     }
 }

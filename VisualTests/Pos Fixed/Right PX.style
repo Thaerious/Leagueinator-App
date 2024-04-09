@@ -1,0 +1,32 @@
+root{
+	width: 800px;
+	height: 1100px;
+	border: 1px solid black;
+}
+
+page{
+	width: 500px;
+	height: 500px;
+	border: 1px solid black;
+	background-color: yellow;
+}
+
+page *{
+	position: fixed;
+	right: 50px;
+}
+
+container{
+	width: 150px;
+	height: 250px;
+	border: 1px solid black;
+	background-color: lightyellow;
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+	border: 1px solid black;
+	background-color: yellow;
+}
+
