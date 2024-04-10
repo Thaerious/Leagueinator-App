@@ -34,7 +34,7 @@ namespace Leagueinator.Printer {
         }
 
         /// <summary>
-        /// Remove all child TreeNode<T>s from this child.
+        /// Remove all child TreeNode<U>s from this child.
         /// </summary>
         [Validated]
         public virtual void ClearChildren() {
@@ -67,30 +67,6 @@ namespace Leagueinator.Printer {
                 }
                 return (T)current;
             }
-        }
-
-        /// <summary>
-        /// Retrieves a non-reflective list of all TreeNode<T>s, starting with this TreeNode<T> including all 
-        /// descendants recursivly.
-        /// </summary>
-        /// <remarks>
-        /// This method performs a depth-first search to collect all TreeNode<T>s in the hierarchy, starting with 
-        /// the current TreeNode<T> as the root. The result includes the current TreeNode<T> followed by its descendants,
-        /// where each child's descendants are added before moving to the next sibling.
-        /// </remarks>
-        /// <returns>
-        /// A <see cref="List{TreeNode<T>}"/> containing the current TreeNode<T> followed by all descendant 
-        /// TreeNode<T>s in the order they were encountered.
-        /// </returns>
-        public List<T> AsList() {
-            List<T> all = [];
-            all.Add((T)this);
-
-            foreach (TreeNode<T> child in this.Children) {
-                all.AddRange(child.AsList());
-            }
-
-            return all;
         }
 
         public virtual XMLStringBuilder ToXML(Action<T, XMLStringBuilder>? action = null) {

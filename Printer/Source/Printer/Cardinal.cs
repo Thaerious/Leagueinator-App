@@ -13,10 +13,10 @@ namespace Leagueinator.Printer {
     }
 
     public class Cardinal<T> : IEnumerable<T> where T : new() {
-        public T Left { get; }
-        public T Right { get; }
-        public T Top { get; }
-        public T Bottom { get; }
+        public T Left { get; init; }
+        public T Right { get; init; }
+        public T Top { get; init; }
+        public T Bottom { get; init; }
 
         public Cardinal() {
             this.Top = new();
@@ -38,9 +38,6 @@ namespace Leagueinator.Printer {
             this.Bottom = bottom;
             this.Left = left;
         }
-
-        //public IEnumerable<T> GetEnumerator() {
-        //}
 
         public static bool TryParse(string source, out Cardinal<T> target) {
             string[] split = source.Split(' ', ',');

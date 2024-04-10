@@ -6,7 +6,7 @@ namespace Leagueinator.CSSParser {
     public static class MultiParse {
 
         /// <summary>
-        /// Assign a Value of type 'T' to target based on a source string.
+        /// Assign a Value of type 'U' to target based on a source string.
         /// </summary>
         /// <typeparam name="T">The type of object to generate.</typeparam>
         /// <param name="source">The string used to generate the new object.</param>

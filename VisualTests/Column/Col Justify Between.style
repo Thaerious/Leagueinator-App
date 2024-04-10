@@ -6,7 +6,7 @@ root{
 *{
      	justify-content: space-between;
 	flex-axis: column;
-	border: 25px solid black;
+	border: 1px solid black;
 }
 
 page{

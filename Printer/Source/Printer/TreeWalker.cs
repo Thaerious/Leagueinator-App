@@ -4,6 +4,10 @@
     /// </summary>
     internal class TreeWalker<T> : Queue<T> where T : TreeNode<T> {
 
+        public static void Walk<U>(U root, Action<U> action) where U : TreeNode<U> {
+            new TreeWalker<U>(root).Walk(action);
+        }
+
         public TreeWalker(T node) {
             this.Enqueue(node);
         }

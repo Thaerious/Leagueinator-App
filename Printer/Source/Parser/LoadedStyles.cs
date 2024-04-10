@@ -28,9 +28,9 @@ namespace Leagueinator.CSSParser {
             this.ApplyParentStyles(root);
 
             // apply default styles
-            foreach (Element element in root.AsList()) {
-                element.Style.MergeWith(Style.Default);
-            }
+            TreeWalker<Element>.Walk(root, ele => {
+                ele.Style.MergeWith(Style.Default);
+            });
         }
 
         private void ApplyParentStyles(Element root) {

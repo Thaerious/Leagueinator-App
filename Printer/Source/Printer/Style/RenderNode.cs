@@ -9,9 +9,9 @@ namespace Leagueinator.Printer.Styles {
         public readonly Element Element = element;
 
         public SizeF Size = new();
-        public readonly Cardinal<float> Margin = [];
-        public readonly Cardinal<float> BorderSize = [];
-        public readonly Cardinal<float> Padding = [];
+        public Cardinal<float> Margin = [];
+        public Cardinal<float> BorderSize = [];
+        public Cardinal<float> Padding = [];
         public PointF Translation = new();
         public int Page { get; internal set; } = 0;
 
@@ -96,7 +96,7 @@ namespace Leagueinator.Printer.Styles {
             if (this.Style.BorderColor is null) return;
             this.Style.BorderStyle ??= new(DashStyle.Solid);
 
-            if (this.Style.BorderColor.Top != default) {
+            if (this.Style.BorderColor.Top != default && this.BorderSize.Top > 0) {
                 using Pen pen = new Pen(this.Style.BorderColor.Top);
                 pen.Width = this.BorderSize.Top;
                 pen.DashStyle = this.Style.BorderStyle.Top;
@@ -107,7 +107,7 @@ namespace Leagueinator.Printer.Styles {
                     this.BorderBox().TopRight().Translate(0, this.BorderSize.Top / 2)
                 );
             }
-            if (this.Style.BorderColor.Right != default) {
+            if (this.Style.BorderColor.Right != default && this.BorderSize.Right > 0) {
                 using Pen pen = new Pen(this.Style.BorderColor.Right);
                 pen.Width = this.BorderSize.Right;
                 pen.DashStyle = this.Style.BorderStyle.Right;
@@ -118,7 +118,7 @@ namespace Leagueinator.Printer.Styles {
                     this.BorderBox().BottomRight().Translate(-this.BorderSize.Right / 2, 0)
                 );
             }
-            if (this.Style.BorderColor.Bottom != default) {
+            if (this.Style.BorderColor.Bottom != default && this.BorderSize.Bottom > 0) {
                 using Pen pen = new Pen(this.Style.BorderColor.Bottom);
                 pen.Width = this.BorderSize.Bottom;
                 pen.DashStyle = this.Style.BorderStyle.Bottom;
@@ -129,7 +129,7 @@ namespace Leagueinator.Printer.Styles {
                     this.BorderBox().BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
                 );
             }
-            if (this.Style.BorderColor.Left != default) {
+            if (this.Style.BorderColor.Left != default && this.BorderSize.Left > 0) {
                 using Pen pen = new Pen(this.Style.BorderColor.Left);
                 pen.Width = this.BorderSize.Left;
                 pen.DashStyle = this.Style.BorderStyle.Left;

@@ -16,8 +16,9 @@ namespace Leagueinator.Printer.Styles {
         public (int, RenderNode) DoLayout(Element element) {
             deferred = [];
             RenderNode root = BuildRenderTree(element, null);
-            FirstPass(root);
-            SecondPass();
+            SizeFirstPass(root);
+            SizeSecondPass();
+            SizeEdges(root);
 
             this.pageCount = this.AssignPages(root);
             this.DoPos(root);
@@ -37,8 +38,8 @@ namespace Leagueinator.Printer.Styles {
             return node;
         }
 
-        private void FirstPass(RenderNode root) {
-            foreach (RenderNode node in root.AsList()) {
+        private void SizeFirstPass(RenderNode root) {
+            TreeWalker<RenderNode>.Walk(root, node => {
                 if (node.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                     EvaluateMajorWidth(node);
                     EvaluateMinorHeight(node);
@@ -47,10 +48,10 @@ namespace Leagueinator.Printer.Styles {
                     EvaluateMinorWidth(node);
                     EvaluateMajorHeight(node);
                 }
-            }
+            });
         }
 
-        private void SecondPass() {
+        private void SizeSecondPass() {
             foreach (RenderNode node in this.deferred) {
                 if (node.Style.Flex_Axis == Enums.Flex_Axis.Column) {
                     node.Size.Height = node.Children.Sum(c => c.Size.Height);
@@ -59,6 +60,25 @@ namespace Leagueinator.Printer.Styles {
                     node.Size.Width = node.Children.Sum(c => c.Size.Width);
                 }
             }
+        }
+
+        private static float ValueFromUnit(RenderNode node, UnitFloat unitFloat) {
+            if (unitFloat.Unit.Equals("px")) return unitFloat.Factor;
+            if (node.IsRoot) return 0;
+            return node.Parent!.ContentBox().Width * unitFloat.Factor / 100;
+        }
+
+        private static void SizeEdges(RenderNode root) {
+            TreeWalker<RenderNode>.Walk(root, node => {
+                if (node.Style.BorderSize is not null) {
+                    node.BorderSize = new Cardinal<float>() {
+                        Top = ValueFromUnit(node, node.Style.BorderSize.Top),
+                        Right = ValueFromUnit(node, node.Style.BorderSize.Right),
+                        Bottom = ValueFromUnit(node, node.Style.BorderSize.Bottom),
+                        Left = ValueFromUnit(node, node.Style.BorderSize.Left)
+                    };
+                }
+            });
         }
 
         public void EvaluateMajorWidth(RenderNode renderNode) {

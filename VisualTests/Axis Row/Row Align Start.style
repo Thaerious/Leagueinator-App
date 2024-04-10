@@ -6,7 +6,7 @@ root{
 *{
 	align-items: flex-start;
 	flex-axis: row;
-	border: 25px solid black;
+	border: 1px solid black;
 }
 
 page{
