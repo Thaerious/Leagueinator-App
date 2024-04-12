@@ -8,11 +8,10 @@ using System.Text;
 using Leagueinator.Utility;
 using static StyleParser;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 
 namespace Leagueinator.CSSParser {
-    internal class StyleListener : StyleParserBaseListener {
-        public readonly LoadedStyles Styles = new();
+    internal class StyleListener(StyleSheet stylesheet) : StyleParserBaseListener {
+        public readonly StyleSheet StyleSheet = stylesheet;
         private readonly List<Style> currentStyles = new();
 
         /// <summary>
@@ -41,6 +40,10 @@ namespace Leagueinator.CSSParser {
             return sb.ToString().Trim();
         }
 
+        public override void EnterImport_dir([NotNull] Import_dirContext context) {
+            this.StyleSheet.Imports.Add(context.GetChild(1).GetText());
+        }
+
         /// <summary>
         /// Treat the Style selector as a commas seperated selectorList and extract each Style name.
         /// </summary>
@@ -61,10 +64,10 @@ namespace Leagueinator.CSSParser {
 
                 var style = new Style(null) {
                     Selector = selectorText,
-                    Specificity = QueryEngine.Specificity(selectorText, -this.Styles.Count)
+                    Specificity = QueryEngine.Specificity(selectorText, -this.StyleSheet.Count)
                 };
 
-                this.Styles.Add(style);
+                this.StyleSheet.Add(style);
                 this.currentStyles.Add(style);
             }
         }

@@ -142,7 +142,7 @@ namespace Leagueinator.Printer.Components {
         }
 
         /// <summary>
-        /// Make the inner width the same as the outer (this) width.
+        /// Make the Inner width the same as the outer (this) width.
         /// </summary>
         private void PinWidth() {
             this.inner.Width = this.Width;
@@ -152,7 +152,7 @@ namespace Leagueinator.Printer.Components {
         }
 
         /// <summary>
-        /// Make the inner height the same as the outer (this) height.
+        /// Make the Inner height the same as the outer (this) height.
         /// </summary>
         private void PinHeight() {
             this.inner.Height = this.Height;

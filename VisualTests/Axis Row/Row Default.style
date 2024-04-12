@@ -12,8 +12,7 @@ page{
 	flex-axis: row;
 }
 
-container{
-}
+container{}
 
 leaf{
 	width: 25px;

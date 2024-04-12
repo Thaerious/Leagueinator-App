@@ -39,7 +39,7 @@ namespace Test_Style {
         ///// </summary>
         //[TestMethod]
         //public void Default_Values_Location() {
-        //    Assert.AreEqual(new Point(0, 0), Styles.Default.Translate);
+        //    Assert.AreEqual(new Point(0, 0), StyleSheet.Default.Translate);
         //}
 
         ///// <summary>
@@ -48,7 +48,7 @@ namespace Test_Style {
         //[TestMethod]
         //public void Inherited_Default_Value() {
         //    Elements xml = LoadResources("layout.xml", "Style.css");
-        //    Assert.AreEqual(new Point(0, 0), xml.Styles.Translate);
+        //    Assert.AreEqual(new Point(0, 0), xml.StyleSheet.Translate);
         //}
 
         /// <summary>

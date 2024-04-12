@@ -294,35 +294,6 @@ namespace Leagueinator.Designer {
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += this.HndMenuAboutClick;
             // 
-            // actionsToolStripMenuItem
-            // 
-            this.actionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.refreshToolStripMenuItem, this.invalidateToolStripMenuItem });
-            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new Size(87, 29);
-            this.actionsToolStripMenuItem.Text = "Actions";
-            // 
-            // refreshToolStripMenuItem
-            // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.R;
-            this.refreshToolStripMenuItem.Size = new Size(246, 34);
-            this.refreshToolStripMenuItem.Text = "Reload";
-            this.refreshToolStripMenuItem.Click += this.HndMenuRefreshClick;
-            // 
-            // invalidateToolStripMenuItem
-            // 
-            this.invalidateToolStripMenuItem.Name = "invalidateToolStripMenuItem";
-            this.invalidateToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.I;
-            this.invalidateToolStripMenuItem.Size = new Size(246, 34);
-            this.invalidateToolStripMenuItem.Text = "Invalidate";
-            // 
-            // deToolStripMenuItem
-            // 
-            this.deToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.changeToolStripMenuItem });
-            this.deToolStripMenuItem.Name = "deToolStripMenuItem";
-            this.deToolStripMenuItem.Size = new Size(59, 29);
-            this.deToolStripMenuItem.Text = "Dev";
-            // 
             // changeToolStripMenuItem
             // 
             this.changeToolStripMenuItem.Name = "changeToolStripMenuItem";

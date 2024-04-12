@@ -60,13 +60,11 @@ namespace Leagueinator.VisualUnitTest {
         public bool CreateBitmap(out Bitmap? bitmap) {
             bitmap = null;
 
-            string styleText = File.ReadAllText(this.Paths.Style);
             string xmlText = File.ReadAllText(this.Paths.XML);
 
-            if (styleText.IsEmpty()) return false;
             if (xmlText.IsEmpty()) return false;
 
-            LoadedStyles styles = StyleLoader.Load(styleText);
+            LoadedStyles styles = new LoadedStyles().LoadFromFile(this.Paths.Style);
             Element root = XMLLoader.Load(xmlText)["root"][0];
             styles.ApplyTo(root);
             Flex flex = new();

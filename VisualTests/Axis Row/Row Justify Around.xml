@@ -1,14 +1,19 @@
 <root>
 	<page>
-		<container>
-			<leaf id="1"/>
-			<leaf id="2"/>
-			<leaf id="3"/>
+		<container class="a">
+			<leaf class="1"/>
+			<leaf class="2"/>
+			<leaf class="3"/>
 		</container>
-		<container>
-			<leaf id="1"/>
-			<leaf id="2"/>
-			<leaf id="3"/>
+		<container class="b">
+			<leaf class="1"/>
+			<leaf class="2"/>
+			<leaf class="3"/>
+		</container>
+		<container class="c">
+			<leaf class="1"/>
+			<leaf class="2"/>
+			<leaf class="3"/>
 		</container>
 	</page>
 </root>

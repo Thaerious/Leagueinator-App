@@ -119,7 +119,7 @@ namespace Leagueinator.Designer {
         private void LoadFilePath() {
             this.txtXML.Text = File.ReadAllText(this.xmlPath);
             this.txtStyle.Text = File.ReadAllText(this.stylePath);
-            this.HndMenuRefreshClick(null, null);
+            this.RapaintCanvas();
 
             this.saveToolStripMenuItem1.Enabled = true;
             this.IsSaved = true;
@@ -132,7 +132,7 @@ namespace Leagueinator.Designer {
 
             if (dialog.ShowDialog() == DialogResult.OK) {
                 this.FilePath = dialog.FileName;
-                this.HndMenuRefreshClick(null, null);
+                this.RapaintCanvas();
                 File.WriteAllText(this.xmlPath!, this.txtXML.Text);
                 File.WriteAllText(this.stylePath!, this.txtStyle.Text);
                 this.saveToolStripMenuItem1.Enabled = true;
@@ -161,12 +161,12 @@ namespace Leagueinator.Designer {
             dialog.Document = new RenderNodePrintHandler(this.printerCanvas.RenderNode);
         }
 
-        private void HndMenuRefreshClick(object? sender, EventArgs? e) {
+        private void RapaintCanvas() {
             try {
                 string xmlString = this.txtXML.Text;
                 string styleString = this.txtStyle.Text;
 
-                LoadedStyles styles = StyleLoader.Load(styleString);
+                LoadedStyles styles = new LoadedStyles().LoadFromString(styleString);
                 Element root = XMLLoader.Load(xmlString);
                 styles.ApplyTo(root);
 
@@ -185,7 +185,7 @@ namespace Leagueinator.Designer {
         private void HndMenuSaveClick(object sender, EventArgs e) {
             File.WriteAllText(this.xmlPath, this.txtXML.Text);
             File.WriteAllText(this.stylePath, this.txtStyle.Text);
-            this.HndMenuRefreshClick(null, null);
+            this.RapaintCanvas();
             this.IsSaved = true;
         }
 

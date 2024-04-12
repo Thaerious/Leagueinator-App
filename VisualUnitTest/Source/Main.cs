@@ -160,7 +160,7 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         /// <summary>
-        /// Load the named test into the xml and style text boxes.
+        /// LoadFromString the named test into the xml and style text boxes.
         /// If the name is omitted get the name from the active test card.
         /// </summary>
         /// <param name="name"></param>
@@ -202,7 +202,7 @@ namespace Leagueinator.VisualUnitTest {
             try {
                 if (!this.IsReady) return;
 
-                LoadedStyles styles = StyleLoader.Load(this.RichTextStyle.Text);
+                LoadedStyles styles = new LoadedStyles().LoadFromFile(this.ActiveTestCard!.Paths.Style);                
                 Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
                 styles.ApplyTo(root);
 

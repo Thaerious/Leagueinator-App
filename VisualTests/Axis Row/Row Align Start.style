@@ -1,29 +1,9 @@
 @import "./Row Default.style"
 
-root{
-	width: 800px;
-	height: 1100px;
-}
-
-*{
-	flex-axis: row;
-	border: 1px solid black;
-}
-
 page{
-	width: 50%;
-	height: 50%;
-     	background-color: yellow;
-}
-
-container{
-	background-color: lightyellow;
 	align-items: flex-start;
 }
 
-leaf{
-	width: 25px;
-	height: 25px;
-	background-color: yellow;
+container{
+	//align-items: flex-start;
 }
-
