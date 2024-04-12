@@ -1,7 +1,10 @@
 parser grammar StyleParser;
 options { tokenVocab=StyleLexer; }
 
-styles     : style* EOF
+styles     : import_dir* style* EOF
+           ;
+
+import_dir : I_DIR QUOTED_STRING
            ;
 
 style      : selectors OPAR line* CPAR           

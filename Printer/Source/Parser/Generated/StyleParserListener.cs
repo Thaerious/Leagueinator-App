@@ -12,7 +12,7 @@
 
 // Unreachable code detected
 #pragma warning disable 0162
-// The variable '...' is assigned but its Value is never used
+// The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
@@ -40,6 +40,16 @@ public interface IStyleParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitStyles([NotNull] StyleParser.StylesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="StyleParser.import_dir"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterImport_dir([NotNull] StyleParser.Import_dirContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="StyleParser.import_dir"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitImport_dir([NotNull] StyleParser.Import_dirContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="StyleParser.style"/>.
 	/// </summary>

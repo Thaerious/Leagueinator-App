@@ -12,7 +12,7 @@
 
 // Unreachable code detected
 #pragma warning disable 0162
-// The variable '...' is assigned but its Value is never used
+// The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
@@ -37,23 +37,26 @@ public partial class StyleParser : Parser {
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
 		OPAR=1, MULT_SELECTOR=2, CLASS_SELECTOR=3, ID_SELECTOR=4, TAG_SELECTOR=5, 
-		ALL_SELECTOR=6, COMMA=7, GT=8, WS=9, NL=10, COMMENT=11, KEY=12, COLON=13, 
-		CPAR=14, MM_WS=15, SEMI=16, VALUE=17, VM_WS=18, NEWLINE=19, COMMENT_VALUE=20;
+		ALL_SELECTOR=6, COMMA=7, GT=8, I_DIR=9, QUOTED_STRING=10, WS=11, NL=12, 
+		COMMENT=13, KEY=14, COLON=15, CPAR=16, MM_WS=17, SEMI=18, VALUE=19, VM_WS=20, 
+		NEWLINE=21, COMMENT_VALUE=22;
 	public const int
-		RULE_styles = 0, RULE_style = 1, RULE_selectors = 2, RULE_selector = 3, 
-		RULE_line = 4, RULE_comment = 5, RULE_property = 6;
+		RULE_styles = 0, RULE_import_dir = 1, RULE_style = 2, RULE_selectors = 3, 
+		RULE_selector = 4, RULE_line = 5, RULE_comment = 6, RULE_property = 7;
 	public static readonly string[] ruleNames = {
-		"styles", "style", "selectors", "selector", "line", "comment", "property"
+		"styles", "import_dir", "style", "selectors", "selector", "line", "comment", 
+		"property"
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'{'", null, null, null, null, "'*'", "','", "'>'", null, null, 
-		null, null, "':'", "'}'", null, "';'"
+		null, "'{'", null, null, null, null, "'*'", "','", "'>'", "'@import'", 
+		null, null, null, null, null, "':'", "'}'", null, "';'"
 	};
 	private static readonly string[] _SymbolicNames = {
 		null, "OPAR", "MULT_SELECTOR", "CLASS_SELECTOR", "ID_SELECTOR", "TAG_SELECTOR", 
-		"ALL_SELECTOR", "COMMA", "GT", "WS", "NL", "COMMENT", "KEY", "COLON", 
-		"CPAR", "MM_WS", "SEMI", "VALUE", "VM_WS", "NEWLINE", "COMMENT_VALUE"
+		"ALL_SELECTOR", "COMMA", "GT", "I_DIR", "QUOTED_STRING", "WS", "NL", "COMMENT", 
+		"KEY", "COLON", "CPAR", "MM_WS", "SEMI", "VALUE", "VM_WS", "NEWLINE", 
+		"COMMENT_VALUE"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -89,6 +92,12 @@ public partial class StyleParser : Parser {
 
 	public partial class StylesContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Eof() { return GetToken(StyleParser.Eof, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public Import_dirContext[] import_dir() {
+			return GetRuleContexts<Import_dirContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public Import_dirContext import_dir(int i) {
+			return GetRuleContext<Import_dirContext>(i);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public StyleContext[] style() {
 			return GetRuleContexts<StyleContext>();
 		}
@@ -120,22 +129,80 @@ public partial class StyleParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 17;
+			State = 19;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==I_DIR) {
+				{
+				{
+				State = 16;
+				import_dir();
+				}
+				}
+				State = 21;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 25;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 124L) != 0)) {
 				{
 				{
-				State = 14;
+				State = 22;
 				style();
 				}
 				}
-				State = 19;
+				State = 27;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 20;
+			State = 28;
 			Match(Eof);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class Import_dirContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode I_DIR() { return GetToken(StyleParser.I_DIR, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode QUOTED_STRING() { return GetToken(StyleParser.QUOTED_STRING, 0); }
+		public Import_dirContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_import_dir; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IStyleParserListener typedListener = listener as IStyleParserListener;
+			if (typedListener != null) typedListener.EnterImport_dir(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IStyleParserListener typedListener = listener as IStyleParserListener;
+			if (typedListener != null) typedListener.ExitImport_dir(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public Import_dirContext import_dir() {
+		Import_dirContext _localctx = new Import_dirContext(Context, State);
+		EnterRule(_localctx, 2, RULE_import_dir);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 30;
+			Match(I_DIR);
+			State = 31;
+			Match(QUOTED_STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -181,30 +248,30 @@ public partial class StyleParser : Parser {
 	[RuleVersion(0)]
 	public StyleContext style() {
 		StyleContext _localctx = new StyleContext(Context, State);
-		EnterRule(_localctx, 2, RULE_style);
+		EnterRule(_localctx, 4, RULE_style);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 22;
+			State = 33;
 			selectors(0);
-			State = 23;
+			State = 34;
 			Match(OPAR);
-			State = 27;
+			State = 38;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMENT || _la==KEY) {
 				{
 				{
-				State = 24;
+				State = 35;
 				line();
 				}
 				}
-				State = 29;
+				State = 40;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 30;
+			State = 41;
 			Match(CPAR);
 			}
 		}
@@ -254,20 +321,20 @@ public partial class StyleParser : Parser {
 		int _parentState = State;
 		SelectorsContext _localctx = new SelectorsContext(Context, _parentState);
 		SelectorsContext _prevctx = _localctx;
-		int _startState = 4;
-		EnterRecursionRule(_localctx, 4, RULE_selectors, _p);
+		int _startState = 6;
+		EnterRecursionRule(_localctx, 6, RULE_selectors, _p);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
 			{
-			State = 33;
+			State = 44;
 			selector(0);
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 40;
+			State = 51;
 			ErrorHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(TokenStream,2,Context);
+			_alt = Interpreter.AdaptivePredict(TokenStream,3,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
@@ -277,18 +344,18 @@ public partial class StyleParser : Parser {
 					{
 					_localctx = new SelectorsContext(_parentctx, _parentState);
 					PushNewRecursionContext(_localctx, _startState, RULE_selectors);
-					State = 35;
+					State = 46;
 					if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
-					State = 36;
+					State = 47;
 					Match(COMMA);
-					State = 37;
+					State = 48;
 					selector(0);
 					}
 					} 
 				}
-				State = 42;
+				State = 53;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,2,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,3,Context);
 			}
 			}
 		}
@@ -343,42 +410,42 @@ public partial class StyleParser : Parser {
 		int _parentState = State;
 		SelectorContext _localctx = new SelectorContext(Context, _parentState);
 		SelectorContext _prevctx = _localctx;
-		int _startState = 6;
-		EnterRecursionRule(_localctx, 6, RULE_selector, _p);
+		int _startState = 8;
+		EnterRecursionRule(_localctx, 8, RULE_selector, _p);
 		try {
 			int _alt;
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 49;
+			State = 60;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case MULT_SELECTOR:
 				{
-				State = 44;
+				State = 55;
 				Match(MULT_SELECTOR);
 				}
 				break;
 			case CLASS_SELECTOR:
 				{
-				State = 45;
+				State = 56;
 				Match(CLASS_SELECTOR);
 				}
 				break;
 			case ID_SELECTOR:
 				{
-				State = 46;
+				State = 57;
 				Match(ID_SELECTOR);
 				}
 				break;
 			case TAG_SELECTOR:
 				{
-				State = 47;
+				State = 58;
 				Match(TAG_SELECTOR);
 				}
 				break;
 			case ALL_SELECTOR:
 				{
-				State = 48;
+				State = 59;
 				Match(ALL_SELECTOR);
 				}
 				break;
@@ -386,27 +453,27 @@ public partial class StyleParser : Parser {
 				throw new NoViableAltException(this);
 			}
 			Context.Stop = TokenStream.LT(-1);
-			State = 58;
+			State = 69;
 			ErrorHandler.Sync(this);
-			_alt = Interpreter.AdaptivePredict(TokenStream,5,Context);
+			_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
 			while ( _alt!=2 && _alt!=global::Antlr4.Runtime.Atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( ParseListeners!=null )
 						TriggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					State = 56;
+					State = 67;
 					ErrorHandler.Sync(this);
-					switch ( Interpreter.AdaptivePredict(TokenStream,4,Context) ) {
+					switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
 					case 1:
 						{
 						_localctx = new SelectorContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_selector);
-						State = 51;
+						State = 62;
 						if (!(Precpred(Context, 2))) throw new FailedPredicateException(this, "Precpred(Context, 2)");
-						State = 52;
+						State = 63;
 						Match(GT);
-						State = 53;
+						State = 64;
 						selector(3);
 						}
 						break;
@@ -414,18 +481,18 @@ public partial class StyleParser : Parser {
 						{
 						_localctx = new SelectorContext(_parentctx, _parentState);
 						PushNewRecursionContext(_localctx, _startState, RULE_selector);
-						State = 54;
+						State = 65;
 						if (!(Precpred(Context, 1))) throw new FailedPredicateException(this, "Precpred(Context, 1)");
-						State = 55;
+						State = 66;
 						selector(2);
 						}
 						break;
 					}
 					} 
 				}
-				State = 60;
+				State = 71;
 				ErrorHandler.Sync(this);
-				_alt = Interpreter.AdaptivePredict(TokenStream,5,Context);
+				_alt = Interpreter.AdaptivePredict(TokenStream,6,Context);
 			}
 			}
 		}
@@ -467,22 +534,22 @@ public partial class StyleParser : Parser {
 	[RuleVersion(0)]
 	public LineContext line() {
 		LineContext _localctx = new LineContext(Context, State);
-		EnterRule(_localctx, 8, RULE_line);
+		EnterRule(_localctx, 10, RULE_line);
 		try {
-			State = 63;
+			State = 74;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case KEY:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 61;
+				State = 72;
 				property();
 				}
 				break;
 			case COMMENT:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 62;
+				State = 73;
 				comment();
 				}
 				break;
@@ -525,15 +592,15 @@ public partial class StyleParser : Parser {
 	[RuleVersion(0)]
 	public CommentContext comment() {
 		CommentContext _localctx = new CommentContext(Context, State);
-		EnterRule(_localctx, 10, RULE_comment);
+		EnterRule(_localctx, 12, RULE_comment);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 65;
+			State = 76;
 			Match(COMMENT);
-			State = 66;
+			State = 77;
 			Match(COMMENT_VALUE);
-			State = 67;
+			State = 78;
 			Match(NEWLINE);
 			}
 		}
@@ -573,17 +640,17 @@ public partial class StyleParser : Parser {
 	[RuleVersion(0)]
 	public PropertyContext property() {
 		PropertyContext _localctx = new PropertyContext(Context, State);
-		EnterRule(_localctx, 12, RULE_property);
+		EnterRule(_localctx, 14, RULE_property);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 69;
+			State = 80;
 			Match(KEY);
-			State = 70;
+			State = 81;
 			Match(COLON);
-			State = 71;
+			State = 82;
 			Match(VALUE);
-			State = 72;
+			State = 83;
 			Match(SEMI);
 			}
 		}
@@ -600,8 +667,8 @@ public partial class StyleParser : Parser {
 
 	public override bool Sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 2: return selectors_sempred((SelectorsContext)_localctx, predIndex);
-		case 3: return selector_sempred((SelectorContext)_localctx, predIndex);
+		case 3: return selectors_sempred((SelectorsContext)_localctx, predIndex);
+		case 4: return selector_sempred((SelectorContext)_localctx, predIndex);
 		}
 		return true;
 	}
@@ -620,28 +687,31 @@ public partial class StyleParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,20,75,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,1,0,
-		5,0,16,8,0,10,0,12,0,19,9,0,1,0,1,0,1,1,1,1,1,1,5,1,26,8,1,10,1,12,1,29,
-		9,1,1,1,1,1,1,2,1,2,1,2,1,2,1,2,1,2,5,2,39,8,2,10,2,12,2,42,9,2,1,3,1,
-		3,1,3,1,3,1,3,1,3,3,3,50,8,3,1,3,1,3,1,3,1,3,1,3,5,3,57,8,3,10,3,12,3,
-		60,9,3,1,4,1,4,3,4,64,8,4,1,5,1,5,1,5,1,5,1,6,1,6,1,6,1,6,1,6,1,6,0,2,
-		4,6,7,0,2,4,6,8,10,12,0,0,77,0,17,1,0,0,0,2,22,1,0,0,0,4,32,1,0,0,0,6,
-		49,1,0,0,0,8,63,1,0,0,0,10,65,1,0,0,0,12,69,1,0,0,0,14,16,3,2,1,0,15,14,
-		1,0,0,0,16,19,1,0,0,0,17,15,1,0,0,0,17,18,1,0,0,0,18,20,1,0,0,0,19,17,
-		1,0,0,0,20,21,5,0,0,1,21,1,1,0,0,0,22,23,3,4,2,0,23,27,5,1,0,0,24,26,3,
-		8,4,0,25,24,1,0,0,0,26,29,1,0,0,0,27,25,1,0,0,0,27,28,1,0,0,0,28,30,1,
-		0,0,0,29,27,1,0,0,0,30,31,5,14,0,0,31,3,1,0,0,0,32,33,6,2,-1,0,33,34,3,
-		6,3,0,34,40,1,0,0,0,35,36,10,1,0,0,36,37,5,7,0,0,37,39,3,6,3,0,38,35,1,
-		0,0,0,39,42,1,0,0,0,40,38,1,0,0,0,40,41,1,0,0,0,41,5,1,0,0,0,42,40,1,0,
-		0,0,43,44,6,3,-1,0,44,50,5,2,0,0,45,50,5,3,0,0,46,50,5,4,0,0,47,50,5,5,
-		0,0,48,50,5,6,0,0,49,43,1,0,0,0,49,45,1,0,0,0,49,46,1,0,0,0,49,47,1,0,
-		0,0,49,48,1,0,0,0,50,58,1,0,0,0,51,52,10,2,0,0,52,53,5,8,0,0,53,57,3,6,
-		3,3,54,55,10,1,0,0,55,57,3,6,3,2,56,51,1,0,0,0,56,54,1,0,0,0,57,60,1,0,
-		0,0,58,56,1,0,0,0,58,59,1,0,0,0,59,7,1,0,0,0,60,58,1,0,0,0,61,64,3,12,
-		6,0,62,64,3,10,5,0,63,61,1,0,0,0,63,62,1,0,0,0,64,9,1,0,0,0,65,66,5,11,
-		0,0,66,67,5,20,0,0,67,68,5,19,0,0,68,11,1,0,0,0,69,70,5,12,0,0,70,71,5,
-		13,0,0,71,72,5,17,0,0,72,73,5,16,0,0,73,13,1,0,0,0,7,17,27,40,49,56,58,
-		63
+		4,1,22,86,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		7,7,1,0,5,0,18,8,0,10,0,12,0,21,9,0,1,0,5,0,24,8,0,10,0,12,0,27,9,0,1,
+		0,1,0,1,1,1,1,1,1,1,2,1,2,1,2,5,2,37,8,2,10,2,12,2,40,9,2,1,2,1,2,1,3,
+		1,3,1,3,1,3,1,3,1,3,5,3,50,8,3,10,3,12,3,53,9,3,1,4,1,4,1,4,1,4,1,4,1,
+		4,3,4,61,8,4,1,4,1,4,1,4,1,4,1,4,5,4,68,8,4,10,4,12,4,71,9,4,1,5,1,5,3,
+		5,75,8,5,1,6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,1,7,1,7,0,2,6,8,8,0,2,4,6,8,10,
+		12,14,0,0,88,0,19,1,0,0,0,2,30,1,0,0,0,4,33,1,0,0,0,6,43,1,0,0,0,8,60,
+		1,0,0,0,10,74,1,0,0,0,12,76,1,0,0,0,14,80,1,0,0,0,16,18,3,2,1,0,17,16,
+		1,0,0,0,18,21,1,0,0,0,19,17,1,0,0,0,19,20,1,0,0,0,20,25,1,0,0,0,21,19,
+		1,0,0,0,22,24,3,4,2,0,23,22,1,0,0,0,24,27,1,0,0,0,25,23,1,0,0,0,25,26,
+		1,0,0,0,26,28,1,0,0,0,27,25,1,0,0,0,28,29,5,0,0,1,29,1,1,0,0,0,30,31,5,
+		9,0,0,31,32,5,10,0,0,32,3,1,0,0,0,33,34,3,6,3,0,34,38,5,1,0,0,35,37,3,
+		10,5,0,36,35,1,0,0,0,37,40,1,0,0,0,38,36,1,0,0,0,38,39,1,0,0,0,39,41,1,
+		0,0,0,40,38,1,0,0,0,41,42,5,16,0,0,42,5,1,0,0,0,43,44,6,3,-1,0,44,45,3,
+		8,4,0,45,51,1,0,0,0,46,47,10,1,0,0,47,48,5,7,0,0,48,50,3,8,4,0,49,46,1,
+		0,0,0,50,53,1,0,0,0,51,49,1,0,0,0,51,52,1,0,0,0,52,7,1,0,0,0,53,51,1,0,
+		0,0,54,55,6,4,-1,0,55,61,5,2,0,0,56,61,5,3,0,0,57,61,5,4,0,0,58,61,5,5,
+		0,0,59,61,5,6,0,0,60,54,1,0,0,0,60,56,1,0,0,0,60,57,1,0,0,0,60,58,1,0,
+		0,0,60,59,1,0,0,0,61,69,1,0,0,0,62,63,10,2,0,0,63,64,5,8,0,0,64,68,3,8,
+		4,3,65,66,10,1,0,0,66,68,3,8,4,2,67,62,1,0,0,0,67,65,1,0,0,0,68,71,1,0,
+		0,0,69,67,1,0,0,0,69,70,1,0,0,0,70,9,1,0,0,0,71,69,1,0,0,0,72,75,3,14,
+		7,0,73,75,3,12,6,0,74,72,1,0,0,0,74,73,1,0,0,0,75,11,1,0,0,0,76,77,5,13,
+		0,0,77,78,5,22,0,0,78,79,5,21,0,0,79,13,1,0,0,0,80,81,5,14,0,0,81,82,5,
+		15,0,0,82,83,5,19,0,0,83,84,5,18,0,0,84,15,1,0,0,0,8,19,25,38,51,60,67,
+		69,74
 	};
 
 	public static readonly ATN _ATN =

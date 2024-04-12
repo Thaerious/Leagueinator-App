@@ -1,18 +1,20 @@
 lexer grammar StyleLexer;
 
-OPAR           : '{' -> pushMode(KEY_MODE)       ;
-MULT_SELECTOR  : STRING'.'STRING                 ;
-CLASS_SELECTOR : '.'STRING                       ;
-ID_SELECTOR    : '#'STRING                       ;
-TAG_SELECTOR   : STRING                          ;
-ALL_SELECTOR   : '*'                             ;
-COMMA : ','                                      ;
-GT    : '>'                             ;
+OPAR           : '{' -> pushMode(KEY_MODE)        ;
+MULT_SELECTOR  : STRING'.'STRING                  ;
+CLASS_SELECTOR : '.'STRING                        ;
+ID_SELECTOR    : '#'STRING                        ;
+TAG_SELECTOR   : STRING                           ;
+ALL_SELECTOR   : '*'                              ;
+COMMA          : ','                              ;
+GT             : '>'                              ;
+I_DIR          : '@import'                        ;
+QUOTED_STRING  : '"' ~["]* '"'       ;
 
 fragment STRING : [a-zA-Z]?[a-zA-Z0-9_-]+    ;
 WS              : [ \t]+ ->  skip            ;
 NL              : [\r\n]+ -> skip            ;
- 
+
 mode KEY_MODE;
 COMMENT : '/' '/' -> pushMode(COMMENT_MODE) ;
 KEY     : ([a-zA-Z]|'_'|'-')+               ;
