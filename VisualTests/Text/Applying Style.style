@@ -1,0 +1,26 @@
+root{
+	width: 801px;
+	height: 1101px;
+	background-color: whitesmoke;
+}
+
+container{
+	width: 200px;
+	height: 100px;
+	border: 1px solid black;
+	background-color: lightyellow;
+	justify-content: center;
+	align-items: center;
+}
+
+leaf {
+	background-color: lightgreen;
+}
+
+.row{
+	flex-axis: row;
+}
+
+.col{
+	flex-axis: column;
+}

@@ -4,7 +4,6 @@ root{
 }
 
 *{
-	align-items: flex-end;
 	flex-axis: row;
 	border: 1px solid black;
 }
@@ -16,9 +15,8 @@ page{
 }
 
 container{
-	width: 125px;
-	height: 125px;
 	background-color: lightyellow;
+	align-items: flex-end;
 }
 
 leaf{
@@ -26,3 +24,5 @@ leaf{
 	height: 25px;
 	background-color: yellow;
 }
+
+

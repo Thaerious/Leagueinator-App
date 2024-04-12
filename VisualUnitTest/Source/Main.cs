@@ -179,10 +179,14 @@ namespace Leagueinator.VisualUnitTest {
 
         private void HndMenuLoadClick(object sender, EventArgs e) {
             if (this.FolderDialog.ShowDialog() == DialogResult.OK) {
-                this.ActiveDirCard = new(this.FolderDialog.SelectedPath);
-                this.Text = this.FolderDialog.SelectedPath;
-                this.ActiveDirCard.OnCopy += this.HndCopyTestCard;
+                this.LoadFile(this.FolderDialog.SelectedPath);
             };
+        }
+
+        private void LoadFile(string path) {
+            this.ActiveDirCard = new(path);
+            this.Text = this.FolderDialog.SelectedPath;
+            this.ActiveDirCard.OnCopy += this.HndCopyTestCard;
         }
 
         private void HndMenuAddTest(object sender, EventArgs e) {

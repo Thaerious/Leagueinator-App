@@ -1,0 +1,28 @@
+root{
+	width: 800px;
+	height: 1100px;
+	justify-content: center;
+	align-items: center;
+}
+
+page{
+	width: 600px;
+	height: 700px;
+     	background-color: whitesmoke;
+	flex-axis: row;
+}
+
+container{
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+}
+
+.1 { background-color: green; }
+.2 { background-color: lightgreen; }
+.3 { background-color: limegreen; }
+.a { background-color: yellow; }
+.b { background-color: gold; }
+.c { background-color: lightyellow; }

@@ -60,6 +60,7 @@ namespace Leagueinator.Printer.Styles {
 
                 current.DoDrawBackground(g);
                 current.DoDrawBorders(g);
+                if (current.Element.TagName == TextElement.TAG_NAME) current.DoDrawText(g);
 
                 if (current.Style.Overflow == Styles.Enums.Overflow.Visible) {
                     foreach (RenderNode child in current.Children) stack.Push(child);
@@ -69,13 +70,22 @@ namespace Leagueinator.Printer.Styles {
                         if (child.Style.Position == Styles.Enums.Position.Absolute) stack.Push(child);
                         else if (child.Style.Position == Styles.Enums.Position.Fixed) stack.Push(child);
                         else if (child.Page == page) stack.Push(child);
-                        //else if (child.TagName == TextElement.TAG_NAME) stack.Push(child);
+                        else if (child.Element.TagName == TextElement.TAG_NAME) stack.Push(child);
                     }
                 }
             }
         }
 
+        public void DoDrawText(Graphics g) {
+            if (this.Element is not TextElement textElement) return;
+            if (this.Style.Font == null) return;
+            Brush brush = new SolidBrush(Color.Black);
+            g.DrawString(textElement.Text, this.Style.Font, brush, this.ContentBox().TopLeft());
+        }
+
         public void DoDrawBackground(Graphics g) {
+            Debug.WriteLine($"{this} DoDrawBackground background {this.PaddingBox()}");
+
             if (this.Style.MarginColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.Style.MarginColor), this.OuterBox());
             }
@@ -88,6 +98,7 @@ namespace Leagueinator.Printer.Styles {
                 }
             }
             else if (this.Style.BackgroundColor != null) {
+                Debug.WriteLine($"{this} Draw background {this.PaddingBox()}");
                 g.FillRectangle(new SolidBrush((Color)this.Style.BackgroundColor), this.PaddingBox());
             }
         }

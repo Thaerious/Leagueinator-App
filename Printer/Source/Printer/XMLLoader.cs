@@ -33,8 +33,11 @@ namespace Leagueinator.Printer {
                         eleStack.Push(childElement);
                     }
                     else if (xmlChild is XText xText) {
-                        Element childElement = new TextElement(xText.Value);
-                        eleCurrent.AddChild(childElement);
+                        string[] lines = xText.Value.Split("\n");
+                        foreach (string line in lines) {
+                            Element childElement = new TextElement(line.Trim());
+                            eleCurrent.AddChild(childElement);
+                        }
                     }
                 }
             }

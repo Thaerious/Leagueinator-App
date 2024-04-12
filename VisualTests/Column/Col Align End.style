@@ -3,7 +3,7 @@ root{
 	height: 1100px;
 }
 
-*{
+root *{
 	align-items: flex-end;
 	flex-axis: column;
 	border: 1px solid black;

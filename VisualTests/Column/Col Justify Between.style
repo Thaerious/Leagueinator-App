@@ -3,7 +3,7 @@ root{
 	height: 1100px;
 }
 
-*{
+root *{
      	justify-content: space-between;
 	flex-axis: column;
 	border: 1px solid black;

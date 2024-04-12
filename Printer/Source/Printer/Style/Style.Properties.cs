@@ -28,7 +28,7 @@ namespace Leagueinator.Printer.Styles {
         [CSS][Inherited] public FontStyle? FontStyle { get => this.fontStyle; set => this.fontStyle = value; }
         [CSS("Row")] public Flex_Axis? Flex_Axis { get => flex_Axis; [Validated] set => flex_Axis = value; }
         [CSS("Flex_Start")] public Justify_Content? Justify_Content { get => justify_Content; [Validated] set => justify_Content = value; }
-        [CSS("Flex_Start")] public Align_Items? Align_Items { get => align_Items; [Validated] set => align_Items = value; }
+        [CSS("Stretch")] public Align_Items? Align_Items { get => align_Items; [Validated] set => align_Items = value; }
         [CSS("Forward")] public Direction? Flex_Direction { get => this.flex_Direction; [Validated] set => this.flex_Direction = value; }
 
         [CSS]

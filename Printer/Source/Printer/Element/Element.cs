@@ -10,26 +10,6 @@ namespace Leagueinator.Printer.Elements {
     public partial class Element : TreeNode<Element>{
         public delegate void DrawDelegate(Graphics g, Element element, int page);
 
-        internal PointF PageOffset { get; set; } = new();
-
-        /// <summary>
-        /// Draw (paint) handlers.  Each draw delegate get's called when the draw method is called.
-        /// Adding the same delegate multiple times is ignored.
-        /// </summary>
-        private DrawDelegate _onDraw = delegate { };
-        public event DrawDelegate OnDraw {
-            add {
-                foreach (Delegate hnd in this._onDraw.GetInvocationList()) {
-                    if (hnd.Equals(value)) return;
-                }
-
-                this._onDraw += value;
-            }
-            remove {
-                this._onDraw -= value;
-            }
-        }
-
         /// <summary>
         /// Create a new current with a default name and classlist.
         /// </summary>
@@ -102,8 +82,6 @@ namespace Leagueinator.Printer.Elements {
             return xml;
         }
 
-        public override string ToString() => this.Identifier;
-
-        
+        public override string ToString() => this.Identifier;        
     }
 }

@@ -1,0 +1,28 @@
+root{
+	width: 800px;
+	height: 1100px;
+}
+
+page{
+	width: 700px;
+	height: 700px;
+	background-color: yellow;
+}
+
+container{
+	width: 200px;
+	height: 250px;
+	padding-color: red;
+	background-color: lightyellow;
+	border: 25px solid black;
+	padding: 25px 25px 25px 25px;
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+	padding-color: blue;
+	background-color: lightblue;
+}
+
+

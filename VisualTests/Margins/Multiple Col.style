@@ -1,0 +1,29 @@
+root{
+	width: 800px;
+	height: 1100px;
+}
+
+page{
+	flex-axis: column;
+	width: 400px;
+	height: 700px;
+	background-color: yellow;
+}
+
+container{
+	flex-axis: column;
+	width: 150px;
+	height: 250px;
+	margin-color: red;
+	background-color: lightyellow;
+	margin: 25px;
+
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+	margin-color: blue;
+	background-color: lightblue;
+	margin: 25px;
+}

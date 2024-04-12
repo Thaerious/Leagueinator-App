@@ -1,5 +1,4 @@
-﻿using Leagueinator.Printer.Aspects;
-using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
 using System.Diagnostics;
 
@@ -7,7 +6,7 @@ namespace Leagueinator.Printer.Styles {
     //[DebugTrace]
     public class Flex {
         private int pageCount = 1;
-        private Queue<RenderNode> deferred = [];
+        private Queue<Action> deferred = [];
 
         /// <summary>
         /// Begin the layout process, typcially only called on the node node.
@@ -16,17 +15,25 @@ namespace Leagueinator.Printer.Styles {
         public (int, RenderNode) DoLayout(Element element) {
             deferred = [];
             RenderNode root = BuildRenderTree(element, null);
+
+            Debug.WriteLine("Size first pass");
             SizeFirstPass(root);
+            TreeWalker<RenderNode>.Walk(root, (node)=>Debug.WriteLine($"{node} {node.ContentBox()}"));
+
+            Debug.WriteLine("\nSize second pass");            
             SizeSecondPass();
-            SizeEdges(root);
+            TreeWalker<RenderNode>.Walk(root, (node) => Debug.WriteLine($"{node} {node.ContentBox()}"));
 
             this.pageCount = this.AssignPages(root);
+            Debug.WriteLine("\nPosition");
             this.DoPos(root);
+            TreeWalker<RenderNode>.Walk(root, (node) => Debug.WriteLine($"{node} {node.ContentBox()}"));
 
+            Debug.WriteLine("\n");
             return (pageCount, root);
         }
 
-        private RenderNode BuildRenderTree(Element element, RenderNode? node) {
+        private static RenderNode BuildRenderTree(Element element, RenderNode? node) {
             node ??= new(element);
 
             foreach (Element childElement in element.Children) {
@@ -40,6 +47,12 @@ namespace Leagueinator.Printer.Styles {
 
         private void SizeFirstPass(RenderNode root) {
             TreeWalker<RenderNode>.Walk(root, node => {
+                if (node.Element.TagName == "@text") {
+                    node.Size = ((TextElement)node.Element).Size();
+                    return;
+                }
+
+                SizeEdges(node);
                 if (node.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                     EvaluateMajorWidth(node);
                     EvaluateMinorHeight(node);
@@ -51,15 +64,11 @@ namespace Leagueinator.Printer.Styles {
             });
         }
 
+        /// <summary>
+        /// Set size of parent to sum of child size on the major axis.
+        /// </summary>
         private void SizeSecondPass() {
-            foreach (RenderNode node in this.deferred) {
-                if (node.Style.Flex_Axis == Enums.Flex_Axis.Column) {
-                    node.Size.Height = node.Children.Sum(c => c.Size.Height);
-                }
-                else {
-                    node.Size.Width = node.Children.Sum(c => c.Size.Width);
-                }
-            }
+            foreach (Action action in deferred) action();
         }
 
         private static float ValueFromUnit(RenderNode node, UnitFloat unitFloat) {
@@ -68,109 +77,132 @@ namespace Leagueinator.Printer.Styles {
             return node.Parent!.ContentBox().Width * unitFloat.Factor / 100;
         }
 
-        private static void SizeEdges(RenderNode root) {
-            TreeWalker<RenderNode>.Walk(root, node => {
-                if (node.Style.BorderSize is not null) {
-                    node.BorderSize = new Cardinal<float>() {
-                        Top = ValueFromUnit(node, node.Style.BorderSize.Top),
-                        Right = ValueFromUnit(node, node.Style.BorderSize.Right),
-                        Bottom = ValueFromUnit(node, node.Style.BorderSize.Bottom),
-                        Left = ValueFromUnit(node, node.Style.BorderSize.Left)
-                    };
-                }
-            });
+        private static void SizeEdges(RenderNode node) {
+            if (node.Style.Padding is not null) {
+                node.Padding = new Cardinal<float>() {
+                    Top = ValueFromUnit(node, node.Style.Padding.Top),
+                    Right = ValueFromUnit(node, node.Style.Padding.Right),
+                    Bottom = ValueFromUnit(node, node.Style.Padding.Bottom),
+                    Left = ValueFromUnit(node, node.Style.Padding.Left)
+                };
+            }
+
+            if (node.Style.BorderSize is not null) {
+                node.BorderSize = new Cardinal<float>() {
+                    Top = ValueFromUnit(node, node.Style.BorderSize.Top),
+                    Right = ValueFromUnit(node, node.Style.BorderSize.Right),
+                    Bottom = ValueFromUnit(node, node.Style.BorderSize.Bottom),
+                    Left = ValueFromUnit(node, node.Style.BorderSize.Left)
+                };
+            }
+
+            if (node.Style.Margin is not null) {
+                node.Margin = new Cardinal<float>() {
+                    Top = ValueFromUnit(node, node.Style.Margin.Top),
+                    Right = ValueFromUnit(node, node.Style.Margin.Right),
+                    Bottom = ValueFromUnit(node, node.Style.Margin.Bottom),
+                    Left = ValueFromUnit(node, node.Style.Margin.Left)
+                };
+            }
         }
 
-        public void EvaluateMajorWidth(RenderNode renderNode) {
-            var styleWidth = renderNode.Style.Width ?? new();
+        public void EvaluateMajorWidth(RenderNode node) {
+            var styleWidth = node.Style.Width ?? new();
 
             if (styleWidth.Unit.Equals("px")) {
-                renderNode.Size.Width = styleWidth.Factor;
+                node.Size.Width = styleWidth.Factor;
             }
             else if (styleWidth.Unit.Equals("auto")) {
-                if (renderNode.IsLeaf) {
-                    renderNode.Size.Width = 0f;
+                if (node.IsLeaf) {
+                    node.Size.Width = 0f;
                 }
                 else {
-                    this.deferred.Enqueue(renderNode);
+                    this.deferred.Enqueue(()=> node.Size.Width = node.Children.Sum(c => c.Size.Width));
                 }
             }
-            else if (renderNode.IsRoot) {
-                renderNode.Size.Width = 0;
+            else if (node.IsRoot) {
+                node.Size.Width = 0;
             }
-            else if (renderNode.IsLeaf && renderNode.Parent!.Style.Width!.Factor.Equals("auto")) {
-                renderNode.Size.Width = 0;
+            else if (node.IsLeaf && node.Parent!.Style.Width!.Factor.Equals("auto")) {
+                node.Size.Width = 0;
             }
             else {
-                renderNode.Size.Width = renderNode.Parent!.Size.Width * styleWidth.Factor / 100;
+                node.Size.Width = node.Parent!.Size.Width * styleWidth.Factor / 100;
             }
         }
 
-        public void EvaluateMinorWidth(RenderNode renderNode) {
-            var unitFloat = renderNode.Style.Width ?? new();
+        public void EvaluateMinorWidth(RenderNode node) {
+            var unitFloat = node.Style.Width ?? new();
 
             if (unitFloat.Unit.Equals("px")) {
-                renderNode.Size.Width = unitFloat.Factor;
+                node.Size.Width = unitFloat.Factor;
             }
-            else if (renderNode.IsRoot) {
-                renderNode.Size.Width = 0f;
+            else if (node.IsRoot) {
+                node.Size.Width = 0f;
             }
             else if (unitFloat.Unit.Equals("%")) { // branch and leaf
-                renderNode.Size.Width = renderNode.Parent!.Size.Width * unitFloat.Factor / 100;
+                node.Size.Width = node.Parent!.ContentBox().Width * unitFloat.Factor / 100;
+                node.Size.Width -= node.Margin.Left + node.Margin.Right;
+            }
+            else if (node.Style.Align_Items == Enums.Align_Items.Stretch) /* auto = same width as parent */ {
+                node.Size.Width = node.Parent!.ContentBox().Width;
+                node.Size.Width -= node.Margin.Left + node.Margin.Right;
             }
             else {
-                renderNode.Size.Width = renderNode.Parent!.Size.Width; // need to acommidate padding etc
+                this.deferred.Enqueue(() => node.Size.Width = node.Children.Sum(c => c.Size.Width));
             }
         }
 
-        public void EvaluateMajorHeight(RenderNode renderNode) {
-            var unitFloat = renderNode.Style.Height ?? new();
+        public void EvaluateMajorHeight(RenderNode node) {
+            var unitFloat = node.Style.Height ?? new();
 
             if (unitFloat.Unit.Equals("px")) {
-                renderNode.Size.Height = unitFloat.Factor;
+                node.Size.Height = unitFloat.Factor;
             }
             else if (unitFloat.Unit.Equals("auto")) {
-                if (renderNode.IsLeaf) {
-                    renderNode.Size.Height = 0f;
+                if (node.IsLeaf) {
+                    node.Size.Height = 0f;
                 }
                 else {
-                    this.deferred.Enqueue(renderNode);
+                    this.deferred.Enqueue(() => node.Size.Height = node.Children.Sum(c => c.Size.Height));
                     return;
                 }
             }
-            else if (renderNode.IsRoot) {
-                renderNode.Size.Height = 0;
+            else if (node.IsRoot) {
+                node.Size.Height = 0;
             }
-            else if (renderNode.IsLeaf && renderNode.Parent!.Style.Height!.Factor.Equals("auto")) {
-                renderNode.Size.Height = 0;
+            else if (node.IsLeaf && node.Parent!.Style.Height!.Factor.Equals("auto")) {
+                node.Size.Height = 0;
             }
             else {
-                renderNode.Size.Height = renderNode.Parent!.Size.Height * unitFloat.Factor / 100;
+                node.Size.Height = node.Parent!.Size.Height * unitFloat.Factor / 100;
             }
         }
 
-        public void EvaluateMinorHeight(RenderNode renderNode) {
-            var unitFloat = renderNode.Style.Height ?? new();
+        public void EvaluateMinorHeight(RenderNode node) {
+            var unitFloat = node.Style.Height ?? new();
 
             if (unitFloat.Unit.Equals("px")) {
-                renderNode.Size.Height = unitFloat.Factor;
+                node.Size.Height = unitFloat.Factor;
             }
-            else if (renderNode.IsRoot) {
-                renderNode.Size.Height = 0f;
+            else if (node.IsRoot) {
+                node.Size.Height = 0f;
                 return;
             }
             else if (unitFloat.Unit.Equals("%")) {// branch and leaf
-                renderNode.Size.Height = renderNode.Parent!.Size.Height * unitFloat.Factor / 100;
+                node.Size.Height = node.Parent!.Size.Height * unitFloat.Factor / 100;
+            }
+            else if (node.Style.Align_Items == Enums.Align_Items.Stretch) /* auto = same width as parent */ {
+                node.Size.Height = node.Parent!.Size.Height; 
+                node.Size.Height -= node.Margin.Top + node.Margin.Bottom;
             }
             else {
-                renderNode.Size.Height = renderNode.Parent!.Size.Height; // need to acommidate padding etc
+                this.deferred.Enqueue(() => node.Size.Height = node.Children.Sum(c => c.Size.Height));
             }
         }
 
         internal void DoPos(RenderNode root) {
             new TreeWalker<RenderNode>(root).Walk(current => {
-                if (current.IsRoot) return;
-
                 if (current.Style.Translate != null && !current.IsRoot) {
                     if (current.Style.Translate.X.Factor.Equals("%")) {
                         current.Translation.X += current.Parent!.Size.Width * current.Parent!.Style.Translate!.X.Factor / 100;
@@ -197,7 +229,7 @@ namespace Leagueinator.Printer.Styles {
                 if (current.Style.Position == Enums.Position.Fixed) current.DoPosAbsolute(current.Root);
 
                 // if absolute or flex, then position relative to parent
-                if (current.Style.Position != Enums.Position.Fixed) {
+                if (current.Style.Position != Enums.Position.Fixed && !current.IsRoot) {
                     current.Translation = current.Translation.Translate(current.Parent!.ContentBox().TopLeft());
                 }
             });
@@ -462,6 +494,7 @@ namespace Leagueinator.Printer.Styles {
                 case Enums.Flex_Axis.Row:
                     switch (node.Style.Align_Items) {
                         case Enums.Align_Items.Flex_start:
+                        case Enums.Align_Items.Stretch:
                             break;
                         case Enums.Align_Items.Flex_end:
                             children.ForEach(c => c.Translate(0, node.ContentBox().Height - c.OuterBox().Height));
@@ -474,6 +507,7 @@ namespace Leagueinator.Printer.Styles {
                 case Enums.Flex_Axis.Column:
                     switch (node.Style.Align_Items) {
                         case Enums.Align_Items.Flex_start:
+                        case Enums.Align_Items.Stretch:
                             break;
                         case Enums.Align_Items.Flex_end:
                             children.ForEach(c => c.Translate(node.ContentBox().Width - c.OuterBox().Width, 0));
