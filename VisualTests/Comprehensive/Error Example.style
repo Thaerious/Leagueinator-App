@@ -1,0 +1,12 @@
+@import "./Base.style"
+
+root{
+	align-items: center;
+}
+
+rounds {
+	flex-axis: column;
+	align-items: center;
+}
+
+

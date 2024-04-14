@@ -8,6 +8,7 @@ import_dir : I_DIR QUOTED_STRING
            ;
 
 style      : selectors OPAR line* CPAR           
+           | comment
            ;
 
 selectors  : selector
@@ -28,6 +29,7 @@ line       : property
            ;
 
 comment    : COMMENT COMMENT_VALUE NEWLINE
+           | K_COMMENT COMMENT_VALUE NEWLINE
            ;
 
 property   : KEY COLON VALUE SEMI

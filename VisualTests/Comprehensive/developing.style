@@ -1,0 +1,51 @@
+root {
+    width: 801px;
+    height: 1151px;
+}
+
+page{
+    width: 95%;
+    height: 95%;
+    border: 5px solid black;
+    overflow: paged;
+    align-items: center;
+    flex-axis: column;
+}
+
+section{
+    width: 90%;
+    border: 1px solid black;
+    margin: 5px;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 5px;
+    background-color: white;
+}
+
+names{
+    flex-axis: column;
+    width: 25%;
+}
+
+rounds{
+    flex-axis: column;
+    width: 70%;
+    border: 1px solid black;
+}
+
+row, header{
+    width: 100%;
+    flex-axis: row;
+	height: 100px;
+}
+
+header {
+    background-color: lightgray;
+}
+
+row > *, header > *{
+    width: 9%; 
+    align-items: center;
+    justify-content: center;
+}
+

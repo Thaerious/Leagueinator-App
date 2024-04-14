@@ -1,5 +1,0 @@
-@import "./Row Default.style"
-
-container{
-	align-items: stretch;
-}

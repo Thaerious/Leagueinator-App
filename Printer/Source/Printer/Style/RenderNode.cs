@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
-using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer.Styles {
@@ -8,7 +7,7 @@ namespace Leagueinator.Printer.Styles {
         public readonly Style Style = element.Style;
         public readonly Element Element = element;
 
-        public SizeF Size = new();
+        public FlexDim Size = new();
         public Cardinal<float> Margin = [];
         public Cardinal<float> BorderSize = [];
         public Cardinal<float> Padding = [];
@@ -84,8 +83,6 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public void DoDrawBackground(Graphics g) {
-            Debug.WriteLine($"{this} DoDrawBackground background {this.PaddingBox()}");
-
             if (this.Style.MarginColor != null) {
                 g.FillRectangle(new SolidBrush((Color)this.Style.MarginColor), this.OuterBox());
             }
@@ -98,7 +95,6 @@ namespace Leagueinator.Printer.Styles {
                 }
             }
             else if (this.Style.BackgroundColor != null) {
-                Debug.WriteLine($"{this} Draw background {this.PaddingBox()}");
                 g.FillRectangle(new SolidBrush((Color)this.Style.BackgroundColor), this.PaddingBox());
             }
         }

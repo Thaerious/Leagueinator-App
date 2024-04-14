@@ -1,0 +1,80 @@
+<root>
+    <page>
+	<section>
+            <names>
+                <name>John Candy</name>
+                <name>Eugene Levy</name>
+                <name>Joe Flaherty</name>
+                <name>Dave Thomas</name>
+                <name>Andrea Martin</name>
+            </names>
+            <rounds>
+                <header>
+                    <index>#</index>
+                    <lane>L</lane>
+                    <result>R</result>
+                    <bowls_for>BF</bowls_for>
+                    <bowls_against>BA</bowls_against>
+                    <tie>T</tie>
+                    <score_for>PF</score_for>
+                    <plus_for>+F</plus_for>
+                    <score_against>PA</score_against>
+                    <plus_against>+A</plus_against>
+                    <ends_played>E</ends_played>
+                </header>
+                <row>
+                    <index>0</index>
+                    <lane>4</lane>
+                    <result>W</result>
+                    <bowls_for>17</bowls_for>
+                    <bowls_against>8</bowls_against>
+                    <tie>0</tie>
+                    <score_for>15</score_for>
+                    <plus_for>2</plus_for>
+                    <score_against>8</score_against>
+                    <plus_against>0</plus_against>
+                    <ends_played>10</ends_played>
+                </row>
+                <row>
+                    <index>1</index>
+                    <lane>4</lane>
+                    <result>W</result>
+                    <bowls_for>17</bowls_for>
+                    <bowls_against>8</bowls_against>
+                    <tie>0</tie>
+                    <ends_played>10</ends_played>
+                    <score_for>15</score_for>
+                    <plus_for>2</plus_for>
+                    <score_against>8</score_against>
+                    <plus_against>0</plus_against>
+                </row>
+                <row>
+                    <index>2</index>
+                    <lane>4</lane>
+                    <result>W</result>
+                    <bowls_for>17</bowls_for>
+                    <bowls_against>8</bowls_against>
+                    <tie>0</tie>
+                    <ends_played>10</ends_played>
+                    <score_for>15</score_for>
+                    <plus_for>2</plus_for>
+                    <score_against>8</score_against>
+                    <plus_against>0</plus_against>
+                </row>
+                <row>
+                    <index>3</index>
+                    <lane>4</lane>
+                    <result>W</result>
+                    <bowls_for>17</bowls_for>
+                    <bowls_against>8</bowls_against>
+                    <tie>0</tie>
+                    <ends_played>10</ends_played>
+                    <score_for>15</score_for>
+                    <plus_for>2</plus_for>
+                    <score_against>8</score_against>
+                    <plus_against>0</plus_against>
+                </row>
+            </rounds>                    
+        </section>
+    </page>
+</root>

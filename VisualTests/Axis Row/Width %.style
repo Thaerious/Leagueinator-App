@@ -1,0 +1,7 @@
+@import "./Default.style"
+
+// only one branch has the width set
+
+leaf{
+	width: 25%;
+}

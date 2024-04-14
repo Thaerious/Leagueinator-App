@@ -1,0 +1,5 @@
+@import "./Default.style"
+
+page{
+	align-items: flex-end;
+}

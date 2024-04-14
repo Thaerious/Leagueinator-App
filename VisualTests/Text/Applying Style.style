@@ -1,8 +1,4 @@
-root{
-	width: 801px;
-	height: 1101px;
-	background-color: whitesmoke;
-}
+@import "./basic.style"
 
 container{
 	width: 200px;
@@ -11,10 +7,6 @@ container{
 	background-color: lightyellow;
 	justify-content: center;
 	align-items: center;
-}
-
-leaf {
-	background-color: lightgreen;
 }
 
 .row{

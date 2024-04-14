@@ -1,0 +1,33 @@
+root{
+	width: 400px;
+	height: 500px;
+	justify-content: center;
+	align-items: center;
+}
+
+page{
+	width: 300px;
+	height: 400px;
+     	background-color: whitesmoke;
+}
+
+branch{
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+}
+
+.1 { background-color: green; }
+.2 { 
+	background-color: lightgreen; 
+	height: 100px;
+}
+.3 { background-color: limegreen; }
+.a { background-color: yellow; }
+.b { background-color: gold; }
+.c {
+	width: 125px;
+ 	background-color: lightyellow; 
+}

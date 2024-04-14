@@ -1,0 +1,10 @@
+<root>
+	<container class="row">
+		<leaf>bud</leaf>
+		<leaf>bud</leaf>
+	</container>
+	<container class="col">
+		<leaf>bud</leaf>
+		<leaf>bud</leaf>
+	</container>
+</root>

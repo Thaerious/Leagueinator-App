@@ -1,0 +1,5 @@
+@import "./Default.style"
+
+page{
+	justify-content: flex-start;
+}
