@@ -1,6 +1,5 @@
 ﻿
 namespace Leagueinator.Printer.Styles {
-    public enum Dim { WIDTH, HEIGHT }
 
     public struct FlexDim(float width, float height) {
         public float Width { get; set; } = width;
@@ -9,7 +8,7 @@ namespace Leagueinator.Printer.Styles {
         public static explicit operator SizeF(FlexDim fd) => new(fd.Width, fd.Height);
 
         public float this[Dim dim] {
-            get {
+            readonly get {
                 return dim == Dim.WIDTH ? this.Width : this.Height;
             }
             set {

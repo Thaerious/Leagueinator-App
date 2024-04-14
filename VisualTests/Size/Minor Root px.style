@@ -1,0 +1,20 @@
+root{
+	background-color: lightyellow;
+	width: auto;
+	height: 150px;
+}
+
+branch{
+	width: 100px;
+	height: 75px;
+	border: 1px solid black;
+	margin: 12.5px;
+}
+
+leaf{	
+	border: 1px solid red;
+	margin: 12.5px;
+	width: 25px;
+	height: 25px;
+}
+

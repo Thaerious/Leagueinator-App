@@ -140,8 +140,6 @@ namespace Leagueinator.VisualUnitTest {
 
         private void HndDirCardClick(object? sender, EventArgs? _ = null) {
             if (sender == null) return;
-
-            // Directly cast sender dir DirectoryCard
             DirectoryCard card = (DirectoryCard)sender;
             this.ActiveDirCard = card;
         }
@@ -194,7 +192,7 @@ namespace Leagueinator.VisualUnitTest {
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK) {
-                this.AddTestCard(dialog.TestName);
+                this.AddTestCard(dialog.Value);
             }
         }
 
@@ -202,7 +200,7 @@ namespace Leagueinator.VisualUnitTest {
             try {
                 if (!this.IsReady) return;
 
-                LoadedStyles styles = new LoadedStyles().LoadFromFile(this.ActiveTestCard!.Paths.Style);                
+                LoadedStyles styles = new LoadedStyles().LoadFromFile(this.ActiveTestCard!.Paths.Style);
                 Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
                 styles.ApplyTo(root);
 
@@ -237,7 +235,7 @@ namespace Leagueinator.VisualUnitTest {
 
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog(ActiveTestCard!.Text) == DialogResult.OK) {
-                this.ActiveTestCard.Rename(dialog.TestName);
+                this.ActiveTestCard.Rename(dialog.Value);
             }
         }
 
@@ -307,6 +305,21 @@ namespace Leagueinator.VisualUnitTest {
         private void HndMenuAutoFormat(object sender, EventArgs e) {
             Element root = XMLLoader.Load(this.RichTextXML.Text);
             this.RichTextXML.Text = root.ToXML().ToString();
+        }
+
+        private void HndMenuNewDir(object sender, EventArgs e) {
+            if (this.ActiveDirCard is null) return;
+
+            using InputNameDialog dialog = new();
+            if (dialog.ShowDialog() == DialogResult.OK) {
+                string path = Path.Join(this.ActiveDirCard.DirPath, dialog.Value);
+                Debug.WriteLine(path);
+                Directory.CreateDirectory(path);
+                DirectoryCard card = new(dialog.Value);
+                card.Click += this.HndDirCardClick;
+                this.FlowPanelTestCards.Controls.Add(card);
+                this.FlowPanelTestCards.Controls.SetChildIndex(card, 0);
+            }
         }
     }
 

@@ -1,0 +1,7 @@
+<root>
+	<branch id="outer">
+		<branch id="inner">
+			leaf
+		</branch>
+	</branch>
+</root>

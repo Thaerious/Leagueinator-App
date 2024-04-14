@@ -1,0 +1,22 @@
+root{
+	background-color: lightyellow;
+	width: auto;
+	height: auto;
+}
+
+branch{
+	width: 100px;
+	height: 75px;
+	border: 1px solid black;
+	margin: 12.5px;
+	align-items: center;
+}
+
+leaf{	
+	border: 1px solid green;
+	margin: 12.5px;
+	width: auto;
+	height: auto;
+	background-color: lightgreen;
+}
+

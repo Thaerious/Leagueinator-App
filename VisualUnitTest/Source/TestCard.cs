@@ -3,7 +3,6 @@ using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
-using System.Diagnostics;
 
 namespace Leagueinator.VisualUnitTest {
     public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }

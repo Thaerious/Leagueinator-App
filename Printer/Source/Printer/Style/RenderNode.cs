@@ -7,6 +7,9 @@ namespace Leagueinator.Printer.Styles {
         public readonly Style Style = element.Style;
         public readonly Element Element = element;
 
+        /// <summary>
+        /// Set the height and/or width of the content box.
+        /// </summary>
         public FlexDim Size = new();
         public Cardinal<float> Margin = [];
         public Cardinal<float> BorderSize = [];
@@ -14,41 +17,33 @@ namespace Leagueinator.Printer.Styles {
         public PointF Translation = new();
         public int Page { get; internal set; } = 0;
 
-        internal RectangleF ContentBox() {
-            return new(
-                this.Translation.X + this.Margin!.Left + this.BorderSize!.Left + this.Padding!.Left,
-                this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top + this.Padding!.Top,
-                this.Size.Width,
-                this.Size.Height
-            );
-        }
+        internal FlexRect ContentBox => new(
+            this.Translation.X + this.Margin!.Left + this.BorderSize!.Left + this.Padding!.Left,
+            this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top + this.Padding!.Top,
+            this.Size.Width,
+            this.Size.Height
+        );
 
-        internal RectangleF PaddingBox() {
-            return new(
-                this.Translation.X + this.Margin!.Left + this.BorderSize!.Left,
-                this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top,
-                this.Size.Width + Padding!.Left + Padding!.Right,
-                this.Size.Height + Padding!.Top + Padding!.Bottom
-            );
-        }
+        internal FlexRect PaddingBox => new(
+            this.Translation.X + this.Margin!.Left + this.BorderSize!.Left,
+            this.Translation.Y + this.Margin!.Top + this.BorderSize!.Top,
+            this.Size.Width + Padding!.Left + Padding!.Right,
+            this.Size.Height + Padding!.Top + Padding!.Bottom
+        );
 
-        internal RectangleF BorderBox() {
-            return new(
-                this.Translation.X + this.Margin!.Left,
-                this.Translation.Y + this.Margin!.Top,
-                this.Size.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right,
-                this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom
-            );
-        }
+        internal FlexRect BorderBox => new(
+            this.Translation.X + this.Margin!.Left,
+            this.Translation.Y + this.Margin!.Top,
+            this.Size.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right,
+            this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom
+        );
 
-        internal RectangleF OuterBox() {
-            return new(
-                this.Translation.X,
-                this.Translation.Y,
-                this.Size.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right + this.Margin!.Left + this.Margin.Right,
-                this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom + this.Margin!.Top + this.Margin.Bottom
-            );
-        }
+        internal FlexRect OuterBox => new(
+            this.Translation.X,
+            this.Translation.Y,
+            this.Size.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right + this.Margin!.Left + this.Margin.Right,
+            this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom + this.Margin!.Top + this.Margin.Bottom
+        );
 
         public virtual void Draw(Graphics g, int page) {
             Stack<RenderNode> stack = [];
@@ -79,23 +74,23 @@ namespace Leagueinator.Printer.Styles {
             if (this.Element is not TextElement textElement) return;
             if (this.Style.Font == null) return;
             Brush brush = new SolidBrush(Color.Black);
-            g.DrawString(textElement.Text, this.Style.Font, brush, this.ContentBox().TopLeft());
+            g.DrawString(textElement.Text, this.Style.Font, brush, this.ContentBox.TopLeft);
         }
 
         public void DoDrawBackground(Graphics g) {
             if (this.Style.MarginColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.Style.MarginColor), this.OuterBox());
+                g.FillRectangle(new SolidBrush((Color)this.Style.MarginColor), this.OuterBox);
             }
 
             if (this.Style.PaddingColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.Style.PaddingColor), this.PaddingBox());
+                g.FillRectangle(new SolidBrush((Color)this.Style.PaddingColor), this.PaddingBox);
 
                 if (this.Style.BackgroundColor != null) {
-                    g.FillRectangle(new SolidBrush((Color)this.Style.BackgroundColor), this.ContentBox());
+                    g.FillRectangle(new SolidBrush((Color)this.Style.BackgroundColor), this.ContentBox);
                 }
             }
             else if (this.Style.BackgroundColor != null) {
-                g.FillRectangle(new SolidBrush((Color)this.Style.BackgroundColor), this.PaddingBox());
+                g.FillRectangle(new SolidBrush((Color)this.Style.BackgroundColor), this.PaddingBox);
             }
         }
 
@@ -110,8 +105,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.BorderBox().TopLeft().Translate(0, this.BorderSize.Top / 2),
-                    this.BorderBox().TopRight().Translate(0, this.BorderSize.Top / 2)
+                    this.BorderBox.TopLeft.Translate(0, this.BorderSize.Top / 2),
+                    this.BorderBox.TopRight.Translate(0, this.BorderSize.Top / 2)
                 );
             }
             if (this.Style.BorderColor.Right != default && this.BorderSize.Right > 0) {
@@ -121,8 +116,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.BorderBox().TopRight().Translate(-this.BorderSize.Right / 2, 0),
-                    this.BorderBox().BottomRight().Translate(-this.BorderSize.Right / 2, 0)
+                    this.BorderBox.TopRight.Translate(-this.BorderSize.Right / 2, 0),
+                    this.BorderBox.BottomRight.Translate(-this.BorderSize.Right / 2, 0)
                 );
             }
             if (this.Style.BorderColor.Bottom != default && this.BorderSize.Bottom > 0) {
@@ -132,8 +127,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.BorderBox().BottomRight().Translate(0, -this.BorderSize.Bottom / 2),
-                    this.BorderBox().BottomLeft().Translate(0, -this.BorderSize.Bottom / 2)
+                    this.BorderBox.BottomRight.Translate(0, -this.BorderSize.Bottom / 2),
+                    this.BorderBox.BottomLeft.Translate(0, -this.BorderSize.Bottom / 2)
                 );
             }
             if (this.Style.BorderColor.Left != default && this.BorderSize.Left > 0) {
@@ -143,8 +138,8 @@ namespace Leagueinator.Printer.Styles {
 
                 g.DrawLine(
                     pen,
-                    this.BorderBox().BottomLeft().Translate(this.BorderSize.Left / 2, 0),
-                    this.BorderBox().TopLeft().Translate(this.BorderSize.Left / 2, 0)
+                    this.BorderBox.BottomLeft.Translate(this.BorderSize.Left / 2, 0),
+                    this.BorderBox.TopLeft.Translate(this.BorderSize.Left / 2, 0)
                 );
             }
         }

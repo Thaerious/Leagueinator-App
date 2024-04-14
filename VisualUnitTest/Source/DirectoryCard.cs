@@ -12,6 +12,8 @@ namespace Leagueinator.VisualUnitTest {
 
             this.DragEnter += this.HndDragEnter;
             this.DragDrop += this.HndDragDrop;
+
+            this.Text = directory;
         }
 
         private void HndDragDrop(object? sender, DragEventArgs e) {

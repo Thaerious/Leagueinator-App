@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class InputNameDialog : Form {
-        public string TestName {
+        public string Value {
             get => this.TextName.Text;
         }
 

@@ -51,6 +51,7 @@
             this.runAllToolStripMenuItem = new ToolStripMenuItem();
             this.clearResultsToolStripMenuItem = new ToolStripMenuItem();
             this.FolderDialog = new FolderBrowserDialog();
+            this.newDirectoryToolStripMenuItem = new ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -228,7 +229,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadToolStripMenuItem, this.saveToolStripMenuItem, this.closeToolStripMenuItem, this.autoFormatToolStripMenuItem });
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.loadToolStripMenuItem, this.saveToolStripMenuItem, this.closeToolStripMenuItem, this.autoFormatToolStripMenuItem, this.newDirectoryToolStripMenuItem });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new Size(54, 29);
             this.fileToolStripMenuItem.Text = "File";
@@ -325,6 +326,13 @@
             this.clearResultsToolStripMenuItem.Text = "Clear Results";
             this.clearResultsToolStripMenuItem.Click += this.HndMenuClearResults;
             // 
+            // newDirectoryToolStripMenuItem
+            // 
+            this.newDirectoryToolStripMenuItem.Name = "newDirectoryToolStripMenuItem";
+            this.newDirectoryToolStripMenuItem.Size = new Size(275, 34);
+            this.newDirectoryToolStripMenuItem.Text = "New Directory";
+            this.newDirectoryToolStripMenuItem.Click += this.HndMenuNewDir;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
@@ -382,5 +390,6 @@
         private ToolStripMenuItem clearResultsToolStripMenuItem;
         private CustomRichTextBox RichTextXML;
         private ToolStripMenuItem autoFormatToolStripMenuItem;
+        private ToolStripMenuItem newDirectoryToolStripMenuItem;
     }
 }
