@@ -182,12 +182,20 @@ namespace Leagueinator.Printer.Styles {
                     node.Size[dim] = node.Parent!.Size[dim] * styleVal.Factor / 100;
                 }
                 else /* auto */{
-                    if (node.Parent!.Style.Align_Items == Enums.Align_Items.Stretch) {
-                        TabbedDebug.WriteLine($"parent stretch deferred");
-                        this.deferred.Add(() => {
-                            node.Size[dim] = node.Parent.ContentBox[dim] - node.OuterBox[dim] + node.ContentBox[dim];
-                            TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
-                        });
+                    if (node.IsStretch(dim)) {
+                        if (node.Parent!.IsFit(dim)) {
+                            this.deferred.Insert(0, () => {
+                                node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
+                                TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
+                            });
+                        }
+                        else {
+                            TabbedDebug.WriteLine($"parent stretch deferred");
+                            this.deferred.Add(() => {
+                                node.Size[dim] = node.Parent.ContentBox[dim] - node.OuterBox[dim] + node.ContentBox[dim];
+                                TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
+                            });
+                        }
                     }
                     else {
                         if (node.IsLeaf) node.Size[dim] = 0;

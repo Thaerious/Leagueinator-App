@@ -1,0 +1,23 @@
+root{
+	background-color: lightyellow;
+	width: 300px;
+	height: 200px;
+	align-items: flex-start;
+}
+
+branch{
+	border: 1px solid black;
+	margin: 12.5px;
+	width: auto;
+	height: auto;
+}
+
+leaf{	
+	border: 1px solid green;
+	margin: 12.5px;
+
+	width: 25px;
+	height: 25px;
+	background-color: lightgreen;
+}
+

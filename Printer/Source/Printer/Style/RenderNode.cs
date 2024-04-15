@@ -45,16 +45,35 @@ namespace Leagueinator.Printer.Styles {
             this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom + this.Margin!.Top + this.Margin.Bottom
         );
 
+        // True if this node should fit to it's child nodes.
         public bool IsFit(Dim dim) {
-            if (this.IsRoot) return false;
+            if (this.IsRoot) return this.Style.Align_Items != Enums.Align_Items.Stretch;
+            if (this.IsLeaf) return this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch;
 
             switch (dim) {
                 case Dim.WIDTH:
                     if (!this.Style.Width!.Unit.Equals("auto")) return false;
-                    return this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch;
+                    return this.Parent!.IsFit(dim);
                 case Dim.HEIGHT:
                     if (!this.Style.Height!.Unit.Equals("auto")) return false;
-                    return this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch;
+                    return this.Parent!.IsFit(dim);
+            }
+
+            return false;
+        }
+
+        // True if this node should fit to to it's parent node.
+        public bool IsStretch(Dim dim) {
+            if (this.IsRoot) return this.Style.Align_Items == Enums.Align_Items.Stretch;
+            if (this.IsLeaf) return this.Parent!.Style.Align_Items == Enums.Align_Items.Stretch;
+
+            switch (dim) {
+                case Dim.WIDTH:
+                    if (!this.Style.Width!.Unit.Equals("auto")) return false;
+                    return this.Parent!.IsStretch(dim);
+                case Dim.HEIGHT:
+                    if (!this.Style.Height!.Unit.Equals("auto")) return false;
+                    return this.Parent!.IsStretch(dim);
             }
 
             return false;
