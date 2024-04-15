@@ -53,8 +53,7 @@
         }
 
         #endregion
-
-        private Label Label;
         private ToolTip ToolTip;
+        internal Label Label;
     }
 }

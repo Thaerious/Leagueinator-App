@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer.Styles {
     //[DebugTrace]
@@ -37,8 +36,10 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private void SizeFirstPass(RenderNode root) {
+            TabbedDebug.ResetBlock($"1st Pass");
+
             TreeWalker<RenderNode>.Walk(root, node => {
-                TabbedDebug.ResetBlock($"1st pass {node}");
+                TabbedDebug.StartBlock($"{node}");
 
                 if (node.Element.TagName == "@text") {
                     node.Size = new(((TextElement)node.Element).Size());
@@ -59,6 +60,8 @@ namespace Leagueinator.Printer.Styles {
                     EvaluateMajor(node, Dim.HEIGHT);
                     TabbedDebug.EndBlock();
                 }
+
+                TabbedDebug.EndBlock();
             });
         }
 
@@ -66,7 +69,7 @@ namespace Leagueinator.Printer.Styles {
         /// Set size of parent to sum of child size on the major axis.
         /// </summary>
         private void SizeSecondPass() {
-            this.deferred.Reverse();
+            TabbedDebug.ResetBlock($"2nd Pass");
             foreach (Action action in this.deferred) action();
         }
 
@@ -111,6 +114,7 @@ namespace Leagueinator.Printer.Styles {
             styleVal ??= new();
 
             if (styleVal.Unit.Equals("px")) {
+                TabbedDebug.WriteLine($"{node}[{dim}] = {styleVal.Factor} px");
                 node.Size[dim] = styleVal.Factor;
             }
             else if (node.IsRoot) {
@@ -118,7 +122,11 @@ namespace Leagueinator.Printer.Styles {
                     throw new NotImplementedException("Root size by % not permitted");
                 }
                 if (styleVal.Unit.Equals("auto")) {
-                    this.deferred.Add(() => node.Size[dim] = node.Children.Sum(c => c.OuterBox[dim]));
+                    TabbedDebug.WriteLine($"auto deferred");
+                    this.deferred.Insert(0, () => {
+                        node.Size[dim] = node.Children.Sum(c => c.OuterBox[dim]);
+                        TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
+                    });
                 }
             }
             else if (node.IsLeaf) {
@@ -139,7 +147,10 @@ namespace Leagueinator.Printer.Styles {
                     node.Size[dim] = node.Parent!.Size[dim] * styleVal.Factor / 100;
                 }
                 if (styleVal.Unit.Equals("auto")) {
-                    this.deferred.Add(() => node.Size[dim] = node.Children.Sum(c => c.OuterBox[dim]));
+                    this.deferred.Insert(0, () => {
+                        node.Size[dim] = node.Children.Sum(c => c.OuterBox[dim]);
+                        TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
+                    });
                 }
             }
         }
@@ -150,7 +161,7 @@ namespace Leagueinator.Printer.Styles {
             styleVal ??= new();
 
             if (styleVal.Unit.Equals("px")) {
-                TabbedDebug.WriteLine($"{styleVal.Factor} px");
+                TabbedDebug.WriteLine($"{node}[{dim}] = {styleVal.Factor} px");
                 node.Size[dim] = styleVal.Factor;
             }
             else if (node.IsRoot) {
@@ -159,7 +170,10 @@ namespace Leagueinator.Printer.Styles {
                 }
                 if (styleVal.Unit.Equals("auto")) {
                     TabbedDebug.WriteLine($"auto deferred");
-                    this.deferred.Add(() => node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]));
+                    this.deferred.Insert(0, () => {
+                        node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
+                        TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
+                    });
                 }
             }
             else {
@@ -170,15 +184,19 @@ namespace Leagueinator.Printer.Styles {
                 else /* auto */{
                     if (node.Parent!.Style.Align_Items == Enums.Align_Items.Stretch) {
                         TabbedDebug.WriteLine($"parent stretch deferred");
-                        this.deferred.Insert(0, () => {
+                        this.deferred.Add(() => {
                             node.Size[dim] = node.Parent.ContentBox[dim] - node.OuterBox[dim] + node.ContentBox[dim];
+                            TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                         });
                     }
                     else {
                         if (node.IsLeaf) node.Size[dim] = 0;
                         else {
                             TabbedDebug.WriteLine($"parent other deferred");
-                            this.deferred.Add(() => node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]));
+                            this.deferred.Insert(0, () => {
+                                node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
+                                TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
+                            });
                         }
                     }
                 }

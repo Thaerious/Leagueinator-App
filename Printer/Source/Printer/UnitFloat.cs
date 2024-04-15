@@ -23,7 +23,7 @@ namespace Leagueinator.Printer {
                 return true;
             }
 
-            string pattern = @"(\d+)([a-zA-Z%]+)";
+            string pattern = @"(-?\d+)([a-zA-Z%]+)";
             Match match = Regex.Match(input, pattern);
 
             target = new() {

@@ -24,7 +24,6 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.Label = new Label();
             this.ButtonPass = new Button();
             this.ButtonFail = new Button();
             this.ToolTip = new ToolTip(this.components);
@@ -55,19 +54,16 @@
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;
-            this.BackgroundImageLayout = ImageLayout.None;
-            this.Controls.Add(this.ButtonFail);
             this.Controls.Add(this.ButtonPass);
-            this.Controls.Add(this.Label);
+            this.Controls.Add(this.ButtonFail);
             this.Name = "TestCard";
-            this.Size = new Size(400, 55);
+            this.Controls.SetChildIndex(this.ButtonFail, 0);
+            this.Controls.SetChildIndex(this.ButtonPass, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
-
-        private Label Label;
         public Button ButtonPass;
         public Button ButtonFail;
         private ToolTip ToolTip;

@@ -1,0 +1,18 @@
+<!--
+   The outer branch wants to fit the child nodes because it's parent (root) is not stretch.
+   The inner branches wants to fit the parent node because their parent (outer branch) is stretch.
+   This is a conflict and both go to 0.
+-->
+
+<root>
+	<branch id="outer">
+		<branch id="left">
+			<leaf/>
+			<leaf/>
+		</branch>
+		<branch id="right">
+			<leaf/>
+			<leaf/>
+		</branch>
+	</branch>
+</root>

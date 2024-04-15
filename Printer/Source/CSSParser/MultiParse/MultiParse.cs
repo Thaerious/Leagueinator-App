@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
-using System.Text.RegularExpressions;
 using Leagueinator.Utility;
 
 namespace Leagueinator.CSSParser {
-    public static class MultiParse {
-
+    public static partial class MultiParse {
         /// <summary>
-        /// Assign a Value of type 'U' to target based on a source string.
+        /// Assign a Value of type 'T' to target based on the source string.
         /// </summary>
         /// <typeparam name="T">The type of object to generate.</typeparam>
         /// <param name="source">The string used to generate the new object.</param>
@@ -129,43 +127,6 @@ namespace Leagueinator.CSSParser {
 
             target = properties[key].GetValue(null);
             return true;
-        }
-
-        public static class SpecialCases {
-            private static string rgbPattern = @"rgb\([ ]*(\d\d?\d?)[ ]*,[ ]*(\d\d?\d?)[ ]*,[ ]*(\d\d?\d?)[ ]*\)";
-            private static Regex rgbRegex = new Regex(rgbPattern);
-
-            public static bool Parse(string source, out Color color) {
-                var match = rgbRegex.Match(source);
-                if (match.Success) {
-                    int r = int.Parse(match.Groups[1].Value);
-                    int g = int.Parse(match.Groups[2].Value);
-                    int b = int.Parse(match.Groups[3].Value);
-                    color = Color.FromArgb(r, g, b);
-                    return true;
-                }
-                color = default;
-                return false;
-            }
-
-            public static bool Parse(string source, out Func<float, float?> func) {
-                if (source.EndsWith("px")) {
-                    var substring = source.Substring(0, source.Length - 2);
-                    var parsed = float.Parse(substring);
-                    func = f => parsed;
-                    return true;
-                }
-                else if (source.EndsWith("%")) {
-                    var substring = source.Substring(0, source.Length - 1);
-                    var parsed = float.Parse(substring);
-                    func = f => f * (parsed / 100);
-                    return true;
-                }
-                else {
-                    func = f => null;
-                    return false;
-                }
-            }
         }
     }
 }

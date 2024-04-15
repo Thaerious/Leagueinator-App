@@ -1,10 +1,10 @@
 <root>
-	<branch>
-		<branch>
+	<branch id="outer">
+		<branch id="left">
 			<leaf/>
 			<leaf/>
 		</branch>
-		<branch>
+		<branch id="right">
 			<leaf/>
 			<leaf/>
 		</branch>

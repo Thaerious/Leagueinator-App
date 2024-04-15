@@ -45,6 +45,21 @@ namespace Leagueinator.Printer.Styles {
             this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom + this.Margin!.Top + this.Margin.Bottom
         );
 
+        public bool IsFit(Dim dim) {
+            if (this.IsRoot) return false;
+
+            switch (dim) {
+                case Dim.WIDTH:
+                    if (!this.Style.Width!.Unit.Equals("auto")) return false;
+                    return this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch;
+                case Dim.HEIGHT:
+                    if (!this.Style.Height!.Unit.Equals("auto")) return false;
+                    return this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch;
+            }
+
+            return false;
+        }
+
         public virtual void Draw(Graphics g, int page) {
             Stack<RenderNode> stack = [];
             stack.Push(this);
