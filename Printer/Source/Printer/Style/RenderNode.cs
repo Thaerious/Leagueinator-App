@@ -45,38 +45,37 @@ namespace Leagueinator.Printer.Styles {
             this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom + this.Margin!.Top + this.Margin.Bottom
         );
 
-        // True if this node should fit to it's child nodes.
+        /// <summary>
+        /// True if this node should to fit it's child nodes.
+        /// True when the node dimension is set to auto and the parent node does not have align stretch.
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <returns></returns>
         public bool IsFit(Dim dim) {
-            if (this.IsRoot) return this.Style.Align_Items != Enums.Align_Items.Stretch;
-            if (this.IsLeaf) return this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch;
+            UnitFloat unitFloat = dim == Dim.WIDTH ? this.Style.Width! : this.Style.Height!;
+            if (!unitFloat.Unit.Equals("auto")) return false;
+            if (this.IsRoot) return true;
+            if (this.IsLeaf) return false;
 
-            switch (dim) {
-                case Dim.WIDTH:
-                    if (!this.Style.Width!.Unit.Equals("auto")) return false;
-                    return this.Parent!.IsFit(dim);
-                case Dim.HEIGHT:
-                    if (!this.Style.Height!.Unit.Equals("auto")) return false;
-                    return this.Parent!.IsFit(dim);
-            }
-
-            return false;
+            if (this.Parent!.IsFit(dim)) return true;
+            return (this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch);
         }
 
-        // True if this node should fit to to it's parent node.
+        /// <summary>
+        /// True if this node should stretch to fit it's parent node.
+        /// This is only true when the node dimension is set to auto and the parent has align of stretch (or auto).
+        /// If the parent node isFit and this wants to stretch this changes to fit.
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <returns></returns>
         public bool IsStretch(Dim dim) {
-            if (this.IsRoot) return this.Style.Align_Items == Enums.Align_Items.Stretch;
-            if (this.IsLeaf) return this.Parent!.Style.Align_Items == Enums.Align_Items.Stretch;
+            if (this.IsRoot) return false;
+            if (this.Parent!.Style.Align_Items != Enums.Align_Items.Stretch) return false;
+            UnitFloat unitFloat = dim == Dim.WIDTH ? this.Style.Width! : this.Style.Height!;
+            if (!unitFloat.Unit.Equals("auto")) return false;
 
-            switch (dim) {
-                case Dim.WIDTH:
-                    if (!this.Style.Width!.Unit.Equals("auto")) return false;
-                    return this.Parent!.IsStretch(dim);
-                case Dim.HEIGHT:
-                    if (!this.Style.Height!.Unit.Equals("auto")) return false;
-                    return this.Parent!.IsStretch(dim);
-            }
-
-            return false;
+            if (this.Parent!.IsFit(dim)) return false;
+            return true;
         }
 
         public virtual void Draw(Graphics g, int page) {

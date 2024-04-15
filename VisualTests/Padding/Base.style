@@ -1,0 +1,17 @@
+root{
+	width: 500px;
+	height: 600px;
+}
+
+page{
+	width: 400px;
+	height: 500px;
+	background-color: yellow;
+}
+
+leaf{
+	width: 25px;
+	height: 25px;
+	padding-color: blue;
+	background-color: lightblue;
+}

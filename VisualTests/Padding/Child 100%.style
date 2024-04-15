@@ -1,7 +1,4 @@
-root{
-	width: 800px;
-	height: 1100px;
-}
+@import "Base.style"
 
 page{
 	width: 500px;

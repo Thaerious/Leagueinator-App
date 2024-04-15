@@ -1,6 +1,0 @@
-@import "./Default.style"
-
-
-leaf{
-	width: 50%;
-}

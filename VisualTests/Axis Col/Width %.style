@@ -1,5 +1,0 @@
-@import "./Default.style"
-
-leaf{
-	height: 25%;
-}

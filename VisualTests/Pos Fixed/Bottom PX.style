@@ -1,32 +1,6 @@
-root{
-	width: 800px;
-	height: 1100px;
-	border: 1px solid black;
-}
-
-page{
-	width: 500px;
-	height: 500px;
-	border: 1px solid black;
-	background-color: yellow;
-}
+@import "Base.style"
 
 page *{
 	position: fixed;
 	bottom: 50px;
 }
-
-container{
-	width: 150px;
-	height: 250px;
-	border: 1px solid black;
-	background-color: lightyellow;
-}
-
-leaf{
-	width: 25px;
-	height: 25px;
-	border: 1px solid black;
-	background-color: yellow;
-}
-

@@ -109,7 +109,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public void EvaluateMajor(RenderNode node, Dim dim) {
-            TabbedDebug.StartBlock($"EvaluateMajor {node} {dim}");
+            TabbedDebug.StartBlock($"EvaluateMajor {node} {dim} : isFit({node.IsFit(dim)}) isStretch({node.IsStretch(dim)})\");");
             UnitFloat styleVal = dim == Dim.WIDTH ? node.Style.Width! : node.Style.Height!;
             styleVal ??= new();
 
@@ -156,7 +156,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public void EvaluateMinor(RenderNode node, Dim dim) {
-            TabbedDebug.StartBlock($"EvaluateMinor {node} {dim}");
+            TabbedDebug.StartBlock($"EvaluateMinor {node} {dim} : isFit({node.IsFit(dim)}) isStretch({node.IsStretch(dim)})");
             UnitFloat styleVal = dim == Dim.WIDTH ? node.Style.Width! : node.Style.Height!;
             styleVal ??= new();
 
@@ -197,10 +197,10 @@ namespace Leagueinator.Printer.Styles {
                             });
                         }
                     }
-                    else {
+                    else /* is not stretch */ {
                         if (node.IsLeaf) node.Size[dim] = 0;
                         else {
-                            TabbedDebug.WriteLine($"parent other deferred");
+                            TabbedDebug.WriteLine($"child max deferred");
                             this.deferred.Insert(0, () => {
                                 node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
                                 TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");

@@ -1,13 +1,4 @@
-root{
-	width: 800px;
-	height: 1100px;
-}
-
-page{
-	width: 500px;
-	height: 500px;
-	background-color: yellow;
-}
+@import "Base.style"
 
 container{
 	width: 200px;
@@ -15,13 +6,6 @@ container{
 	padding-color: red;
 	background-color: lightyellow;
 	border: 25px solid black;
-	padding: 0px 0px 25px 0px;
-}
-
-leaf{
-	width: 25px;
-	height: 25px;
-	padding-color: blue;
-	background-color: lightblue;
+	padding: 0px 0px 0px 25px;
 }
 
