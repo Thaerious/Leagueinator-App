@@ -3,6 +3,7 @@ using Leagueinator.Printer.Utility;
 
 namespace Leagueinator.Printer.Styles {
     //[DebugTrace]
+    [EnableTabbedDebug(false)]
     public class Flex {
         private int pageCount = 1;
         private List<Action> deferred = [];
