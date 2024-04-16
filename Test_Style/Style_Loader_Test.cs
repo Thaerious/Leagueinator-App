@@ -15,31 +15,33 @@ namespace Test_Style {
             foreach (Style style in styles) {
                 Debug.WriteLine($"{style.Selector} [{style.Specificity.DelString()}]");
             }
-            Debug.WriteLine($"--------------------\n{styles.Count} Style{(styles.AsList().Count == 1 ? "" : "s")}");
+            Debug.WriteLine($"--------------------\n{styles.Count} Style{(styles.Count == 1 ? "" : "s")}");
 
-            Assert.IsTrue(styles[0].Selector.Equals(".parent"));
-            Assert.IsTrue(styles[1].Selector.Equals(".child"));
-            Assert.IsTrue(styles[2].Selector.Equals("parent > child > deepchild"));
-            Assert.IsTrue(styles[3].Selector.Equals("*"));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals(".parent")));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals(".child")));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("parent > child > deepchild")));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("*")));
+
         }
 
         [TestMethod]
         public void Comma_Seperated_Selectors() {
             LoadedStyles styles = LoadSSResource("style_commas.css");
 
-            Assert.IsTrue(styles[0].Selector.Equals("#b"));    // #b is first because ids have the highest precedence
-            Assert.IsTrue(styles[1].Selector.Equals(".c"));    // .c is second because classes have the second highest precedence  
-            Assert.IsTrue(styles[2].Selector.Equals("red"));   // red, green blue appears before 'a'
-            Assert.IsTrue(styles[3].Selector.Equals("green"));
-            Assert.IsTrue(styles[4].Selector.Equals("blue"));
-            Assert.IsTrue(styles[5].Selector.Equals("a"));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("#b")));
+
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("#b")));    // #b is first because ids have the highest precedence
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals(".c")));    // .c is second because classes have the second highest precedence  
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("red")));   // red, green blue appears before 'a'
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("green")));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("blue")));
+            Assert.IsTrue(styles.Any(style => style.Selector.Equals("a")));
 
 
-            foreach (Style style in styles.AsList()) {
+            foreach (Style style in styles) {
                 Debug.WriteLine($"{style.Selector} [{style.Specificity.DelString()}]");
             }
-            Debug.WriteLine($"--------------------\n{styles.AsList().Count} Style{(styles.AsList().Count == 1 ? "" : "s")}");
-
+            Debug.WriteLine($"--------------------\n{styles.Count} Style{(styles.Count == 1 ? "" : "s")}");
         }
     }
 }
