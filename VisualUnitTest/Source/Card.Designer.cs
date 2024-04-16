@@ -24,20 +24,20 @@
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.Label = new Label();
+            this.LabelDisplayText = new Label();
             this.ToolTip = new ToolTip(this.components);
             this.SuspendLayout();
             // 
-            // Label
+            // LabelDisplayText
             // 
-            this.Label.AutoSize = true;
-            this.Label.BackColor = SystemColors.Control;
-            this.Label.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            this.Label.Location = new Point(3, 12);
-            this.Label.Name = "Label";
-            this.Label.Size = new Size(105, 33);
-            this.Label.TabIndex = 0;
-            this.Label.Text = "label1";
+            this.LabelDisplayText.AutoSize = true;
+            this.LabelDisplayText.BackColor = SystemColors.Control;
+            this.LabelDisplayText.Font = new Font("Consolas", 14F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            this.LabelDisplayText.Location = new Point(3, 12);
+            this.LabelDisplayText.Name = "LabelDisplayText";
+            this.LabelDisplayText.Size = new Size(105, 33);
+            this.LabelDisplayText.TabIndex = 0;
+            this.LabelDisplayText.Text = "label1";
             // 
             // Card
             // 
@@ -45,7 +45,7 @@
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;
             this.BackgroundImageLayout = ImageLayout.None;
-            this.Controls.Add(this.Label);
+            this.Controls.Add(this.LabelDisplayText);
             this.Name = "Card";
             this.Size = new Size(400, 55);
             this.ResumeLayout(false);
@@ -54,6 +54,6 @@
 
         #endregion
         private ToolTip ToolTip;
-        internal Label Label;
+        internal Label LabelDisplayText;
     }
 }

@@ -18,10 +18,10 @@ namespace Leagueinator.VisualUnitTest {
 
         private void HndDragDrop(object? sender, DragEventArgs e) {
             if (e.Data is null) return;
-            TestCard? data = (TestCard?)e.Data.GetData(typeof(TestCard));            
+            TestCard? data = (TestCard?)e.Data.GetData(typeof(TestCard));
             if (data == null) return;
             Debug.WriteLine($"DirectoryCard.HndDragDrop {data.Text}");
-            this.OnCopy.Invoke(data, this);            
+            this.OnCopy.Invoke(data, this);
         }
 
         private void HndDragEnter(object? sender, DragEventArgs e) {
@@ -50,6 +50,30 @@ namespace Leagueinator.VisualUnitTest {
                 }
 
                 return cards;
+            }
+        }
+
+        public async void RunTests() {
+            this.labelCount.ForeColor = Color.Black;            
+            int count = this.Cards.Count;
+            int failed = 0;
+            int passed = 0;
+
+            foreach (TestCard card in this.Cards.OfType<TestCard>()) {
+                card.Status = await Task.Run(() => card.DoTest());
+
+                if (card.Status == Status.PASS) passed++;
+                if (card.Status == Status.FAIL) failed++;
+                this.labelCount.Text = (passed).ToString();
+            }
+
+            if (failed > 0) {
+                this.labelCount.ForeColor = Color.Red;
+                this.labelCount.Text = (failed).ToString();
+            }
+            else {
+                this.labelCount.ForeColor = Color.Green;
+                this.labelCount.Text = (passed).ToString();
             }
         }
 

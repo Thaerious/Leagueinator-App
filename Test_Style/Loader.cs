@@ -33,7 +33,7 @@ namespace Test_Style {
             using Stream? xmlStream = assembly.GetManifestResourceStream(cssName) ?? throw new NullReferenceException($"Resource Not Found: {cssName}");
             using StreamReader xmlReader = new StreamReader(xmlStream);
             string xmlText = xmlReader.ReadToEnd();
-            return new LoadedStyles().LoadFromString("", xmlText);
+            return LoadedStyles.LoadFromString("", xmlText);
         }
     }
 }

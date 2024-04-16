@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
-using Leagueinator.Printer.Aspects;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using System.Collections;
@@ -10,27 +9,29 @@ namespace Leagueinator.CSSParser {
     public class LoadedStyles : IEnumerable<Style> {
         private readonly Dictionary<string, StyleSheet> Loaded = [];
 
-        public LoadedStyles LoadFromFile(string path) {
-            Debug.WriteLine($"LoadFromFile {path}");
-            string dir = Path.GetDirectoryName(path);
+        public static LoadedStyles LoadFromString(string path, string text) {
+            LoadedStyles loadedStyles = new();
+            loadedStyles.Loaded[path] = new StyleSheet().LoadFromString(text);
+            return loadedStyles;
+        }
 
-            this.Loaded[path] = new StyleSheet().LoadFromString(File.ReadAllText(path));
+        public static LoadedStyles LoadFromFile(string path) {
+            LoadedStyles loadedStyles = new();
+            string? dir = Path.GetDirectoryName(path);
+            if (dir is null) throw new FileNotFoundException($"Unknown path: {path}");
 
-            foreach (string import in this.Loaded[path].Imports) {
+            loadedStyles.Loaded[path] = new StyleSheet().LoadFromString(File.ReadAllText(path));
+
+            foreach (string import in loadedStyles.Loaded[path].Imports) {
                 string sub = import.Substring(1, import.Length - 2);
                 string importPath = Path.Combine(dir, sub);
                 Debug.WriteLine($"Import Path {importPath}");
 
-                if (Loaded.ContainsKey(importPath)) continue;
-                this.Loaded[importPath] = new StyleSheet().LoadFromString(File.ReadAllText(importPath));
+                if (loadedStyles.Loaded.ContainsKey(importPath)) continue;
+                loadedStyles.Loaded[importPath] = new StyleSheet().LoadFromString(File.ReadAllText(importPath));
             }
 
-            return this;
-        }
-
-        public LoadedStyles LoadFromString(string path, string text) {
-            this.Loaded[path] = new StyleSheet().LoadFromString(text);
-            return this;
+            return loadedStyles;
         }
 
         public void ApplyTo(Element root) {
@@ -62,6 +63,8 @@ namespace Leagueinator.CSSParser {
             }
         }
 
+        public int Count => Loaded.Values.Sum(styleSheet => styleSheet.Count);
+
         public IEnumerable<Style> AsEnumerable() {
             foreach (StyleSheet stylesheet in this.Loaded.Values) {
                 foreach (Style style in stylesheet) {
@@ -83,7 +86,7 @@ namespace Leagueinator.CSSParser {
     /// <summary>
     /// A collection of styles with the query string as the key.
     /// </summary>
-    public class StyleSheet : IEnumerable<Style> {
+    internal class StyleSheet : IEnumerable<Style> {
         internal List<string> Imports = [];
         private readonly SortedList<Style, Style> Inner = [];
 

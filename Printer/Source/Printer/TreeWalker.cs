@@ -2,7 +2,7 @@
     /// <summary>
     /// An node queue that will add all child elements to the queue whenever an node is dequeued.
     /// </summary>
-    internal class TreeWalker<T> : Queue<T> where T : TreeNode<T> {
+    public class TreeWalker<T> : Queue<T> where T : TreeNode<T> {
 
         public static void Walk<U>(U root, Action<U> action) where U : TreeNode<U> {
             new TreeWalker<U>(root).Walk(action);

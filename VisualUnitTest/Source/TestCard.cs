@@ -19,10 +19,10 @@ namespace Leagueinator.VisualUnitTest {
             InitializeComponent();
             this._parentCard = parent;
             this.Text = testName;
-            this.Label.BackColor = Color.Transparent;
+            this.LabelDisplayText.BackColor = Color.Transparent;
 
             this.MouseDown += HndDragStart;
-            this.Label.MouseDown += HndDragStart;
+            this.LabelDisplayText.MouseDown += HndDragStart;
 
             this.ButtonFail.Click += (s, e) => {
                 this.Status = Status.NO_TEST;
@@ -63,7 +63,7 @@ namespace Leagueinator.VisualUnitTest {
 
             if (xmlText.IsEmpty()) return false;
 
-            LoadedStyles styles = new LoadedStyles().LoadFromFile(this.Paths.Style);
+            LoadedStyles styles = LoadedStyles.LoadFromFile(this.Paths.Style);
             Element root = XMLLoader.Load(xmlText)["root"][0];
             styles.ApplyTo(root);
             Flex flex = new();

@@ -26,17 +26,29 @@
             this.components = new System.ComponentModel.Container();
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryCard));
             this.ToolTip = new ToolTip(this.components);
-            this.label1 = new Label();
+            this.labelImage = new Label();
+            this.labelCount = new Label();
             this.SuspendLayout();
             // 
-            // label1
+            // labelImage
             // 
-            this.label1.Image = (Image)resources.GetObject("label1.Image");
-            this.label1.Location = new Point(321, 0);
-            this.label1.Name = "label1";
-            this.label1.RightToLeft = RightToLeft.Yes;
-            this.label1.Size = new Size(76, 55);
-            this.label1.TabIndex = 1;
+            this.labelImage.Image = (Image)resources.GetObject("labelImage.Image");
+            this.labelImage.Location = new Point(269, 0);
+            this.labelImage.Name = "labelImage";
+            this.labelImage.RightToLeft = RightToLeft.Yes;
+            this.labelImage.Size = new Size(76, 55);
+            this.labelImage.TabIndex = 1;
+            // 
+            // labelCount
+            // 
+            this.labelCount.BackColor = Color.Transparent;
+            this.labelCount.Font = new Font("Segoe UI Black", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            this.labelCount.Location = new Point(351, 1);
+            this.labelCount.Name = "labelCount";
+            this.labelCount.Size = new Size(46, 50);
+            this.labelCount.TabIndex = 2;
+            this.labelCount.Text = "0";
+            this.labelCount.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // DirectoryCard
             // 
@@ -44,15 +56,18 @@
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.BackColor = SystemColors.Control;
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelCount);
+            this.Controls.Add(this.labelImage);
             this.Name = "DirectoryCard";
-            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.labelImage, 0);
+            this.Controls.SetChildIndex(this.labelCount, 0);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
         private ToolTip ToolTip;
-        private Label label1;
+        private Label labelImage;
+        private Label labelCount;
     }
 }

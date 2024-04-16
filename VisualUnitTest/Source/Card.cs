@@ -8,12 +8,12 @@ namespace Leagueinator.VisualUnitTest {
 
         public Card() {
             InitializeComponent();
-            this.Label.BackColor = Color.Transparent;
+            this.LabelDisplayText.BackColor = Color.Transparent;
 
-            this.Label.Click += (s, e) => this.Click.Invoke(this, e);
+            this.LabelDisplayText.Click += (s, e) => this.Click.Invoke(this, e);
             base.Click += (s, e) => this.Click.Invoke(this, e);
 
-            this.Label.MouseDown += (s, e) => this.MouseDown.Invoke(this, e);
+            this.LabelDisplayText.MouseDown += (s, e) => this.MouseDown.Invoke(this, e);
             base.MouseDown += (s, e) => this.MouseDown.Invoke(this, e);
 
             this.ToolTip.SetToolTip(this, "No description provided.");
@@ -52,8 +52,8 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         public new string Text {
-            get => this.Label.Text;
-            set => this.Label.Text = value;
+            get => this.LabelDisplayText.Text;
+            set => this.LabelDisplayText.Text = value;
         }
 
         private Color _idleColor = SystemColors.Control;

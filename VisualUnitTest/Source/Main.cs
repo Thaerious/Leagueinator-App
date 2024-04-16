@@ -200,7 +200,7 @@ namespace Leagueinator.VisualUnitTest {
             try {
                 if (!this.IsReady) return;
 
-                LoadedStyles styles = new LoadedStyles().LoadFromFile(this.ActiveTestCard!.Paths.Style);
+                LoadedStyles styles = LoadedStyles.LoadFromFile(this.ActiveTestCard!.Paths.Style);
                 Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
                 styles.ApplyTo(root);
 
@@ -289,11 +289,13 @@ namespace Leagueinator.VisualUnitTest {
             // Invalidate the control dir refresh the UI.
             Invalidate();
 
+            foreach (DirectoryCard card in FlowPanelTestCards.Controls.OfType<DirectoryCard>()) {
+                card.RunTests();
+            }
+
             foreach (TestCard card in FlowPanelTestCards.Controls.OfType<TestCard>()) {
                 card.Status = await Task.Run(() => card.DoTest());
             }
-
-            // Consider refreshing UI or notifying the user upon completion.
         }
 
         private void HndMenuClearResults(object sender, EventArgs e) {
