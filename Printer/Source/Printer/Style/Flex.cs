@@ -8,6 +8,10 @@ namespace Leagueinator.Printer.Styles {
         private int pageCount = 1;
         private List<Action> deferred = [];
 
+        public static (int, RenderNode) Layout(Element element) {
+            return new Flex().DoLayout(element);
+        }
+
         /// <summary>
         /// Begin the layout process, typcially only called on the node node.
         /// </summary>

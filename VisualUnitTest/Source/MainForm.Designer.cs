@@ -1,5 +1,5 @@
 ﻿namespace Leagueinator.VisualUnitTest {
-    partial class Main {
+    partial class MainForm {
         /// <summary>
         ///  Required designer variable.
         /// </summary>

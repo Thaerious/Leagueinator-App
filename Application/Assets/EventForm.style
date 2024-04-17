@@ -1,4 +1,7 @@
-@import "Base.style"
+root {
+    width: 801px;
+    height: 1151px;
+}
 
 page{
     width: 95%;
@@ -31,10 +34,10 @@ rounds{
 }
 
 row, header{
-    width: 100%;
-    flex-axis: row;
-    height: auto;
-    justify-content: center;
+    	width: 100%;
+    	flex-axis: row;
+	height: auto;
+	justify-content: center;
 }
 
 header {

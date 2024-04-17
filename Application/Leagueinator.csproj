@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\EventForm.style" />
+    <None Remove="Assets\EventForm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\EventForm.style" />
+    <EmbeddedResource Include="Assets\EventForm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
     <ProjectReference Include="..\Printer\Printer.csproj" />
   </ItemGroup>

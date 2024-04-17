@@ -28,7 +28,7 @@ namespace Leagueinator.Forms {
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(FormEventResults));
             this.toolStrip1 = new ToolStrip();
             this.butPrint = new ToolStripButton();
-            this.printerCanvas1 = new PrinterCanvas();
+            this.Canvas = new PrinterCanvas();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,26 +52,26 @@ namespace Leagueinator.Forms {
             this.butPrint.Text = "Print";
             this.butPrint.Click += this.HndPrintClick;
             // 
-            // printerCanvas1
+            // Canvas
             // 
-            this.printerCanvas1.Dock = DockStyle.Fill;
-            this.printerCanvas1.GridSize = 0;
-            this.printerCanvas1.InnerBorder = BorderStyle.None;
-            this.printerCanvas1.Location = new Point(0, 34);
-            this.printerCanvas1.Name = "printerCanvas1";
-            this.printerCanvas1.Page = 0;
-            this.printerCanvas1.RenderNode = null;
-            this.printerCanvas1.Size = new Size(870, 944);
-            this.printerCanvas1.SubGridSize = 0;
-            this.printerCanvas1.TabIndex = 1;
-            this.printerCanvas1.ToBack = false;
+            this.Canvas.Dock = DockStyle.Fill;
+            this.Canvas.GridSize = 0;
+            this.Canvas.InnerBorder = BorderStyle.None;
+            this.Canvas.Location = new Point(0, 34);
+            this.Canvas.Name = "canvas";
+            this.Canvas.Page = 0;
+            this.Canvas.RenderNode = null;
+            this.Canvas.Size = new Size(870, 944);
+            this.Canvas.SubGridSize = 0;
+            this.Canvas.TabIndex = 1;
+            this.Canvas.ToBack = false;
             // 
             // FormEventResults
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(870, 978);
-            this.Controls.Add(this.printerCanvas1);
+            this.Controls.Add(this.Canvas);
             this.Controls.Add(this.toolStrip1);
             this.Name = "FormEventResults";
             this.Text = "FormEventResults";
@@ -87,6 +87,6 @@ namespace Leagueinator.Forms {
         private ToolStripButton toolStripButton1;
         private ToolStripButton toolStripButton2;
         private ToolStripButton butPrint;
-        private PrinterCanvas printerCanvas1;
+        private PrinterCanvas Canvas;
     }
 }

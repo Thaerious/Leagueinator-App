@@ -2,6 +2,21 @@
 
 namespace Leagueinator.Utility {
     public static class RectangleExtensions {
+
+        /// <summary>
+        /// Caluculates the location for the second rectangle that will center it
+        /// within the first rectangle.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static Point CenterX(this Rectangle first, Rectangle second) {
+            return new(
+                first.Location.X + first.Width / 2 - second.Width / 2,
+                first.Location.Y + first.Height / 2 - second.Height / 2
+            );
+        }
+
         public static Rectangle[] SplitHorz(this Rectangle rect, params int[] percents) {
             var rectangles = new Rectangle[percents.Length];
 

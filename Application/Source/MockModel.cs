@@ -2,7 +2,6 @@
 
 namespace Leagueinator {
     internal class MockModel : League {
-
         public MockModel() {
             var eventRow = this.EventTable.AddRow("My Event");
             eventRow.Settings["match_count"] = "4";

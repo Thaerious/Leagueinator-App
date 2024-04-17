@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Forms {
     public partial class FormMain : Form {
@@ -43,7 +44,16 @@ namespace Leagueinator.Forms {
         }
 
         private void HndMenuViewEventResults(object sender, EventArgs e) {
-            new FormEventResults(this.Model).Show();
+            FormEventResults form = new(this.Model) {
+                StartPosition = FormStartPosition.Manual
+            };
+
+            form.Location = new Point(
+                this.Bounds.CenterX(form.Bounds).X,
+                this.Location.Y
+            );
+
+            form.Show();
         }
     }
 }

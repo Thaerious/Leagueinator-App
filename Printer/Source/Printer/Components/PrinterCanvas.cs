@@ -198,7 +198,6 @@ namespace Leagueinator.Printer.Components {
         public TimeSpan RepaintTime { get => this.inner.RepaintTime; }
 
         protected override void OnPaint(PaintEventArgs e) {
-            Console.WriteLine($"PrinterCanvas.OnPaint() : {this.RenderNode is not null}");
             base.OnPaint(e);
         }
 

@@ -6,7 +6,7 @@ using Leagueinator.Utility;
 using System.Diagnostics;
 
 namespace Leagueinator.VisualUnitTest {
-    public partial class Main : Form {
+    public partial class MainForm : Form {
         private TestCard? activeTestCard;
         private DirectoryCard? _activeDirCard;
 
@@ -91,7 +91,7 @@ namespace Leagueinator.VisualUnitTest {
             }
         }
 
-        public Main() {
+        public MainForm() {
             InitializeComponent();
             this.PanelExpected.Paint += this.HndPanelPaint;
         }
