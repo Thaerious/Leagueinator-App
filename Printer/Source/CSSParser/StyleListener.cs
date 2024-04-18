@@ -91,10 +91,10 @@ namespace Leagueinator.CSSParser {
                     }
                 }
                 else {
-                    string msg
-                        = $"Line {context.Start.Line}:{context.Start.Column}\n"
-                        + $"Unknown property {key}";
-                    throw new Exception(msg);
+                    throw new Exception(
+                        $"Line {context.Start.Line}:{context.Start.Column}\n" +
+                        $"Unknown property {key}"
+                    );
                 }
             }
             catch (TargetInvocationException ex) {

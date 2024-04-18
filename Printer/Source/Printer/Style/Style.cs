@@ -76,6 +76,10 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public override string ToString() {
+            return this.ToString(true);
+        }
+
+        public string ToString(bool printNulls) {
             StringBuilder sb = new StringBuilder();
             PropertyInfo[] properties = this.GetType().GetProperties();
             FieldInfo[] fields = this.GetType().GetFields();
@@ -97,13 +101,10 @@ namespace Leagueinator.Printer.Styles {
                 CSS? css = property.GetCustomAttribute<CSS>();
                 if (css == null) continue;
                 if (property.CanRead == false) continue;
-                sb.AppendLine($"\t{property.Name} : {property.GetValue(this)}");
-            }
-
-            foreach (var field in fields) {
-                CSS? css = field.GetCustomAttribute<CSS>();
-                if (css == null) continue;
-                sb.AppendLine($"\t{field.Name} : {field.GetValue(this)}");
+                var value = property.GetValue(this);
+                if (value != null || printNulls == true) {
+                    sb.AppendLine($"\t{property.Name} : {property.GetValue(this)}");
+                }
             }
 
             sb.AppendLine($"]");

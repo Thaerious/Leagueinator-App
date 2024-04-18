@@ -1,11 +1,11 @@
 ﻿using Antlr4.Runtime.Tree;
 using Antlr4.Runtime;
 using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Styles;
 using System.Collections;
 using System.Diagnostics;
+using Leagueinator.CSSParser;
 
-namespace Leagueinator.CSSParser {
+namespace Leagueinator.Printer.Styles {
     public class LoadedStyles : IEnumerable<Style> {
         private readonly Dictionary<string, StyleSheet> Loaded = [];
 

@@ -3,6 +3,13 @@ using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
     public class XMLLoader {
+        
+        /// <summary>
+        /// Creates an element tree from a source string.
+        /// </summary>
+        /// <param name="xmlString"></param>
+        /// <returns>The root element</returns>
+        /// <exception cref="NullReferenceException"></exception>
         public static Element Load(string xmlString) {
             XDocument xml = XDocument.Parse(xmlString);
 

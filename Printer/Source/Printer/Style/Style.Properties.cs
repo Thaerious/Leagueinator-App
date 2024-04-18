@@ -6,30 +6,31 @@ using Leagueinator.Printer.Aspects;
 namespace Leagueinator.Printer.Styles {
 
     public partial class Style : IComparable<Style> {
-        [CSS("Flex")] public Position? Position { get => this.position; [Validated] set => this.position = value; }
-        [CSS("Visible")] public Overflow? Overflow { get => this.overflow; [Validated] set => this.overflow = value; }
-        [CSS("0px")] public Cardinal<UnitFloat>? BorderSize {get => this.borderSize; [Validated] set => this.borderSize = value;}
-        [CSS("0px, 0px")] public Coordinate<UnitFloat>? Translate { get => this.translate; [Validated] set => this.translate = value; }
-        [CSS] public UnitFloat? Left { get => left; [Validated] set => left = value; }
-        [CSS] public UnitFloat? Right { get => right; [Validated] set => right = value; }
-        [CSS] public UnitFloat? Top { get => top; [Validated] set => top = value; }
-        [CSS] public UnitFloat? Bottom { get => bottom; [Validated] set => bottom = value; }
-        [CSS("auto")] public UnitFloat? Width { get => width; [Validated] set => width = value; }
-        [CSS("auto")] public UnitFloat? Height { get => this.height; [Validated] set => this.height = value; }
+        [CSS("Flex")] public Position? Position { get => this.position; set => this.position = value; }
+        [CSS("Visible")] public Overflow? Overflow { get => this.overflow; set => this.overflow = value; }
+        [CSS("0px")] public Cardinal<UnitFloat>? BorderSize {get => this.borderSize; set => this.borderSize = value;}
+        [CSS("0px, 0px")] public Coordinate<UnitFloat>? Translate { get => this.translate; set => this.translate = value; }
+        [CSS] public UnitFloat? Left { get => left; set => left = value; }
+        [CSS] public UnitFloat? Right { get => right; set => right = value; }
+        [CSS] public UnitFloat? Top { get => top; set => top = value; }
+        [CSS] public UnitFloat? Bottom { get => bottom; set => bottom = value; }
+        [CSS("auto")] public UnitFloat? Width { get => width; set => width = value; }
+        [CSS("auto")] public UnitFloat? Height { get => this.height; set => this.height = value; }
         [CSS] public Color? MarginColor { get => marginColor; set => marginColor = value; }
-        [CSS("0px")] public Cardinal<UnitFloat>? Margin { get => margin; [Validated] set => margin = value; }
+        [CSS("0px")] public Cardinal<UnitFloat>? Margin { get => margin; set => margin = value; }
         [CSS] public Color? PaddingColor { get => paddingColor; set => paddingColor = value; }
-        [CSS("0px")] public Cardinal<UnitFloat>? Padding { get => this.padding; [Validated] set => this.padding = value; }
+        [CSS("0px")] public Cardinal<UnitFloat>? Padding { get => this.padding; set => this.padding = value; }
         [CSS("Solid")] public Cardinal<DashStyle>? BorderStyle { get => this.borderStyle; set => this.borderStyle = value; }
         [CSS] public Color? BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
         [CSS] public Cardinal<Color>? BorderColor { get => this.borderColor; set => this.borderColor = value; }
-        [CSS][Inherited] public string? FontFamily { get => fontFamily; [Validated] set => fontFamily = value; }
-        [CSS("1px")][Inherited] public UnitFloat? FontSize { get => fontSize; [Validated] set => fontSize = value; }
+        [CSS][Inherited] public string? FontFamily { get => fontFamily; set => fontFamily = value; }
+        [CSS("1px")][Inherited] public UnitFloat? FontSize { get => fontSize; set => fontSize = value; }
         [CSS][Inherited] public FontStyle? FontStyle { get => this.fontStyle; set => this.fontStyle = value; }
-        [CSS("Row")] public Flex_Axis? Flex_Axis { get => flex_Axis; [Validated] set => flex_Axis = value; }
-        [CSS("Flex_Start")] public Justify_Content? Justify_Content { get => justify_Content; [Validated] set => justify_Content = value; }
-        [CSS("Stretch")] public Align_Items? Align_Items { get => align_Items; [Validated] set => align_Items = value; }
-        [CSS("Forward")] public Direction? Flex_Direction { get => this.flex_Direction; [Validated] set => this.flex_Direction = value; }
+        [CSS("Row")] public Flex_Axis? Flex_Axis { get => flex_Axis; set => flex_Axis = value; }
+        [CSS("Flex_Start")] public Justify_Content? Justify_Content { get => justify_Content; set => justify_Content = value; }
+        [CSS("Stretch")] public Align_Items? Align_Items { get => align_Items; set => align_Items = value; }
+        [CSS("Forward")] public Direction? Flex_Direction { get => this.flex_Direction; set => this.flex_Direction = value; }
+        [CSS("0")][Inherited] public int? Page { get; set; }
 
         [CSS]
         public string Border {

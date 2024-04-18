@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
+using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer.Styles {
@@ -84,6 +85,7 @@ namespace Leagueinator.Printer.Styles {
 
             while (stack.Count > 0) {
                 RenderNode current = stack.Pop();
+                if (current.Page > 0 && current.Page != page) continue;
 
                 current.DoDrawBackground(g);
                 current.DoDrawBorders(g);

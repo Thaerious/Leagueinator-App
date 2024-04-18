@@ -1,5 +1,4 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
@@ -205,7 +204,6 @@ namespace Leagueinator.VisualUnitTest {
                 LoadedStyles styles = LoadedStyles.LoadFromFile(this.ActiveTestCard!.Paths.Style);
                 Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
                 styles.ApplyTo(root);
-
                 Flex flex = new();
 
                 (int pages, RenderNode renderNode) = flex.DoLayout(root);
@@ -329,11 +327,13 @@ namespace Leagueinator.VisualUnitTest {
         private void HndButPrev(object sender, EventArgs e) {
             if (this.Page > 1) this.Page--;
             this.LblPage.Text = $"{this.Page}";
+            this.DrawActual();
         }
 
         private void HndButNext(object sender, EventArgs e) {
             this.Page++;
             this.LblPage.Text = $"{this.Page}";
+            this.DrawActual();
         }
     }
 

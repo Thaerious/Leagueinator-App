@@ -1,10 +1,7 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using Leagueinator.Printer.Styles;
 
 namespace Printer.Source {
     public static class PrintLoader {

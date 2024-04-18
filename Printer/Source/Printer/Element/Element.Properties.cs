@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Printer.Styles;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Printer.Elements {
 
@@ -11,6 +12,9 @@ namespace Leagueinator.Printer.Elements {
             get {
                 if (this.Attributes.TryGetValue("id", out string? value)) {
                     return this.TagName + "#" + value;
+                }
+                else if (this.ClassList.Count > 0) {
+                    return this.TagName + "." + this.ClassList.DelString("."); ;
                 }
                 else {
                     return this.TagName;

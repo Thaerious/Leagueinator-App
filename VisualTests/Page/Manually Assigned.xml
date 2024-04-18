@@ -1,0 +1,10 @@
+<root>
+	<page>
+		<item class="">One A</item>
+		<item class="">One B</item>
+		<item class="page2">Two A</item>
+		<item class="page2">Two B</item>
+		<item class="page3">Three A</item>
+		<item class="page3">Three B</item>
+	</page>
+</root>

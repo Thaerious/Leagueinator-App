@@ -105,3 +105,11 @@ at least one element even if it overflows.
 | .         | .bold    | 3           | class          |
 | tag       | div      | 4           | element name   |
 | tag.class | div.bold | 2           | name and class | 
+
+## Page
+A node with a page property <= 0 will print on all pages.
+If the page property is set, the node will only be printed on that page.
+If the page property is not set and the parent overflow is set to paged,
+the page property will be assigned.
+Otherwise the page property will be set to the parent's page property.
+The root node always hase a page property of 0.

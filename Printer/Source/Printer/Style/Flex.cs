@@ -1,9 +1,13 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
+using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Printer.Styles {
-    //[DebugTrace]
-    [EnableTabbedDebug(false)]
+    [DebugTrace]
+    [EnableTabbedDebug(true)]
     public class Flex {
         private int pageCount = 1;
         private List<Action> deferred = [];
@@ -22,7 +26,7 @@ namespace Leagueinator.Printer.Styles {
 
             SizeFirstPass(root);
             SizeSecondPass();
-            this.pageCount = this.AssignPages(root);
+            this.pageCount = AssignPages(root);
             this.DoPos(root);
 
             return (pageCount, root);
@@ -41,11 +45,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         private void SizeFirstPass(RenderNode root) {
-            TabbedDebug.ResetBlock($"1st Pass");
-
             TreeWalker<RenderNode>.Walk(root, node => {
-                TabbedDebug.StartBlock($"{node}");
-
                 if (node.Element.TagName == "@text") {
                     node.Size = new(((TextElement)node.Element).Size());
                     return;
@@ -55,18 +55,12 @@ namespace Leagueinator.Printer.Styles {
 
                 if (node.Style.Flex_Axis == Enums.Flex_Axis.Row) {
                     EvaluateMajor(node, Dim.WIDTH);
-                    TabbedDebug.EndBlock();
                     EvaluateMinor(node, Dim.HEIGHT);
-                    TabbedDebug.EndBlock();
                 }
                 else {
                     EvaluateMinor(node, Dim.WIDTH);
-                    TabbedDebug.EndBlock();
                     EvaluateMajor(node, Dim.HEIGHT);
-                    TabbedDebug.EndBlock();
                 }
-
-                TabbedDebug.EndBlock();
             });
         }
 
@@ -74,7 +68,6 @@ namespace Leagueinator.Printer.Styles {
         /// Set size of parent to sum of child size on the major axis.
         /// </summary>
         private void SizeSecondPass() {
-            TabbedDebug.ResetBlock($"2nd Pass");
             foreach (Action action in this.deferred) action();
         }
 
@@ -114,12 +107,10 @@ namespace Leagueinator.Printer.Styles {
         }
 
         public void EvaluateMajor(RenderNode node, Dim dim) {
-            TabbedDebug.StartBlock($"EvaluateMajor {node} {dim} : isFit({node.IsFit(dim)}) isStretch({node.IsStretch(dim)})\");");
             UnitFloat styleVal = dim == Dim.WIDTH ? node.Style.Width! : node.Style.Height!;
             styleVal ??= new();
 
             if (styleVal.Unit.Equals("px")) {
-                TabbedDebug.WriteLine($"{node}[{dim}] = {styleVal.Factor} px");
                 node.Size[dim] = styleVal.Factor;
             }
             else if (node.IsRoot) {
@@ -127,10 +118,8 @@ namespace Leagueinator.Printer.Styles {
                     throw new NotImplementedException("Root size by % not permitted");
                 }
                 if (styleVal.Unit.Equals("auto")) {
-                    TabbedDebug.WriteLine($"auto deferred");
                     this.deferred.Insert(0, () => {
                         node.Size[dim] = node.Children.Sum(c => c.OuterBox[dim]);
-                        TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                     });
                 }
             }
@@ -154,19 +143,16 @@ namespace Leagueinator.Printer.Styles {
                 if (styleVal.Unit.Equals("auto")) {
                     this.deferred.Insert(0, () => {
                         node.Size[dim] = node.Children.Sum(c => c.OuterBox[dim]);
-                        TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                     });
                 }
             }
         }
 
         public void EvaluateMinor(RenderNode node, Dim dim) {
-            TabbedDebug.StartBlock($"EvaluateMinor {node} {dim} : isFit({node.IsFit(dim)}) isStretch({node.IsStretch(dim)})");
             UnitFloat styleVal = dim == Dim.WIDTH ? node.Style.Width! : node.Style.Height!;
             styleVal ??= new();
 
             if (styleVal.Unit.Equals("px")) {
-                TabbedDebug.WriteLine($"{node}[{dim}] = {styleVal.Factor} px");
                 node.Size[dim] = styleVal.Factor;
             }
             else if (node.IsRoot) {
@@ -174,16 +160,13 @@ namespace Leagueinator.Printer.Styles {
                     throw new NotImplementedException("Root size by % not permitted");
                 }
                 if (styleVal.Unit.Equals("auto")) {
-                    TabbedDebug.WriteLine($"auto deferred");
                     this.deferred.Insert(0, () => {
                         node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
-                        TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                     });
                 }
             }
             else {
                 if (styleVal.Unit.Equals("%")) {
-                    TabbedDebug.WriteLine($"{styleVal.Factor} % of parent");
                     node.Size[dim] = node.Parent!.Size[dim] * styleVal.Factor / 100;
                 }
                 else /* auto */{
@@ -191,24 +174,19 @@ namespace Leagueinator.Printer.Styles {
                         if (node.Parent!.IsFit(dim)) {
                             this.deferred.Insert(0, () => {
                                 node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
-                                TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                             });
                         }
                         else {
-                            TabbedDebug.WriteLine($"parent stretch deferred");
                             this.deferred.Add(() => {
                                 node.Size[dim] = node.Parent.ContentBox[dim] - node.OuterBox[dim] + node.ContentBox[dim];
-                                TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                             });
                         }
                     }
                     else /* is not stretch */ {
                         if (node.IsLeaf) node.Size[dim] = 0;
                         else {
-                            TabbedDebug.WriteLine($"child max deferred");
                             this.deferred.Insert(0, () => {
                                 node.Size[dim] = node.Children.Max(c => c.OuterBox[dim]);
-                                TabbedDebug.WriteLine($"{node}[{dim}] = {node.Size[dim]}");
                             });
                         }
                     }
@@ -216,8 +194,9 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        internal void DoPos(RenderNode root) {
-            new TreeWalker<RenderNode>(root).Walk(current => {
+        internal void DoPos(RenderNode node) {
+            new TreeWalker<RenderNode>(node).Walk(current => {
+                // Apply 'Translate' property to non-root nodes.
                 if (current.Style.Translate != null && !current.IsRoot) {
                     if (current.Style.Translate.X.Factor.Equals("%")) {
                         current.Translation.X += current.Parent!.Size.Width * current.Parent!.Style.Translate!.X.Factor / 100;
@@ -234,10 +213,8 @@ namespace Leagueinator.Printer.Styles {
                 }
 
                 // Position flex elements by page
-                for (int page = 0; page < this.pageCount; page++) {
-                    if (current.Style.Position == Enums.Position.Flex) {
-                        this.DoPosFlex(current, page);
-                    }
+                for (int page = 0; page <= this.pageCount; page++) {
+                    if (node.Style.Page == page) DoPosByPage(current, page);
                 }
 
                 if (current.Style.Position == Enums.Position.Absolute) current.DoPosAbsolute(current.Parent!);
@@ -255,11 +232,10 @@ namespace Leagueinator.Printer.Styles {
         /// </summary>
         /// <param name="node"></param>
         /// <param name="page"></param>
-        private void DoPosFlex(RenderNode node, int page) {
-            var children = this.CollectChildren(node, page);
+        private static void DoPosByPage(RenderNode node, int page) {
+            var children = CollectChildren(node, page);
             if (children.Count == 0) return;
-
-            this.JustifyContent(node, children);
+            JustifyContent(node, children);
             node.AlignItems(children);
         }
 
@@ -269,7 +245,7 @@ namespace Leagueinator.Printer.Styles {
         /// </summary>
         /// <param name="this.Element"></param>
         /// <param name="children"></param>
-        private void JustifyContent(RenderNode node, List<RenderNode> children) {
+        private static void JustifyContent(RenderNode node, List<RenderNode> children) {
             switch (node.Style.Justify_Content) {
                 default:
                 case Enums.Justify_Content.Flex_start:
@@ -281,14 +257,12 @@ namespace Leagueinator.Printer.Styles {
                 case Enums.Justify_Content.Center:
                     node.JustifyCenter(children);
                     break;
-
                 case Enums.Justify_Content.Space_evenly:
                     node.SpaceEvenly(children);
                     break;
                 case Enums.Justify_Content.Space_between:
                     node.SpaceBetween(children);
                     break;
-
                 case Enums.Justify_Content.Space_around:
                     node.SpaceAround(children);
                     break;
@@ -296,15 +270,15 @@ namespace Leagueinator.Printer.Styles {
         }
 
         /// <summary>
-        /// Collect all this.Element nodes with a flex position and the specified page.
+        /// Collect all this.Element nodes with the specified page.
+        /// Will reverse if flex diretion indicates it.
         /// </summary>
         /// <param name = "this.Element" ></ param >
         /// <returns></returns>
-        private List<RenderNode> CollectChildren(RenderNode node, int page) {
+        private static List<RenderNode> CollectChildren(RenderNode node, int page) {
             var children = node.Children
-                                  .Where(rn => rn.Style.Position == Enums.Position.Flex)
-                                  .Where(rn => node.Page == page)
-                                  .ToList();
+                               .Where(child => child.Page == page || child.Page <= 0)
+                               .ToList();
 
             if (node.Style.Flex_Direction == Enums.Direction.Reverse) {
                 children.Reverse();
@@ -321,13 +295,26 @@ namespace Leagueinator.Printer.Styles {
         /// </summary>
         /// <param name="this.Element">The _parent this.Element.</param>
         /// <returns>Total page count for all this.s.</returns>
-        private int AssignPages(RenderNode root) {
-            if (root.Style.Overflow != Enums.Overflow.Paged) return 1;
-            Queue<RenderNode> children = new();
-
+        private static int AssignPages(RenderNode root) {
             int maxPage = 1;
 
             new TreeWalker<RenderNode>(root).Walk(node => {
+                if (node.IsRoot) {
+                    node.Page = 0;
+                }
+                else if (node.Style.Page >= 0) {
+                    node.Page = (int)node.Style.Page;
+                }
+                else if (node.Style.Overflow != Enums.Overflow.Paged) {
+                    node.Page = node.Parent!.Page;
+                }
+                else {
+                    node.Page = 0;
+                }
+
+                maxPage = Math.Max(maxPage, node.Page);
+                return;
+
                 int page = 1;
                 if (node.Children.Count == 1) {
                     node.Page = 1;
@@ -391,9 +378,18 @@ namespace Leagueinator.Printer.Styles {
             node.Translation = node.Translation.Translate(point);
         }
 
-        public static void LineupElements(this RenderNode root, List<RenderNode> children, PointF from) {
+        /// <summary>
+        /// Position children starting from the specified point.
+        /// Direction is determined by the flex axis.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="children"></param>
+        /// <param name="from"></param>
+        private static void LineupElements(this RenderNode node, List<RenderNode> children, PointF from) {
+            TabbedDebug.StartBlock($"LineupElements({node}, {children.Count}, {from})");
+
             PointF vector;
-            if (root.Style.Flex_Axis == Enums.Flex_Axis.Column) {
+            if (node.Style.Flex_Axis == Enums.Flex_Axis.Column) {
                 vector = new(0, 1);
             }
             else {
@@ -402,10 +398,14 @@ namespace Leagueinator.Printer.Styles {
 
             PointF current = from;
             foreach (RenderNode child in children) {
+                TabbedDebug.WriteLine($"{child} before = ({child.ContentBox.Left}, {child.ContentBox.Top})");
                 child.Translate(current);
+                TabbedDebug.WriteLine($"{child} after = ({child.ContentBox.Left}, {child.ContentBox.Top})");
                 var diff = new PointF(child.OuterBox.Width, child.OuterBox.Height).Scale(vector);
                 current = current.Translate(diff);
             }
+
+            TabbedDebug.EndBlock();
         }
 
         public static void SpaceEvenly(this RenderNode root, List<RenderNode> children) {
@@ -535,7 +535,6 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
-        //[DebugTrace]
         public static void JustifyCenter(this RenderNode node, List<RenderNode> children) {
             PointF from;
 

@@ -15,8 +15,9 @@ namespace Leagueinator.Printer.Elements {
         /// </summary>
         public Element(string name, IEnumerable<XAttribute> attributes) : base() {
             this.TagName = name;
-            this.Style = new Style(this);
-            this.Style.Owner = this;
+            this.Style = new(this) {
+                Owner = this
+            };
             this.Attributes = new(this);
 
             foreach (XAttribute xattr in attributes) {
