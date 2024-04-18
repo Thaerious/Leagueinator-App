@@ -1,0 +1,18 @@
+root {
+	width: 400px;
+	height: 600px;
+	align-items: center;
+	justify-content: center;
+}
+
+page {
+	width: 95%;
+	height: 95%;
+	background-color: rgba(230, 230, 230, 128);
+}
+
+#1 {
+	page: 1;
+	width: 95%;
+	height: 25%;
+}

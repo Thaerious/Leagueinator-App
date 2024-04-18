@@ -9,6 +9,7 @@ namespace Leagueinator.VisualUnitTest {
     public partial class MainForm : Form {
         private TestCard? activeTestCard;
         private DirectoryCard? _activeDirCard;
+        private int Page = 1;
 
         TestCard? ActiveTestCard {
             get => activeTestCard;
@@ -30,6 +31,7 @@ namespace Leagueinator.VisualUnitTest {
 
                 this.FlowPanelTestCards.Controls.Clear();
 
+                // Add up (..) directory if the active card is not the root.
                 if (_activeDirCard is not null && value.DirPath != this.FolderDialog.SelectedPath) {
                     DirectoryCard upDirCard = new(this._activeDirCard.DirPath) { Text = ".." };
                     upDirCard.Click += this.HndDirCardClick;
@@ -207,6 +209,7 @@ namespace Leagueinator.VisualUnitTest {
                 Flex flex = new();
 
                 (int pages, RenderNode renderNode) = flex.DoLayout(root);
+                this.CanvasActual.Page = this.Page;
                 this.CanvasActual.RenderNode = renderNode;
                 this.CanvasActual.Invalidate(true);
             }
@@ -315,13 +318,22 @@ namespace Leagueinator.VisualUnitTest {
             using InputNameDialog dialog = new();
             if (dialog.ShowDialog() == DialogResult.OK) {
                 string path = Path.Join(this.ActiveDirCard.DirPath, dialog.Value);
-                Debug.WriteLine(path);
                 Directory.CreateDirectory(path);
-                DirectoryCard card = new(dialog.Value);
+                DirectoryCard card = new(path);
                 card.Click += this.HndDirCardClick;
                 this.FlowPanelTestCards.Controls.Add(card);
                 this.FlowPanelTestCards.Controls.SetChildIndex(card, 0);
             }
+        }
+
+        private void HndButPrev(object sender, EventArgs e) {
+            if (this.Page > 1) this.Page--;
+            this.LblPage.Text = $"{this.Page}";
+        }
+
+        private void HndButNext(object sender, EventArgs e) {
+            this.Page++;
+            this.LblPage.Text = $"{this.Page}";
         }
     }
 

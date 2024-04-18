@@ -28,6 +28,10 @@
             this.tabControlView = new TabControl();
             this.tabPageActual = new TabPage();
             this.CanvasActual = new Printer.Components.PrinterCanvas();
+            this.panel1 = new Panel();
+            this.LblPage = new Label();
+            this.ButNextPage = new Button();
+            this.ButPrevPage = new Button();
             this.tabPageExpected = new TabPage();
             this.PanelExpected = new Panel();
             this.tabControlModel = new TabControl();
@@ -42,6 +46,7 @@
             this.saveToolStripMenuItem = new ToolStripMenuItem();
             this.closeToolStripMenuItem = new ToolStripMenuItem();
             this.autoFormatToolStripMenuItem = new ToolStripMenuItem();
+            this.newDirectoryToolStripMenuItem = new ToolStripMenuItem();
             this.testToolStripMenuItem = new ToolStripMenuItem();
             this.addToolStripMenuItem = new ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new ToolStripMenuItem();
@@ -51,7 +56,6 @@
             this.runAllToolStripMenuItem = new ToolStripMenuItem();
             this.clearResultsToolStripMenuItem = new ToolStripMenuItem();
             this.FolderDialog = new FolderBrowserDialog();
-            this.newDirectoryToolStripMenuItem = new ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.splitContainer1).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -59,6 +63,7 @@
             this.splitContainer1.SuspendLayout();
             this.tabControlView.SuspendLayout();
             this.tabPageActual.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.tabPageExpected.SuspendLayout();
             this.tabControlModel.SuspendLayout();
             this.tabPageXML.SuspendLayout();
@@ -111,6 +116,7 @@
             // 
             // tabPageActual
             // 
+            this.tabPageActual.Controls.Add(this.panel1);
             this.tabPageActual.Controls.Add(this.CanvasActual);
             this.tabPageActual.Location = new Point(4, 34);
             this.tabPageActual.Name = "tabPageActual";
@@ -133,6 +139,49 @@
             this.CanvasActual.SubGridSize = 25;
             this.CanvasActual.TabIndex = 0;
             this.CanvasActual.ToBack = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = AnchorStyles.Bottom;
+            this.panel1.BackColor = Color.Transparent;
+            this.panel1.BorderStyle = BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.LblPage);
+            this.panel1.Controls.Add(this.ButNextPage);
+            this.panel1.Controls.Add(this.ButPrevPage);
+            this.panel1.Location = new Point(137, 784);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new Size(339, 66);
+            this.panel1.TabIndex = 1;
+            // 
+            // LblPage
+            // 
+            this.LblPage.Font = new Font("Segoe UI Black", 14F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            this.LblPage.Location = new Point(132, 10);
+            this.LblPage.Name = "LblPage";
+            this.LblPage.Size = new Size(79, 38);
+            this.LblPage.TabIndex = 2;
+            this.LblPage.Text = "1";
+            this.LblPage.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // ButNextPage
+            // 
+            this.ButNextPage.Location = new Point(212, 16);
+            this.ButNextPage.Name = "ButNextPage";
+            this.ButNextPage.Size = new Size(112, 34);
+            this.ButNextPage.TabIndex = 1;
+            this.ButNextPage.Text = ">>>";
+            this.ButNextPage.UseVisualStyleBackColor = true;
+            this.ButNextPage.Click += this.HndButNext;
+            // 
+            // ButPrevPage
+            // 
+            this.ButPrevPage.Location = new Point(14, 16);
+            this.ButPrevPage.Name = "ButPrevPage";
+            this.ButPrevPage.Size = new Size(112, 34);
+            this.ButPrevPage.TabIndex = 0;
+            this.ButPrevPage.Text = "<<<";
+            this.ButPrevPage.UseVisualStyleBackColor = true;
+            this.ButPrevPage.Click += this.HndButPrev;
             // 
             // tabPageExpected
             // 
@@ -264,6 +313,13 @@
             this.autoFormatToolStripMenuItem.Text = "Auto Format";
             this.autoFormatToolStripMenuItem.Click += this.HndMenuAutoFormat;
             // 
+            // newDirectoryToolStripMenuItem
+            // 
+            this.newDirectoryToolStripMenuItem.Name = "newDirectoryToolStripMenuItem";
+            this.newDirectoryToolStripMenuItem.Size = new Size(275, 34);
+            this.newDirectoryToolStripMenuItem.Text = "New Directory";
+            this.newDirectoryToolStripMenuItem.Click += this.HndMenuNewDir;
+            // 
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.addToolStripMenuItem, this.duplicateToolStripMenuItem, this.removeToolStripMenuItem, this.renameToolStripMenuItem, this.runSelectedToolStripMenuItem, this.runAllToolStripMenuItem, this.clearResultsToolStripMenuItem });
@@ -275,7 +331,7 @@
             // 
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
             this.addToolStripMenuItem.ShortcutKeys = Keys.F3;
-            this.addToolStripMenuItem.Size = new Size(270, 34);
+            this.addToolStripMenuItem.Size = new Size(255, 34);
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += this.HndMenuAddTest;
             // 
@@ -283,7 +339,7 @@
             // 
             this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
             this.duplicateToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.D;
-            this.duplicateToolStripMenuItem.Size = new Size(270, 34);
+            this.duplicateToolStripMenuItem.Size = new Size(255, 34);
             this.duplicateToolStripMenuItem.Text = "Duplicate";
             this.duplicateToolStripMenuItem.Click += this.HndMenuDuplicate;
             // 
@@ -291,7 +347,7 @@
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             this.removeToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Delete;
-            this.removeToolStripMenuItem.Size = new Size(270, 34);
+            this.removeToolStripMenuItem.Size = new Size(255, 34);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += this.HndMenuDelete;
             // 
@@ -299,7 +355,7 @@
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
             this.renameToolStripMenuItem.ShortcutKeys = Keys.F2;
-            this.renameToolStripMenuItem.Size = new Size(270, 34);
+            this.renameToolStripMenuItem.Size = new Size(255, 34);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += this.HndMenuRenameTest;
             // 
@@ -307,7 +363,7 @@
             // 
             this.runSelectedToolStripMenuItem.Name = "runSelectedToolStripMenuItem";
             this.runSelectedToolStripMenuItem.ShortcutKeys = Keys.F5;
-            this.runSelectedToolStripMenuItem.Size = new Size(270, 34);
+            this.runSelectedToolStripMenuItem.Size = new Size(255, 34);
             this.runSelectedToolStripMenuItem.Text = "Run Selected";
             this.runSelectedToolStripMenuItem.Click += this.HndMenuRunSelected;
             // 
@@ -315,25 +371,18 @@
             // 
             this.runAllToolStripMenuItem.Name = "runAllToolStripMenuItem";
             this.runAllToolStripMenuItem.ShortcutKeys = Keys.F6;
-            this.runAllToolStripMenuItem.Size = new Size(270, 34);
+            this.runAllToolStripMenuItem.Size = new Size(255, 34);
             this.runAllToolStripMenuItem.Text = "Run All";
             this.runAllToolStripMenuItem.Click += this.HndMenuRunAll;
             // 
             // clearResultsToolStripMenuItem
             // 
             this.clearResultsToolStripMenuItem.Name = "clearResultsToolStripMenuItem";
-            this.clearResultsToolStripMenuItem.Size = new Size(270, 34);
+            this.clearResultsToolStripMenuItem.Size = new Size(255, 34);
             this.clearResultsToolStripMenuItem.Text = "Clear Results";
             this.clearResultsToolStripMenuItem.Click += this.HndMenuClearResults;
             // 
-            // newDirectoryToolStripMenuItem
-            // 
-            this.newDirectoryToolStripMenuItem.Name = "newDirectoryToolStripMenuItem";
-            this.newDirectoryToolStripMenuItem.Size = new Size(275, 34);
-            this.newDirectoryToolStripMenuItem.Text = "New Directory";
-            this.newDirectoryToolStripMenuItem.Click += this.HndMenuNewDir;
-            // 
-            // Main
+            // MainForm
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
@@ -341,7 +390,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Name = "Main";
+            this.Name = "MainForm";
             this.Text = "Visual Unit Tester";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -350,6 +399,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.tabControlView.ResumeLayout(false);
             this.tabPageActual.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.tabPageExpected.ResumeLayout(false);
             this.tabControlModel.ResumeLayout(false);
             this.tabPageXML.ResumeLayout(false);
@@ -391,5 +441,9 @@
         private CustomRichTextBox RichTextXML;
         private ToolStripMenuItem autoFormatToolStripMenuItem;
         private ToolStripMenuItem newDirectoryToolStripMenuItem;
+        private Panel panel1;
+        private Button ButNextPage;
+        private Button ButPrevPage;
+        private Label LblPage;
     }
 }

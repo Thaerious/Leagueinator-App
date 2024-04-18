@@ -13,14 +13,13 @@ namespace Leagueinator.VisualUnitTest {
             this.DragEnter += this.HndDragEnter;
             this.DragDrop += this.HndDragDrop;
 
-            this.Text = directory;
+            this.Text = Path.GetFileNameWithoutExtension(directory);
         }
 
         private void HndDragDrop(object? sender, DragEventArgs e) {
             if (e.Data is null) return;
             TestCard? data = (TestCard?)e.Data.GetData(typeof(TestCard));
             if (data == null) return;
-            Debug.WriteLine($"DirectoryCard.HndDragDrop {data.Text}");
             this.OnCopy.Invoke(data, this);
         }
 
@@ -39,7 +38,7 @@ namespace Leagueinator.VisualUnitTest {
             get {
                 List<Card> cards = [];
                 foreach (string directory in Directory.GetDirectories(this.DirPath)) {
-                    cards.Add(new DirectoryCard(directory) { Text = Path.GetFileNameWithoutExtension(directory) });
+                    cards.Add(new DirectoryCard(directory));
                 }
 
                 string[] files = Directory.GetFiles(this.DirPath, "*.xml");
