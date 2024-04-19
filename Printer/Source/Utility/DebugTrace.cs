@@ -1,5 +1,4 @@
 ﻿using AspectInjector.Broker;
-using Leagueinator.Printer.Styles;
 
 namespace Leagueinator.Utility {
     [Aspect(Scope.Global)]

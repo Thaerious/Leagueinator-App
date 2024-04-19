@@ -19,7 +19,7 @@ namespace Leagueinator.Printer.Styles {
         public PointF Translation = new();
         public int Page { get; internal set; } = -1;
 
-        public RenderNode(RenderNode that) : this(that.Element){
+        public RenderNode(RenderNode that) : this(that.Element) {
             this.Size = that.Size;
             this.Margin = new(that.Margin);
             this.BorderSize = new(that.BorderSize);
@@ -49,7 +49,7 @@ namespace Leagueinator.Printer.Styles {
             this.Size.Height + Padding!.Top + Padding!.Bottom + BorderSize!.Top + BorderSize!.Bottom
         );
 
-        internal FlexRect OuterBox => new(
+        public FlexRect OuterBox => new(
             this.Translation.X,
             this.Translation.Y,
             this.Size.Width + Padding!.Left + Padding!.Right + BorderSize!.Left + BorderSize!.Right + this.Margin!.Left + this.Margin.Right,
@@ -194,11 +194,11 @@ namespace Leagueinator.Printer.Styles {
         /// All child nodes of a node that doesn't qualify are also omitted.
         /// </summary>
         /// <param name="page"></param>
-        internal RenderNode CloneTree(int page) {            
+        internal RenderNode CloneTree(int page) {
             RenderNode @new = new(this);
 
-            if (@new.Page < 0 || @new.Page == page) {
-                foreach (RenderNode child in this.Children) {
+            foreach (RenderNode child in this.Children) {
+                if (child.Page < 0 || child.Page == page) {
                     @new.AddChild(child.CloneTree(page));
                 }
             }

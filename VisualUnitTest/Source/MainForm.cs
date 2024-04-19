@@ -3,6 +3,7 @@ using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class MainForm : Form {
@@ -210,10 +211,6 @@ namespace Leagueinator.VisualUnitTest {
                 this.CanvasActual.Page = this.Page;
                 this.CanvasActual.RenderNode = pages[this.Page - 1];
                 this.CanvasActual.Invalidate(true);
-
-                Debug.WriteLine("DrawActual");
-                Debug.WriteLine(this.CanvasActual.RenderNode.ToXML());
-
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
