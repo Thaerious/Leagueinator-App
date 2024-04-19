@@ -9,6 +9,7 @@ page {
 	width: 350px;
 	height: 550px;
 	background-color: rgba(230, 230, 230, 128);
+	overflow: paged;
 }
 
 item{
@@ -17,16 +18,3 @@ item{
 	border: 5px solid black;
 	background-color: rgba(230, 200, 200, 128);
 }
-
-.page1 {
-	page: 1;
-}
-
-.page2 {
-	page: 2;
-}
-
-.page3 {
-	page: 3;
-}
-

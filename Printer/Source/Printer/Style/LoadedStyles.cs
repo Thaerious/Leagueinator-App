@@ -17,15 +17,12 @@ namespace Leagueinator.Printer.Styles {
 
         public static LoadedStyles LoadFromFile(string path) {
             LoadedStyles loadedStyles = new();
-            string? dir = Path.GetDirectoryName(path);
-            if (dir is null) throw new FileNotFoundException($"Unknown path: {path}");
-
+            string? dir = Path.GetDirectoryName(path) ?? throw new FileNotFoundException($"Unknown path: {path}");
             loadedStyles.Loaded[path] = new StyleSheet().LoadFromString(File.ReadAllText(path));
 
             foreach (string import in loadedStyles.Loaded[path].Imports) {
                 string sub = import.Substring(1, import.Length - 2);
                 string importPath = Path.Combine(dir, sub);
-                Debug.WriteLine($"Import Path {importPath}");
 
                 if (loadedStyles.Loaded.ContainsKey(importPath)) continue;
                 loadedStyles.Loaded[importPath] = new StyleSheet().LoadFromString(File.ReadAllText(importPath));

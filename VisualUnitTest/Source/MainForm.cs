@@ -56,7 +56,7 @@ namespace Leagueinator.VisualUnitTest {
                     };
 
                     card.ButtonPass.Click += (s, e) => {
-                        if (!card.CreateBitmap(out Bitmap? bitmap)) return;
+                        if (!card.CreateBitmap(out Bitmap? bitmap, this.Page)) return;
                         bitmap!.Save(card.Paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
                         this.PanelExpected.Invalidate();
                     };
@@ -115,7 +115,7 @@ namespace Leagueinator.VisualUnitTest {
             };
 
             card.ButtonPass.Click += (s, e) => {
-                if (!card.CreateBitmap(out Bitmap? bitmap)) return;
+                if (!card.CreateBitmap(out Bitmap? bitmap, this.Page)) return;
                 bitmap!.Save(card.Paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
                 this.PanelExpected.Invalidate();
             };
@@ -206,10 +206,14 @@ namespace Leagueinator.VisualUnitTest {
                 styles.ApplyTo(root);
                 Flex flex = new();
 
-                (int pages, RenderNode renderNode) = flex.DoLayout(root);
+                List<RenderNode> pages = flex.DoLayout(root);
                 this.CanvasActual.Page = this.Page;
-                this.CanvasActual.RenderNode = renderNode;
+                this.CanvasActual.RenderNode = pages[this.Page - 1];
                 this.CanvasActual.Invalidate(true);
+
+                Debug.WriteLine("DrawActual");
+                Debug.WriteLine(this.CanvasActual.RenderNode.ToXML());
+
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, ex.GetType().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);

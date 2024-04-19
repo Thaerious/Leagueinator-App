@@ -39,6 +39,13 @@ namespace Leagueinator.Printer {
             this.Left = left;
         }
 
+        public Cardinal(Cardinal<T> that) {
+            this.Top = that.Top;
+            this.Right = that.Right;
+            this.Bottom = that.Bottom;
+            this.Left = that.Left;
+        }
+
         public static bool TryParse(string source, out Cardinal<T> target) {
             string[] split = source.Split(' ', ',');
             List<object> values = new();

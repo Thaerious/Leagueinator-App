@@ -72,7 +72,7 @@ namespace Leagueinator.Printer.Styles {
 
             this.BorderColor ??= new(Color.Black);
             this.BorderStyle ??= new(DashStyle.Solid);
-            this.BorderSize ??= new(new() { Factor = 1, Unit = "px"});
+            this.BorderSize ??= new(new UnitFloat() { Factor = 1, Unit = "px"});
         }
 
         public override string ToString() {

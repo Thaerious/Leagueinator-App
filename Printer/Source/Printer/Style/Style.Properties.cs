@@ -30,7 +30,6 @@ namespace Leagueinator.Printer.Styles {
         [CSS("Flex_Start")] public Justify_Content? Justify_Content { get => justify_Content; set => justify_Content = value; }
         [CSS("Stretch")] public Align_Items? Align_Items { get => align_Items; set => align_Items = value; }
         [CSS("Forward")] public Direction? Flex_Direction { get => this.flex_Direction; set => this.flex_Direction = value; }
-        [CSS("0")][Inherited] public int? Page { get; set; }
 
         [CSS]
         public string Border {

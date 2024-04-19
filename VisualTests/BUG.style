@@ -11,9 +11,3 @@ page {
 	background-color: rgba(230, 230, 230, 128);
 }
 
-#1 {
-	page: 1;
-	width: 95%;
-	height: 25%;
-	border: 5px solid black;
-}

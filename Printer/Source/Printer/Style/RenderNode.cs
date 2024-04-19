@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
+using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 
@@ -16,7 +17,16 @@ namespace Leagueinator.Printer.Styles {
         public Cardinal<float> BorderSize = [];
         public Cardinal<float> Padding = [];
         public PointF Translation = new();
-        public int Page { get; internal set; } = 0;
+        public int Page { get; internal set; } = -1;
+
+        public RenderNode(RenderNode that) : this(that.Element){
+            this.Size = that.Size;
+            this.Margin = new(that.Margin);
+            this.BorderSize = new(that.BorderSize);
+            this.Padding = new(that.Padding);
+            this.Translation = that.Translation;
+            this.Page = that.Page;
+        }
 
         internal FlexRect ContentBox => new(
             this.Translation.X + this.Margin!.Left + this.BorderSize!.Left + this.Padding!.Left,
@@ -47,7 +57,7 @@ namespace Leagueinator.Printer.Styles {
         );
 
         /// <summary>
-        /// True if this node should to fit it's child nodes.
+        /// True if this node should to fit it's child _nodes.
         /// True when the node dimension is set to auto and the parent node does not have align stretch.
         /// </summary>
         /// <param name="dim"></param>
@@ -179,8 +189,23 @@ namespace Leagueinator.Printer.Styles {
             }
         }
 
+        /// <summary>
+        /// Create a new render tree omitting nodes that aren't page 0 or the indicated page.
+        /// All child nodes of a node that doesn't qualify are also omitted.
+        /// </summary>
+        /// <param name="page"></param>
+        internal RenderNode CloneTree(int page) {            
+            RenderNode @new = new(this);
+
+            if (@new.Page < 0 || @new.Page == page) {
+                foreach (RenderNode child in this.Children) {
+                    @new.AddChild(child.CloneTree(page));
+                }
+            }
+
+            return @new;
+        }
+
         public override string ToString() => this.Element.ToString();
-
-
     }
 }
