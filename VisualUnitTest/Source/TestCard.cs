@@ -3,6 +3,11 @@ using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
+using System.Xml;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Drawing;
+using System.IO;
+using System.Diagnostics;
 
 namespace Leagueinator.VisualUnitTest {
     public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
@@ -32,7 +37,7 @@ namespace Leagueinator.VisualUnitTest {
                 this.Status = Status.PASS;
             };
 
-            if (!File.Exists(this.Paths.BMP)) {
+            if (!File.Exists(this.Paths.BMP(0))) {
                 this.Status = Status.NO_TEST;
             }
             else if (File.Exists(this.Paths.Status)) {
@@ -52,36 +57,35 @@ namespace Leagueinator.VisualUnitTest {
             this.DoDragDrop(this, DragDropEffects.Copy);
         }
 
-        public void DeleteBitmap() {
-            if (File.Exists(this.Paths.BMP)) File.Delete(this.Paths.BMP);
+        public void DeleteBitmaps() {
+            this.AllBMPPaths(path => File.Delete(path));
         }
 
-        public bool CreateBitmap(out Bitmap? bitmap, int page) {
-            bitmap = null;
+        public List<Bitmap> CreateBitmaps() {
+            List<Bitmap> list = [];
 
             string xmlText = File.ReadAllText(this.Paths.XML);
-
-            if (xmlText.IsEmpty()) return false;
-
             LoadedStyles styles = LoadedStyles.LoadFromFile(this.Paths.Style);
             Element root = XMLLoader.Load(xmlText)["root"][0];
             styles.ApplyTo(root);
             Flex flex = new();
             List<RenderNode> pages = flex.DoLayout(root);
 
-            RenderNode renderNode = pages[page];
+            foreach (RenderNode page in pages) {
+                if ((int)page.Size.Width <= 0) throw new InvalidOperationException();
+                if ((int)page.Size.Height <= 0) throw new InvalidOperationException();
 
-            if ((int)renderNode.Size.Width <= 0) throw new InvalidOperationException();
-            if ((int)renderNode.Size.Height <= 0) throw new InvalidOperationException();
+                Bitmap bitmap = new Bitmap((int)page.Size.Width, (int)page.Size.Height);
+                Size size = new((int)page.Size.Width, (int)page.Size.Height);
 
-            bitmap = new Bitmap((int)renderNode.Size.Width, (int)renderNode.Size.Height);
-            Size size = new((int)renderNode.Size.Width, (int)renderNode.Size.Height);
+                using Graphics graphics = Graphics.FromImage(bitmap);
+                graphics.FillRectangle(Brushes.White, 0, 0, size.Width, size.Height);
+                page.Draw(graphics);
 
-            using Graphics graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(Brushes.White, 0, 0, size.Width, size.Height);
-            renderNode.Draw(graphics, 0);
+                list.Add(bitmap);
+            }
 
-            return true;
+            return list;
         }
 
         public Status Status {
@@ -126,6 +130,24 @@ namespace Leagueinator.VisualUnitTest {
             }
         }
 
+        public void AllBMPPaths(Action<string, int> action) {
+            int i = 0;
+            string path = Path.Join(this.Paths.Dir, $"{this.Paths.TestName}.0.bmp");
+            while (File.Exists(path)) {
+                action(path, i);
+                path = Path.Join(this.Paths.Dir, $"{this.Paths.TestName}.{++i}.bmp");
+            }
+        }
+
+        public void AllBMPPaths(Action<string> action) {
+            int i = 0;
+            string path = Path.Join(this.Paths.Dir, $"{this.Paths.TestName}.0.bmp");
+            while (File.Exists(path)) {
+                action(path);
+                path = Path.Join(this.Paths.Dir, $"{this.Paths.TestName}.{++i}.bmp");
+            }
+        }
+
         public void Rename(string newName) {
             Paths pathsTo = new(this.Paths.Dir, newName);
 
@@ -136,15 +158,14 @@ namespace Leagueinator.VisualUnitTest {
 
             File.Move(this.Paths.XML, pathsTo.XML);
             File.Move(this.Paths.Style, pathsTo.Style);
-            if (File.Exists(this.Paths.BMP)) File.Move(this.Paths.BMP, pathsTo.BMP);
-
+            this.AllBMPPaths((path, i) => File.Move(path, pathsTo.BMP(i)));
             this.Text = newName;
         }
 
         internal void DeleteFiles() {
             if (File.Exists(this.Paths.XML)) File.Delete(this.Paths.XML);
             if (File.Exists(this.Paths.Style)) File.Delete(this.Paths.Style);
-            if (File.Exists(this.Paths.BMP)) File.Delete(this.Paths.BMP);
+            this.AllBMPPaths(path => File.Delete(path));
             if (File.Exists(this.Paths.Status)) File.Delete(this.Paths.Status);
         }
 
@@ -158,35 +179,28 @@ namespace Leagueinator.VisualUnitTest {
 
             if (File.Exists(this.Paths.XML)) File.Move(this.Paths.XML, to.XML);
             if (File.Exists(this.Paths.Style)) File.Move(this.Paths.Style, to.Style);
-            if (File.Exists(this.Paths.BMP)) File.Move(this.Paths.BMP, to.BMP);
+            this.AllBMPPaths((path, i) => File.Move(path, to.BMP(i)));
             if (File.Exists(this.Paths.Status)) File.Move(this.Paths.Status, to.Status);
 
             this._parentCard = dirCard;
         }
 
         public Status DoTest() {
-            return Status.PASS;
-            //try {
-            //    if (!File.Exists(this.Paths.BMP)) {
-            //        return Status.NO_TEST;
-            //    }
-            //    else if (this.CreateBitmap(out Bitmap? actual)) {
-            //        using Bitmap expected = new Bitmap(this.Paths.BMP);
+            List<Bitmap> actual = this.CreateBitmaps();
+            if (actual.Count == 0) return Status.NO_TEST;
 
-            //        if (AreBitmapsIdentical(actual, expected)) {
-            //            return Status.PASS;
-            //        }
-            //        else {
-            //            return Status.FAIL;
-            //        }
-            //    }
-            //    else {
-            //        return Status.FAIL;
-            //    }
-            //}
-            //catch {
-            //    return Status.FAIL;
-            //}
+            for (int i = 0; i < actual.Count; i++) {
+                string path = this.Paths.BMP(i);
+                if (!File.Exists(path)) {
+                    Debug.WriteLine($"no file {path}");
+                    return Status.FAIL;
+                }
+                using Bitmap expected = new Bitmap(path);
+
+                if (!AreBitmapsIdentical(actual[i], expected)) return Status.FAIL;
+            }
+
+            return Status.PASS;
         }
 
         public static bool AreBitmapsIdentical(Bitmap bmp1, Bitmap bmp2) {

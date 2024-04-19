@@ -89,30 +89,12 @@ namespace Leagueinator.Printer.Styles {
             return true;
         }
 
-        public virtual void Draw(Graphics g, int page) {
-            Stack<RenderNode> stack = [];
-            stack.Push(this);
-
-            while (stack.Count > 0) {
-                RenderNode current = stack.Pop();
-                if (current.Page > 0 && current.Page != page) continue;
-
+        public virtual void Draw(Graphics g) {
+            TreeWalker<RenderNode>.Walk(this, current => {
                 current.DoDrawBackground(g);
                 current.DoDrawBorders(g);
                 if (current.Element.TagName == TextElement.TAG_NAME) current.DoDrawText(g);
-
-                if (current.Style.Overflow == Styles.Enums.Overflow.Visible) {
-                    foreach (RenderNode child in current.Children) stack.Push(child);
-                }
-                else if (current.Style.Overflow == Styles.Enums.Overflow.Paged) {
-                    foreach (RenderNode child in current.Children) {
-                        if (child.Style.Position == Styles.Enums.Position.Absolute) stack.Push(child);
-                        else if (child.Style.Position == Styles.Enums.Position.Fixed) stack.Push(child);
-                        else if (child.Page == page) stack.Push(child);
-                        else if (child.Element.TagName == TextElement.TAG_NAME) stack.Push(child);
-                    }
-                }
-            }
+            });            
         }
 
         public void DoDrawText(Graphics g) {

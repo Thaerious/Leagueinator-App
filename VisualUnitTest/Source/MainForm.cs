@@ -3,7 +3,6 @@ using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
 using Leagueinator.Utility;
 using System.Diagnostics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class MainForm : Form {
@@ -52,14 +51,17 @@ namespace Leagueinator.VisualUnitTest {
                     card.Click += this.HndTestCardClick;
 
                     card.ButtonFail.Click += (s, e) => {
-                        card.DeleteBitmap();
+                        card.DeleteBitmaps();
                         this.PanelExpected.Invalidate();
                     };
 
                     card.ButtonPass.Click += (s, e) => {
-                        if (!card.CreateBitmap(out Bitmap? bitmap, this.Page)) return;
-                        bitmap!.Save(card.Paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
-                        this.PanelExpected.Invalidate();
+                        int i = 0;
+                        foreach (Bitmap bitmap in card.CreateBitmaps()) {
+                            string path = Path.Join(card.Paths.Dir, $"{card.Paths.TestName}.{i++}.bmp");
+                            bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
+                            this.PanelExpected.Invalidate();
+                        }
                     };
                 }
 
@@ -95,7 +97,7 @@ namespace Leagueinator.VisualUnitTest {
 
         public MainForm() {
             InitializeComponent();
-            this.PanelExpected.Paint += this.HndPanelPaint;
+            this.PanelExpected.Paint += this.HndPanelExpectedPaint;
         }
 
         /// <summary>
@@ -111,23 +113,27 @@ namespace Leagueinator.VisualUnitTest {
             this.FlowPanelTestCards.Controls.Add(card);
 
             card.ButtonFail.Click += (s, e) => {
-                card.DeleteBitmap();
+                card.DeleteBitmaps();
                 this.PanelExpected.Invalidate();
             };
 
             card.ButtonPass.Click += (s, e) => {
-                if (!card.CreateBitmap(out Bitmap? bitmap, this.Page)) return;
-                bitmap!.Save(card.Paths.BMP, System.Drawing.Imaging.ImageFormat.Bmp);
-                this.PanelExpected.Invalidate();
+                int i = 0;
+                foreach (Bitmap bitmap in card.CreateBitmaps()) {
+                    string path = Path.Join(card.Paths.Dir, $"{card.Paths.TestName}.{i++}.bmp");
+                    bitmap.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
+                    this.PanelExpected.Invalidate();
+                }
             };
         }
 
-        private void HndPanelPaint(object? sender, PaintEventArgs e) {
+        private void HndPanelExpectedPaint(object? sender, PaintEventArgs e) {
             e.Graphics.Clear(Color.White);
             if (!this.IsReady) return;
             Paths paths = this.ActiveTestCard!.Paths;
-            if (!File.Exists(paths.BMP)) return;
-            Bitmap expected = LoadBitmap(paths.BMP);
+            string path = Path.Join(paths.Dir, $"{paths.TestName}.{this.Page - 1}.bmp");
+            if (!File.Exists(path)) return;
+            Bitmap expected = LoadBitmap(path);
             e.Graphics.DrawImage(expected, 0, 0);
             expected.Dispose();
         }
@@ -342,8 +348,11 @@ namespace Leagueinator.VisualUnitTest {
         public readonly string Dir = dir;
         public readonly string XML = Path.Join(dir, $"{name}.xml");
         public readonly string Style = Path.Join(dir, $"{name}.style");
-        public readonly string BMP = Path.Join(dir, $"{name}.bmp");
         public readonly string Status = Path.Join(dir, $"{name}.status");
         public readonly string TestName = name;
+
+        public string BMP(int page) {
+            return Path.Join(dir, $"{TestName}.{page}.bmp");
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace Leagueinator.Printer.Components {
             if (this.GridSize > 0 && this.ToBack) this.DrawGrids(e.Graphics);
 
             stopwatch.Start();
-            this.RootElement?.Draw(e.Graphics, this.Page);
+            this.RootElement?.Draw(e.Graphics);
             stopwatch.Stop();
 
             if (this.GridSize > 0 && !this.ToBack) this.DrawGrids(e.Graphics);

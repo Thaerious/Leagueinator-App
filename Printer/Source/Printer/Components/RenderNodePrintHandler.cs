@@ -14,7 +14,7 @@ namespace Leagueinator.Printer.Components {
 
         private void HndPrintPage(object sender, PrintPageEventArgs e) {
             if (this.CurrentPage < this.PageCount) {
-                this.Root.Draw(e.Graphics!, this.CurrentPage);
+                this.Root.Draw(e.Graphics!);
                 this.CurrentPage++;
             }
             e.HasMorePages = this.CurrentPage < this.PageCount;

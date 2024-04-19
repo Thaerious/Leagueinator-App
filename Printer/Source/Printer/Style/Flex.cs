@@ -27,22 +27,7 @@ namespace Leagueinator.Printer.Styles {
             SizeSecondPass();
             int pageCount = AssignPageNumbers(root);
             var pageList = AssignPages(root, pageCount);
-
-            foreach (RenderNode page in pageList) this.DoPos(page);
-
-            Debug.WriteLine($"\nRoot");
-            Debug.WriteLine(root.ToXML((node, xml) => {
-                xml.Attribute("page", node.Page);
-                xml.AppendLine(node.OuterBox.ToString());
-            }));
-
-            foreach (RenderNode page in pageList) {
-                Debug.WriteLine("\nPage");
-                Debug.WriteLine(page.ToXML((node, xml) => {
-                    xml.Attribute("page", node.Page);
-                    xml.AppendLine(node.OuterBox.ToString());
-                }));
-            }
+            foreach (RenderNode page in pageList) this.DoPos(page);           
 
             return pageList;
         }
