@@ -3,24 +3,20 @@ using System.Xml.Linq;
 
 namespace Leagueinator.Printer {
     public class XMLLoader {
-        
-        /// <summary>
-        /// Creates an element tree from a source string.
-        /// </summary>
-        /// <param name="xmlString"></param>
-        /// <returns>The root element</returns>
-        /// <exception cref="NullReferenceException"></exception>
-        public static Element Load(string xmlString) {
+
+        public static void Load<T>(string xmlString, out T rootElement) where T : Element, new() {
             XDocument xml = XDocument.Parse(xmlString);
 
             if (xml.Root == null) throw new NullReferenceException();
-            XElement xElement = xml.Root;
+            XElement xmlElement = xml.Root;
 
-            Element rootElement = new(xElement.Name.ToString(), xElement.Attributes());
+            rootElement = new() {
+                TagName = xmlElement.Name.ToString()
+            };
 
             Stack<XElement> xmlStack = new Stack<XElement>();
             Stack<Element> eleStack = new Stack<Element>();
-            xmlStack.Push(xElement);
+            xmlStack.Push(xmlElement);
             eleStack.Push(rootElement);
 
             while (xmlStack.Count > 0) {
@@ -48,8 +44,17 @@ namespace Leagueinator.Printer {
                     }
                 }
             }
+        }
 
-            return rootElement;
+        /// <summary>
+        /// Creates an element tree from a source string.
+        /// </summary>
+        /// <param name="xmlString"></param>
+        /// <returns>The root element</returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public static Element Load(string xmlString) {
+            Load(xmlString, out Element element);
+            return element;
         }
     }
 }

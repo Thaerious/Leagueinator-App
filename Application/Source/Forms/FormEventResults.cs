@@ -1,25 +1,38 @@
-﻿using Leagueinator.Model;
+﻿using Leagueinator.AssetControllers;
+using Leagueinator.Model;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
-using Printer.Source;
-using System.Reflection;
+using System.Diagnostics;
 
 namespace Leagueinator.Forms {
     public partial class FormEventResults : Form {
         private League League;
-        private Element root;
-        private RenderNode RenderNode;
-        private int Pages;
+        private EventScoreForm root;
+    
 
         public FormEventResults(League league) {
             this.League = league;
             this.InitializeComponent();
-            this.root = 
-                Assembly.GetExecutingAssembly().
-                LoadResources("Leagueinator.Assets.EventForm.xml", "Leagueinator.Assets.EventForm.style");
 
-            (this.Pages, this.RenderNode) = Flex.Layout(root);
-            this.Canvas.RenderNode = this.RenderNode;
+            this.root = EventScoreForm.New();
+
+            for (int i = 0; i < 10; i++) {
+                var team = this.root.AddTeam();
+                team.AddName("John Candy");
+                team.AddName("Eugene Levy");
+                team.AddRow();
+                team.AddRow();
+                team.AddRow();
+            }
+
+            if (this.root.Invalid) this.root.DoLayout();
+            this.root.Invalid = false;
+
+            Debug.WriteLine(this.root.Invalid);
+            Debug.WriteLine(this.root["team"][0].ToXML());
+
+            List<RenderNode> pages = Flex.Layout(root);
+            this.Canvas.RenderNode = pages[0];
         }
 
 
@@ -28,3 +41,4 @@ namespace Leagueinator.Forms {
         }
     }
 }
+

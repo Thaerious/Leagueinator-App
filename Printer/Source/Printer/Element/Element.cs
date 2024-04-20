@@ -7,8 +7,15 @@ using System.Xml.Linq;
 
 namespace Leagueinator.Printer.Elements {
 
-    public partial class Element : TreeNode<Element>{
+    public partial class Element : TreeNode<Element> {
         public delegate void DrawDelegate(Graphics g, Element element, int page);
+
+        public Element() : base() {
+            this.Style = new(this) {
+                Owner = this
+            };
+            this.Attributes = new(this);
+        }
 
         /// <summary>
         /// Create a new current with a default name and classlist.
@@ -42,6 +49,11 @@ namespace Leagueinator.Printer.Elements {
                 if (value == null) return;
                 this.AddChild(new TextElement(value));
             }
+        }
+
+        public override void AddChild(Element element) {
+            base.AddChild(element);
+            this.InvalidateQueryEngine();
         }
 
         /// <summary>
@@ -83,6 +95,6 @@ namespace Leagueinator.Printer.Elements {
             return xml;
         }
 
-        public override string ToString() => this.Identifier;        
+        public override string ToString() => this.Identifier;
     }
 }

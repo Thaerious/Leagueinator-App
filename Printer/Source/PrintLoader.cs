@@ -26,22 +26,22 @@ namespace Printer.Source {
         /// <param name="xmlName"></param>
         /// <param name="cssName"></param>
         /// <returns>The root element</returns>
-        public static Element LoadResources(this Assembly assembly, string xmlName, string cssName) {
-            var element = assembly.LoadXMLResource(xmlName);
-            LoadedStyles ss = assembly.LoadSSResource(cssName);
+        public static T LoadResources<T>(this Assembly assembly, string xmlName, string cssName) where T : Element, new() {
+            T element = assembly.LoadXMLResource<T>(xmlName);
+            LoadedStyles ss = assembly.LoadStyleResource(cssName);
             ss.ApplyTo(element);
             return element;
         }
 
-        public static Element LoadXMLResource(this Assembly assembly, string xmlName) {
-            Console.WriteLine(xmlName);
+        public static T LoadXMLResource<T>(this Assembly assembly, string xmlName) where T : Element, new() {
             using Stream? xmlStream = assembly.GetManifestResourceStream(xmlName) ?? throw new NullReferenceException($"Resource Not Found: {xmlName}");
             using StreamReader xmlReader = new StreamReader(xmlStream);
             string xmlText = xmlReader.ReadToEnd();
-            return XMLLoader.Load(xmlText);
+            XMLLoader.Load(xmlText, out T t);
+            return t;
         }
 
-        public static LoadedStyles LoadSSResource(this Assembly assembly, string cssName) {
+        public static LoadedStyles LoadStyleResource(this Assembly assembly, string cssName) {
             using Stream? xmlStream = assembly.GetManifestResourceStream(cssName) ?? throw new NullReferenceException($"Resource Not Found: {cssName}");
             using StreamReader xmlReader = new StreamReader(xmlStream);
             string xmlText = xmlReader.ReadToEnd();

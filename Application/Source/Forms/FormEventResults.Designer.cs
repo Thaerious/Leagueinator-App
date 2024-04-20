@@ -29,7 +29,10 @@ namespace Leagueinator.Forms {
             this.toolStrip1 = new ToolStrip();
             this.butPrint = new ToolStripButton();
             this.Canvas = new PrinterCanvas();
+            this.TableLayout = new TableLayoutPanel();
+            this.panel1 = new Panel();
             this.toolStrip1.SuspendLayout();
+            this.TableLayout.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -57,26 +60,50 @@ namespace Leagueinator.Forms {
             this.Canvas.Dock = DockStyle.Fill;
             this.Canvas.GridSize = 0;
             this.Canvas.InnerBorder = BorderStyle.None;
-            this.Canvas.Location = new Point(0, 34);
-            this.Canvas.Name = "canvas";
+            this.Canvas.Location = new Point(3, 3);
+            this.Canvas.Name = "Canvas";
             this.Canvas.Page = 0;
             this.Canvas.RenderNode = null;
-            this.Canvas.Size = new Size(870, 944);
+            this.Canvas.Size = new Size(864, 944);
             this.Canvas.SubGridSize = 0;
             this.Canvas.TabIndex = 1;
             this.Canvas.ToBack = false;
+            // 
+            // TableLayout
+            // 
+            this.TableLayout.ColumnCount = 1;
+            this.TableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            this.TableLayout.Controls.Add(this.panel1, 0, 1);
+            this.TableLayout.Controls.Add(this.Canvas, 0, 0);
+            this.TableLayout.Dock = DockStyle.Fill;
+            this.TableLayout.Location = new Point(0, 34);
+            this.TableLayout.Name = "TableLayout";
+            this.TableLayout.RowCount = 2;
+            this.TableLayout.RowStyles.Add(new RowStyle());
+            this.TableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 400F));
+            this.TableLayout.Size = new Size(870, 944);
+            this.TableLayout.TabIndex = 1;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = Color.FromArgb(255, 192, 192);
+            this.panel1.Location = new Point(3, 953);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new Size(300, 300);
+            this.panel1.TabIndex = 1;
             // 
             // FormEventResults
             // 
             this.AutoScaleDimensions = new SizeF(10F, 25F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(870, 978);
-            this.Controls.Add(this.Canvas);
+            this.Controls.Add(this.TableLayout);
             this.Controls.Add(this.toolStrip1);
             this.Name = "FormEventResults";
             this.Text = "FormEventResults";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.TableLayout.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -88,5 +115,7 @@ namespace Leagueinator.Forms {
         private ToolStripButton toolStripButton2;
         private ToolStripButton butPrint;
         private PrinterCanvas Canvas;
+        private TableLayoutPanel TableLayout;
+        private Panel panel1;
     }
 }

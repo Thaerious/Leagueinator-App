@@ -8,7 +8,6 @@ namespace Leagueinator.Printer.Styles {
     //[DebugTrace]
     [EnableTabbedDebug(true)]
     public class Flex {
-        private int pageCount = 1;
         private List<Action> deferred = [];
 
         public static List<RenderNode> Layout(Element element) {

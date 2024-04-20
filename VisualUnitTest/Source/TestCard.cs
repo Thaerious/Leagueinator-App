@@ -1,12 +1,6 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer.Elements;
+﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Printer;
-using Leagueinator.Utility;
-using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Drawing;
-using System.IO;
 using System.Diagnostics;
 
 namespace Leagueinator.VisualUnitTest {

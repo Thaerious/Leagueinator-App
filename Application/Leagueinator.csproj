@@ -9,13 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\EventForm.style" />
-    <None Remove="Assets\EventForm.xml" />
+    <None Remove="Assets\EventScoreForm.style" />
+    <None Remove="Assets\EventScoreForm.xml" />
+    <None Remove="Assets\ScoreRow.xml" />
+    <None Remove="Assets\TeamScore.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\EventForm.style" />
-    <EmbeddedResource Include="Assets\EventForm.xml" />
+    <EmbeddedResource Include="Assets\ScoreRow.xml" />
+    <EmbeddedResource Include="Assets\TeamScore.xml" />
+    <EmbeddedResource Include="Assets\EventScoreForm.style" />
+    <EmbeddedResource Include="Assets\EventScoreForm.xml" />
   </ItemGroup>
 
   <ItemGroup>
