@@ -60,11 +60,11 @@ namespace Leagueinator.Forms {
             this.Canvas.Dock = DockStyle.Fill;
             this.Canvas.GridSize = 0;
             this.Canvas.InnerBorder = BorderStyle.None;
-            this.Canvas.Location = new Point(3, 3);
+            this.Canvas.Location = new Point(3, 711);
             this.Canvas.Name = "Canvas";
             this.Canvas.Page = 0;
             this.Canvas.RenderNode = null;
-            this.Canvas.Size = new Size(864, 944);
+            this.Canvas.Size = new Size(864, 230);
             this.Canvas.SubGridSize = 0;
             this.Canvas.TabIndex = 1;
             this.Canvas.ToBack = false;
@@ -73,23 +73,24 @@ namespace Leagueinator.Forms {
             // 
             this.TableLayout.ColumnCount = 1;
             this.TableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            this.TableLayout.Controls.Add(this.panel1, 0, 1);
             this.TableLayout.Controls.Add(this.Canvas, 0, 0);
+            this.TableLayout.Controls.Add(this.panel1, 0, 1);            
             this.TableLayout.Dock = DockStyle.Fill;
             this.TableLayout.Location = new Point(0, 34);
             this.TableLayout.Name = "TableLayout";
             this.TableLayout.RowCount = 2;
-            this.TableLayout.RowStyles.Add(new RowStyle());
-            this.TableLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 400F));
+            this.TableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 75F));
+            this.TableLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             this.TableLayout.Size = new Size(870, 944);
             this.TableLayout.TabIndex = 1;
             // 
             // panel1
             // 
             this.panel1.BackColor = Color.FromArgb(255, 192, 192);
-            this.panel1.Location = new Point(3, 953);
+            this.panel1.Dock = DockStyle.Fill;
+            this.panel1.Location = new Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new Size(300, 300);
+            this.panel1.Size = new Size(864, 702);
             this.panel1.TabIndex = 1;
             // 
             // FormEventResults
