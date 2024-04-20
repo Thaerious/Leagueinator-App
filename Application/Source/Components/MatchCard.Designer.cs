@@ -75,7 +75,7 @@
             this.flowLayoutPanel.Size = new Size(139, 273);
             this.flowLayoutPanel.TabIndex = 2;
             // 
-            // label1
+            // LabelPage
             // 
             this.label1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             this.label1.AutoSize = true;

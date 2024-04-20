@@ -10,10 +10,17 @@ namespace Leagueinator.Utility {
         /// <param name="first"></param>
         /// <param name="second"></param>
         /// <returns></returns>
-        public static Point CenterX(this Rectangle first, Rectangle second) {
+        public static Point Center(this Rectangle first, Rectangle second) {
             return new(
                 first.Location.X + first.Width / 2 - second.Width / 2,
                 first.Location.Y + first.Height / 2 - second.Height / 2
+            );
+        }
+
+        public static Point Center(this Size first, Size second) {
+            return new(
+                first.Width / 2 - second.Width / 2,
+                first.Height / 2 - second.Height / 2
             );
         }
 

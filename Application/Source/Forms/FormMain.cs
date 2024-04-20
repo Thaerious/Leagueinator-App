@@ -49,7 +49,7 @@ namespace Leagueinator.Forms {
             };
 
             form.Location = new Point(
-                this.Bounds.CenterX(form.Bounds).X,
+                this.Bounds.Center(form.Bounds).X,
                 this.Location.Y
             );
 
