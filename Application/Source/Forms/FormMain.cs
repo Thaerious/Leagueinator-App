@@ -1,4 +1,5 @@
-﻿using Leagueinator.Model;
+﻿using Leagueinator.Forms.ResultsPlus;
+using Leagueinator.Model;
 using Leagueinator.Utility;
 
 namespace Leagueinator.Forms {
@@ -44,7 +45,7 @@ namespace Leagueinator.Forms {
         }
 
         private void HndMenuViewEventResults(object sender, EventArgs e) {
-            FormEventResults form = new(this.Model) {
+            ResultsPlusForm form = new(this.Model) {
                 StartPosition = FormStartPosition.Manual
             };
 

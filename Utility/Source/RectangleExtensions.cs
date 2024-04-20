@@ -2,7 +2,6 @@
 
 namespace Leagueinator.Utility {
     public static class RectangleExtensions {
-
         /// <summary>
         /// Caluculates the location for the second rectangle that will center it
         /// within the first rectangle.

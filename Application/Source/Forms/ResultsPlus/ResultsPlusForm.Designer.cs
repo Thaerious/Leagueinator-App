@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Printer.Components;
 
-namespace Leagueinator.Forms {
-    partial class FormEventResults {
+namespace Leagueinator.Forms.ResultsPlus {
+    partial class ResultsPlusForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,7 +25,7 @@ namespace Leagueinator.Forms {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(FormEventResults));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(ResultsPlusForm));
             this.toolStrip1 = new ToolStrip();
             this.butPrint = new ToolStripButton();
             this.TableLayout = new TableLayoutPanel();

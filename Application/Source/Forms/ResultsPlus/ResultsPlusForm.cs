@@ -5,8 +5,8 @@ using Leagueinator.Printer.Styles;
 using Leagueinator.Utility;
 using System.Diagnostics;
 
-namespace Leagueinator.Forms {
-    public partial class FormEventResults : Form {
+namespace Leagueinator.Forms.ResultsPlus {
+    public partial class ResultsPlusForm : Form {
         private League League;
         private EventScoreForm root;
         private List<RenderNode> pages;
@@ -23,7 +23,7 @@ namespace Leagueinator.Forms {
             }
         }
 
-        public FormEventResults(League league) {
+        public ResultsPlusForm(League league) {
             this.League = league;
             this.InitializeComponent();
             this.CustomizeComponent();
