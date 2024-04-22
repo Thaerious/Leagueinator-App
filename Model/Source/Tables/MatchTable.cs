@@ -16,7 +16,7 @@ namespace Leagueinator.Model.Tables {
 
         public RowBoundView<TeamRow> Teams {
             get {
-                return new(this.League.TeamTable, TeamTable.COL.MATCH, this.UID);
+                return new(this.League.TeamTable, [TeamTable.COL.MATCH], [this.UID]);
             }
         }
 

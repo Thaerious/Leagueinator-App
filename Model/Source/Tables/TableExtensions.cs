@@ -181,33 +181,40 @@ namespace Leagueinator.Model.Tables {
             return row.Table.PrettyPrint(new DataRow[] { row }, title);
         }
 
-        public static string PrettyPrint(this DataTable Table, DataRow[] rows, string? title = null) {
-            title ??= $"Table: '{Table.TableName}'";
+        public static string PrettyPrint(this DataTable table, DataRow[] rows, string? title = null) {
+            title ??= $"Table: '{table.TableName}'";
             var sb = new StringBuilder();
 
             Dictionary<DataColumn, int> colSizes = [];
 
-            foreach (DataColumn column in Table.Columns) {
+            foreach (DataColumn column in table.Columns) {
                 colSizes[column] = column.ColumnName.Length;
             }
 
+            while (colSizes.Sum(col => col.Value) < title.Length) {
+                foreach (DataColumn key in colSizes.Keys) colSizes[key]++;
+            }
+
             foreach (DataRow row in rows) {
-                foreach (DataColumn column in Table.Columns) {
+                foreach (DataColumn column in table.Columns) {
                     string value = row[column].ToString() ?? "";
                     colSizes[column] = Math.Max(value.Length, colSizes[column]);
                 }
             }
 
             sb.Append('+');
-            foreach (DataColumn column in Table.Columns) {
+            foreach (DataColumn column in table.Columns) {
                 sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
 
+            // Add Headers
             int headerSize = -1;
             sb.Append("\n| ");
-            foreach (DataColumn column in Table.Columns) {
-                string value = column.ColumnName.PadLeft(colSizes[column]);
+            foreach (DataColumn column in table.Columns) {
+                string value = column.ColumnName;
+                value = value.PadLeft((colSizes[column] + value.Length)  / 2);
+                value = value.PadRight(colSizes[column]);
                 sb.Append(value);
                 sb.Append(" | ");
                 headerSize += value.Length + 3;
@@ -225,14 +232,14 @@ namespace Leagueinator.Model.Tables {
             sb.Insert(0, "+" + new string('-', headerSize) + "+\n");
 
             sb.Append("\n+");
-            foreach (DataColumn column in Table.Columns) {
+            foreach (DataColumn column in table.Columns) {
                 sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }
 
             foreach (DataRow row in rows) {
                 sb.Append("\n| ");
-                foreach (DataColumn column in Table.Columns) {
+                foreach (DataColumn column in table.Columns) {
                     string s = row[column.ColumnName].ToString() ?? "NULL";
                     sb.Append(s.PadLeft(colSizes[column]));
                     sb.Append(" | ");
@@ -240,7 +247,7 @@ namespace Leagueinator.Model.Tables {
             }
 
             sb.Append("\n+");
-            foreach (DataColumn column in Table.Columns) {
+            foreach (DataColumn column in table.Columns) {
                 sb.Append(new string('-', colSizes[column] + 2));
                 sb.Append('+');
             }

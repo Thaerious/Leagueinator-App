@@ -8,8 +8,8 @@ namespace Leagueinator.Model.Tables {
         public readonly RowBoundView<MatchRow> Matches;
 
         public RoundRow(DataRow dataRow) : base(dataRow) {
-            this.IdlePlayers = new(this.League.IdleTable, IdleTable.COL.ROUND, this.UID);
-            this.Matches = new(this.League.MatchTable, MatchTable.COL.ROUND, this.UID);
+            this.IdlePlayers = new(this.League.IdleTable, [IdleTable.COL.ROUND], [this.UID]);
+            this.Matches = new(this.League.MatchTable, [MatchTable.COL.ROUND], [this.UID]);
         }
 
         public int UID {
@@ -22,6 +22,9 @@ namespace Leagueinator.Model.Tables {
             get => this.League.EventTable.GetRow((int)this.DataRow[RoundTable.COL.EVENT]);
         }
 
+        /// <summary>
+        /// Retreive a colloection of team rows for all matches in this round.
+        /// </summary>
         public IEnumerable<TeamRow> Teams {
             get {
                 return this.Matches.SelectMany(matchRow => matchRow.Teams);

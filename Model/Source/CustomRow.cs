@@ -5,7 +5,8 @@ namespace Leagueinator.Model {
         public League League {
             get => (League)this.DataRow.Table.DataSet!;
         }
-        public DataRow DataRow = dataRow;
+
+        public readonly DataRow DataRow = dataRow;
 
         public static implicit operator DataRow?(CustomRow customRow) {
             return customRow.DataRow;
@@ -14,9 +15,7 @@ namespace Leagueinator.Model {
         public void Delete() => this.DataRow.Delete();
     }
 
-    public class InvalidTableException : Exception {
-        public InvalidTableException(string? message) : base(message) { }
-
+    public class InvalidTableException(string? message) : Exception(message) {
         public static void CheckTable<T>(DataRow row) {
             if (typeof(T) != row.Table.GetType()) {
                 throw new InvalidTableException(

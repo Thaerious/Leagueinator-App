@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Views;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
@@ -12,7 +13,7 @@ namespace Leagueinator.Model.Tables {
                 this.League.MemberTable, 
                 [TeamTable.COL.MATCH, TeamTable.COL.INDEX], 
                 [this.Match.UID, this.Index]
-                );
+            );
         }
 
         public MatchRow Match {

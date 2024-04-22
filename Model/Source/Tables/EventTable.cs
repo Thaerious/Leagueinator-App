@@ -1,5 +1,9 @@
 ﻿using Leagueinator.Model.Views;
+using Leagueinator.Utility;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
@@ -8,13 +12,22 @@ namespace Leagueinator.Model.Tables {
         public readonly ReflectedRowTable Settings;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
-            this.Rounds = new(this.League.RoundTable, RoundTable.COL.EVENT, this.UID);
+            this.Rounds = new(this.League.RoundTable, [RoundTable.COL.EVENT], [this.UID]);
 
             var column
                 = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT]
                 ?? throw new NullReferenceException("Column is null");
 
             this.Settings = new(this.League.SettingsTable, column, this.UID);
+        }
+
+        /// <summary>
+        /// Retreive a colloection of team rows for all rounds in this event.
+        /// </summary>
+        public IEnumerable<TeamRow> Teams {
+            get {
+                return this.Rounds.SelectMany(matchRow => matchRow.Teams);
+            }
         }
 
         public int UID {
@@ -31,6 +44,24 @@ namespace Leagueinator.Model.Tables {
         public string Date {
             get => (string)this.DataRow[EventTable.COL.DATE];
             set => this.DataRow[EventTable.COL.DATE] = value;
+        }
+
+        public ReadOnlyDictionary<Team, IReadOnlyList<Match>> AllTeams() {
+            Dictionary<Team, List<Match>> allTeams = [];
+
+            foreach (TeamRow teamRow in this.Teams) {
+                Team team = new(teamRow);
+                if (!allTeams.ContainsKey(team)) allTeams[team] = [];
+                allTeams[team].Add(new(teamRow));
+            }
+
+            // Convert the dictionary to have IReadOnlyList<Match> as the values
+            var readOnlyTeams = new Dictionary<Team, IReadOnlyList<Match>>();
+            foreach (var pair in allTeams) {
+                readOnlyTeams[pair.Key] = pair.Value.AsReadOnly();
+            }
+
+            return new ReadOnlyDictionary<Team, IReadOnlyList<Match>>(readOnlyTeams);
         }
     }
 
