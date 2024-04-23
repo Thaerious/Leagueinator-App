@@ -17,6 +17,22 @@ namespace Leagueinator.Printer.Elements {
             this.Attributes = new(this);
         }
 
+        public virtual Element Clone() {
+            Element @new = new() {
+                TagName = this.TagName
+            };
+
+            foreach (string key in this.Attributes.Keys) {
+                @new.Attributes[key] = this.Attributes[key];
+            }
+
+            foreach (Element child in this.Children) {
+                @new.AddChild(child.Clone());
+            }
+
+            return @new;            
+        }
+
         /// <summary>
         /// Create a new current with a default name and classlist.
         /// </summary>

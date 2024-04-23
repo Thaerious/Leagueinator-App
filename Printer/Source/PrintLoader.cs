@@ -3,7 +3,7 @@ using Leagueinator.Printer;
 using System.Reflection;
 using Leagueinator.Printer.Styles;
 
-namespace Printer.Source {
+namespace Printer {
     public static class PrintLoader {
         /// <summary>
         /// Load an xml and style resource from the assembly.  Applies styles to the elements.

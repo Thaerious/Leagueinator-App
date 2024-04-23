@@ -13,6 +13,8 @@ namespace Leagueinator {
             this.PlayerTable.AddRow("Yyvonne");
             this.PlayerTable.AddRow("Adam");
             this.PlayerTable.AddRow("Eve");
+            this.PlayerTable.AddRow("Cain");
+            this.PlayerTable.AddRow("Able");
 
             roundRow.IdlePlayers.Add("Zed");
             roundRow.IdlePlayers.Add("Yyvonne");
@@ -26,6 +28,11 @@ namespace Leagueinator {
 
             teamRow1.Members.Add("Adam");
             teamRow2.Members.Add("Eve");
+            teamRow1.Members.Add("Cain");
+            teamRow2.Members.Add("Able");
+
+            teamRow1.Bowls = 6;
+            teamRow2.Bowls = 4;
         }
     }
 }

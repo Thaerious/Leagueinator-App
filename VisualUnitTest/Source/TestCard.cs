@@ -186,7 +186,6 @@ namespace Leagueinator.VisualUnitTest {
             for (int i = 0; i < actual.Count; i++) {
                 string path = this.Paths.BMP(i);
                 if (!File.Exists(path)) {
-                    Debug.WriteLine($"no file {path}");
                     return Status.FAIL;
                 }
                 using Bitmap expected = new Bitmap(path);

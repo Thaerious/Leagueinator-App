@@ -37,8 +37,13 @@ namespace Leagueinator.Model.Tables {
             }
         }
 
-        public RoundRow PopulateMatches() {
-            int matchCount = int.Parse(this.Event.Settings["match_count"] ?? "8");
+        /// <summary>
+        /// Add empty matches to this round.
+        /// </summary>
+        /// <param name="matchCount"></param>
+        /// <returns></returns>
+        public RoundRow PopulateMatches(int? matchCount = null) {
+            matchCount ??= int.Parse(this.Event.Settings["match_count"] ?? "8");
 
             while (this.Matches.Count < matchCount) {
                 int ends = int.Parse(this.Event.Settings["ends"] ?? "10");

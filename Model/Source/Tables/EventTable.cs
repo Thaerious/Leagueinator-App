@@ -51,6 +51,7 @@ namespace Leagueinator.Model.Tables {
 
             foreach (TeamRow teamRow in this.Teams) {
                 Team team = new(teamRow);
+                if (team.Players.Count <= 0) continue;
                 if (!allTeams.ContainsKey(team)) allTeams[team] = [];
                 allTeams[team].Add(new(teamRow));
             }

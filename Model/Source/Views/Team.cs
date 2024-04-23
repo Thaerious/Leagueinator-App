@@ -4,12 +4,6 @@ namespace Leagueinator.Model.Views {
     public class Team(TeamRow teamRow) : IEquatable<Team> {
         public TeamRow Row { get; } = teamRow;
 
-        public SortedList<Match, Match> Matches = new(Comparer<Match>.Create((x, y) => {
-            if (x.Round != y.Round) return x.Round - y.Round;
-            if (x.Lane != y.Lane) return x.Lane - y.Lane;
-            return 0;
-        }));
-
         public IReadOnlySet<string> Players {
             get {
                 HashSet<string> players = [];

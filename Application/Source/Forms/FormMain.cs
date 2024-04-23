@@ -45,7 +45,9 @@ namespace Leagueinator.Forms {
         }
 
         private void HndMenuViewEventResults(object sender, EventArgs e) {
-            ResultsPlusForm form = new(this.Model) {
+            if (this.eventPanel.EventRow is null) throw new ArgumentNullException("event row not set");
+
+            ResultsPlusForm form = new(this.eventPanel.EventRow) {
                 StartPosition = FormStartPosition.Manual
             };
 

@@ -17,8 +17,6 @@ namespace Leagueinator.Model.Tables {
             public static readonly string NAME = "name";
         }
 
-
-
         public PlayerRow AddRow(string name) {
             var row = this.NewRow();
             row[COL.NAME] = name;

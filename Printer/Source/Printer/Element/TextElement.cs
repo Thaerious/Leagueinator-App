@@ -9,6 +9,10 @@ namespace Leagueinator.Printer.Elements {
             this.Text = text.Trim();
         }
 
+        public override TextElement Clone() {
+            return new(this.Text);
+        }
+
         public string Text { get; [Validated] set; } = "";
 
         public SizeF Size() {
