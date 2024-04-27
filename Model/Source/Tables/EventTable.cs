@@ -97,6 +97,10 @@ namespace Leagueinator.Model.Tables {
             return new EventRow(foundRows[0]);
         }
 
+        public EventRow GetLast() {
+            return new(this.Rows[this.Rows.Count - 1]);
+        }
+
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),

@@ -27,6 +27,12 @@ namespace Leagueinator.Forms {
         private void InitializeComponent() {
             this.eventPanel = new EventPanel();
             this.menuStrip1 = new MenuStrip();
+            this.fileToolStripMenuItem = new ToolStripMenuItem();
+            this.newToolStripMenuItem = new ToolStripMenuItem();
+            this.loadToolStripMenuItem = new ToolStripMenuItem();
+            this.saveToolStripMenuItem = new ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new ToolStripMenuItem();
+            this.closeToolStripMenuItem = new ToolStripMenuItem();
             this.viewTableToolStripMenuItem = new ToolStripMenuItem();
             this.dataTableToolStripMenuItem = new ToolStripMenuItem();
             this.matchesToolStripMenuItem = new ToolStripMenuItem();
@@ -38,10 +44,11 @@ namespace Leagueinator.Forms {
             this.eventsToolStripMenuItem = new ToolStripMenuItem();
             this.roundsToolStripMenuItem = new ToolStripMenuItem();
             this.resultsToolStripMenuItem = new ToolStripMenuItem();
+            this.roundToolStripMenuItem = new ToolStripMenuItem();
             this.eventToolStripMenuItem = new ToolStripMenuItem();
             this.debugToolStripMenuItem = new ToolStripMenuItem();
             this.matchTableToolStripMenuItem = new ToolStripMenuItem();
-            this.roundToolStripMenuItem = new ToolStripMenuItem();
+            this.exitToolStripMenuItem = new ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,12 +64,54 @@ namespace Leagueinator.Forms {
             // menuStrip1
             // 
             this.menuStrip1.ImageScalingSize = new Size(24, 24);
-            this.menuStrip1.Items.AddRange(new ToolStripItem[] { this.viewTableToolStripMenuItem, this.debugToolStripMenuItem });
+            this.menuStrip1.Items.AddRange(new ToolStripItem[] { this.fileToolStripMenuItem, this.viewTableToolStripMenuItem, this.debugToolStripMenuItem });
             this.menuStrip1.Location = new Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new Size(1896, 33);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.newToolStripMenuItem, this.loadToolStripMenuItem, this.saveToolStripMenuItem, this.saveAsToolStripMenuItem, this.closeToolStripMenuItem, this.exitToolStripMenuItem });
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new Size(54, 29);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new Size(270, 34);
+            this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += this.HndMenuNew;
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new Size(270, 34);
+            this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += this.HndMenuLoad;
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.Size = new Size(270, 34);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += this.HndMenuSave;
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new Size(270, 34);
+            this.saveAsToolStripMenuItem.Text = "Save As";
+            this.saveAsToolStripMenuItem.Click += this.HndMenuSaveAs;
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new Size(270, 34);
+            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += this.HndMenuClose;
             // 
             // viewTableToolStripMenuItem
             // 
@@ -75,62 +124,62 @@ namespace Leagueinator.Forms {
             // 
             this.dataTableToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.matchesToolStripMenuItem, this.teamsToolStripMenuItem, this.membersToolStripMenuItem, this.idleToolStripMenuItem, this.playersToolStripMenuItem, this.settingsToolStripMenuItem, this.eventsToolStripMenuItem, this.roundsToolStripMenuItem });
             this.dataTableToolStripMenuItem.Name = "dataTableToolStripMenuItem";
-            this.dataTableToolStripMenuItem.Size = new Size(270, 34);
+            this.dataTableToolStripMenuItem.Size = new Size(198, 34);
             this.dataTableToolStripMenuItem.Text = "Data-Table";
             // 
             // matchesToolStripMenuItem
             // 
             this.matchesToolStripMenuItem.Name = "matchesToolStripMenuItem";
-            this.matchesToolStripMenuItem.Size = new Size(270, 34);
+            this.matchesToolStripMenuItem.Size = new Size(189, 34);
             this.matchesToolStripMenuItem.Text = "Matches";
             this.matchesToolStripMenuItem.Click += this.HndMenuViewMatches;
             // 
             // teamsToolStripMenuItem
             // 
             this.teamsToolStripMenuItem.Name = "teamsToolStripMenuItem";
-            this.teamsToolStripMenuItem.Size = new Size(270, 34);
+            this.teamsToolStripMenuItem.Size = new Size(189, 34);
             this.teamsToolStripMenuItem.Text = "Teams";
             this.teamsToolStripMenuItem.Click += this.HndMenuViewTeams;
             // 
             // membersToolStripMenuItem
             // 
             this.membersToolStripMenuItem.Name = "membersToolStripMenuItem";
-            this.membersToolStripMenuItem.Size = new Size(270, 34);
+            this.membersToolStripMenuItem.Size = new Size(189, 34);
             this.membersToolStripMenuItem.Text = "Members";
             this.membersToolStripMenuItem.Click += this.HndMenuViewMembers;
             // 
             // idleToolStripMenuItem
             // 
             this.idleToolStripMenuItem.Name = "idleToolStripMenuItem";
-            this.idleToolStripMenuItem.Size = new Size(270, 34);
+            this.idleToolStripMenuItem.Size = new Size(189, 34);
             this.idleToolStripMenuItem.Text = "Idle";
             this.idleToolStripMenuItem.Click += this.HndMenuViewIdle;
             // 
             // playersToolStripMenuItem
             // 
             this.playersToolStripMenuItem.Name = "playersToolStripMenuItem";
-            this.playersToolStripMenuItem.Size = new Size(270, 34);
+            this.playersToolStripMenuItem.Size = new Size(189, 34);
             this.playersToolStripMenuItem.Text = "Players";
             this.playersToolStripMenuItem.Click += this.HndMenuViewPlayers;
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new Size(270, 34);
+            this.settingsToolStripMenuItem.Size = new Size(189, 34);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += this.HndMenuViewSettings;
             // 
             // eventsToolStripMenuItem
             // 
             this.eventsToolStripMenuItem.Name = "eventsToolStripMenuItem";
-            this.eventsToolStripMenuItem.Size = new Size(270, 34);
+            this.eventsToolStripMenuItem.Size = new Size(189, 34);
             this.eventsToolStripMenuItem.Text = "Events";
             this.eventsToolStripMenuItem.Click += this.HndMenuViewEvents;
             // 
             // roundsToolStripMenuItem
             // 
             this.roundsToolStripMenuItem.Name = "roundsToolStripMenuItem";
-            this.roundsToolStripMenuItem.Size = new Size(270, 34);
+            this.roundsToolStripMenuItem.Size = new Size(189, 34);
             this.roundsToolStripMenuItem.Text = "Rounds";
             this.roundsToolStripMenuItem.Click += this.HndMenuViewRounds;
             // 
@@ -138,13 +187,19 @@ namespace Leagueinator.Forms {
             // 
             this.resultsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { this.roundToolStripMenuItem, this.eventToolStripMenuItem });
             this.resultsToolStripMenuItem.Name = "resultsToolStripMenuItem";
-            this.resultsToolStripMenuItem.Size = new Size(270, 34);
+            this.resultsToolStripMenuItem.Size = new Size(198, 34);
             this.resultsToolStripMenuItem.Text = "Results";
+            // 
+            // roundToolStripMenuItem
+            // 
+            this.roundToolStripMenuItem.Name = "roundToolStripMenuItem";
+            this.roundToolStripMenuItem.Size = new Size(166, 34);
+            this.roundToolStripMenuItem.Text = "Round";
             // 
             // eventToolStripMenuItem
             // 
             this.eventToolStripMenuItem.Name = "eventToolStripMenuItem";
-            this.eventToolStripMenuItem.Size = new Size(270, 34);
+            this.eventToolStripMenuItem.Size = new Size(166, 34);
             this.eventToolStripMenuItem.Text = "Event";
             this.eventToolStripMenuItem.Click += this.HndMenuViewEventResults;
             // 
@@ -158,15 +213,16 @@ namespace Leagueinator.Forms {
             // matchTableToolStripMenuItem
             // 
             this.matchTableToolStripMenuItem.Name = "matchTableToolStripMenuItem";
-            this.matchTableToolStripMenuItem.Size = new Size(270, 34);
+            this.matchTableToolStripMenuItem.Size = new Size(203, 34);
             this.matchTableToolStripMenuItem.Text = "MatchTable";
             this.matchTableToolStripMenuItem.Click += this.HndMenuViewMatches;
             // 
-            // roundToolStripMenuItem
+            // exitToolStripMenuItem
             // 
-            this.roundToolStripMenuItem.Name = "roundToolStripMenuItem";
-            this.roundToolStripMenuItem.Size = new Size(270, 34);
-            this.roundToolStripMenuItem.Text = "Round";
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new Size(270, 34);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += this.HndMenuExit;
             // 
             // FormMain
             // 
@@ -203,5 +259,12 @@ namespace Leagueinator.Forms {
         private ToolStripMenuItem resultsToolStripMenuItem;
         private ToolStripMenuItem eventToolStripMenuItem;
         private ToolStripMenuItem roundToolStripMenuItem;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem newToolStripMenuItem;
+        private ToolStripMenuItem loadToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem saveAsToolStripMenuItem;
+        private ToolStripMenuItem closeToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
     }
 }

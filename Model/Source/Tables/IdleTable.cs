@@ -44,12 +44,13 @@ namespace Leagueinator.Model.Tables {
                        .Any();
         }
 
-        public List<IdleRow> GetRows(int round, string playerName) {
+        public IdleRow? GetRow(int round, string playerName) {
             return this.AsEnumerable()
                        .Where(row => row.Field<int>(COL.ROUND) == round)
                        .Where(row => row.Field<string>(COL.PLAYER) == playerName)
                        .Select(row => new IdleRow(row))
-                       .ToList();
+                       .DefaultIfEmpty(null)
+                       .First();
         }
 
         public void RemoveRows(int round, string playerName) {

@@ -1,0 +1,78 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Leagueinator.Controls"
+        xmlns:Source="clr-namespace:SortableCardContainer" x:Class="SortableCardContainer.MainWindow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="800" MinWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main Menu -->
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <MenuItem Header="File">
+                <MenuItem Header="New" Click="HndNewClick"/>
+                <MenuItem Header="Load" Click="HndLoadClick"/>
+                <MenuItem Header="Save" Click="HndSaveClick"/>
+                <MenuItem Header="Save As" Click="HndSaveAsClick"/>
+                <MenuItem Header="Close" Click="HndCloseClick"/>
+                <MenuItem Header="Exit" Click="HndExitClick"/>
+            </MenuItem>
+
+            <MenuItem Header="Action"/>
+            <MenuItem Header="View">
+                <MenuItem Header="Results"/>
+            </MenuItem>
+            <MenuItem Header="Tables" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                <MenuItem Header="Events" Click="HndEventsClick"/>
+                <MenuItem Header="Rounds" Click="HndRoundsClick"/>
+                <MenuItem Header="Matches" Click="HndMatchesClick"/>
+                <MenuItem Header="Teams" Click="HndTeamsClick"/>
+                <MenuItem Header="Members" Click="HndMembersClick"/>
+                <MenuItem Header="Players" Click="HndPlayersClick"/>
+                <MenuItem Header="Idle" Click="HndIdleClick"/>
+                <MenuItem Header="Settings" Click="HndSettingsClick"/>
+            </MenuItem>            
+        </Menu>
+
+        <!-- Round Buttons -->
+        <Border BorderBrush="Black" BorderThickness="2 2 1 2" Grid.Column="0" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <StackPanel x:Name="RoundButtonContainer"/>
+                <Button Content="Add Round" Grid.Row="1"/>
+                <Button Content="Delete Round" Grid.Row="2"/>
+            </Grid>
+        </Border>
+
+        <!-- Idle Players -->
+        <Border BorderBrush="Black" BorderThickness="1 2 1 2" Grid.Column="1" Grid.Row="1">
+            <local:IdlePlayersPanel x:Name="IdlePlayerContainer">
+            </local:IdlePlayersPanel>
+        </Border>
+
+        <!-- Match Cards -->
+        <Border BorderBrush="Black" BorderThickness="1 2 2 2" Grid.Column="2"  Grid.Row="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <local:CardStackPanel x:Name="CardStackPanel">
+                </local:CardStackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+
+</Window>

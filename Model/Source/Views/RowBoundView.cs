@@ -17,8 +17,7 @@ namespace Leagueinator.Model.Views {
     /// +---------+      +---------+
     /// 
     /// </summary>
-    /// <typeparam name="ROW">Child row type.</typeparam>
-    /// <typeparam name="T">Foreign key type.</typeparam>
+    /// <typeparam name="ROW">Table B row type.</typeparam>
     public class RowBoundView<ROW> : DataView, IEnumerable<ROW> where ROW : CustomRow {
         public object[] ForeignKeyValue { get; }
 
@@ -57,7 +56,7 @@ namespace Leagueinator.Model.Views {
         }
 
         /// <summary>
-        /// Adds a new Row to Table B using the AddRow method (must defined in the custom tables).
+        /// Adds a new Row to Table B using the AddRow method (must be defined in the custom tables).
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
@@ -75,6 +74,59 @@ namespace Leagueinator.Model.Views {
 
                 ROW? r = (ROW?)method.Invoke(this.Table, [.. argList]);
                 return r ?? throw new InvalidOperationException($"AddRow method for type '{tableType}' returned NULL.");
+            }
+            catch (Exception ex) {
+                var innerException = ex.InnerException ?? ex;
+                ExceptionDispatchInfo.Capture(innerException).Throw();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a row from Table B using the GetRow method (must be defined in the custom tables).
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public ROW? Get(params object[] args) {
+            List<object> argList = [.. (IEnumerable<object>)[.. this.ForeignKeyValue], .. args];
+
+            Type tableType = this.Table!.GetType();
+            List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
+
+            try {
+                MethodInfo? method
+                    = tableType.GetMethod("GetRow", [.. argTypes])
+                    ?? throw new InvalidOperationException($"No matching GetRow({argTypes.DelString()}) method found for type '{tableType}'.");
+
+                return (ROW?)method.Invoke(this.Table, [.. argList]);
+            }
+            catch (Exception ex) {
+                var innerException = ex.InnerException ?? ex;
+                ExceptionDispatchInfo.Capture(innerException).Throw();
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Determines if a row exits in Table B using the HasRow method (must be defined in the custom tables).
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool Has(params object[] args) {
+            List<object> argList = [.. (IEnumerable<object>)[.. this.ForeignKeyValue], .. args];
+
+            Type tableType = this.Table!.GetType();
+            List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
+
+            try {
+                MethodInfo? method
+                    = tableType.GetMethod("HasRow", [.. argTypes])
+                    ?? throw new InvalidOperationException($"No matching HasRow({argTypes.DelString()}) method found for type '{tableType}'.");
+
+                bool? r = (bool?)method.Invoke(this.Table, [.. argList]);
+                return r ?? throw new InvalidOperationException($"HasRow method for type '{tableType}' returned NULL.");
             }
             catch (Exception ex) {
                 var innerException = ex.InnerException ?? ex;

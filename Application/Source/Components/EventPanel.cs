@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Data;
 using Leagueinator.Utility;
+using System.Diagnostics;
 
 namespace Leagueinator.Components {
     public partial class EventPanel : UserControl {
@@ -45,18 +46,17 @@ namespace Leagueinator.Components {
 
         public EventRow? EventRow {
             get => this._eventRow;
-            set => this.SetEvent(value);
-        }
+            set {
+                this._eventRow = value;
+                this.flowRounds.Controls.Clear();
+                if (value == null) return; // the ide keeps setting this to NULL in the generated code :(
 
-        private void SetEvent(EventRow? eventRow) {
-            if (eventRow == null) return; // the ide keeps setting this to NULL in the generated code :(
-            this._eventRow = eventRow;
+                foreach (RoundRow roundRow in this._eventRow.Rounds) {
+                    this.AddRound(roundRow);
+                }
 
-            foreach (RoundRow roundRow in eventRow.Rounds) {
-                this.AddRound(roundRow);
+                this._eventRow.League.RoundTable.RowChanged += this.HndRoundTableRow;
             }
-
-            this._eventRow.League.RoundTable.RowChanged += this.HndRoundTableRow;
         }
 
         private void HndRoundTableRow(object sender, System.Data.DataRowChangeEventArgs e) {
