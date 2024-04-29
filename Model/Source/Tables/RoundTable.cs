@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Views;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
@@ -13,13 +14,13 @@ namespace Leagueinator.Model.Tables {
         }
 
         public int UID {
-            get => (int)this.DataRow[RoundTable.COL.UID];
+            get => (int)this[RoundTable.COL.UID];
         }
 
         public static implicit operator int(RoundRow roundRow) => roundRow.UID;
 
         public EventRow Event {
-            get => this.League.EventTable.GetRow((int)this.DataRow[RoundTable.COL.EVENT]);
+            get => this.League.EventTable.GetRow((int)this[RoundTable.COL.EVENT]);
         }
 
         /// <summary>
@@ -42,14 +43,25 @@ namespace Leagueinator.Model.Tables {
         /// </summary>
         /// <param name="matchCount"></param>
         /// <returns></returns>
-        public RoundRow PopulateMatches(int? matchCount = null) {
-            matchCount ??= int.Parse(this.Event.Settings["match_count"] ?? "8");
-
+        public RoundRow PopulateMatches(int matchCount) {
             while (this.Matches.Count < matchCount) {
                 int ends = int.Parse(this.Event.Settings["ends"] ?? "10");
-                this.Matches.Add(this.NextLane(), ends);
+                MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
             }
+            return this;
+        }
 
+        /// <summary>
+        /// Add matches with empty teams to this round.
+        /// </summary>
+        /// <param name="matchCount"></param>
+        /// <returns></returns>
+        public RoundRow PopulateMatches(int matchCount, int teamCount) {
+            while (this.Matches.Count < matchCount) {
+                int ends = int.Parse(this.Event.Settings["ends"] ?? "10");
+                MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
+                while (matchRow.Teams.Count < teamCount) matchRow.Teams.Add();
+            }
             return this;
         }
 

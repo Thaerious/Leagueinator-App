@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Model.Views;
 using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
@@ -17,21 +16,21 @@ namespace Leagueinator.Model.Tables {
         }
 
         public MatchRow Match {
-            get => this.League.MatchTable.GetRow((int)this.DataRow[TeamTable.COL.MATCH]);
+            get => this.League.MatchTable.GetRow((int)this[TeamTable.COL.MATCH]);
         }
 
         public int Index {
-            get => (int)this.DataRow[TeamTable.COL.INDEX];
+            get => (int)this[TeamTable.COL.INDEX];
         }
 
         public int Bowls {
-            get => (int)this.DataRow[TeamTable.COL.BOWLS];
-            set => this.DataRow[TeamTable.COL.BOWLS] = value;
+            get => (int)this[TeamTable.COL.BOWLS];
+            set => this[TeamTable.COL.BOWLS] = value;
         }
 
         public int Tie {
-            get => (int)this.DataRow[TeamTable.COL.TIE];
-            set => this.DataRow[TeamTable.COL.TIE] = value;
+            get => (int)this[TeamTable.COL.TIE];
+            set => this[TeamTable.COL.TIE] = value;
         }
     }
 
@@ -49,7 +48,7 @@ namespace Leagueinator.Model.Tables {
                 .Select(row => new TeamRow(row))
                 .Where((TeamRow row) => row.Match == match)
                 .Select(row => row.Index)
-                .DefaultIfEmpty(0)
+                .DefaultIfEmpty(-1)
                 .Max();
         }
 
@@ -59,6 +58,10 @@ namespace Leagueinator.Model.Tables {
             row[COL.INDEX] = index;
             this.Rows.Add(row);
             return new(row);
+        }
+
+        public TeamRow AddRow(int match) {
+            return this.AddRow(match, this.LastIndex(match) + 1);
         }
 
         public TeamRow GetRow(int match, int index) {

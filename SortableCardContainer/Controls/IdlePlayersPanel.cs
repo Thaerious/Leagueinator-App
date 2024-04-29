@@ -1,10 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
 
@@ -36,7 +31,6 @@ namespace Leagueinator.Controls {
         }
 
         private void HndTextUpdate(TextUpdateData data) {
-            Debug.WriteLine($"HndTextUpdate '{data.Before}' '{data.After}' {data.EventName}");
             if (data.Before.Equals(data.After)) return;
 
             if (this.RoundRow is null) {

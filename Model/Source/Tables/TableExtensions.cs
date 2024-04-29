@@ -46,41 +46,6 @@ namespace Leagueinator.Model.Tables {
             return dataView.Count > 0;
         }
 
-        public static bool Has<TYPE>(this DataView view, string column, TYPE value) {
-            foreach (DataRowView row in view) {
-                if (row[column].Equals(value)) return true;
-            }
-            return false;
-        }
-
-        public static DataRow? Get<TYPE>(this DataView view, string column, TYPE value) {
-            foreach (DataRowView row in view) {
-                if (row[column].Equals(value)) return row.Row;
-            }
-            return null;
-        }
-
-        public static void CopyTo(this CustomRow source, DataRow target) {
-            source.DataRow.CopyTo(target);
-        }
-
-        public static void CopyTo(this DataRow source, DataRow target) {
-            foreach (DataColumn col in source.Table.Columns) {
-                if (target.Table.Columns[col.ColumnName] == null) continue;
-                target[col.ColumnName] = source[col.ColumnName];
-            }
-        }
-
-        public static DataRow Clone(this DataRow source) {
-            var dest = source.Table.NewRow();
-
-            for (int i = 0; i < source.ItemArray.Length; i++) {
-                dest[i] = source[i];
-            }
-
-            return dest;
-        }
-
         /// <summary>
         /// Extract a specific column as a list of values.
         /// </summary>

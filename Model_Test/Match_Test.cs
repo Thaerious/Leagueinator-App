@@ -65,7 +65,7 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            matchRow.DataRow.Delete();
+            matchRow.Delete();
 
             Assert.AreEqual(0, roundRow.Matches.Count);
         }

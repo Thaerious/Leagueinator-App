@@ -21,23 +21,23 @@ namespace Leagueinator.Model.Tables {
         }
 
         public int UID {
-            get => (int)this.DataRow[MatchTable.COL.UID];
+            get => (int)this[MatchTable.COL.UID];
         }
 
         public static implicit operator int(MatchRow matchRow) => matchRow.UID;
 
         public RoundRow Round {
-            get => this.League.RoundTable.GetRow((int)this.DataRow[MatchTable.COL.ROUND]);
+            get => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
         }
 
         public int Lane {
-            get => (int)this.DataRow[MatchTable.COL.LANE];
-            set => this.DataRow[MatchTable.COL.LANE] = value;
+            get => (int)this[MatchTable.COL.LANE];
+            set => this[MatchTable.COL.LANE] = value;
         }
 
         public int Ends {
-            get => (int)this.DataRow[MatchTable.COL.ENDS];
-            set => this.DataRow[MatchTable.COL.ENDS] = value;
+            get => (int)this[MatchTable.COL.ENDS];
+            set => this[MatchTable.COL.ENDS] = value;
         }
     }
 

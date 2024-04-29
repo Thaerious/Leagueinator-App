@@ -2,6 +2,7 @@
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
+using System.Diagnostics;
 
 namespace Model_Test {
     [TestClass]
@@ -64,6 +65,8 @@ namespace Model_Test {
         public void Get_Round_Does_Not_Exist() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
+            Debug.WriteLine(league.EventTable.PrettyPrint());
+            Debug.WriteLine(league.RoundTable.PrettyPrint());
             Assert.IsNotNull(eventRow.Rounds[0]);
         }
 

@@ -9,16 +9,16 @@ namespace Leagueinator.Model.Tables {
         }
 
         public int Index {
-            get => (int)this.DataRow[MemberTable.COL.INDEX];
+            get => (int)this[MemberTable.COL.INDEX];
         }
 
         public MatchRow Match {
-            get => this.League.MatchTable.GetRow((int)this.DataRow[MemberTable.COL.MATCH]);
+            get => this.League.MatchTable.GetRow((int)this[MemberTable.COL.MATCH]);
         }
 
         public string Player {
-            get => (string)this.DataRow[MemberTable.COL.PLAYER];
-            set => this.DataRow[MemberTable.COL.PLAYER] = value;
+            get => (string)this[MemberTable.COL.PLAYER];
+            set => this[MemberTable.COL.PLAYER] = value;
         }
 
         public static implicit operator string(MemberRow playerRow) => playerRow.Player;

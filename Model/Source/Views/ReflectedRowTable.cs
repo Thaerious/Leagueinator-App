@@ -2,14 +2,6 @@
 
 namespace Leagueinator.Model.Views {
 
-    /// <summary>
-    /// Create a dictionary from a ChildTable.
-    /// The ChildTable must have extended properties set on two columns:
-    ///  - column.ExtendedProperties.Add("dict", "key");
-    ///  - column.ExtendedProperties.Add("dict", "value");
-    /// </summary>
-    /// <typeparam name="K"></typeparam>
-    /// <typeparam name="V"></typeparam>
     public class ReflectedRowTable {
         internal readonly DataView view;
         private readonly DataColumn fkCol;

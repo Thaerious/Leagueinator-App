@@ -1,9 +1,6 @@
 ﻿using Leagueinator.Model.Views;
-using Leagueinator.Utility;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
@@ -31,19 +28,19 @@ namespace Leagueinator.Model.Tables {
         }
 
         public int UID {
-            get => (int)this.DataRow[EventTable.COL.UID];
+            get => (int)this[EventTable.COL.UID];
         }
 
         public static implicit operator int(EventRow eventRow) => eventRow.UID;
 
         public string Name {
-            get => (string)this.DataRow[EventTable.COL.NAME];
-            set => this.DataRow[EventTable.COL.NAME] = value;
+            get => (string)this[EventTable.COL.NAME];
+            set => this[EventTable.COL.NAME] = value;
         }
 
         public string Date {
-            get => (string)this.DataRow[EventTable.COL.DATE];
-            set => this.DataRow[EventTable.COL.DATE] = value;
+            get => (string)this[EventTable.COL.DATE];
+            set => this[EventTable.COL.DATE] = value;
         }
 
         public ReadOnlyDictionary<Team, IReadOnlyList<Match>> AllTeams() {

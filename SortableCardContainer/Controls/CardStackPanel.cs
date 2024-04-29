@@ -1,12 +1,20 @@
-﻿using System.Windows;
+﻿using System.Collections;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Leagueinator.Controls {
-    public class CardStackPanel : StackPanel {
+    public class CardStackPanel : StackPanel, IEnumerable<MatchCard> {
         private Point Last = new();
         private MatchCard? Active = null;
+
+        public int Count => this.Children.Count;
+
+        public MatchCard GetMatchCard(int index) {
+            CardTarget target = (CardTarget)this.Children[index];
+            return (MatchCard)target.Children[0];
+        }
 
         public void Add(MatchCard matchCard) {
             CardTarget target = new CardTarget {
@@ -154,6 +162,16 @@ namespace Leagueinator.Controls {
 
         private static double TopAsPercent(MatchCard matchCard) {
             return Canvas.GetTop(matchCard) / matchCard.CardTarget.ActualHeight;
+        }
+
+        public IEnumerator<MatchCard> GetEnumerator() {
+            foreach(CardTarget target in this.Children){
+                yield return (MatchCard)target.Children[0];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this.GetEnumerator();
         }
     }
 }

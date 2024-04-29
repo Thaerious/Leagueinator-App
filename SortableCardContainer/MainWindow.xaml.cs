@@ -13,7 +13,7 @@ namespace SortableCardContainer {
     /// </summary>
     public partial class MainWindow : Window {
 
-        private League _league;
+        private League _league = new();
         public League League { 
             get => this._league;
             set {
@@ -23,20 +23,16 @@ namespace SortableCardContainer {
         }
 
         public MainWindow() {
-
             InitializeComponent();
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
-            this.CardStackPanel.Add(new MatchCard());
 
+            // Setup the empty default league with one event and one round with 8 matches.
             League league = new();
-            league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
-            league.EventTable.GetRow(0).Rounds.Add();
+            EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
+            eventRow.Settings["lanes"] = "8";
+            eventRow.Settings["teams"] = "2";
+            RoundRow roundRow = eventRow.Rounds.Add();
+            roundRow.PopulateMatches(8, 2);
+
             this.League = league;
         }
 

@@ -3,7 +3,6 @@ using System.Data;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using Leagueinator.Utility;
-using System.Diagnostics;
 
 namespace Leagueinator.Model.Views {
     /// <summary>
@@ -45,7 +44,7 @@ namespace Leagueinator.Model.Views {
         /// <param name="index"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public new ROW this[int index] {
+        public new ROW? this[int index] {
             get {
                 ConstructorInfo ctor
                     = typeof(ROW).GetConstructor([typeof(DataRow)])

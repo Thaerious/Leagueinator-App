@@ -5,16 +5,16 @@ namespace Leagueinator.Model.Tables {
     public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {
 
         public EventRow Event {
-            get => this.League.EventTable.GetRow((int)this.DataRow[IdleTable.COL.ROUND]);
+            get => this.League.EventTable.GetRow((int)this[IdleTable.COL.ROUND]);
         }
 
         public PlayerRow Player {
-            get => this.League.PlayerTable.GetRow((string)this.DataRow[IdleTable.COL.PLAYER]);
+            get => this.League.PlayerTable.GetRow((string)this[IdleTable.COL.PLAYER]);
         }
 
         public int Round {
-            get => (int)this.DataRow[IdleTable.COL.ROUND];
-            set => this.DataRow[IdleTable.COL.ROUND] = value;
+            get => (int)this[IdleTable.COL.ROUND];
+            set => this[IdleTable.COL.ROUND] = value;
         }
     }
 
