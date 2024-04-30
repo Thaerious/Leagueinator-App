@@ -11,6 +11,11 @@ namespace Leagueinator.Controls {
     public partial class MatchCard : UserControl {
         private MatchRow? _matchRow;
 
+        public MatchCard() {
+            InitializeComponent();
+            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
+        }
+
         internal CardTarget? CardTarget { get; set; }
 
         public MatchRow? MatchRow {
@@ -36,10 +41,6 @@ namespace Leagueinator.Controls {
                     }
                 }
             }
-        }
-
-        public MatchCard() {
-            InitializeComponent();
         }
 
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {

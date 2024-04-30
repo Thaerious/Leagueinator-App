@@ -45,6 +45,10 @@ namespace RaisedEventExample {
             // The FooButton CountEvent was registered with a non-standard delegate.  Because of this in the FooClick
             // method no casting is required.
             this.AddHandler(FooButton.CountEvent, new FooEventHandler(FooClick));
+
+            // This was registered as an Action delegate instead of a generic delegate.  As such the new delgate() is
+            // not needed.  This is only to demonstrate the type of a method is not the same as a delegate, and as
+            // such needs to be wrapped with new delegate().
             this.AddHandler(ActionButton.CountEvent, ActionClick);
         }
 

@@ -12,7 +12,7 @@ namespace Leagueinator.Controls {
     public class MemoryTextBox : TextBox {
         public delegate void MemoryEventHandler(object sender, MemoryTextBoxArgs e);
 
-        public static readonly RoutedEvent RegisteredEvent = EventManager.RegisterRoutedEvent(
+        public static readonly RoutedEvent RegisteredUpdateEvent = EventManager.RegisterRoutedEvent(
             "UpdateText",                 // Event name
             RoutingStrategy.Bubble,       // Routing strategy (Bubble, Tunnel, or Direct)
             typeof(MemoryEventHandler),   // Delegate type
@@ -20,12 +20,12 @@ namespace Leagueinator.Controls {
         );
 
         public event MemoryEventHandler UpdateText {
-            add { AddHandler(RegisteredEvent, value); }
-            remove { RemoveHandler(RegisteredEvent, value); }
+            add { AddHandler(RegisteredUpdateEvent, value); }
+            remove { RemoveHandler(RegisteredUpdateEvent, value); }
         }
 
         private void RaiseUpdateTextEvent(string before, string after, string cause) {
-            MemoryTextBoxArgs newEventArgs = new (RegisteredEvent, before, after, cause);
+            MemoryTextBoxArgs newEventArgs = new (RegisteredUpdateEvent, before, after, cause);
             RaiseEvent(newEventArgs);
         }
 
