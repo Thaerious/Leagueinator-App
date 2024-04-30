@@ -21,6 +21,14 @@ namespace Leagueinator.Model.Tables {
             return this.Select($"{COL.NAME} = '{name}'").Length != 0;
         }
 
+        public bool AddRowIf(string name) {
+            if (this.HasRow(name)) return false;
+            var row = this.NewRow();
+            row[COL.NAME] = name;
+            this.Rows.Add(row);
+            return true;
+        }
+
         public PlayerRow AddRow(string name) {
             var row = this.NewRow();
             row[COL.NAME] = name;

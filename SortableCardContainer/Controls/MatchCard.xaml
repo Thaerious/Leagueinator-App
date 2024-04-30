@@ -20,7 +20,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Team 1 Names -->
-            <local:TeamStackPanel x:Name="Team0" VerticalAlignment="Center" Grid.Column="0" Margin="10">
+            <local:TeamStackPanel TeamIndex="0" x:Name="Team0" VerticalAlignment="Center" Grid.Column="0" Margin="10">
                 <local:MemoryTextBox x:Name="TxtNames00" Padding="2"/>
                 <local:MemoryTextBox x:Name="TxtNames01" Padding="2"/>
                 <local:MemoryTextBox x:Name="TxtNames02" Padding="2"/>
@@ -46,7 +46,7 @@
             </StackPanel>
 
             <!-- Team 2 Names -->
-            <local:TeamStackPanel x:Name="Team1" VerticalAlignment="Center" Grid.Column="4" Margin="10">
+            <local:TeamStackPanel TeamIndex="1" x:Name="Team1" VerticalAlignment="Center" Grid.Column="4" Margin="10">
                 <local:MemoryTextBox x:Name="TxtNames10" Padding="2"/>
                 <local:MemoryTextBox x:Name="TxtNames11" Padding="2"/>
                 <local:MemoryTextBox x:Name="TxtNames12" Padding="2"/>

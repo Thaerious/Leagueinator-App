@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,7 +45,50 @@ namespace Leagueinator.Controls {
         }
 
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
-            MessageBox.Show($"Before: {e.Before}\nAfter: {e.After}\nCause: {e.Cause}");
+            if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
+
+            // Does name exist in another team?
+            bool contains = this.MatchRow
+                                .Teams
+                                .SelectMany(team => team.Members)
+                                .Any(member => member.Player.Equals(e.After));
+
+            Debug.WriteLine($"Contains {contains}");
+
+            if (contains) {
+                // if the player already exists reject.
+                MessageBox.Show($"Player {e.After} is already playing.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
+                e.TextBox.Text = e.Before;
+            }
+            else {
+                TeamStackPanel parent = (TeamStackPanel)e.TextBox.Parent;
+
+                // Remove new name from the idle table
+                if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
+                    this.MatchRow.Round.IdlePlayers.Get(e.After)!.Delete();
+                }
+
+                // Add new name to the teams table
+                if (!e.After.IsEmpty()) {
+                    this.MatchRow.League.PlayerTable.AddRowIf(e.After);
+                    this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(e.After);
+                }
+
+                // Remove the old name from the team
+                if (!e.Before.IsEmpty()) {
+                    this.MatchRow.Teams[parent.TeamIndex]!.Members.Get(e.Before).Delete();
+                }
+
+                // Add old name to the idle table
+                if (!e.Before.IsEmpty()) {
+                    this.MatchRow.Round.IdlePlayers.Add(e.Before);
+                }
+
+                Debug.WriteLine($"add player to team {parent.TeamIndex}");
+            }
+
+
+            Debug.WriteLine($"Before: {e.Before}\nAfter: {e.After}\nCause: {e.Cause}");
         }
 
         private void Clear() {

@@ -22,6 +22,10 @@ namespace Leagueinator.Model.Views {
 
         public DataColumn[] ForeignKeyColumn { get; }
 
+        public delegate void NewRoundRowEventHandler(object sender, ROW row);
+
+        public event NewRoundRowEventHandler NewBoundRow = delegate { };
+
         /// <summary>
         /// 
         /// </summary>
@@ -30,12 +34,20 @@ namespace Leagueinator.Model.Views {
         /// <param name="fkVal">The value for fkCol table that identifies the rows int the child table (usually the primary key for reference table).</param>
         /// <exception cref="NullReferenceException"></exception>
         public RowBoundView(LeagueTable<ROW> childTable, string[] fkCol, object[] fkVal)
-            : this(childTable, fkCol.Select(colName => childTable.Columns[colName]!).ToArray(), fkVal) {}
+            : this(childTable, fkCol.Select(colName => childTable.Columns[colName]!).ToArray(), fkVal) { }
 
         public RowBoundView(LeagueTable<ROW> childTable, DataColumn[] fkCol, object[] fkVal) : base(childTable) {
             this.RowFilter = TableExtensions.BuildRowFilter(fkCol, fkVal);
             this.ForeignKeyColumn = fkCol;
             this.ForeignKeyValue = fkVal;
+        }
+
+        private static ROW NewRow(DataRow dataRow) {
+            ConstructorInfo ctor
+                = typeof(ROW).GetConstructor([typeof(DataRow)])
+                ?? throw new InvalidOperationException($"No matching ctor(DataRow) method found for type '{typeof(ROW)}'.");
+
+            return (ROW)ctor.Invoke([dataRow]);
         }
 
         /// <summary>
@@ -140,7 +152,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         public new IEnumerator<ROW> GetEnumerator() {
             for (int i = 0; i < this.Count; i++) {
-                yield return this[i];
+                if (this[i] is not null) yield return this[i]!;
             }
         }
     }

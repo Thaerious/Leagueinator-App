@@ -44,6 +44,17 @@ namespace Leagueinator.Model.Tables {
             return new(row);
         }
 
+        public MemberRow GetRow(int match, int index, string player) {
+            var rows = this.AsEnumerable()
+                           .Where(row => row.Field<int>(COL.MATCH) == match)
+                           .Where(row => row.Field<int>(COL.INDEX) == index)
+                           .Where(row => row.Field<string>(COL.PLAYER) == player)
+                           .ToList();
+
+            if (rows.Count == 0) throw new KeyNotFoundException($"{match} {index} {player}");
+            return new(rows[0]);
+        }
+
         public MemberTable() : base("members") {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);

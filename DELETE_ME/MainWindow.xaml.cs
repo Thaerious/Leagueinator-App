@@ -53,7 +53,7 @@ namespace RaisedEventExample {
         }
 
         private void VanillaClick(object sender, RoutedEventArgs e) {
-            Debug.WriteLine($"VanillaClick {sender}");
+            Debug.WriteLine($"VanillaClick {sender} {e.Source}");
         }
 
         private void FooClick(object sender, FooButtonArgs e) {

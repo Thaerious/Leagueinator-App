@@ -62,8 +62,7 @@
 
         <!-- Idle Players -->
         <Border BorderBrush="Black" BorderThickness="1 2 1 2" Grid.Column="1" Grid.Row="1">
-            <local:IdlePlayersPanel x:Name="IdlePlayerContainer">
-            </local:IdlePlayersPanel>
+            <local:IdlePlayersPanel x:Name="IdlePlayerContainer"/>
         </Border>
 
         <!-- Match Cards -->

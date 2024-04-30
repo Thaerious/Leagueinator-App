@@ -3,10 +3,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Leagueinator.Controls {
-    public class MemoryTextBoxArgs(RoutedEvent routedEvent, string before, string after, string cause) : RoutedEventArgs(routedEvent) {
-        public string Before { get; private set; } = before;
-        public string After { get; private set; } = after;
-        public string Cause { get; private set; } = cause;
+    public enum Cause { KeyDown, LostFocus }
+
+    public class MemoryTextBoxArgs(RoutedEvent routedEvent, MemoryTextBox textBox, string before, string after, Cause cause) : RoutedEventArgs(routedEvent) {
+        public MemoryTextBox TextBox { get; init; } = textBox;
+        public string Before { get; init; } = before;
+        public string After { get; init; } = after;
+        public Cause Cause { get; init; } = cause;
     }
 
     public class MemoryTextBox : TextBox {
@@ -24,8 +27,8 @@ namespace Leagueinator.Controls {
             remove { RemoveHandler(RegisteredUpdateEvent, value); }
         }
 
-        private void RaiseUpdateTextEvent(string before, string after, string cause) {
-            MemoryTextBoxArgs newEventArgs = new (RegisteredUpdateEvent, before, after, cause);
+        private void RaiseUpdateTextEvent(string before, string after, Cause cause) {
+            MemoryTextBoxArgs newEventArgs = new (RegisteredUpdateEvent, this, before, after, cause);
             RaiseEvent(newEventArgs);
         }
 
@@ -57,14 +60,14 @@ namespace Leagueinator.Controls {
             if (keyArgs.Key == Key.Enter) {
                 var prevMem = this.Memory;
                 this.Memory = this.Text;
-                RaiseUpdateTextEvent(prevMem, this.Text, "KeyDown");
+                if (!prevMem.Equals(this.Text)) RaiseUpdateTextEvent(prevMem, this.Text, Cause.KeyDown);
             }
         }
         private void OnLostFocus(object sender, System.Windows.RoutedEventArgs e) {
             var prevMem = this.Memory;
             this.Memory = this.Text;
 
-            RaiseUpdateTextEvent(prevMem, this.Text, "LostFocus");
+            if (!prevMem.Equals(this.Text)) RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
         }
 
         public new void Clear() {

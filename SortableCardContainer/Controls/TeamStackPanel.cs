@@ -8,6 +8,18 @@ namespace Leagueinator.Controls {
     public class TeamStackPanel : StackPanel {
         private TeamRow? _teamRow;
 
+        public static readonly DependencyProperty TeamIndexProperty = DependencyProperty.Register(
+            "TeamIndex",
+            typeof(int),
+            typeof(TeamStackPanel),
+            new PropertyMetadata(default(int))
+        );
+
+        public int TeamIndex {
+            get { return (int)GetValue(TeamIndexProperty); }
+            set { SetValue(TeamIndexProperty, value); }
+        }
+
         public TeamRow? TeamRow {
             get => this._teamRow;
             set {
@@ -21,7 +33,7 @@ namespace Leagueinator.Controls {
             }
         }
 
-        private void HndUpdateEvent(object sender, RoutedEventArgs e){
+        private void HndUpdateEvent(object sender, RoutedEventArgs e) {
             throw new NotImplementedException();
         }
 
@@ -30,7 +42,7 @@ namespace Leagueinator.Controls {
                 if (textBox.Text.IsEmpty()) {
                     textBox.Text = name;
                     return;
-                }                
+                }
             }
             throw new IndexOutOfRangeException("No available text boxes.");
         }
