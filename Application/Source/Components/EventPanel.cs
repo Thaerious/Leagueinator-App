@@ -117,7 +117,7 @@ namespace Leagueinator.Components {
         private void AddRound_Click(object sender, EventArgs e) {
             if (this.EventRow is null) return;
             RoundRow row = this.EventRow.Rounds.Add();
-            row.PopulateMatches();
+            row.PopulateMatches(8);
         }
     }
 }

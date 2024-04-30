@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
 
@@ -26,33 +27,33 @@ namespace Leagueinator.Controls {
             };
 
             this.Children.Add(textBox);
-            textBox.UpdateText += this.HndTextUpdate;
+            //textBox.UpdateText += this.HndTextUpdate;
             return textBox;
         }
 
-        private void HndTextUpdate(TextUpdateData data) {
-            if (data.Before.Equals(data.After)) return;
+        private void HndTextUpdate(object sender, MemoryTextBoxArgs args) {
+            if (args.Before.Equals(args.After)) return;
 
             if (this.RoundRow is null) {
-                data.Source.Clear();
+                (sender as MemoryTextBox)!.Clear();
                 return;
             };
 
-            IdleRow? idleRow = this.RoundRow.IdlePlayers.Get(data.Before);
+            IdleRow? idleRow = this.RoundRow.IdlePlayers.Get(args.Before);
             if (idleRow is not null) {
                 // change player name
-                idleRow.Player.Name = data.After;
+                idleRow.Player.Name = args.After;
             }
             else {
                 // Add new player
-                if (!this.RoundRow.League.PlayerTable.HasRow(data.After)) {
-                    this.RoundRow.League.PlayerTable.AddRow(data.After);
+                if (!this.RoundRow.League.PlayerTable.HasRow(args.After)) {
+                    this.RoundRow.League.PlayerTable.AddRow(args.After);
                 }
 
-                Debug.WriteLine($"{this.RoundRow.UID} {data.After}");
-                this.RoundRow.IdlePlayers.Add(data.After);
+                Debug.WriteLine($"{this.RoundRow.UID} {args.After}");
+                this.RoundRow.IdlePlayers.Add(args.After);
                 var textBox = this.AddPlayer();
-                if (data.EventName.Equals("KeyDown")) textBox.Focus();                
+                if (args.Cause.Equals("KeyDown")) textBox.Focus();                
             }
         }
 

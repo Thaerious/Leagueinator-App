@@ -1,15 +1,37 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Leagueinator.Controls {
+    public class MemoryTextBoxArgs(RoutedEvent routedEvent, string before, string after, string cause) : RoutedEventArgs(routedEvent) {
+        public string Before { get; private set; } = before;
+        public string After { get; private set; } = after;
+        public string Cause { get; private set; } = cause;
+    }
+
     public class MemoryTextBox : TextBox {
-        public record TextUpdateData (MemoryTextBox Source, string Before, string After, string EventName);
-        public delegate void TextUpdateEvent(TextUpdateData data);
-        public event TextUpdateEvent UpdateText = delegate { };
+        public delegate void MemoryEventHandler(object sender, MemoryTextBoxArgs e);
+
+        public static readonly RoutedEvent RegisteredEvent = EventManager.RegisterRoutedEvent(
+            "UpdateText",                 // Event name
+            RoutingStrategy.Bubble,       // Routing strategy (Bubble, Tunnel, or Direct)
+            typeof(MemoryEventHandler),   // Delegate type
+            typeof(MemoryTextBox)         // Owner type
+        );
+
+        public event MemoryEventHandler UpdateText {
+            add { AddHandler(RegisteredEvent, value); }
+            remove { RemoveHandler(RegisteredEvent, value); }
+        }
+
+        private void RaiseUpdateTextEvent(string before, string after, string cause) {
+            MemoryTextBoxArgs newEventArgs = new (RegisteredEvent, before, after, cause);
+            RaiseEvent(newEventArgs);
+        }
 
         private string Memory { get; set; } = "";
 
-        public new string Text { 
+        public new string Text {
             get => base.Text;
             set {
                 base.Text = value;
@@ -35,13 +57,14 @@ namespace Leagueinator.Controls {
             if (keyArgs.Key == Key.Enter) {
                 var prevMem = this.Memory;
                 this.Memory = this.Text;
-                this.UpdateText.Invoke(new(this, prevMem, this.Text, "KeyDown"));
+                RaiseUpdateTextEvent(prevMem, this.Text, "KeyDown");
             }
         }
         private void OnLostFocus(object sender, System.Windows.RoutedEventArgs e) {
             var prevMem = this.Memory;
             this.Memory = this.Text;
-            this.UpdateText.Invoke(new(this, prevMem, this.Text, "LostFocus"));
+
+            RaiseUpdateTextEvent(prevMem, this.Text, "LostFocus");
         }
 
         public new void Clear() {

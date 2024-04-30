@@ -1,6 +1,8 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
+using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
     /// <summary>
@@ -38,6 +40,10 @@ namespace Leagueinator.Controls {
 
         public MatchCard() {
             InitializeComponent();
+        }
+
+        private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
+            MessageBox.Show($"Before: {e.Before}\nAfter: {e.After}\nCause: {e.Cause}");
         }
 
         private void Clear() {
