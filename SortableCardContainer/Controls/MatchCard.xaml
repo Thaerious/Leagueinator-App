@@ -21,12 +21,6 @@
 
             <!-- Team 1 Names -->
             <local:TeamStackPanel x:Name="Team0" VerticalAlignment="Center" Grid.Column="0" Margin="10">
-                <local:TeamStackPanel.Resources>
-                    <Style TargetType="local:MemoryTextBox">
-                        <EventSetter Event="UpdateText" Handler="HndUpdateEvent"/>
-                    </Style>
-                </local:TeamStackPanel.Resources>
-
                 <local:MemoryTextBox x:Name="TxtNames00" Padding="2"/>
                 <local:MemoryTextBox x:Name="TxtNames01" Padding="2"/>
                 <local:MemoryTextBox x:Name="TxtNames02" Padding="2"/>
