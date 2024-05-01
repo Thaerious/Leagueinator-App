@@ -17,6 +17,13 @@ namespace Leagueinator.Controls {
             this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
         }
 
+        /// <summary>
+        /// Called when the text box updates a value.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="NullReferenceException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.RoundRow is null) throw new NullReferenceException(nameof(this.RoundRow));
 
@@ -31,22 +38,28 @@ namespace Leagueinator.Controls {
                 this.Children.Remove(e.TextBox);
             }
             else {
-                // A new value has been set create a row and save it
-                this.RoundRow.League.PlayerTable.AddRowIf(e.After);
-                IdleRow idleRow = this.RoundRow.IdlePlayers.Add(e.After);
-                this.RowToTextBox[idleRow!] = e.TextBox;
+                try {
+                    // A new value has been set create a row and save it
+                    this.RoundRow.League.PlayerTable.AddRowIf(e.After);
+                    IdleRow idleRow = this.RoundRow.IdlePlayers.Add(e.After);
+                    this.RowToTextBox[idleRow!] = e.TextBox;
 
-                // If it's the last text box add a new empty text box.
-                if (e.TextBox == this.Children[^1]) {
-                    this.AddTextBox();
-                }
-
-                // Advance to the next text box if ENTER was pressed.
-                if (e.Cause.Equals(Cause.KeyDown)) {
-                    int index = this.Children.IndexOf(e.TextBox);
-                    if (index + 1 < this.Children.Count) {
-                        this.Children[index + 1].Focus();
+                    // If it's the last text box add a new empty text box.
+                    if (e.TextBox == this.Children[^1]) {
+                        this.AddTextBox();
                     }
+
+                    // Advance to the next text box if ENTER was pressed.
+                    if (e.Cause.Equals(Cause.EnterPressed)) {
+                        int index = this.Children.IndexOf(e.TextBox);
+                        if (index + 1 < this.Children.Count) {
+                            this.Children[index + 1].Focus();
+                        }
+                    }
+                } catch (Exception ex){
+                    string msg = "An exception has occurred:\n" + ex.Message;
+                    MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    e.TextBox.Text = e.Before;
                 }
             }
         }

@@ -33,10 +33,6 @@ namespace Leagueinator.Controls {
             }
         }
 
-        private void HndUpdateEvent(object sender, RoutedEventArgs e) {
-            throw new NotImplementedException();
-        }
-
         public void AddName(string name) {
             foreach (MemoryTextBox textBox in this.Children) {
                 if (textBox.Text.IsEmpty()) {

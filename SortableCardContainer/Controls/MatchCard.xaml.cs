@@ -3,6 +3,7 @@ using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
@@ -53,11 +54,9 @@ namespace Leagueinator.Controls {
                                 .SelectMany(team => team.Members)
                                 .Any(member => member.Player.Equals(e.After));
 
-            Debug.WriteLine($"Contains {contains}");
-
             if (contains) {
                 // if the player already exists reject.
-                MessageBox.Show($"Player {e.After} is already playing.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Player {e.After} previously assigned.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
                 e.TextBox.Text = e.Before;
             }
             else {
@@ -78,17 +77,15 @@ namespace Leagueinator.Controls {
                 if (!e.Before.IsEmpty()) {
                     this.MatchRow.Teams[parent.TeamIndex]!.Members.Get(e.Before).Remove();
                 }
-
-                // Add old name to the idle table
-                if (!e.Before.IsEmpty()) {
-                    this.MatchRow.Round.IdlePlayers.Add(e.Before);
-                }
-
-                Debug.WriteLine($"add player to team {parent.TeamIndex}");
             }
 
-
-            Debug.WriteLine($"Before: {e.Before}\nAfter: {e.After}\nCause: {e.Cause}");
+            if (e.Cause == Cause.EnterPressed) {
+                TeamStackPanel parent = (TeamStackPanel)e.TextBox.Parent;
+                int index = parent.Children.IndexOf(e.TextBox);
+                if (index + 1 < parent.Children.Count) {
+                    parent.Children[index + 1].Focus();
+                }
+            }
         }
 
         private void Clear() {

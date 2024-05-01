@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Leagueinator.Controls {
-    public enum Cause { KeyDown, LostFocus }
+    public enum Cause { EnterPressed, LostFocus }
 
     public class MemoryTextBoxArgs(RoutedEvent routedEvent, MemoryTextBox textBox, string before, string after, Cause cause) : RoutedEventArgs(routedEvent) {
         public MemoryTextBox TextBox { get; init; } = textBox;
@@ -60,7 +60,7 @@ namespace Leagueinator.Controls {
             if (keyArgs.Key == Key.Enter) {
                 var prevMem = this.Memory;
                 this.Memory = this.Text;
-                if (!prevMem.Equals(this.Text)) RaiseUpdateTextEvent(prevMem, this.Text, Cause.KeyDown);
+                if (!prevMem.Equals(this.Text)) RaiseUpdateTextEvent(prevMem, this.Text, Cause.EnterPressed);
             }
         }
         private void OnLostFocus(object sender, System.Windows.RoutedEventArgs e) {
