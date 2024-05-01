@@ -43,6 +43,25 @@ namespace SortableCardContainer {
             InitializeComponent();
             this.NewLeague();
             SaveState.StateChanged += this.HndStateChanged;
+            this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
+        }
+
+        private void HndCardStackPanelReorder(CardStackPanel panel, ReorderArgs args) {
+            if (this.CurrentRoundRow is null) return;
+
+            Dictionary<int, MatchRow> matchRows = [];
+
+            foreach (int key in args.ReorderMap.Keys) {
+                Debug.WriteLine($"HndCardStackPanelReorder {key} -> {args.ReorderMap[key]}");
+                MatchRow? matchRow = this.CurrentRoundRow.Matches.Get(key);
+                if (matchRow is not null) matchRows[matchRow.Lane] = matchRow;
+            }
+
+            foreach (int key in args.ReorderMap.Keys) {
+                matchRows[key].Lane = args.ReorderMap[key];
+            }
+
+            Debug.WriteLine(this.CurrentRoundRow.League.MatchTable.PrettyPrint());
         }
 
         private void HndNewClick(object sender, RoutedEventArgs e) {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Leagueinator.Extensions;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -6,15 +7,16 @@ using System.Windows.Input;
 
 namespace Leagueinator.Controls {
 
-    public record ReorderArgs(int prevIndex, int currentIndex);
+    public record ReorderArgs(Dictionary<int, int> ReorderMap);
 
     public delegate void CardStackPanelReorderHandler(CardStackPanel panel, ReorderArgs args);
 
     public class CardStackPanel : StackPanel, IEnumerable<MatchCard> {
         public event CardStackPanelReorderHandler CardStackPanelReorder = delegate { };
 
-        private Point Last = new();
+        private Point LastPoint = new();
         private MatchCard? Active = null;
+        private int StartingIndex = -1;
 
         public int Count => this.Children.Count;
 
@@ -46,9 +48,12 @@ namespace Leagueinator.Controls {
 
         public void HndMouseDown(object sender, MouseButtonEventArgs e) {
             if (sender is not MatchCard matchCard) return;
-            Last = e.GetPosition(this);
+            LastPoint = e.GetPosition(this);
             Panel.SetZIndex(matchCard.CardTarget, 1);
             this.Active = matchCard;
+
+            CardTarget target = matchCard.Ancestors<CardTarget>()[0];
+            this.StartingIndex = this.Children.IndexOf(target);
         }
         public void HndMouseUp(object sender, MouseButtonEventArgs e) {
             if (sender is not MatchCard matchCard) return;
@@ -60,6 +65,28 @@ namespace Leagueinator.Controls {
             foreach (CardTarget child in this.Children) {
                 Canvas.SetTop(child.Children[0], 0);
             }
+
+            CardTarget target = matchCard.Ancestors<CardTarget>()[0];
+            int finalIndex = this.Children.IndexOf(target);
+
+            if (finalIndex == this.StartingIndex) return;
+
+            Dictionary<int, int> reorderMap = [];
+
+            reorderMap[this.StartingIndex] = finalIndex;
+
+            if (this.StartingIndex < finalIndex) {                
+                for (int i = this.StartingIndex + 1; i <= finalIndex; i++) {
+                    reorderMap[i] = i - 1;
+                }
+            }
+            else if (this.StartingIndex > finalIndex) {
+                for (int i = finalIndex + 1; i <= StartingIndex; i++) {
+                    reorderMap[i - 1] = i;
+                }
+            }
+
+            this.CardStackPanelReorder.Invoke(this, new(reorderMap));
         }
         public void HndMouseLeave(object sender, MouseEventArgs e) {
             if (sender is not MatchCard matchCard) return;
@@ -77,11 +104,11 @@ namespace Leagueinator.Controls {
             if (Active is null) return;            
 
             Point currentPosition = e.GetPosition(this);
-            Point diff = new(Last.X - currentPosition.X, Last.Y - currentPosition.Y);
+            Point diff = new(LastPoint.X - currentPosition.X, LastPoint.Y - currentPosition.Y);
 
             Canvas.SetTop(Active, Canvas.GetTop(Active) - diff.Y);
 
-            Last = currentPosition;
+            LastPoint = currentPosition;
             MatchCard? next = Next(Active);
             MatchCard? prev = Prev(Active);
 

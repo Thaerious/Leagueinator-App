@@ -24,6 +24,7 @@ namespace Leagueinator.Controls {
                 _matchRow = value;
                 if (MatchRow is null) {
                     this.Clear();
+                    this.DataContext = null;
                     return;
                 }
                 if (MatchRow.Teams[0] is not null) {
@@ -40,6 +41,10 @@ namespace Leagueinator.Controls {
                         textBox.Text = member.Player;
                     }
                 }
+
+                this.DataContext = MatchRow;
+                this.TxtBowls0.DataContext = MatchRow.Teams[0];
+                this.TxtBowls1.DataContext = MatchRow.Teams[1];
             }
         }
 
@@ -90,7 +95,7 @@ namespace Leagueinator.Controls {
             foreach (TextBox textBox in this.Team0.Children) textBox.Text = string.Empty;
             foreach (TextBox textBox in this.Team1.Children) textBox.Text = string.Empty;
             this.TxtBowls0.Text = "0";
-            this.TxtBowls1.Text = "1";
+            this.TxtBowls1.Text = "0";
             this.TxtEnds.Text = "0";
         }
     }

@@ -67,7 +67,7 @@ namespace Leagueinator.Model.Tables {
             return new(rows[0]);
         }
 
-        public DataRow GetRow(int eventUID, int round, int lane) {
+        public MatchRow GetRow(int round, int lane) {
             var rows = this.AsEnumerable()
                         .Where(row => row.Field<int>(COL.ROUND) == round)
                         .Where(row => row.Field<int>(COL.LANE) == lane)
@@ -75,7 +75,7 @@ namespace Leagueinator.Model.Tables {
                         ;
 
             if (rows.Count == 0) throw new KeyNotFoundException();
-            return rows[0];
+            return new(rows[0]);
         }
 
         public override void BuildColumns() {
@@ -101,11 +101,12 @@ namespace Leagueinator.Model.Tables {
                 ColumnName = COL.ENDS
             });
 
-            this.Constraints.Add(
-                new UniqueConstraint("UniqueConstraint", [
-                this.Columns[COL.ROUND]!,
-                this.Columns[COL.LANE]!
-            ]));
+            // TODO re-enable, it mucks with rearranging lanes.
+            //this.Constraints.Add(
+            //    new UniqueConstraint("UniqueConstraint", [
+            //    this.Columns[COL.ROUND]!,
+            //    this.Columns[COL.LANE]!
+            //]));
         }
     }
 }
