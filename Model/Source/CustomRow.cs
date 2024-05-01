@@ -7,7 +7,7 @@ namespace Leagueinator.Model {
 
         public DataRow DataRow => dataRow;
 
-        public static implicit operator DataRow?(CustomRow customRow) => customRow.DataRow;
+        public static implicit operator DataRow(CustomRow customRow) => customRow.DataRow;
 
         public event PropertyChangedEventHandler? PropertyChanged = delegate { };
 

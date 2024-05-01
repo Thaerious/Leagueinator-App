@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Windows;
@@ -9,8 +10,10 @@ using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
     public class IdlePlayersPanel : StackPanel {
+        private readonly Dictionary<DataRow, MemoryTextBox> RowToTextBox = [];
 
         public IdlePlayersPanel() : base() {
+            // Handle text box updates.
             this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
         }
 
@@ -18,7 +21,9 @@ namespace Leagueinator.Controls {
             if (this.RoundRow is null) throw new NullReferenceException(nameof(this.RoundRow));
 
             if (!e.Before.IsEmpty()) {
-                this.RoundRow.IdlePlayers.Get(e.Before)!.Remove();
+                IdleRow idleRow = this.RoundRow.IdlePlayers.Get(e.Before) ?? throw new ArgumentNullException(nameof(idleRow));
+                this.RowToTextBox.Remove(idleRow!);
+                idleRow.Remove();
             }
 
             if (e.After.IsEmpty() && e.TextBox != this.Children[^1]) {
@@ -26,14 +31,17 @@ namespace Leagueinator.Controls {
                 this.Children.Remove(e.TextBox);
             }
             else {
+                // A new value has been set create a row and save it
                 this.RoundRow.League.PlayerTable.AddRowIf(e.After);
-                this.RoundRow.IdlePlayers.Add(e.After);
+                IdleRow idleRow = this.RoundRow.IdlePlayers.Add(e.After);
+                this.RowToTextBox[idleRow!] = e.TextBox;
 
                 // If it's the last text box add a new empty text box.
                 if (e.TextBox == this.Children[^1]) {
                     this.AddTextBox();
                 }
 
+                // Advance to the next text box if ENTER was pressed.
                 if (e.Cause.Equals(Cause.KeyDown)) {
                     int index = this.Children.IndexOf(e.TextBox);
                     if (index + 1 < this.Children.Count) {
@@ -67,35 +75,22 @@ namespace Leagueinator.Controls {
         }
 
         private void HndIdleTableDeleteRow(object sender, DataRowChangeEventArgs e) {
-            IdleRow idleRow = new(e.Row);
+            if (!this.RowToTextBox.TryGetValue(e.Row, out MemoryTextBox? textBox)) return;
 
-            Debug.WriteLine(e.Row.RowState);
-            Debug.WriteLine(e.Row.Field<string>("Player"));
+            textBox.Clear();
+            this.RowToTextBox.Remove(e.Row);
 
-            //Debug.WriteLine($"IdlePlayersPanel.HndIdleTableDeleteRow {idleRow.Player}");
-
-            //foreach (MemoryTextBox textBox in this.Children) {
-            //    if (textBox.Text == idleRow.Player) this.Children.Remove(textBox);
-            //}
+            if (textBox != this.Children[^1]) this.Children.Remove(textBox);
         }
 
         private void HndIdleTableNewRow(object sender, DataRowChangeEventArgs e) {
             if (e.Action != DataRowAction.Add) return;
+            if (this.RowToTextBox.ContainsKey(e.Row)) return;
 
-            //Debug.WriteLine($"IdlePlayersPanel.HndIdleTableNewRow {e.Action} {e.Row.Table.TableName}");
-            //Debug.WriteLine(e.Row.PrettyPrint());
-
-            //for (int i = 0; i < this.ForeignKeyColumn.Length; i++) {
-            //    DataColumn column = this.ForeignKeyColumn[i];
-            //    object value = this.ForeignKeyValue[i];
-
-            //    Debug.WriteLine($"row[{column.ColumnName}] = {e.Row[column]}");
-
-            //    if (e.Row[column] != value) return;
-            //}
-
-            //Debug.WriteLine($"RowBoundView.HndTableNewRow {e.Row.Table.TableName} Invoke");
-            //NewBoundRow.Invoke(this, NewRow(e.Row));
+            MemoryTextBox textBox = (this.Children[^1] as MemoryTextBox)!;
+            textBox.Text = new IdleRow(e.Row).Player;
+            this.RowToTextBox[e.Row] = textBox;
+            this.AddTextBox();
         }
 
         public MemoryTextBox AddTextBox(string playerName = "") {
