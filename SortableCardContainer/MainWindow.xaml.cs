@@ -17,26 +17,38 @@ namespace SortableCardContainer {
         public League League { 
             get => this._league;
             set {
+                if (this.League is not null) {
+                    this.League.RowChanged -= this.HndLeagueRowChanged;
+                }
+
                 this._league = value;
-                this.EventRow = this.League.EventTable.GetLast();
+                this.EventRow = this.League?.EventTable.GetLast() ?? null;
+
+                if (this.League is not null) {
+                    this.League.RowChanged += this.HndLeagueRowChanged;
+                }
             }
+        }
+
+        private void HndStateChanged(bool IsSaved) {
+            if (IsSaved) this.Title = $"Leagueinator [{SaveState.Filename}]";
+            else this.Title = $"Leagueinator [{SaveState.Filename}] *";
+        }
+
+        private void HndLeagueRowChanged(object sender, System.Data.DataRowChangeEventArgs e) {
+            SaveState.IsSaved = false;
         }
 
         public MainWindow() {
             InitializeComponent();
-
-            // Setup the empty default league with one event and one round with 8 matches.
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
-            eventRow.Settings["lanes"] = "8";
-            eventRow.Settings["teams"] = "2";
-            RoundRow roundRow = eventRow.Rounds.Add();
-            roundRow.PopulateMatches(8, 2);
-
-            this.League = league;
+            this.NewLeague();
+            SaveState.StateChanged += this.HndStateChanged;
         }
 
-        private void HndNewClick(object sender, RoutedEventArgs e) { }
+        private void HndNewClick(object sender, RoutedEventArgs e) {
+            this.NewLeague();
+        }
+
         private void HndLoadClick(object sender, RoutedEventArgs e) {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "League Files (*.league)|*.league";
@@ -51,6 +63,20 @@ namespace SortableCardContainer {
                 this.EventRow = this.League.EventTable.GetLast();
             }
         }
+
+        private void NewLeague() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
+            eventRow.Settings["lanes"] = "8";
+            eventRow.Settings["teams"] = "2";
+            RoundRow roundRow = eventRow.Rounds.Add();
+            roundRow.PopulateMatches(8, 2);
+
+            this.League = league;
+            this.Title = $"Leagueinator ";
+            SaveState.IsSaved = false;
+        }
+
         private void HndSaveClick(object sender, RoutedEventArgs e) {
             if (this.League is null) return;
             if (SaveState.Filename.IsEmpty()) this.HndSaveAsClick(null, null);
@@ -101,8 +127,20 @@ namespace SortableCardContainer {
         }
 
         static class SaveState {
-            static public bool IsSaved = false;
-            static public string Filename = "";
+            public delegate void StateChangedHandler(bool IsSaved);
+            public static event StateChangedHandler StateChanged = delegate { };
+
+            private static bool _isSaved = false;
+            private static string _filename = "";
+
+            public static bool IsSaved { 
+                get => _isSaved;
+                set {
+                    _isSaved = value;
+                    StateChanged.Invoke(value);
+                }
+            }
+            public static string Filename { get => _filename; set => _filename = value; }
         }
     }
 }

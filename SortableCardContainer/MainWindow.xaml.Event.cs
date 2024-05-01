@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Controls;
 using Leagueinator.Model.Tables;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -26,8 +27,13 @@ namespace SortableCardContainer {
         public EventRow? EventRow {
             get => this._eventRow;
             set {
+                if (this.EventRow != null) {
+                    this.EventRow.League.RoundTable.RowChanged -= this.HndRoundTableRow;
+                }
+
                 this._eventRow = value;
                 this.RoundButtonContainer.Children.Clear();
+
                 if (this.EventRow is null) return;
                 if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Must set event with a minimum of one round");
 
@@ -38,7 +44,7 @@ namespace SortableCardContainer {
 
                 this.PopulateMatchCards(this.EventRow.Rounds[^1]!);
 
-                // Click the last row button (sets current round row).
+                // Click the last round button (sets current round).
                 var lastButton = this.RoundButtonContainer.Children[^1];
                 this.EventRow.League.RoundTable.RowChanged += this.HndRoundTableRow;
                 lastButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -66,16 +72,24 @@ namespace SortableCardContainer {
             return button;
         }
 
+        /// <summary>
+        /// When a row is added to the table, add a button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HndRoundTableRow(object sender, System.Data.DataRowChangeEventArgs e) {
             if ((int)e.Row[RoundTable.COL.EVENT] != this.EventRow!.UID) return;
+            if (e.Action != System.Data.DataRowAction.Add) return;
+
+            Debug.WriteLine($"HndRoundTableRow {e.Row.GetHashCode()} {e.Action}");
+
             var button = this.AddRoundButton(new(e.Row));
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
 
         private void RoundButtonClick(object? sender, EventArgs? _) {
             if (sender is not DataButton<RoundRow> button) throw new NotSupportedException();
-            RoundRow? roundRow = button.Data;
-            if (roundRow is null) throw new NotSupportedException();
+            RoundRow? roundRow = button.Data ?? throw new NotSupportedException();
 
             if (this.CurrentRoundButton is not null) {
                 this.CurrentRoundButton.Background = Brushes.LightGray;

@@ -5,7 +5,14 @@ using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Leagueinator.Controls {
+
+    public record ReorderArgs(int prevIndex, int currentIndex);
+
+    public delegate void CardStackPanelReorderHandler(CardStackPanel panel, ReorderArgs args);
+
     public class CardStackPanel : StackPanel, IEnumerable<MatchCard> {
+        public event CardStackPanelReorderHandler CardStackPanelReorder = delegate { };
+
         private Point Last = new();
         private MatchCard? Active = null;
 
