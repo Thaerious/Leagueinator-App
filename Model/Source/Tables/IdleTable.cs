@@ -8,8 +8,8 @@ namespace Leagueinator.Model.Tables {
             get => this.League.EventTable.GetRow((int)this[IdleTable.COL.ROUND]);
         }
 
-        public PlayerRow Player {
-            get => this.League.PlayerTable.GetRow((string)this[IdleTable.COL.PLAYER]);
+        public string Player {
+            get => (string)this[IdleTable.COL.PLAYER];
         }
 
         public int Round {

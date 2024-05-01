@@ -65,7 +65,7 @@ namespace Leagueinator.Controls {
 
                 // Remove new name from the idle table
                 if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
-                    this.MatchRow.Round.IdlePlayers.Get(e.After)!.Delete();
+                    this.MatchRow.Round.IdlePlayers.Get(e.After)!.Remove();
                 }
 
                 // Add new name to the teams table
@@ -76,7 +76,7 @@ namespace Leagueinator.Controls {
 
                 // Remove the old name from the team
                 if (!e.Before.IsEmpty()) {
-                    this.MatchRow.Teams[parent.TeamIndex]!.Members.Get(e.Before).Delete();
+                    this.MatchRow.Teams[parent.TeamIndex]!.Members.Get(e.Before).Remove();
                 }
 
                 // Add old name to the idle table

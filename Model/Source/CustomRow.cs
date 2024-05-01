@@ -5,13 +5,15 @@ namespace Leagueinator.Model {
     public class CustomRow(DataRow dataRow) : INotifyPropertyChanged {
         public League League => (League)this.DataRow.Table.DataSet!;
 
-        private DataRow DataRow => dataRow;
+        public DataRow DataRow => dataRow;
 
         public static implicit operator DataRow?(CustomRow customRow) => customRow.DataRow;
 
         public event PropertyChangedEventHandler? PropertyChanged = delegate { };
 
         public void Delete() => this.DataRow.Delete();
+
+        public void Remove() => this.DataRow.Table.Rows.Remove(this.DataRow);
 
         public object this[string columnName] {
             get => this.DataRow[columnName];

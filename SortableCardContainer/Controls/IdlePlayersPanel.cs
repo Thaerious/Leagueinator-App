@@ -18,7 +18,7 @@ namespace Leagueinator.Controls {
             if (this.RoundRow is null) throw new NullReferenceException(nameof(this.RoundRow));
 
             if (!e.Before.IsEmpty()) {
-                this.RoundRow.IdlePlayers.Get(e.Before)!.Delete();
+                this.RoundRow.IdlePlayers.Get(e.Before)!.Remove();
             }
 
             if (e.After.IsEmpty() && e.TextBox != this.Children[^1]) {
@@ -46,13 +46,17 @@ namespace Leagueinator.Controls {
         public RoundRow? RoundRow {
             get => this._roundRow;
             set {
-                if (this.RoundRow is not null) this.RoundRow.League.IdleTable.RowChanged -= this.HndIdleTableNewRow;
+                if (this.RoundRow is not null) {
+                    this.RoundRow.League.IdleTable.RowChanged -= this.HndIdleTableNewRow;
+                    this.RoundRow.League.IdleTable.RowDeleted -= this.HndIdleTableDeleteRow;
+                }
                 
                 this._roundRow = value;                
                 this.Children.Clear();
                 if (this.RoundRow == null) return;
 
                 this.RoundRow.League.IdleTable.RowChanged += this.HndIdleTableNewRow;
+                this.RoundRow.League.IdleTable.RowDeleted += this.HndIdleTableDeleteRow;
 
                 foreach (IdleRow idleRow in this.RoundRow.IdlePlayers) {
                     this.AddTextBox(idleRow.Player);
@@ -62,11 +66,24 @@ namespace Leagueinator.Controls {
             }
         }
 
+        private void HndIdleTableDeleteRow(object sender, DataRowChangeEventArgs e) {
+            IdleRow idleRow = new(e.Row);
+
+            Debug.WriteLine(e.Row.RowState);
+            Debug.WriteLine(e.Row.Field<string>("Player"));
+
+            //Debug.WriteLine($"IdlePlayersPanel.HndIdleTableDeleteRow {idleRow.Player}");
+
+            //foreach (MemoryTextBox textBox in this.Children) {
+            //    if (textBox.Text == idleRow.Player) this.Children.Remove(textBox);
+            //}
+        }
+
         private void HndIdleTableNewRow(object sender, DataRowChangeEventArgs e) {
             if (e.Action != DataRowAction.Add) return;
 
-            Debug.WriteLine($"IdlePlayersPanel.HndIdleTableNewRow {e.Action} {e.Row.Table.TableName}");
-            Debug.WriteLine(e.Row.PrettyPrint());
+            //Debug.WriteLine($"IdlePlayersPanel.HndIdleTableNewRow {e.Action} {e.Row.Table.TableName}");
+            //Debug.WriteLine(e.Row.PrettyPrint());
 
             //for (int i = 0; i < this.ForeignKeyColumn.Length; i++) {
             //    DataColumn column = this.ForeignKeyColumn[i];
