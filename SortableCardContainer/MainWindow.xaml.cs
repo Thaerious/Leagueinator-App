@@ -69,8 +69,9 @@ namespace SortableCardContainer {
         }
 
         private void HndLoadClick(object sender, RoutedEventArgs e) {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filter = "League Files (*.league)|*.league";
+            OpenFileDialog dialog = new OpenFileDialog {
+                Filter = "League Files (*.league)|*.league"
+            };
 
             if (dialog.ShowDialog() == true) {
                 League newLeague = new();

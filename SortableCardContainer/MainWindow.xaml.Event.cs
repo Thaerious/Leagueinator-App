@@ -53,11 +53,16 @@ namespace SortableCardContainer {
 
         private void PopulateMatchCards(RoundRow roundRow) {
             this.CardStackPanel.Children.Clear();
+
+            List<MatchCard> matchCards = [];
             foreach (MatchRow matchRow in roundRow.Matches) {
-                this.CardStackPanel.Add(new MatchCard() {
+                matchCards.Add(new() {
                     MatchRow = matchRow
                 });
             }
+
+            matchCards.Sort((a, b) => a.MatchRow!.Lane.CompareTo(b.MatchRow!.Lane));
+            this.CardStackPanel.SetCollection(matchCards);
         }
 
         public DataButton<RoundRow> AddRoundButton(RoundRow roundRow) {
@@ -100,10 +105,7 @@ namespace SortableCardContainer {
 
             button.Background = Brushes.LightCyan;
 
-            foreach (MatchCard matchCard in this.CardStackPanel) matchCard.MatchRow = null;
-            for (int i = 0; i < this.CurrentRoundRow.Matches.Count; i++) {
-                this.CardStackPanel.GetMatchCard(i).MatchRow = this.CurrentRoundRow.Matches[i];
-            }
+            this.PopulateMatchCards(roundRow);
         }
 
         private void HndAddRound(object sender, RoutedEventArgs e) {

@@ -32,18 +32,6 @@ namespace Leagueinator.Controls {
             }
         }
 
-        public MatchCard? SetMatchCard(MatchCard matchcard) {
-            MatchCard? previous = null;
-            if (this.Canvas.Children.Count > 0) {
-                previous = (MatchCard)this.Canvas.Children[0];
-                this.Canvas.Children.Remove(previous);
-                previous.CardTarget = null;
-            }
-            this.Canvas.Children.Add(matchcard);
-            matchcard.CardTarget = this;
-            return previous;
-        }
-
         public static implicit operator Canvas(CardTarget target) {
             return target.Canvas;
         }

@@ -9,7 +9,7 @@ namespace Leagueinator.Controls {
     /// Interaction logic for MatchCard.xaml
     /// </summary>
     public partial class MatchCard : UserControl {
-        private MatchRow? _matchRow;
+        private MatchRow? _matchRow = default;
 
         public MatchCard() {
             InitializeComponent();
@@ -18,9 +18,9 @@ namespace Leagueinator.Controls {
 
         internal CardTarget? CardTarget { get; set; }
 
-        public MatchRow? MatchRow {
-            get => _matchRow;
-            set {
+        public MatchRow MatchRow {
+            get => _matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
+            init {
                 _matchRow = value;
                 if (MatchRow is null) {
                     this.Clear();

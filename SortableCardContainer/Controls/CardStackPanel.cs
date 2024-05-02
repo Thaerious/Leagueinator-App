@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Extensions;
 using System.Collections;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -25,13 +26,12 @@ namespace Leagueinator.Controls {
             return (MatchCard)target.Children[0];
         }
 
-        public void Add(MatchCard matchCard) {
+        public CardTarget Wrap(MatchCard matchCard) {
             CardTarget target = new CardTarget {
                 Height = matchCard.Height,
                 Lane = this.Children.Count + 1,
                 MatchCard = matchCard
             };
-            this.Children.Add(target);
 
             Canvas.SetTop(matchCard, 0);
 
@@ -44,6 +44,16 @@ namespace Leagueinator.Controls {
             matchCard.MouseUp += HndMouseUp;
             matchCard.MouseLeave += HndMouseLeave;
             matchCard.MouseMove += HndMouseMove;
+
+            return target;
+        }
+
+        internal void SetCollection(List<MatchCard> matchCards) {
+            foreach (MatchCard matchCard in matchCards) this.Add(matchCard);
+        }
+
+        public void Add(MatchCard matchCard) {
+            this.Children.Add(this.Wrap(matchCard));
         }
 
         public void HndMouseDown(object sender, MouseButtonEventArgs e) {
@@ -75,7 +85,7 @@ namespace Leagueinator.Controls {
 
             reorderMap[this.StartingIndex] = finalIndex;
 
-            if (this.StartingIndex < finalIndex) {                
+            if (this.StartingIndex < finalIndex) {
                 for (int i = this.StartingIndex + 1; i <= finalIndex; i++) {
                     reorderMap[i] = i - 1;
                 }
@@ -101,7 +111,7 @@ namespace Leagueinator.Controls {
         }
         public void HndMouseMove(object sender, MouseEventArgs e) {
             if (sender is not MatchCard matchCard) return;
-            if (Active is null) return;            
+            if (Active is null) return;
 
             Point currentPosition = e.GetPosition(this);
             Point diff = new(LastPoint.X - currentPosition.X, LastPoint.Y - currentPosition.Y);
@@ -177,7 +187,7 @@ namespace Leagueinator.Controls {
         /// <param name="card1"></param>
         /// <param name="card2"></param>
         private void Swap(MatchCard card1, MatchCard card2) {
-            CardTarget parent1 = card1.CardTarget ?? throw new NotSupportedException(); ;
+            CardTarget parent1 = card1.CardTarget ?? throw new NotSupportedException();
             CardTarget parent2 = card2.CardTarget ?? throw new NotSupportedException();
 
             parent1.MatchCard = null;
@@ -199,7 +209,7 @@ namespace Leagueinator.Controls {
         }
 
         public IEnumerator<MatchCard> GetEnumerator() {
-            foreach(CardTarget target in this.Children){
+            foreach (CardTarget target in this.Children) {
                 yield return (MatchCard)target.Children[0];
             }
         }
