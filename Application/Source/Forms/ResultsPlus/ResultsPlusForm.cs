@@ -40,7 +40,7 @@ namespace Leagueinator.Forms.ResultsPlus {
             Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamScore.xml");
             Element rowXML  = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.ScoreRow.xml");
 
-            foreach (var pair in this.EventRow.AllTeams()) {
+            foreach (var pair in this.EventRow.MatchResults()) {
                 Element currentTeamXML = teamXML.Clone();
 
                 // Add the player names.
@@ -61,7 +61,7 @@ namespace Leagueinator.Forms.ResultsPlus {
 
                     row["bowls_for"][0].InnerText = match.BowlsFor.ToString();
                     row["bowls_against"][0].InnerText = match.BowlsAgainst.ToString();
-                    row["tie"][0].InnerText = match.Tie.ToString();
+                    row["tie"][0].InnerText = match.TieBreaker.ToString();
                     row["score_for"][0].InnerText = match.PointsFor.ToString();
 
                     Debug.WriteLine(match.PlusFor.ToString());

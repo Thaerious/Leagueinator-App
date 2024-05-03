@@ -13,7 +13,7 @@ namespace Leagueinator.Model.Views {
         public int Lane { get; }
         public int Ends { get; }
         public int BowlsFor { get; }
-        public int Tie { get; }
+        public int TieBreaker { get; }
         public int BowlsAgainst { get; private set; }
 
         public int PointsFor {
@@ -39,7 +39,7 @@ namespace Leagueinator.Model.Views {
             this.Ends = teamRow.Match.Ends;
             this.BowlsFor = teamRow.Bowls;
             this.BowlsAgainst = 0;
-            this.Tie = teamRow.Tie;
+            this.TieBreaker = teamRow.Tie;
 
             foreach (TeamRow t in teamRow.Match.Teams) {
                 if (!t.Equals(teamRow)) this.BowlsAgainst += t.Bowls;
@@ -47,7 +47,7 @@ namespace Leagueinator.Model.Views {
         }
 
         public override string ToString() {
-            return $"[{Round}, {Lane}, {Ends}, {BowlsFor}, {BowlsAgainst}, {Tie}, {PointsFor}, {PlusFor}, {PointsAgainst}, {PlusAgainst}]";
+            return $"[{Round}, {Lane}, {Ends}, {BowlsFor}, {BowlsAgainst}, {TieBreaker}, {PointsFor}, {PlusFor}, {PointsAgainst}, {PlusAgainst}]";
         }
 
         public readonly static IComparer<MatchResults> CompareByRound = new RoundCompare();
@@ -58,6 +58,11 @@ namespace Leagueinator.Model.Views {
                 if (x.Lane != y.Lane) return x.Lane - y.Lane;
                 return 0;
             }
+        }
+
+        public bool IsWin() {
+            if (this.BowlsFor > BowlsAgainst) return true;
+            return this.TieBreaker > 0;
         }
     }
 }

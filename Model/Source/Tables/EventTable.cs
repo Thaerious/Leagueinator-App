@@ -48,7 +48,7 @@ namespace Leagueinator.Model.Tables {
         /// Retrieve a list of each team with a unique set of players.
         /// </summary>
         /// <returns></returns>
-        public ReadOnlyDictionary<Team, IReadOnlyList<MatchResults>> AllTeams() {
+        public ReadOnlyDictionary<Team, IReadOnlyList<MatchResults>> MatchResults() {
             Dictionary<Team, List<MatchResults>> allTeams = [];
 
             foreach (TeamRow teamRow in this.Teams) {
@@ -65,6 +65,16 @@ namespace Leagueinator.Model.Tables {
             }
 
             return new ReadOnlyDictionary<Team, IReadOnlyList<MatchResults>>(readOnlyTeams);
+        }
+
+        public Dictionary<Team, MatchSummary> MatchSummaries() {
+            Dictionary<Team, MatchSummary> summaries = [];
+
+            foreach (var pair in this.MatchResults()) {
+                summaries[pair.Key] = new MatchSummary(pair.Value);
+            }
+
+            return summaries;
         }
     }
 

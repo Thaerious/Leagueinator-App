@@ -3,13 +3,8 @@ using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Printer;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Leagueinator.Forms {
     internal class ResultBuilder {
@@ -25,9 +20,10 @@ namespace Leagueinator.Forms {
             Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamScore.xml");
             Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.ScoreRow.xml");
 
-            var allTeams = eventRow.AllTeams();
+            var matchResults = eventRow.MatchResults();
+            var matchSummaries = eventRow.MatchSummaries();
 
-            foreach (var pair in allTeams) {
+            foreach (var pair in matchResults) {
                 Element xmlFragment = teamXML.Clone();
 
                 // Add names to the xml fragment.
@@ -46,17 +42,30 @@ namespace Leagueinator.Forms {
 
                     row["index"][0].InnerText = (match.Round + 1).ToString();
                     row["lane"][0].InnerText = (match.Lane + 1).ToString();
-
+                    row["result"][0].InnerText = match.IsWin() ? "W" : "L";
                     row["bowls_for"][0].InnerText = match.BowlsFor.ToString();
                     row["bowls_against"][0].InnerText = match.BowlsAgainst.ToString();
-                    row["tie"][0].InnerText = match.Tie.ToString();
+                    row["tie"][0].InnerText = match.TieBreaker.ToString();
                     row["score_for"][0].InnerText = $"{match.PointsFor}+{match.PlusFor}";
-
                     row["score_against"][0].InnerText = $"{match.PointsAgainst}+{match.PlusAgainst}";
                     row["ends_played"][0].InnerText = match.Ends.ToString();
 
                     xmlFragment["rounds"][0].AddChild(row);
                 }
+
+                MatchSummary summary = matchSummaries[pair.Key];
+                Element sumRow = rowXML.Clone();
+                sumRow["index"][0].InnerText = "Σ";
+                sumRow["lane"][0].InnerText = "";
+                sumRow["ends_played"][0].InnerText = summary.Ends.ToString();
+                sumRow["bowls_for"][0].InnerText = summary.BowlsFor.ToString();
+                sumRow["bowls_against"][0].InnerText = summary.BowlsAgainst.ToString();
+                sumRow["tie"][0].InnerText = "";
+                sumRow["result"][0].InnerText = summary.Wins.ToString();
+                sumRow["score_for"][0].InnerText = $"{summary.PointsFor}+{summary.PlusFor}";
+                sumRow["score_against"][0].InnerText = $"{summary.PointsAgainst}+{summary.PlusAgainst}";
+
+                xmlFragment["rounds"][0].AddChild(sumRow);
 
                 // Add fragment to the root.
                 docroot["page"][0].AddChild(xmlFragment);

@@ -142,7 +142,7 @@ namespace Model_Test {
             teamRow2.Members.Add("Able");
 
             int expected = 2;
-            int actual = eventRow.AllTeams().Count;
+            int actual = eventRow.MatchResults().Count;
 
             Console.WriteLine(league.PlayerTable.PrettyPrint());
             Console.WriteLine(league.MemberTable.PrettyPrint());
@@ -181,7 +181,7 @@ namespace Model_Test {
             teamRow4.Members.Add("Able");
 
             int expected = 2;
-            var allTeams = eventRow.AllTeams();
+            var allTeams = eventRow.MatchResults();
             int actual = allTeams.Count;
 
             Console.WriteLine(league.PlayerTable.PrettyPrint());
@@ -236,7 +236,7 @@ namespace Model_Test {
             teamRow7.Members.Add("Cain");
             teamRow7.Members.Add("Able");
 
-            var allTeams = eventRow.AllTeams();
+            var allTeams = eventRow.MatchResults();
 
             Assert.AreEqual(2, allTeams[new(teamRow1)].Count);
             Assert.AreEqual(3, allTeams[new(teamRow2)].Count);
@@ -289,7 +289,7 @@ namespace Model_Test {
             teamRow7.Members.Add("Cain");
             teamRow7.Members.Add("Able");
 
-            var allTeams = eventRow.AllTeams();
+            var allTeams = eventRow.MatchResults();
 
             Assert.AreEqual(2, allTeams[new(teamRow1)].Count);
             Assert.AreEqual(3, allTeams[new(teamRow2)].Count);
