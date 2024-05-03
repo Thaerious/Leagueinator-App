@@ -1,6 +1,8 @@
 @import "Base.style"
 
 root{
+    width: 850px;
+    height: 1100px;
     align-items: center;
     justify-content: center;
 }

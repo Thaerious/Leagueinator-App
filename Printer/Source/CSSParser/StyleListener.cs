@@ -8,6 +8,7 @@ using System.Text;
 using Leagueinator.Utility;
 using static StyleParser;
 using System.Diagnostics;
+using System.IO;
 
 namespace Leagueinator.CSSParser {
     internal class StyleListener(StyleSheet stylesheet) : StyleParserBaseListener {

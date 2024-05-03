@@ -1,0 +1,24 @@
+﻿<Window x:Class="Leagueinator.Forms.PrinterForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Leagueinator.Forms" xmlns:controls="clr-namespace:Leagueinator.Controls"
+        mc:Ignorable="d"
+        Title="PrinterForm" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main Menu -->
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <MenuItem Header="Print" Click="HndPrintClick"></MenuItem>
+        </Menu>
+
+        <Canvas Grid.Row="1" x:Name="OuterCanvas" Background="LightCoral">
+            <controls:PrinterCanvas x:Name="InnerCanvas" Background="WhiteSmoke"/>
+        </Canvas>
+    </Grid>
+</Window>

@@ -162,7 +162,7 @@ namespace Test_Style {
         public void Default_Position() {
             LoadedStyles styles = LoadSSResource("empty.css");
             Element element = new("element", []);
-            styles.ApplyTo(element);
+            styles.AssignTo(element);
 
             Assert.AreEqual(Position.Flex, element.Style.Position);
         }

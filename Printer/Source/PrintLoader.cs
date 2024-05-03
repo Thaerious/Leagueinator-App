@@ -2,6 +2,7 @@
 using Leagueinator.Printer;
 using System.Reflection;
 using Leagueinator.Printer.Styles;
+using System.IO;
 
 namespace Printer {
     public static class PrintLoader {
@@ -29,7 +30,7 @@ namespace Printer {
         public static T LoadResources<T>(this Assembly assembly, string xmlName, string cssName) where T : Element, new() {
             T element = assembly.LoadXMLResource<T>(xmlName);
             LoadedStyles ss = assembly.LoadStyleResource(cssName);
-            ss.ApplyTo(element);
+            ss.AssignTo(element);
             return element;
         }
 

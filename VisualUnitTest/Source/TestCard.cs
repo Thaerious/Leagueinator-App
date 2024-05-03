@@ -61,7 +61,7 @@ namespace Leagueinator.VisualUnitTest {
             string xmlText = File.ReadAllText(this.Paths.XML);
             LoadedStyles styles = LoadedStyles.LoadFromFile(this.Paths.Style);
             Element root = XMLLoader.Load(xmlText)["root"][0];
-            styles.ApplyTo(root);
+            styles.AssignTo(root);
             Flex flex = new();
             List<RenderNode> pages = flex.DoLayout(root);
 

@@ -31,7 +31,7 @@
             </MenuItem>
 
             <MenuItem Header="Action"/>
-            <MenuItem Header="View">
+            <MenuItem Header="View" Click="HndViewResults">
                 <MenuItem Header="Results"/>
             </MenuItem>
             <MenuItem Header="Tables" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">

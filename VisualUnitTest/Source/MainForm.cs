@@ -210,7 +210,7 @@ namespace Leagueinator.VisualUnitTest {
 
                 LoadedStyles styles = LoadedStyles.LoadFromFile(this.ActiveTestCard!.Paths.Style);
                 Element root = XMLLoader.Load(this.RichTextXML.Text)["root"][0];
-                styles.ApplyTo(root);
+                styles.AssignTo(root);
                 Flex flex = new();
 
                 List<RenderNode> pages = flex.DoLayout(root);

@@ -1,4 +1,12 @@
-﻿# Usage
+﻿# Quick Start
+## Load From Embedded Assets
+    using Printer;
+
+    LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Project.AssetsFolder.FileName.style");
+    Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Project.AssetsFolder.FileName.xml");
+    styles.ApplyTo(docroot);
+
+# Usage
 
 ## DOM
     <docroot>

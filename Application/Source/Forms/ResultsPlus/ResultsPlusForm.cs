@@ -67,7 +67,7 @@ namespace Leagueinator.Forms.ResultsPlus {
                 docroot["page"][0].AddChild(currentTeamXML);
             }
 
-            styles.ApplyTo(docroot);
+            styles.AssignTo(docroot);
             return docroot;
         }
 

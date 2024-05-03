@@ -2,7 +2,6 @@
 using Leagueinator.Utility;
 using System.Windows;
 using System.Windows.Controls;
-using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
     public class TeamStackPanel : StackPanel {

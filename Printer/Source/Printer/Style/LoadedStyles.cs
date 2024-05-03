@@ -2,8 +2,8 @@
 using Antlr4.Runtime;
 using Leagueinator.Printer.Elements;
 using System.Collections;
-using System.Diagnostics;
 using Leagueinator.CSSParser;
+using System.IO;
 
 namespace Leagueinator.Printer.Styles {
     public class LoadedStyles : IEnumerable<Style> {
@@ -31,7 +31,7 @@ namespace Leagueinator.Printer.Styles {
             return loadedStyles;
         }
 
-        public void ApplyTo(Element root) {
+        public void AssignTo(Element root) {
             // apply defined styles
             foreach (Style style in this) {
                 foreach (Element element in root[style.Selector]) {

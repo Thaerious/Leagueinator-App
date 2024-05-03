@@ -9,7 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\default.style" />
+    <None Remove="Assets\default.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\default.style" />
+    <EmbeddedResource Include="Assets\default.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\Printer\Printer.csproj" />
   </ItemGroup>
 
 </Project>

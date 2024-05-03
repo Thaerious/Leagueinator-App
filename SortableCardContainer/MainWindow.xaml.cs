@@ -162,5 +162,9 @@ namespace SortableCardContainer {
             }
             public static string Filename { get => _filename; set => _filename = value; }
         }
+
+        private void HndViewResults(object sender, RoutedEventArgs e) {
+            new PrinterForm().Show();
+        }
     }
 }
