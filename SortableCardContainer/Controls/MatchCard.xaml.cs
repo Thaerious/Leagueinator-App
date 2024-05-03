@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
@@ -30,14 +31,14 @@ namespace Leagueinator.Controls {
                 if (MatchRow.Teams[0] is not null) {
                     int i = 0;
                     foreach (MemberRow member in MatchRow.Teams[0].Members) {
-                        TextBox textBox = (TextBox)this.Team0.Children[i++];
+                        MemoryTextBox textBox = (MemoryTextBox)this.Team0.Children[i++];
                         textBox.Text = member.Player;
                     }
                 }
                 if (MatchRow.Teams[1] is not null) {
                     int i = 0;
                     foreach (MemberRow member in MatchRow.Teams[1].Members) {
-                        TextBox textBox = (TextBox)this.Team1.Children[i++];
+                        MemoryTextBox textBox = (MemoryTextBox)this.Team1.Children[i++];
                         textBox.Text = member.Player;
                     }
                 }
@@ -48,14 +49,23 @@ namespace Leagueinator.Controls {
             }
         }
 
+        /// <summary>
+        /// Triggered when the value of a players name (MemoryTextBox) is changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="NullReferenceException"></exception>
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
+            TabbedDebug.ResetBlock($"MatchCard.HndUpdateText");
 
             // Does name exist in another team?
             bool contains = this.MatchRow
                                 .Teams
                                 .SelectMany(team => team.Members)
                                 .Any(member => member.Player.Equals(e.After));
+
+            TabbedDebug.StartBlock($"Contains '{e.After}' = {contains}");
 
             if (contains) {
                 // if the player already exists reject.
@@ -64,6 +74,7 @@ namespace Leagueinator.Controls {
             }
             else {
                 TeamStackPanel parent = (TeamStackPanel)e.TextBox.Parent;
+                TabbedDebug.WriteLine($"Team Index = {parent.TeamIndex}");
 
                 // Remove new name from the idle table
                 if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
@@ -76,9 +87,13 @@ namespace Leagueinator.Controls {
                     this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(e.After);
                 }
 
-                // Remove the old name from the team
+                TabbedDebug.StartBlock($"e.Before ({e.Before}) Is Empty '{e.Before.IsEmpty()}'");
+                // Remove the old name from the members table
                 if (!e.Before.IsEmpty()) {
-                    this.MatchRow.Teams[parent.TeamIndex]!.Members.Get(e.Before).Remove();
+                    Debug.WriteLine($"Remove the old name ({e.Before}) from the members table");
+                    TeamRow teamRow = this.MatchRow.Teams[parent.TeamIndex] ?? throw new NullReferenceException();
+                    MemberRow memberRow = teamRow.Members.Get(e.Before) ?? throw new NullReferenceException();
+                    memberRow.Remove();
                 }
             }
 

@@ -57,13 +57,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public new ROW? this[int index] {
-            get {
-                ConstructorInfo ctor
-                    = typeof(ROW).GetConstructor([typeof(DataRow)])
-                    ?? throw new InvalidOperationException($"No matching ctor(DataRow) method found for type '{typeof(ROW)}'.");
-
-                return (ROW)ctor.Invoke([base[index].Row]);
-            }
+            get => NewRow(base[index].Row);
         }
 
         /// <summary>

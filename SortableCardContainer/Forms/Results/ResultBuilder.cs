@@ -44,8 +44,8 @@ namespace Leagueinator.Forms {
                 foreach (MatchResults match in pair.Value) {
                     Element row = rowXML.Clone();
 
-                    row["index"][0].InnerText = match.Round.ToString();
-                    row["lane"][0].InnerText = match.Lane.ToString();
+                    row["index"][0].InnerText = (match.Round + 1).ToString();
+                    row["lane"][0].InnerText = (match.Lane + 1).ToString();
 
                     row["bowls_for"][0].InnerText = match.BowlsFor.ToString();
                     row["bowls_against"][0].InnerText = match.BowlsAgainst.ToString();
