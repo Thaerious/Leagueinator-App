@@ -5,6 +5,7 @@ using Leagueinator.Printer.Styles;
 using Printer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -40,13 +41,19 @@ namespace Leagueinator.Forms {
                 }
 
                 // Add match summaries to the xml fragment.
-                foreach (MatchView match in pair.Value) {
+                foreach (MatchResults match in pair.Value) {
                     Element row = rowXML.Clone();
+
                     row["index"][0].InnerText = match.Round.ToString();
                     row["lane"][0].InnerText = match.Lane.ToString();
-                    row["bowls_for"][0].InnerText = match.Bowls.ToString();
-                    row["ends_played"][0].InnerText = match.Ends.ToString();
+
+                    row["bowls_for"][0].InnerText = match.BowlsFor.ToString();
+                    row["bowls_against"][0].InnerText = match.BowlsAgainst.ToString();
                     row["tie"][0].InnerText = match.Tie.ToString();
+                    row["score_for"][0].InnerText = $"{match.PointsFor}+{match.PlusFor}";
+
+                    row["score_against"][0].InnerText = $"{match.PointsAgainst}+{match.PlusAgainst}";
+                    row["ends_played"][0].InnerText = match.Ends.ToString();
 
                     xmlFragment["rounds"][0].AddChild(row);
                 }

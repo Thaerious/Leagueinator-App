@@ -11,9 +11,7 @@
       <bowls_against>BA</bowls_against>
       <tie>T</tie>
       <score_for>PF</score_for>
-      <plus_for>+F</plus_for>
       <score_against>PA</score_against>
-      <plus_against>+A</plus_against>
       <ends_played>EP</ends_played>
     </header>
   </rounds>

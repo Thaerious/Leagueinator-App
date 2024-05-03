@@ -54,13 +54,21 @@ namespace Leagueinator.Forms.ResultsPlus {
                 }
 
                 // Add the match values.
-                foreach (MatchView match in pair.Value) {
+                foreach (MatchResults match in pair.Value) {
                     Element row = rowXML.Clone();
                     row["index"][0].InnerText = match.Round.ToString();
                     row["lane"][0].InnerText = match.Lane.ToString();
-                    row["bowls_for"][0].InnerText = match.Bowls.ToString();
-                    row["ends_played"][0].InnerText = match.Ends.ToString();
+
+                    row["bowls_for"][0].InnerText = match.BowlsFor.ToString();
+                    row["bowls_against"][0].InnerText = match.BowlsAgainst.ToString();
                     row["tie"][0].InnerText = match.Tie.ToString();
+                    row["score_for"][0].InnerText = match.PointsFor.ToString();
+
+                    Debug.WriteLine(match.PlusFor.ToString());
+                    row["plus_for"][0].InnerText = match.PlusFor.ToString();
+                    row["score_against"][0].InnerText = match.PointsAgainst.ToString();
+                    row["plus_against"][0].InnerText = match.PlusAgainst.ToString();
+                    row["ends_played"][0].InnerText = match.Ends.ToString();
 
                     currentTeamXML["rounds"][0].AddChild(row);
                 }

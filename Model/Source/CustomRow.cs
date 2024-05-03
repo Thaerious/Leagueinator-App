@@ -32,5 +32,11 @@ namespace Leagueinator.Model {
                 }
             }
         }
+
+        public override bool Equals(object? that) {
+            if (that is null) return false;
+            if (that is not CustomRow row) return false;
+            return row.DataRow == this.DataRow;
+        }
     }
 }

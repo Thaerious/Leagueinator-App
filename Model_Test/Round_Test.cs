@@ -153,7 +153,7 @@ namespace Model_Test {
         //    League league = new League();
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    Round round = lEvent.NewRound();
-        //    MatchView match = round.GetMatch(0);
+        //    MatchResults match = round.GetMatch(0);
 
         //    Team team1 = match.NewTeam();
         //    team1.AddPlayer("Adam");
@@ -176,7 +176,7 @@ namespace Model_Test {
         //    League league = new League();
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    Round round = lEvent.NewRound();
-        //    MatchView match = round.GetMatch(0);
+        //    MatchResults match = round.GetMatch(0);
 
         //    Team team1 = match.NewTeam();
         //    team1.AddPlayer("Adam");
@@ -197,7 +197,7 @@ namespace Model_Test {
         //    League league = new League();
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    Round round = lEvent.NewRound();
-        //    MatchView match = round.GetMatch(0);
+        //    MatchResults match = round.GetMatch(0);
 
         //    Team team1 = match.NewTeam();
         //    team1.AddPlayer("Adam");
