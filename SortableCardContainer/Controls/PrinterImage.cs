@@ -1,37 +1,24 @@
 ﻿using Leagueinator.Printer.Styles;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Drawing;
-using Image = System.Windows.Controls.Image;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Leagueinator.Controls {
-    public class PrinterCanvas : Canvas {
+    public class PrinterImage : System.Windows.Controls.Image {
 
         public List<RenderNode> Pages {
             set => this.Bitmaps = CreateBitmaps(value);
         }
 
         public void SetPage(int index) {
-            this.Children.Clear();
-            BitmapSource bitmapSoure = ConvertBitmapToBitmapSource(this.Bitmaps[index]);
-
-            Image image = new Image {
-                Source = bitmapSoure,
-                Width = this.ActualWidth,
-                Height = this.ActualHeight
-            };
-
-            Debug.WriteLine($"{image.ActualWidth} {image.ActualHeight}");
-            Debug.WriteLine($"{image.Width} {image.Height}");
-            this.Children.Add(image);
+            BitmapSource bitmapSource = ConvertBitmapToBitmapSource(this.Bitmaps[index]);
+            this.Source = bitmapSource;            
         }
 
-        private List<Bitmap> Bitmaps { get => this._bitmaps; set => this._bitmaps = value; }
+        public List<Bitmap> Bitmaps { get => this._bitmaps; private set => this._bitmaps = value; }
 
         protected override void OnRender(DrawingContext drawingContext) {
             base.OnRender(drawingContext);
@@ -42,7 +29,6 @@ namespace Leagueinator.Controls {
 
             int i = 0;
             foreach (RenderNode page in pages) {
-                Debug.WriteLine($"Page #{i++} {page.Size.Width} {page.Size.Height}");
                 if ((int)page.Size.Width <= 0) throw new InvalidOperationException();
                 if ((int)page.Size.Height <= 0) throw new InvalidOperationException();
 

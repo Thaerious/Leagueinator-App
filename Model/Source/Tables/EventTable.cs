@@ -43,8 +43,13 @@ namespace Leagueinator.Model.Tables {
             set => this[EventTable.COL.DATE] = value;
         }
 
-        public ReadOnlyDictionary<Team, IReadOnlyList<Match>> AllTeams() {
-            Dictionary<Team, List<Match>> allTeams = [];
+        
+        /// <summary>
+        /// Retrieve a list of each team with a unique set of players.
+        /// </summary>
+        /// <returns></returns>
+        public ReadOnlyDictionary<Team, IReadOnlyList<MatchView>> AllTeams() {
+            Dictionary<Team, List<MatchView>> allTeams = [];
 
             foreach (TeamRow teamRow in this.Teams) {
                 Team team = new(teamRow);
@@ -53,13 +58,13 @@ namespace Leagueinator.Model.Tables {
                 allTeams[team].Add(new(teamRow));
             }
 
-            // Convert the dictionary to have IReadOnlyList<Match> as the values
-            var readOnlyTeams = new Dictionary<Team, IReadOnlyList<Match>>();
+            // Convert the dictionary to have IReadOnlyList<MatchView> as the values
+            var readOnlyTeams = new Dictionary<Team, IReadOnlyList<MatchView>>();
             foreach (var pair in allTeams) {
                 readOnlyTeams[pair.Key] = pair.Value.AsReadOnly();
             }
 
-            return new ReadOnlyDictionary<Team, IReadOnlyList<Match>>(readOnlyTeams);
+            return new ReadOnlyDictionary<Team, IReadOnlyList<MatchView>>(readOnlyTeams);
         }
     }
 

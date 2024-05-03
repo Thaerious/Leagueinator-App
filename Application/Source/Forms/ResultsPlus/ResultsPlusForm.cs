@@ -40,10 +40,10 @@ namespace Leagueinator.Forms.ResultsPlus {
             Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamScore.xml");
             Element rowXML  = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.ScoreRow.xml");
 
-            var allTeams = this.EventRow.AllTeams();
-
-            foreach (var pair in allTeams) {
+            foreach (var pair in this.EventRow.AllTeams()) {
                 Element currentTeamXML = teamXML.Clone();
+
+                // Add the player names.
                 foreach (string name in pair.Key.Players) {
                     currentTeamXML["names"][0].AddChild(
                         new Element {
@@ -53,7 +53,8 @@ namespace Leagueinator.Forms.ResultsPlus {
                     );
                 }
 
-                foreach (Match match in pair.Value) {
+                // Add the match values.
+                foreach (MatchView match in pair.Value) {
                     Element row = rowXML.Clone();
                     row["index"][0].InnerText = match.Round.ToString();
                     row["lane"][0].InnerText = match.Lane.ToString();
@@ -64,6 +65,7 @@ namespace Leagueinator.Forms.ResultsPlus {
                     currentTeamXML["rounds"][0].AddChild(row);
                 }
 
+                // Append fragment to the document.
                 docroot["page"][0].AddChild(currentTeamXML);
             }
 

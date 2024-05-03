@@ -1,30 +1,27 @@
-﻿using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Styles;
-using Printer;
-using System.Diagnostics;
-using System.Drawing.Printing;
-using System.Printing;
-
-
-//using System.Drawing;
-using System.Reflection;
+﻿using Leagueinator.Printer.Styles;
+using Leagueinator.Controls;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using PrintDialog = System.Windows.Controls.PrintDialog;
 using Size = System.Windows.Size;
+using System.Printing;
+using Leagueinator.Model.Tables;
 
 namespace Leagueinator.Forms {
     /// <summary>
     /// Interaction logic for PrinterForm.xaml
     /// </summary>
     public partial class PrinterForm : Window {
-        private Size Dims = new(400, 600);
+        private readonly Size Dims = new(850, 1100);
 
-        public PrinterForm() {
+        /// <summary>
+        /// Create a new printer form for the specified eventRow.
+        /// </summary>
+        /// <param name="eventRow"></param>
+        public PrinterForm(EventRow eventRow) {
             InitializeComponent();
             this.SizeChanged += this.HndSizeChanged;
-            this.InnerCanvas.Pages = LoadDefault();
+            this.InnerCanvas.Pages = new Flex().DoLayout(ResultBuilder.BuildElement(eventRow));
         }
 
         /// <summary>
@@ -55,35 +52,31 @@ namespace Leagueinator.Forms {
                 this.InnerCanvas.Height = outerHeight;
             }
 
-            //var scalex = this.inner.Width / this.inner.dimX;
-            //var scaley = this.inner.Height / this.inner.dimY;
-
             this.InnerCanvas.SetPage(0);
-            Debug.WriteLine($"{this.InnerCanvas.Width} {this.InnerCanvas.Height}");
         }
 
-        private static List<RenderNode> LoadDefault() {
-            LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.default.style");
-            Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.default.xml");
-            styles.AssignTo(docroot);
-            return new Flex().DoLayout(docroot);
-        }
-
+        /// <summary>
+        /// Show print dialog and handle print result.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void HndPrintClick(object sender, RoutedEventArgs e) {
             PrintDialog dialog = new PrintDialog();
 
-            //PrintDocument printDocument = dialog.PrintDocument;
-            //printDocument.PrintPage += new PrintPageEventHandler(PrintPage);
+            PrintCapabilities capabilities = dialog.PrintQueue.GetPrintCapabilities(dialog.PrintTicket);
+            double printableWidth = capabilities.PageImageableArea.ExtentWidth;
+            double printableHeight = capabilities.PageImageableArea.ExtentHeight;
 
             if (dialog.ShowDialog() == true) {
-                new Image();
-
-                Debug.WriteLine("dialog.ShowDialog()");
-                //dialog.PrintVisual(this.InnerCanvas.Children[0], "Printing an Image");
+                for (int i = 0; i < this.InnerCanvas.Bitmaps.Count; i++) {
+                    Image image = new() {
+                        Source = PrinterImage.ConvertBitmapToBitmapSource(this.InnerCanvas.Bitmaps[i]),
+                        Width = printableWidth,
+                        Height = printableHeight
+                    };
+                    dialog.PrintVisual(image, "Printing Results");
+                }
             }
-        }
-
-        private void PrintPage(object sender, PrintPageEventArgs e) {
         }
     }
 }

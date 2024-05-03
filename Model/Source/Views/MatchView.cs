@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 
 namespace Leagueinator.Model.Views {
-    public readonly struct Match(TeamRow team) {
+    public readonly struct MatchView(TeamRow team) {
         public int Round { get; } = team.Match.Round;
         public int Lane { get; } = team.Match.Lane;
         public int Ends { get; } = team.Match.Ends;
@@ -12,10 +12,10 @@ namespace Leagueinator.Model.Views {
             return $"[{Round}, {Lane}, {Ends}, {Bowls}, {Tie}]";
         }
 
-        public readonly static IComparer<Match> CompareByRound = new RoundCompare();
+        public readonly static IComparer<MatchView> CompareByRound = new RoundCompare();
 
-        private class RoundCompare : IComparer<Match> {
-            public int Compare(Match x, Match y) {
+        private class RoundCompare : IComparer<MatchView> {
+            public int Compare(MatchView x, MatchView y) {
                 if (x.Round != y.Round) return x.Round - y.Round;
                 if (x.Lane != y.Lane) return x.Lane - y.Lane;
                 return 0;

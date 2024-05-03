@@ -17,8 +17,8 @@
             <MenuItem Header="Print" Click="HndPrintClick"></MenuItem>
         </Menu>
 
-        <Canvas Grid.Row="1" x:Name="OuterCanvas" Background="LightCoral">
-            <controls:PrinterCanvas x:Name="InnerCanvas" Background="WhiteSmoke"/>
+        <Canvas Grid.Row="1" x:Name="OuterCanvas">
+            <controls:PrinterImage x:Name="InnerCanvas"/>
         </Canvas>
     </Grid>
 </Window>

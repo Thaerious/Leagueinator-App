@@ -164,7 +164,10 @@ namespace SortableCardContainer {
         }
 
         private void HndViewResults(object sender, RoutedEventArgs e) {
-            new PrinterForm().Show();
+            if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
+            var form = new PrinterForm(this.EventRow);
+            form.Owner = this;
+            form.Show();
         }
     }
 }

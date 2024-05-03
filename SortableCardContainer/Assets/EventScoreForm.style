@@ -1,0 +1,55 @@
+root{
+    width: 850px;
+    height: 1100px;
+    align-items: center;
+    justify-content: center;
+}
+
+page{
+    width: 95%;
+    height: 95%;
+    border: 5px solid black;
+    overflow: paged;
+    align-items: center;
+    flex-axis: column;
+}
+
+team{
+    width: 90%;
+    border: 1px solid black;
+    margin: 5px;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 5px;
+    background-color: white;
+}
+
+names{
+    flex-axis: column;
+    width: 25%;
+}
+
+rounds{
+    flex-axis: column;
+    width: 70%;
+    border: 1px solid black;
+}
+
+row, header{
+    	width: 100%;
+    	flex-axis: row;
+	height: auto;
+	justify-content: center;
+}
+
+header {
+    background-color: lightgray;
+    border-color: black;
+    border-size: 0px 0px 1px 0px;
+}
+
+row > *, header > *{
+    width: 9%; 
+    align-items: center;
+    justify-content: center;
+}
