@@ -28,20 +28,23 @@ namespace Leagueinator.Controls {
                     this.DataContext = null;
                     return;
                 }
-                if (MatchRow.Teams[0] is not null) {
-                    int i = 0;
-                    foreach (MemberRow member in MatchRow.Teams[0].Members) {
-                        MemoryTextBox textBox = (MemoryTextBox)this.Team0.Children[i++];
-                        textBox.Text = member.Player;
-                    }
+
+                if (MatchRow.Teams.Count != 2) throw new NullReferenceException("MatchRow in MatchCard must have exactly 2 teams");
+
+                for (int i = 0; i < MatchRow.Teams[0]!.Members.Count; i++) {
+                    MemberRow member = MatchRow.Teams[0]!.Members[i]!;
+                    MemoryTextBox textBox = (MemoryTextBox)this.Team0.Children[i];
+                    textBox.Text = member.Player;
                 }
-                if (MatchRow.Teams[1] is not null) {
-                    int i = 0;
-                    foreach (MemberRow member in MatchRow.Teams[1].Members) {
-                        MemoryTextBox textBox = (MemoryTextBox)this.Team1.Children[i++];
-                        textBox.Text = member.Player;
-                    }
+
+                for (int i = 0; i < MatchRow.Teams[1]!.Members.Count; i++) {
+                    MemberRow member = MatchRow.Teams[1]!.Members[i]!;
+                    MemoryTextBox textBox = (MemoryTextBox)this.Team1.Children[i];
+                    textBox.Text = member.Player;
                 }
+
+                this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;
+                this.CheckTie1.IsChecked = MatchRow.Teams[1]!.Tie == 1;
 
                 this.DataContext = MatchRow;
                 this.TxtBowls0.DataContext = MatchRow.Teams[0];
@@ -112,6 +115,24 @@ namespace Leagueinator.Controls {
             this.TxtBowls0.Text = "0";
             this.TxtBowls1.Text = "0";
             this.TxtEnds.Text = "0";
+        }
+
+        private void HndCheckTie(object sender, RoutedEventArgs e) {
+            if (this.MatchRow is null) throw new NullReferenceException(nameof(this.MatchRow));
+            if (this.MatchRow.Teams[0] is null) throw new NullReferenceException();
+            if (this.MatchRow.Teams[1] is null) throw new NullReferenceException();
+            if (sender is not CheckBox checkBox) return;
+
+            if (checkBox.IsChecked == true) {
+                if (checkBox == this.CheckTie0) this.CheckTie1.IsChecked = false;
+                else this.CheckTie0.IsChecked = false;
+                this.MatchRow.Teams[0]!.Tie = 1;
+                this.MatchRow.Teams[1]!.Tie = 0;
+            }
+            else {
+                if (checkBox == this.CheckTie0) this.MatchRow.Teams[0]!.Tie = 0;
+                if (checkBox == this.CheckTie1) this.MatchRow.Teams[1]!.Tie = 0;
+            }
         }
     }
 }

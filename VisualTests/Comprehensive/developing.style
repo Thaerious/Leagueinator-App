@@ -3,6 +3,8 @@
 root{
     align-items: center;
     justify-content: center;
+    width: 850px;
+    height: 1100px;
 }
 
 page{
@@ -49,7 +51,7 @@ header {
 }
 
 row > *, header > *{
-    width: 9%; 
+    width: 11%; 
     align-items: center;
     justify-content: center;
 }
