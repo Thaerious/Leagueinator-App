@@ -1,4 +1,5 @@
-﻿using Leagueinator.Model.Tables;
+﻿using Antlr4.Runtime.Misc;
+using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
@@ -23,11 +24,16 @@ namespace Leagueinator.Forms {
             var matchResults = eventRow.MatchResults();
             var matchSummaries = eventRow.MatchSummaries();
 
-            foreach (var pair in matchResults) {
+            for (int i = 0; i < matchSummaries.Count; i++){
+                MatchSummary summary = matchSummaries[i];
                 Element xmlFragment = teamXML.Clone();
+                Team team = summary.Team;
+                IReadOnlyList<MatchResults> results = matchResults[team];
+
+                xmlFragment["placement"][0].InnerText = $"{i + 1}";
 
                 // Add names to the xml fragment.
-                foreach (string name in pair.Key.Players) {
+                foreach (string name in team.Players) {
                     xmlFragment["names"][0].AddChild(
                         new Element {
                             TagName = "Name",
@@ -37,12 +43,12 @@ namespace Leagueinator.Forms {
                 }
 
                 // Add match summaries to the xml fragment.
-                foreach (MatchResults match in pair.Value) {
+                foreach (MatchResults match in results) {
                     Element row = rowXML.Clone();
 
                     row["index"][0].InnerText = (match.Round + 1).ToString();
                     row["lane"][0].InnerText = (match.Lane + 1).ToString();
-                    row["result"][0].InnerText = match.IsWin() ? "W" : "L";
+                    row["result"][0].InnerText = $"{match.Result().ToString().ToCharArray()[0]}";
                     row["bowls_for"][0].InnerText = match.BowlsFor.ToString();
                     row["bowls_against"][0].InnerText = match.BowlsAgainst.ToString();
                     row["tie"][0].InnerText = match.TieBreaker.ToString();
@@ -53,7 +59,6 @@ namespace Leagueinator.Forms {
                     xmlFragment["rounds"][0].AddChild(row);
                 }
 
-                MatchSummary summary = matchSummaries[pair.Key];
                 Element sumRow = rowXML.Clone();
                 sumRow["index"][0].InnerText = "Σ";
                 sumRow["lane"][0].InnerText = "";
@@ -66,14 +71,11 @@ namespace Leagueinator.Forms {
                 sumRow["score_against"][0].InnerText = $"{summary.PointsAgainst}+{summary.PlusAgainst}";
 
                 xmlFragment["rounds"][0].AddChild(sumRow);
-
-                // Add fragment to the root.
                 docroot["page"][0].AddChild(xmlFragment);
             }
 
             styles.AssignTo(docroot);
             return docroot;
         }
-
     }
 }

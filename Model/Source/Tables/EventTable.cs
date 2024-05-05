@@ -42,7 +42,6 @@ namespace Leagueinator.Model.Tables {
             get => (string)this[EventTable.COL.DATE];
             set => this[EventTable.COL.DATE] = value;
         }
-
         
         /// <summary>
         /// Retrieve a list of each team with a unique set of players.
@@ -67,13 +66,15 @@ namespace Leagueinator.Model.Tables {
             return new ReadOnlyDictionary<Team, IReadOnlyList<MatchResults>>(readOnlyTeams);
         }
 
-        public Dictionary<Team, MatchSummary> MatchSummaries() {
-            Dictionary<Team, MatchSummary> summaries = [];
+        public List<MatchSummary> MatchSummaries() {
+            List<MatchSummary> summaries = [];
 
             foreach (var pair in this.MatchResults()) {
-                summaries[pair.Key] = new MatchSummary(pair.Value);
+                summaries.Add(new MatchSummary(pair.Key, pair.Value));
             }
 
+            summaries.Sort();
+            summaries.Reverse();
             return summaries;
         }
     }

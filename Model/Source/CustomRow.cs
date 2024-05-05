@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model {
     public class CustomRow(DataRow dataRow) : INotifyPropertyChanged {
