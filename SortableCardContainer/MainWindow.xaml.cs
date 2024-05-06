@@ -30,11 +30,19 @@ namespace SortableCardContainer {
             }
         }
 
+        /// <summary>
+        /// Indirectly triggered when a change is made to the underlying model.
+        /// </summary>
+        /// <param name="IsSaved">The new state value</param>
         private void HndStateChanged(bool IsSaved) {
             if (IsSaved) this.Title = $"Leagueinator [{SaveState.Filename}]";
             else this.Title = $"Leagueinator [{SaveState.Filename}] *";
         }
 
+        /// <summary>
+        /// Triggered when a change is made to the underlying model.
+        /// </summary>
+        /// <param name="IsSaved">The new state value</param>
         private void HndLeagueRowChanged(object sender, System.Data.DataRowChangeEventArgs e) {
             SaveState.IsSaved = false;
         }
@@ -102,6 +110,7 @@ namespace SortableCardContainer {
             if (SaveState.Filename.IsEmpty()) this.HndSaveAsClick(null, null);
             else this.League.WriteXml(SaveState.Filename);
         }
+
         private void HndSaveAsClick(object sender, RoutedEventArgs e) {
             if (this.League is null) return;
             SaveFileDialog dialog = new();
@@ -145,6 +154,12 @@ namespace SortableCardContainer {
         private void HndSettingsClick(object sender, RoutedEventArgs e) {
             new TableViewer().Show(this.League.SettingsTable);
         }
+        private void HndViewResults(object sender, RoutedEventArgs e) {
+            if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
+            var form = new PrinterForm(this.EventRow);
+            form.Owner = this;
+            form.Show();
+        }
 
         static class SaveState {
             public delegate void StateChangedHandler(bool IsSaved);
@@ -161,13 +176,6 @@ namespace SortableCardContainer {
                 }
             }
             public static string Filename { get => _filename; set => _filename = value; }
-        }
-
-        private void HndViewResults(object sender, RoutedEventArgs e) {
-            if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
-            var form = new PrinterForm(this.EventRow);
-            form.Owner = this;
-            form.Show();
         }
     }
 }

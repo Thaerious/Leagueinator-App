@@ -55,8 +55,8 @@
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <StackPanel x:Name="RoundButtonContainer"/>
-                <Button Content="Add Round" Click="HndAddRound" Grid.Row="1"/>
-                <Button Content="Delete Round" Click="HndDeleteRound" Grid.Row="2"/>
+                <Button Content="Add Round" Click="HndClickAddRound" Grid.Row="1"/>
+                <Button Content="Delete Round" Click="HndClickDeleteRound" Grid.Row="2"/>
             </Grid>
         </Border>
 

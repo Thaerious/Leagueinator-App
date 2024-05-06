@@ -1,6 +1,6 @@
 ﻿using Leagueinator.Extensions;
+using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,11 +19,23 @@ namespace Leagueinator.Controls {
         private MatchCard? Active = null;
         private int StartingIndex = -1;
 
-        public int Count => this.Children.Count;
+        public MatchCard this[int i] {
+            get {
+                CardTarget target = (CardTarget)this.Children[i];
+                return (MatchCard)target.Children[0];
+            }
+        }
 
-        public MatchCard GetMatchCard(int index) {
-            CardTarget target = (CardTarget)this.Children[index];
-            return (MatchCard)target.Children[0];
+        public int Size {
+            get {
+                return this.Children.Count;
+            }
+            set {
+                this.Children.Clear();
+                for (int i = 0; i < value; i++) {
+                    this.Children.Add(this.Wrap(new MatchCard()));
+                }
+            }
         }
 
         public CardTarget Wrap(MatchCard matchCard) {
@@ -46,14 +58,6 @@ namespace Leagueinator.Controls {
             matchCard.MouseMove += HndMouseMove;
 
             return target;
-        }
-
-        internal void SetCollection(List<MatchCard> matchCards) {
-            foreach (MatchCard matchCard in matchCards) this.Add(matchCard);
-        }
-
-        public void Add(MatchCard matchCard) {
-            this.Children.Add(this.Wrap(matchCard));
         }
 
         public void HndMouseDown(object sender, MouseButtonEventArgs e) {

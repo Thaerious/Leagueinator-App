@@ -21,7 +21,7 @@ namespace Leagueinator.Controls {
 
         public MatchRow MatchRow {
             get => _matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
-            init {
+            set {
                 _matchRow = value;
                 if (MatchRow is null) {
                     this.Clear();
@@ -109,7 +109,7 @@ namespace Leagueinator.Controls {
             }
         }
 
-        private void Clear() {
+        public void Clear() {
             foreach (TextBox textBox in this.Team0.Children) textBox.Text = string.Empty;
             foreach (TextBox textBox in this.Team1.Children) textBox.Text = string.Empty;
             this.TxtBowls0.Text = "0";
