@@ -36,7 +36,7 @@ namespace SortableCardContainer {
 
                 if (this.EventRow is null) return;
                 if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Must set event with a minimum of one round");
-                
+
                 this.CardStackPanel.Size = int.Parse(this.EventRow!.Settings["lanes"]);
 
                 // Add a round button for each round.
@@ -64,7 +64,7 @@ namespace SortableCardContainer {
             foreach (MatchCard matchCard in this.CardStackPanel) {
                 matchCard.Clear();
             }
-            
+
             foreach (MatchRow matchRow in roundRow.Matches) {
                 this.CardStackPanel[matchRow.Lane].MatchRow = matchRow;
             }
@@ -96,7 +96,7 @@ namespace SortableCardContainer {
         private void HndClickSelectRound(object? sender, EventArgs? _) {
             if (sender is not DataButton<RoundRow> button) throw new NotSupportedException();
             RoundRow? roundRow = button.Data ?? throw new NotSupportedException();
-                        
+
             if (this.CurrentRoundButton is not null) {
                 this.CurrentRoundButton.Background = Brushes.LightGray;
             }
@@ -110,10 +110,11 @@ namespace SortableCardContainer {
 
         /// <summary>
         /// Triggered when the "Add Round" button is clicked.
+        /// See HndRoundTableRow
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HndClickAddRound(object sender, RoutedEventArgs e) {
+        /// <param name="__"></param>
+        /// <param name="_"></param>
+        private void HndClickAddRound(object? __, RoutedEventArgs? _) {
             if (this.EventRow is null) return;
             RoundRow roundRow = this.EventRow.Rounds.Add();
             int lanes = int.Parse(this.EventRow.Settings["lanes"]);
@@ -126,21 +127,40 @@ namespace SortableCardContainer {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        /// <exception cref="NotImplementedException"></exception>
         private void HndClickDeleteRound(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) return;
-            throw new NotImplementedException();
+            if (this.CurrentRoundRow is null) return;
+
+            // Remove the UI button and the model round.
+            this.RoundButtonContainer.Children.Remove(this.CurrentRoundButton);
+            this.CurrentRoundRow.Remove();
+
+            // Make sure there is at least one button and select the last one.
+            if (this.EventRow.Rounds.Count == 0) this.HndClickAddRound(null, null);
+            this.InvokeRoundButton();
+
+            // Rename buttons
+            int i = 1;
+            foreach (DataButton<RoundRow> button in this.RoundButtonContainer.Children) {
+                button.Content = $"Round {i++}";
+            }
         }
 
         /// <summary>
         /// When a row is added to the table, add a button.
+        /// This button is added to the end of the button container.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void HndRoundTableRow(object sender, System.Data.DataRowChangeEventArgs e) {
             if ((int)e.Row[RoundTable.COL.EVENT] != this.EventRow!.UID) return;
             if (e.Action != System.Data.DataRowAction.Add) return;
-            var button = this.AddRoundButton(new(e.Row));
+            this.AddRoundButton(new(e.Row));
+            this.InvokeRoundButton();
+        }
+
+        private void InvokeRoundButton(DataButton<RoundRow>? button = null) {
+            button ??= (DataButton<RoundRow>)this.RoundButtonContainer.Children[^1];
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
     }

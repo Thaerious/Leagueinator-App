@@ -14,7 +14,7 @@ namespace SortableCardContainer {
     public partial class MainWindow : Window {
 
         private League _league = new();
-        public League League { 
+        public League League {
             get => this._league;
             set {
                 if (this.League is not null) {
@@ -168,7 +168,7 @@ namespace SortableCardContainer {
             private static bool _isSaved = false;
             private static string _filename = "";
 
-            public static bool IsSaved { 
+            public static bool IsSaved {
                 get => _isSaved;
                 set {
                     _isSaved = value;
