@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Leagueinator.Model {
     public class League : DataSet {
-        public event DataRowChangeEventHandler RowChanged = delegate { };
+        public event EventHandler<EventArgs> LeagueUpdate = delegate { };
 
         public EventTable EventTable { init; get; }
         public RoundTable RoundTable { init; get; }
@@ -38,6 +38,11 @@ namespace Leagueinator.Model {
 
             this.IdleTable = new();
             this.Tables.Add(this.IdleTable);
+
+            foreach (DataTable table in this.Tables) {
+                table.RowChanged += (s, e) => this.LeagueUpdate.Invoke(s, e);
+                table.RowDeleted += (s, e) => this.LeagueUpdate.Invoke(s, e);
+            }
 
             this.PlayerTable.BuildColumns();
             this.EventTable.BuildColumns();

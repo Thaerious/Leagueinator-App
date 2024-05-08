@@ -6,6 +6,8 @@ using System.Windows;
 using Leagueinator.Forms;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
+using System.Data;
+using System.Windows.Input;
 
 namespace SortableCardContainer {
     /// <summary>
@@ -13,45 +15,41 @@ namespace SortableCardContainer {
     /// </summary>
     public partial class MainWindow : Window {
 
-        private League _league = new();
+        private League _league = NewLeague();
         public League League {
             get => this._league;
             set {
-                if (this.League is not null) {
-                    this.League.RowChanged -= this.HndLeagueRowChanged;
-                }
-
+                this.League.LeagueUpdate -= this.HndLeagueUpdate;
                 this._league = value;
-                this.EventRow = this.League?.EventTable.GetLast() ?? null;
-
-                if (this.League is not null) {
-                    this.League.RowChanged += this.HndLeagueRowChanged;
-                }
+                this.EventRow = this.League.EventTable.GetLast();
+                value.LeagueUpdate += this.HndLeagueUpdate;
             }
+        }
+
+        public MainWindow() {
+            InitializeComponent();
+            SaveState.StateChanged += this.HndStateChanged;
+            this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
+            this._league.LeagueUpdate += this.HndLeagueUpdate;
+            this.EventRow = this.League.EventTable.GetLast();
         }
 
         /// <summary>
         /// Indirectly triggered when a change is made to the underlying model.
         /// </summary>
-        /// <param name="IsSaved">The new state value</param>
-        private void HndStateChanged(bool IsSaved) {
-            if (IsSaved) this.Title = $"Leagueinator [{SaveState.Filename}]";
+        /// <param name="isSaved">The new state isSaved</param>
+        private void HndStateChanged(object? sender, bool isSaved) {
+            Debug.WriteLine($"HndStateChanged {sender} {isSaved}");
+            if (isSaved) this.Title = $"Leagueinator [{SaveState.Filename}]";
             else this.Title = $"Leagueinator [{SaveState.Filename}] *";
         }
 
         /// <summary>
         /// Triggered when a change is made to the underlying model.
         /// </summary>
-        /// <param name="IsSaved">The new state value</param>
-        private void HndLeagueRowChanged(object sender, System.Data.DataRowChangeEventArgs e) {
-            SaveState.IsSaved = false;
-        }
-
-        public MainWindow() {
-            InitializeComponent();
-            this.NewLeague();
-            SaveState.StateChanged += this.HndStateChanged;
-            this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
+        /// <param name="IsSaved">The new state isSaved</param>
+        private void HndLeagueUpdate(object? sender, EventArgs? e) {
+            SaveState.ChangeState(sender, false);
         }
 
         private void HndCardStackPanelReorder(CardStackPanel panel, ReorderArgs args) {
@@ -60,7 +58,6 @@ namespace SortableCardContainer {
             Dictionary<int, MatchRow> matchRows = [];
 
             foreach (int key in args.ReorderMap.Keys) {
-                Debug.WriteLine($"HndCardStackPanelReorder {key} -> {args.ReorderMap[key]}");
                 MatchRow? matchRow = this.CurrentRoundRow.Matches.Get(key);
                 if (matchRow is not null) matchRows[matchRow.Lane] = matchRow;
             }
@@ -68,15 +65,16 @@ namespace SortableCardContainer {
             foreach (int key in args.ReorderMap.Keys) {
                 matchRows[key].Lane = args.ReorderMap[key];
             }
-
-            Debug.WriteLine(this.CurrentRoundRow.League.MatchTable.PrettyPrint());
         }
 
         private void HndNewClick(object sender, RoutedEventArgs e) {
-            this.NewLeague();
+            this.Focus();
+            this.League = NewLeague();
         }
 
         private void HndLoadClick(object sender, RoutedEventArgs e) {
+            this.Focus();
+
             OpenFileDialog dialog = new OpenFileDialog {
                 Filter = "League Files (*.league)|*.league"
             };
@@ -85,41 +83,48 @@ namespace SortableCardContainer {
                 League newLeague = new();
                 newLeague.ReadXml(dialog.FileName);
                 SaveState.Filename = dialog.FileName;
-                SaveState.IsSaved = true;
 
                 this.League = newLeague;
                 this.EventRow = this.League.EventTable.GetLast();
+
+                SaveState.ChangeState(sender, true);
             }
         }
 
-        private void NewLeague() {
+        private static League NewLeague() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
             eventRow.Settings["lanes"] = "8";
             eventRow.Settings["teams"] = "2";
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches(8, 2);
+            return league;
+        }
 
-            this.League = league;
-            this.Title = $"Leagueinator ";
-            SaveState.IsSaved = false;
+        public void ClearFocus() {
+            FocusManager.SetFocusedElement(this, null);
         }
 
         private void HndSaveClick(object sender, RoutedEventArgs e) {
             if (this.League is null) return;
+            this.ClearFocus();
+
             if (SaveState.Filename.IsEmpty()) this.HndSaveAsClick(null, null);
             else this.League.WriteXml(SaveState.Filename);
+            SaveState.ChangeState(sender, true);
         }
 
         private void HndSaveAsClick(object sender, RoutedEventArgs e) {
             if (this.League is null) return;
+            this.ClearFocus();
+
             SaveFileDialog dialog = new();
             dialog.Filter = "League Files (*.league)|*.league";
 
             if (dialog.ShowDialog() == true) {
                 this.League.WriteXml(dialog.FileName);
                 SaveState.Filename = dialog.FileName;
-                SaveState.IsSaved = true;
+                SaveState.ChangeState(sender, true);
             }
         }
         private void HndCloseClick(object sender, RoutedEventArgs e) {
@@ -162,19 +167,19 @@ namespace SortableCardContainer {
         }
 
         static class SaveState {
-            public delegate void StateChangedHandler(bool IsSaved);
+            public delegate void StateChangedHandler(object? source, bool IsSaved);
             public static event StateChangedHandler StateChanged = delegate { };
-
-            private static bool _isSaved = false;
             private static string _filename = "";
 
             public static bool IsSaved {
-                get => _isSaved;
-                set {
-                    _isSaved = value;
-                    StateChanged.Invoke(value);
-                }
+                get; private set;
             }
+
+            public static void ChangeState(object? sender, bool isSaved) {
+                IsSaved = isSaved;
+                StateChanged.Invoke(sender, isSaved);
+            }
+
             public static string Filename { get => _filename; set => _filename = value; }
         }
     }

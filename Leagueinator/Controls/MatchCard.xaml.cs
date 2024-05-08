@@ -60,24 +60,15 @@ namespace Leagueinator.Controls {
         /// <exception cref="NullReferenceException"></exception>
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
-            TabbedDebug.ResetBlock($"MatchCard.HndUpdateText");
-
-            // Does name exist in another team?
-            bool contains = this.MatchRow
-                                .Teams
-                                .SelectMany(team => team.Members)
-                                .Any(member => member.Player.Equals(e.After));
-
-            TabbedDebug.StartBlock($"Contains '{e.After}' = {contains}");
-
-            if (contains) {
+            Debug.WriteLine($"HndUpdateText '{e.Before}' => '{e.After}'");
+            
+            if (this.MatchRow.Round.AllPlayers.Contains(e.After)) {
                 // if the player already exists reject.
                 MessageBox.Show($"Player {e.After} previously assigned.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
                 e.TextBox.Text = e.Before;
             }
             else {
                 TeamStackPanel parent = (TeamStackPanel)e.TextBox.Parent;
-                TabbedDebug.WriteLine($"Team Index = {parent.TeamIndex}");
 
                 // Remove new name from the idle table
                 if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
@@ -90,7 +81,6 @@ namespace Leagueinator.Controls {
                     this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(e.After);
                 }
 
-                TabbedDebug.StartBlock($"e.Before ({e.Before}) Is Empty '{e.Before.IsEmpty()}'");
                 // Remove the old name from the members table
                 if (!e.Before.IsEmpty()) {
                     Debug.WriteLine($"Remove the old name ({e.Before}) from the members table");
@@ -110,8 +100,8 @@ namespace Leagueinator.Controls {
         }
 
         public void Clear() {
-            foreach (TextBox textBox in this.Team0.Children) textBox.Text = string.Empty;
-            foreach (TextBox textBox in this.Team1.Children) textBox.Text = string.Empty;
+            foreach (MemoryTextBox textBox in this.Team0.Children) textBox.Text = string.Empty;
+            foreach (MemoryTextBox textBox in this.Team1.Children) textBox.Text = string.Empty;
             this.TxtBowls0.Text = "0";
             this.TxtBowls1.Text = "0";
             this.TxtEnds.Text = "0";

@@ -50,6 +50,7 @@ namespace Leagueinator.Model.Views {
                                 .Where(team => team.Members.Count > 0)
                                 .Where(team => !team.Equals(teamRow))
                                 .Select(team => team.Bowls)
+                                .DefaultIfEmpty(0)
                                 .Average();
 
                 this.BowlsAgainst = BowlsFor;

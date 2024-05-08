@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Controls;
 using Leagueinator.Model.Tables;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -96,6 +95,7 @@ namespace SortableCardContainer {
         private void HndClickSelectRound(object? sender, EventArgs? _) {
             if (sender is not DataButton<RoundRow> button) throw new NotSupportedException();
             RoundRow? roundRow = button.Data ?? throw new NotSupportedException();
+            this.ClearFocus();
 
             if (this.CurrentRoundButton is not null) {
                 this.CurrentRoundButton.Background = Brushes.LightGray;
@@ -116,6 +116,8 @@ namespace SortableCardContainer {
         /// <param name="_"></param>
         private void HndClickAddRound(object? __, RoutedEventArgs? _) {
             if (this.EventRow is null) return;
+            this.ClearFocus();
+
             RoundRow roundRow = this.EventRow.Rounds.Add();
             int lanes = int.Parse(this.EventRow.Settings["lanes"]);
             int teams = int.Parse(this.EventRow.Settings["teams"]);
@@ -130,6 +132,7 @@ namespace SortableCardContainer {
         private void HndClickDeleteRound(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) return;
             if (this.CurrentRoundRow is null) return;
+            this.ClearFocus();
 
             // Remove the UI button and the model round.
             this.RoundButtonContainer.Children.Remove(this.CurrentRoundButton);

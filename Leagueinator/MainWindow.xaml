@@ -7,6 +7,17 @@
         xmlns:Source="clr-namespace:SortableCardContainer" x:Class="SortableCardContainer.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="800" Width="1000" MinWidth="800">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" Executed="HndSaveClick"/>
+        <CommandBinding Command="SaveAs" Executed="HndSaveAsClick"/>
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+        <KeyBinding Key="S" Modifiers="Control+Shift" Command="SaveAs"/>
+    </Window.InputBindings>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -24,8 +35,8 @@
             <MenuItem Header="File">
                 <MenuItem Header="New" Click="HndNewClick"/>
                 <MenuItem Header="Load" Click="HndLoadClick"/>
-                <MenuItem Header="Save" Click="HndSaveClick"/>
-                <MenuItem Header="Save As" Click="HndSaveAsClick"/>
+                <MenuItem Header="Save" Command="Save" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Save As" Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
                 <MenuItem Header="Close" Click="HndCloseClick"/>
                 <MenuItem Header="Exit" Click="HndExitClick"/>
             </MenuItem>
@@ -43,7 +54,7 @@
                 <MenuItem Header="Players" Click="HndPlayersClick"/>
                 <MenuItem Header="Idle" Click="HndIdleClick"/>
                 <MenuItem Header="Settings" Click="HndSettingsClick"/>
-            </MenuItem>            
+            </MenuItem>
         </Menu>
 
         <!-- Round Buttons -->
@@ -55,7 +66,13 @@
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <StackPanel x:Name="RoundButtonContainer"/>
-                <Button Content="Add Round" Click="HndClickAddRound" Grid.Row="1"/>
+                <Button Content="Add Round" Click="HndClickAddRound" Grid.Row="1">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Focusable" Value="True"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Button Content="Delete Round" Click="HndClickDeleteRound" Grid.Row="2"/>
             </Grid>
         </Border>

@@ -27,6 +27,13 @@ namespace Leagueinator.Controls {
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.RoundRow is null) throw new NullReferenceException(nameof(this.RoundRow));
 
+            if (this.RoundRow.AllPlayers.Contains(e.After)) {
+                // if the player already exists reject.
+                MessageBox.Show($"Player {e.After} previously assigned.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
+                e.TextBox.Text = e.Before;
+                return;
+            }
+
             if (!e.Before.IsEmpty()) {
                 IdleRow idleRow = this.RoundRow.IdlePlayers.Get(e.Before) ?? throw new ArgumentNullException(nameof(idleRow));
                 this.RowToTextBox.Remove(idleRow!);

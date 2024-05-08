@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Leagueinator.Controls {
     public enum Cause { EnterPressed, LostFocus }
@@ -42,6 +44,10 @@ namespace Leagueinator.Controls {
             }
         }
 
+        public new void Clear() {
+            this.Text = "";
+        }
+
         public MemoryTextBox() {
             this.KeyDown += this.OnKeyDown;
             this.LostFocus += this.OnLostFocus;
@@ -58,21 +64,23 @@ namespace Leagueinator.Controls {
             if (e is not KeyEventArgs keyArgs) return;
 
             if (keyArgs.Key == Key.Enter) {
-                var prevMem = this.Memory;
-                this.Memory = this.Text;
-                if (!prevMem.Equals(this.Text)) RaiseUpdateTextEvent(prevMem, this.Text, Cause.EnterPressed);
+                string prevMem = this.Memory;
+                this.Memory = this.Text;                
+                if (!prevMem.Equals(this.Text)) {
+                    Debug.WriteLine($"RaiseUpdateTextEvent {this.GetHashCode()} '{prevMem}' '{this.Text}' '{Cause.EnterPressed}'");
+                    RaiseUpdateTextEvent(prevMem, this.Text, Cause.EnterPressed);
+                }
             }
         }
         private void OnLostFocus(object sender, System.Windows.RoutedEventArgs e) {
-            var prevMem = this.Memory;
+            string prevMem = this.Memory;
             this.Memory = this.Text;
 
-            if (!prevMem.Equals(this.Text)) RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
-        }
-
-        public new void Clear() {
-            this.Text = "";
-            this.Memory = "";
+            
+            if (!prevMem.Equals(this.Text)) {
+                Debug.WriteLine($"RaiseUpdateTextEvent {this.GetHashCode()} '{prevMem}' '{this.Text}' '{Cause.LostFocus}'");
+                RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
+            }
         }
     }
 }

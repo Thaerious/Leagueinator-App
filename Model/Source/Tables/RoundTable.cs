@@ -17,6 +17,24 @@ namespace Leagueinator.Model.Tables {
             get => (int)this[RoundTable.COL.UID];
         }
 
+        public IReadOnlyList<string> AllPlayers {
+            get {
+                List<string> allPlayers = [];
+                foreach (IdleRow idleRow in this.IdlePlayers) {
+                    allPlayers.Add(idleRow.Player); 
+                }
+
+                allPlayers.AddRange(this.Matches
+                    .SelectMany(matchRow => matchRow.Teams)
+                    .SelectMany(teamRow => teamRow.Members)
+                    .Select(memberRow => memberRow.Player)
+                    .ToList()
+                );
+
+                return allPlayers;
+            }
+        }
+
         public static implicit operator int(RoundRow roundRow) => roundRow.UID;
 
         public EventRow Event {
