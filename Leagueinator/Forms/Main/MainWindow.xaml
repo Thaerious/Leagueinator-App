@@ -41,13 +41,14 @@
                 <MenuItem Header="Save As" Command="SaveAs" InputGestureText="Ctrl+Shift+S"/>
                 <MenuItem Header="Close" Click="HndCloseClick"/>
                 <MenuItem Header="Exit" Click="HndExitClick"/>
+                <MenuItem Header="Event Manager" Click="HndEventManagerClick"/>
             </MenuItem>
 
             <MenuItem Header="Action"/>
             <MenuItem Header="View" Click="HndViewResults">
                 <MenuItem Header="Results"/>
             </MenuItem>
-            <MenuItem Header="Tables" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <MenuItem Header="Tables" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Click="HndMenuClick">
                 <MenuItem Header="Events" Click="HndEventsClick"/>
                 <MenuItem Header="Rounds" Click="HndRoundsClick"/>
                 <MenuItem Header="Matches" Click="HndMatchesClick"/>

@@ -21,6 +21,7 @@ namespace Leagueinator.Model.Views {
         public object[] ForeignKeyValue { get; }
 
         public DataColumn[] ForeignKeyColumn { get; }
+        public LeagueTable<ROW> ChildTable { get; }
 
         public delegate void NewRoundRowEventHandler(object sender, ROW row);
 
@@ -37,17 +38,10 @@ namespace Leagueinator.Model.Views {
             : this(childTable, fkCol.Select(colName => childTable.Columns[colName]!).ToArray(), fkVal) { }
 
         public RowBoundView(LeagueTable<ROW> childTable, DataColumn[] fkCol, object[] fkVal) : base(childTable) {
+            this.ChildTable = childTable;
             this.RowFilter = TableExtensions.BuildRowFilter(fkCol, fkVal);
             this.ForeignKeyColumn = fkCol;
             this.ForeignKeyValue = fkVal;
-        }
-
-        private static ROW NewRow(DataRow dataRow) {
-            ConstructorInfo ctor
-                = typeof(ROW).GetConstructor([typeof(DataRow)])
-                ?? throw new InvalidOperationException($"No matching ctor(DataRow) method found for type '{typeof(ROW)}'.");
-
-            return (ROW)ctor.Invoke([dataRow]);
         }
 
         /// <summary>
@@ -57,7 +51,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public new ROW? this[int index] {
-            get => NewRow(base[index].Row);
+            get => this.ChildTable.NewInstance(base[index].Row);
         }
 
         /// <summary>

@@ -49,6 +49,7 @@ namespace Leagueinator.Controls {
                 this.DataContext = MatchRow;
                 this.TxtBowls0.DataContext = MatchRow.Teams[0];
                 this.TxtBowls1.DataContext = MatchRow.Teams[1];
+                this.TxtEnds.DataContext = MatchRow;
             }
         }
 

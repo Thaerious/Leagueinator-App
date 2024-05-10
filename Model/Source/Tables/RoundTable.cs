@@ -21,7 +21,7 @@ namespace Leagueinator.Model.Tables {
             get {
                 List<string> allPlayers = [];
                 foreach (IdleRow idleRow in this.IdlePlayers) {
-                    allPlayers.Add(idleRow.Player); 
+                    allPlayers.Add(idleRow.Player);
                 }
 
                 allPlayers.AddRange(this.Matches
@@ -63,7 +63,12 @@ namespace Leagueinator.Model.Tables {
         /// <returns></returns>
         public RoundRow PopulateMatches(int matchCount) {
             while (this.Matches.Count < matchCount) {
-                int ends = int.Parse(this.Event.Settings["ends"] ?? "10");
+                int ends = 10;
+                
+                if (this.Event.Settings.Has("ends")) {
+                    ends = int.Parse(this.Event.Settings["ends"]!.Value);
+                }
+
                 MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
             }
             return this;
@@ -76,7 +81,7 @@ namespace Leagueinator.Model.Tables {
         /// <returns></returns>
         public RoundRow PopulateMatches(int matchCount, int teamCount) {
             while (this.Matches.Count < matchCount) {
-                int ends = int.Parse(this.Event.Settings["ends"] ?? "10");
+                int ends = int.Parse(this.Event.Settings["ends"]?.Value ?? "10");
                 MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
                 while (matchRow.Teams.Count < teamCount) matchRow.Teams.Add();
             }
@@ -99,13 +104,7 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class RoundTable() : LeagueTable<RoundRow>("rounds") {
-        public IEnumerable<RoundRow> Rounds {
-            get {
-                return this.AsEnumerable().Select(row => new RoundRow(row));
-            }
-        }
-
+    public class RoundTable() : LeagueTable<RoundRow>("rounds", dataRow => new RoundRow(dataRow)) {
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string EVENT = "event_uid";

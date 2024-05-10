@@ -1,9 +1,9 @@
 ﻿using System.Data;
+using System.Numerics;
 
 namespace Leagueinator.Model.Tables {
 
     public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {
-
         public EventRow Event {
             get => this.League.EventTable.GetRow((int)this[IdleTable.COL.ROUND]);
         }
@@ -36,37 +36,34 @@ namespace Leagueinator.Model.Tables {
             return new(row);
         }
 
-        public bool HasRow(int round, string playerName) {
-            return this.AsEnumerable()
-                       .Where(row => row.Field<int>(COL.ROUND) == round)
-                       .Where(row => row.Field<string>(COL.PLAYER) == playerName)
-                       .Select(row => new IdleRow(row))
+        public bool HasRow(int round, string player) {
+            return this.AsEnumerable<IdleRow>()
+                       .Where(row => row.Round == round)
+                       .Where(row => row.Player == player)
                        .Any();
         }
 
-        public IdleRow? GetRow(int round, string playerName) {
-            return this.AsEnumerable()
-                       .Where(row => row.Field<int>(COL.ROUND) == round)
-                       .Where(row => row.Field<string>(COL.PLAYER) == playerName)
-                       .Select(row => new IdleRow(row))
+        public IdleRow? GetRow(int round, string player) {
+            return this.AsEnumerable<IdleRow>()
+                       .Where(row => row.Round == round)
+                       .Where(row => row.Player == player)
                        .DefaultIfEmpty(null)
                        .First();
         }
 
-        public void RemoveRows(int round, string playerName) {
+        public void RemoveRows(int round, string player) {
 
-            var rowsToDelete = this.AsEnumerable()
-                               .Where(row => row.Field<int>(COL.ROUND) == round)
-                               .Where(row => row.Field<string>(COL.PLAYER) == playerName)
-                               .ToList()
-                               ;
+            var rowsToDelete = this.AsEnumerable<IdleRow>()
+                                   .Where(row => row.Round == round)
+                                   .Where(row => row.Player == player)
+                                   .ToList();
 
             foreach (DataRow row in rowsToDelete) {
                 this.Rows.Remove(row);
             }
         }
 
-        public IdleTable() : base("idle_players") {
+        public IdleTable() : base("idle_players", dataRow => new IdleRow(dataRow)) {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
 

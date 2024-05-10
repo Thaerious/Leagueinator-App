@@ -4,7 +4,6 @@ using System.Data;
 namespace Leagueinator.Model.Tables {
 
     public class MatchRow(DataRow dataRow) : CustomRow(dataRow) {
-
         public DataView Members {
             get {
                 DataView players = new DataView(this.League.MemberTable) {
@@ -41,7 +40,7 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class MatchTable() : LeagueTable<MatchRow>("matches") {
+    public class MatchTable() : LeagueTable<MatchRow>("matches", dataRow => new MatchRow(dataRow)) {
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string ROUND = "round";
@@ -59,23 +58,22 @@ namespace Leagueinator.Model.Tables {
         }
 
         public MatchRow GetRow(int matchUID) {
-            var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.UID) == matchUID)
+            var rows = this.AsEnumerable<MatchRow>()
+                           .Where(row => row.UID == matchUID)
                            .ToList();
 
             if (rows.Count == 0) throw new KeyNotFoundException($"{COL.UID} == {matchUID}");
-            return new(rows[0]);
+            return rows[0];
         }
 
         public MatchRow GetRow(int round, int lane) {
-            var rows = this.AsEnumerable()
-                        .Where(row => row.Field<int>(COL.ROUND) == round)
-                        .Where(row => row.Field<int>(COL.LANE) == lane)
-                        .ToList()
-                        ;
+            var rows = this.AsEnumerable<MatchRow>()
+                        .Where(row => row.Round == round)
+                        .Where(row => row.Lane == lane)
+                        .ToList();
 
             if (rows.Count == 0) throw new KeyNotFoundException();
-            return new(rows[0]);
+            return rows[0];
         }
 
         public override void BuildColumns() {

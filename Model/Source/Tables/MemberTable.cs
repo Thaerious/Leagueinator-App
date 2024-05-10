@@ -4,7 +4,6 @@ using System.Diagnostics;
 namespace Leagueinator.Model.Tables {
 
     public class MemberRow(DataRow dataRow) : CustomRow(dataRow) {
-
         public TeamRow Team {
             get => this.League.TeamTable.GetRow(this.Match, this.Index);
         }
@@ -46,17 +45,17 @@ namespace Leagueinator.Model.Tables {
         }
 
         public MemberRow GetRow(int match, int index, string player) {
-            var rows = this.AsEnumerable()
-                           .Where(row => row.Field<int>(COL.MATCH) == match)
-                           .Where(row => row.Field<int>(COL.INDEX) == index)
-                           .Where(row => row.Field<string>(COL.PLAYER) == player)
+            var rows = this.AsEnumerable<MemberRow>()
+                           .Where(row => row.Match == match)
+                           .Where(row => row.Index == index)
+                           .Where(row => row.Player == player)
                            .ToList();
 
             if (rows.Count == 0) throw new KeyNotFoundException($"{match} {index} {player}");
-            return new(rows[0]);
+            return rows[0];
         }
 
-        public MemberTable() : base("members") {
+        public MemberTable() : base("members", dataRow => new MemberRow(dataRow)) {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
 

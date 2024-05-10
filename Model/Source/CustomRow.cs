@@ -1,12 +1,16 @@
 ﻿using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Model {
-    public class CustomRow(DataRow dataRow) : INotifyPropertyChanged {
+    public class CustomRow : INotifyPropertyChanged {
+
+        public CustomRow(DataRow dataRow) {
+            this.DataRow = dataRow;
+        }
+
         public League League => (League)this.DataRow.Table.DataSet!;
 
-        public DataRow DataRow => dataRow;
+        public DataRow DataRow { get; }
 
         public static implicit operator DataRow(CustomRow customRow) => customRow.DataRow;
 
@@ -38,6 +42,10 @@ namespace Leagueinator.Model {
             if (that is null) return false;
             if (that is not CustomRow row) return false;
             return row.DataRow == this.DataRow;
+        }
+
+        public override int GetHashCode() {
+            return this.DataRow.GetHashCode();
         }
     }
 }

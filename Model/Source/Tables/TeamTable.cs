@@ -34,7 +34,7 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class TeamTable() : LeagueTable<TeamRow>("teams") {
+    public class TeamTable() : LeagueTable<TeamRow>("teams", dataRow => new TeamRow(dataRow)) {
 
         public static class COL {
             public static readonly string MATCH = "match";
@@ -44,9 +44,8 @@ namespace Leagueinator.Model.Tables {
         }
 
         public int LastIndex(int match) {
-            return this.AsEnumerable()
-                .Select(row => new TeamRow(row))
-                .Where((TeamRow row) => row.Match == match)
+            return this.AsEnumerable<TeamRow>()
+                .Where(row => row.Match == match)
                 .Select(row => row.Index)
                 .DefaultIfEmpty(-1)
                 .Max();
@@ -65,16 +64,14 @@ namespace Leagueinator.Model.Tables {
         }
 
         public TeamRow GetRow(int match, int index) {
-            return this.AsEnumerable()
-                       .Select(row => new TeamRow(row))
+            return this.AsEnumerable<TeamRow>()
                        .Where(row => row.Match == match)
                        .Where(row => row.Index == index)
                        .First();
         }
 
         public bool HasRow(int match, int index) {
-            return this.AsEnumerable()
-                       .Select(row => new TeamRow(row))
+            return this.AsEnumerable<TeamRow>()
                        .Where(row => row.Match == match)
                        .Where(row => row.Index == index)
                        .Any();

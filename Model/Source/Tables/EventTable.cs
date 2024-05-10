@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model.Views;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Data;
 
@@ -6,16 +7,11 @@ namespace Leagueinator.Model.Tables {
 
     public class EventRow : CustomRow {
         public readonly RowBoundView<RoundRow> Rounds;
-        public readonly ReflectedRowTable Settings;
+        public readonly IndexRowBoundView<SettingRow, string> Settings;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
             this.Rounds = new(this.League.RoundTable, [RoundTable.COL.EVENT], [this.UID]);
-
-            var column
-                = this.League.SettingsTable.Columns[SettingsTable.COL.EVENT]
-                ?? throw new NullReferenceException("Column is null");
-
-            this.Settings = new(this.League.SettingsTable, column, this.UID);
+            this.Settings = new(this.League.SettingsTable, [SettingsTable.COL.EVENT], [this.UID]);
         }
 
         /// <summary>
@@ -79,7 +75,7 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class EventTable() : LeagueTable<EventRow>("events") {
+    public class EventTable() : LeagueTable<EventRow>("events", dataRow => new EventRow(dataRow)) {
 
         public static class COL {
             public static readonly string UID = "uid";
@@ -111,7 +107,7 @@ namespace Leagueinator.Model.Tables {
         }
 
         public EventRow GetLast() {
-            return new(this.Rows[this.Rows.Count - 1]);
+            return new(this.Rows[^1]);
         }
 
         public override void BuildColumns() {

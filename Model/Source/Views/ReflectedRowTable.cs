@@ -6,7 +6,7 @@ namespace Leagueinator.Model.Views {
         internal readonly DataView view;
         private readonly DataColumn fkCol;
         private readonly object fkVal;
-        internal readonly DataTable souceTable;
+        internal readonly DataTable sourceTable;
         internal readonly DataColumn keyCol; // key column
         internal readonly DataColumn valCol; // value column
 
@@ -23,7 +23,7 @@ namespace Leagueinator.Model.Views {
                 this.view.RowFilter = $"{fkCol.ColumnName} = {fkVal}";
             }
 
-            this.souceTable = sourceTable;
+            this.sourceTable = sourceTable;
 
             (this.keyCol, this.valCol) = this.IdentifyKVColumns();
         }
@@ -32,7 +32,7 @@ namespace Leagueinator.Model.Views {
             DataColumn? _keyCol = null;
             DataColumn? _valCol = null;
 
-            foreach (DataColumn column in this.souceTable.Columns) {
+            foreach (DataColumn column in this.sourceTable.Columns) {
                 if (!column.ExtendedProperties.ContainsKey("dict")) continue;
                 if (column.ExtendedProperties["dict"] as string == "key") _keyCol = column;
                 if (column.ExtendedProperties["dict"] as string == "value") _valCol = column;

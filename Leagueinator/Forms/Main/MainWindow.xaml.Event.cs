@@ -36,7 +36,7 @@ namespace Leagueinator.Forms.Main {
                 if (this.EventRow is null) return;
                 if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Must set event with a minimum of one round");
 
-                this.CardStackPanel.Size = int.Parse(this.EventRow!.Settings["lanes"]);
+                this.CardStackPanel.Size = int.Parse(this.EventRow.Settings["lanes"]!.Value);
 
                 // Add a round button for each round.
                 foreach (RoundRow roundRow in this.EventRow.Rounds) {
@@ -119,8 +119,8 @@ namespace Leagueinator.Forms.Main {
             this.ClearFocus();
 
             RoundRow roundRow = this.EventRow.Rounds.Add();
-            int lanes = int.Parse(this.EventRow.Settings["lanes"]);
-            int teams = int.Parse(this.EventRow.Settings["teams"]);
+            int lanes = int.Parse(this.EventRow.Settings["lanes"].Value);
+            int teams = int.Parse(this.EventRow.Settings["teams"].Value);
             roundRow.PopulateMatches(lanes, teams);
         }
 

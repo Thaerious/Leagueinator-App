@@ -2,6 +2,7 @@
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
+using System.Data;
 using System.Diagnostics;
 
 namespace Model_Test {
@@ -13,6 +14,19 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             Assert.AreEqual(league, eventRow.League);
+            Assert.IsNotNull(eventRow);
+        }
+
+        [TestMethod]
+        public void League_EventTable_Sanity() {
+            League league = new();
+            Assert.IsNotNull(league.EventTable);
+        }
+
+        [TestMethod]
+        public void Add_Row_Sanity() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("my_event");
             Assert.IsNotNull(eventRow);
         }
 
@@ -74,8 +88,8 @@ namespace Model_Test {
         public void Set_Setting() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings["MyKey"] = "MyValue";
-            Assert.AreEqual("MyValue", eventRow.Settings["MyKey"]);
+            eventRow.Settings.Add("MyKey", "MyValue");
+            Assert.AreEqual("MyValue", eventRow.Settings["MyKey"]!.Value);
         }
 
         [TestMethod]
@@ -83,43 +97,36 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow1 = league.EventTable.AddRow("my_event1");
             EventRow eventRow2 = league.EventTable.AddRow("my_event2");
-            eventRow1.Settings["MyKey"] = "MyValue1";
-            eventRow2.Settings["MyKey"] = "MyValue2";
-            Assert.AreEqual("MyValue1", eventRow1.Settings["MyKey"]);
-            Assert.AreEqual("MyValue2", eventRow2.Settings["MyKey"]);
+            eventRow1.Settings.Add("MyKey", "MyValue1");
+            eventRow2.Settings.Add("MyKey", "MyValue2");
+            Assert.AreEqual("MyValue1", eventRow1.Settings["MyKey"]!.Value);
+            Assert.AreEqual("MyValue2", eventRow2.Settings["MyKey"]!.Value);
         }
 
         [TestMethod]
         public void ReSet_Setting() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings["MyKey"] = "MyValue";
-            eventRow.Settings["MyKey"] = "AnotherValue";
-            Assert.AreEqual("AnotherValue", eventRow.Settings["MyKey"]);
+            eventRow.Settings.Add("MyKey", "MyValue");
+            eventRow.Settings["MyKey"]!.Value = "AnotherValue";
+            Assert.AreEqual("AnotherValue", eventRow.Settings["MyKey"]!.Value);
         }
 
         [TestMethod]
         public void Delete_Setting() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings.Delete("MyKey");
-            Assert.IsNull(eventRow.Settings["MyKey"]);
+            eventRow.Settings.Add("MyKey", "MyValue");
+            eventRow.Settings["MyKey"]!.Remove();
+            Assert.IsFalse(eventRow.Settings.Has("MyKey"));
         }
 
         [TestMethod]
+        [ExpectedException(typeof(KeyNotFoundException))]
         public void NonExistant_Setting() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             Assert.IsNull(eventRow.Settings["MyKey"]);
-        }
-
-        [TestMethod]
-        public void Set_To_Null_Deletes_Setting() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings["MyKey"] = "MyValue";
-            eventRow.Settings["MyKey"] = null;
-            Assert.IsFalse(eventRow.Settings.HasKey("MyKey"));
         }
 
         [TestMethod]
@@ -297,7 +304,7 @@ namespace Model_Test {
 
             List<MatchResults> sorted = [.. allTeams[new(teamRow2)]];
             sorted.Reverse();
-            sorted.Sort(MatchResults.CompareByRound);
+            //sorted.Sort(MatchResults.CompareByRound);
 
             foreach (MatchResults match in sorted) {
                 Console.WriteLine(match);

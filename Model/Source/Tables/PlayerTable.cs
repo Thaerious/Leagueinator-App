@@ -2,7 +2,6 @@
 
 namespace Leagueinator.Model.Tables {
     public class PlayerRow(DataRow dataRow) : CustomRow(dataRow) {
-
         public string Name {
             get => (string)this[PlayerTable.COL.NAME];
             set => this[PlayerTable.COL.NAME] = value;
@@ -11,7 +10,7 @@ namespace Leagueinator.Model.Tables {
         public static implicit operator string(PlayerRow playerRow) => playerRow.Name;
     }
 
-    public class PlayerTable() : LeagueTable<PlayerRow>("players") {
+    public class PlayerTable() : LeagueTable<PlayerRow>("players", dataRow => new PlayerRow(dataRow)) {
 
         public static class COL {
             public static readonly string NAME = "name";

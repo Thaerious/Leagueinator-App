@@ -31,8 +31,8 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            eventRow.Settings["ends"] = "15";
-            eventRow.Settings["matches"] = "8";
+            eventRow.Settings.Add("ends", "10");
+            eventRow.Settings.Add("matches", "8");
             Console.WriteLine(league.SettingsTable.PrettyPrint());
             roundRow.PopulateMatches(8);
 

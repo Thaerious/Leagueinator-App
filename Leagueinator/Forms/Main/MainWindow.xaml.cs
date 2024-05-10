@@ -6,8 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
-using System.Data;
-using System.Windows.Input;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>
@@ -42,7 +40,6 @@ namespace Leagueinator.Forms.Main {
         /// </summary>
         /// <param name="isSaved">The new state isSaved</param>
         private void HndStateChanged(object? sender, bool isSaved) {
-            Debug.WriteLine($"HndStateChanged {sender} {isSaved}");
             if (isSaved) this.Title = $"Leagueinator [{SaveState.Filename}]";
             else this.Title = $"Leagueinator [{SaveState.Filename}] *";
         }
@@ -68,6 +65,11 @@ namespace Leagueinator.Forms.Main {
             foreach (int key in args.ReorderMap.Keys) {
                 matchRows[key].Lane = args.ReorderMap[key];
             }
+        }
+
+        private void HndEventManagerClick(object sender, RoutedEventArgs e) {
+            EventManager dialog = new EventManager(this.League);
+            dialog.ShowDialog();
         }
 
         private void HndNewClick(object sender, RoutedEventArgs e) {
@@ -97,8 +99,9 @@ namespace Leagueinator.Forms.Main {
         private static League NewLeague() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
-            eventRow.Settings["lanes"] = "8";
-            eventRow.Settings["teams"] = "2";
+            eventRow.Settings.Add("lanes", "8");
+            eventRow.Settings.Add("teams", "2");
+            eventRow.Settings.Add("ends", "10");
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches(8, 2);
             return league;
@@ -184,6 +187,11 @@ namespace Leagueinator.Forms.Main {
             }
 
             public static string Filename { get => _filename; set => _filename = value; }
+        }
+
+        private void HndMenuClick(object sender, RoutedEventArgs e) {
+            Debug.WriteLine("HndMenuClick");
+            this.Focus();
         }
     }
 }
