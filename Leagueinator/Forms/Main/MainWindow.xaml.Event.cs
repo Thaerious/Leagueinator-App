@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace SortableCardContainer {
+namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
         private EventRow? _eventRow;
         private RoundRow? _currentRoundRow;

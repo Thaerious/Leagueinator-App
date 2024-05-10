@@ -61,7 +61,7 @@ namespace Leagueinator.Controls {
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
             Debug.WriteLine($"HndUpdateText '{e.Before}' => '{e.After}'");
-            
+
             if (this.MatchRow.Round.AllPlayers.Contains(e.After)) {
                 // if the player already exists reject.
                 MessageBox.Show($"Player {e.After} previously assigned.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);

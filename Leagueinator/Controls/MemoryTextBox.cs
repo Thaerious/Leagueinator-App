@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Leagueinator.Controls {
     public enum Cause { EnterPressed, LostFocus }
@@ -16,6 +15,7 @@ namespace Leagueinator.Controls {
 
     public class MemoryTextBox : TextBox {
         public delegate void MemoryEventHandler(object sender, MemoryTextBoxArgs e);
+        public bool CaseSensitive = false;
 
         public static readonly RoutedEvent RegisteredUpdateEvent = EventManager.RegisterRoutedEvent(
             "UpdateText",                 // Event name
@@ -65,9 +65,9 @@ namespace Leagueinator.Controls {
 
             if (keyArgs.Key == Key.Enter) {
                 string prevMem = this.Memory;
-                this.Memory = this.Text;                
-                if (!prevMem.Equals(this.Text)) {
-                    Debug.WriteLine($"RaiseUpdateTextEvent {this.GetHashCode()} '{prevMem}' '{this.Text}' '{Cause.EnterPressed}'");
+                this.Memory = this.Text;      
+
+                if (!this.Compare(prevMem, this.Text)) {
                     RaiseUpdateTextEvent(prevMem, this.Text, Cause.EnterPressed);
                 }
             }
@@ -77,10 +77,15 @@ namespace Leagueinator.Controls {
             this.Memory = this.Text;
 
             
-            if (!prevMem.Equals(this.Text)) {
+            if (!this.Compare(prevMem, this.Text)) {
                 Debug.WriteLine($"RaiseUpdateTextEvent {this.GetHashCode()} '{prevMem}' '{this.Text}' '{Cause.LostFocus}'");
                 RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
             }
+        }
+
+        private bool Compare(string prevMem, string Text) {
+            if (this.CaseSensitive) return prevMem.Equals(Text);
+            return prevMem.ToLower().Equals(Text.ToLower());
         }
     }
 }

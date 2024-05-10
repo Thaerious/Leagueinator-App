@@ -3,13 +3,13 @@ using Leagueinator.Controls;
 using Leagueinator.Utility;
 using Microsoft.Win32;
 using System.Windows;
-using Leagueinator.Forms;
+using System.Windows.Input;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
 using System.Data;
 using System.Windows.Input;
 
-namespace SortableCardContainer {
+namespace Leagueinator.Forms.Main {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -32,6 +32,9 @@ namespace SortableCardContainer {
             this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
             this._league.LeagueUpdate += this.HndLeagueUpdate;
             this.EventRow = this.League.EventTable.GetLast();
+        }
+
+        private void HndRename(object sender, RoutedEventArgs e) {
         }
 
         /// <summary>

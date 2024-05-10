@@ -107,7 +107,7 @@ namespace Leagueinator.Controls {
             if (e.Action != DataRowAction.Add) return;
             if (this.RowToTextBox.ContainsKey(e.Row)) return;
 
-            MemoryTextBox textBox = (this.Children[^1] as MemoryTextBox)!;
+            PlayerTextBox textBox = (this.Children[^1] as PlayerTextBox)!;
             textBox.Text = new IdleRow(e.Row).Player;
             this.RowToTextBox[e.Row] = textBox;
             this.AddTextBox();
