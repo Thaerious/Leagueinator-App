@@ -25,7 +25,7 @@ namespace Leagueinator.Model.Tables {
             HasInstance = args => this.HasRow((int)args[0], (string)args[1]);
             AddInstance = args => {
                 string value = "";
-                if (args.Length > 2) value = (string)args[2];
+                if (args.Length > 2) value = args[2].ToString();
                 return this.AddRow((int)args[0], (string)args[1], value);
             };
         }

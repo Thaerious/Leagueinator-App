@@ -25,38 +25,11 @@ namespace Leagueinator.Model.Tables {
     }
 
     public class MemberTable : LeagueTable<MemberRow> {
-
-        public static class COL {
-            public static readonly string MATCH = "match";
-            public static readonly string INDEX = "index";
-            public static readonly string PLAYER = "player";
-        }
-
-        public MemberRow AddRow(int match, int index, string name) {
-            var row = this.NewRow();
-            row[COL.MATCH] = match;
-            row[COL.INDEX] = index;
-            row[COL.PLAYER] = name;
-
-            this.League.EnforceConstraints = false;
-            this.Rows.Add(row);
-            this.League.EnforceConstraints = true;
-            return new(row);
-        }
-
-        public MemberRow GetRow(int match, int index, string player) {
-            var rows = this.AsEnumerable<MemberRow>()
-                           .Where(row => row.Match == match)
-                           .Where(row => row.Index == index)
-                           .Where(row => row.Player == player)
-                           .ToList();
-
-            if (rows.Count == 0) throw new KeyNotFoundException($"{match} {index} {player}");
-            return rows[0];
-        }
-
         public MemberTable() : base("members") {
             this.NewInstance = dataRow => new MemberRow(dataRow);
+            GetInstance = args => this.GetRow((int)args[0], (int)args[1], (string)args[2]);
+            HasInstance = args => this.HasRow((int)args[0], (int)args[1], (string)args[2]);
+            AddInstance = args => this.AddRow((int)args[0], (int)args[1], (string)args[2]);
 
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
@@ -83,6 +56,43 @@ namespace Leagueinator.Model.Tables {
                 }
             };
         }
+
+        public static class COL {
+            public static readonly string MATCH = "match";
+            public static readonly string INDEX = "index";
+            public static readonly string PLAYER = "player";
+        }
+
+        public MemberRow AddRow(int match, int index, string name) {
+            var row = this.NewRow();
+            row[COL.MATCH] = match;
+            row[COL.INDEX] = index;
+            row[COL.PLAYER] = name;
+
+            this.League.EnforceConstraints = false;
+            this.Rows.Add(row);
+            this.League.EnforceConstraints = true;
+            return new(row);
+        }
+
+        public bool HasRow(int match, int index, string player) {
+            return this.AsEnumerable<MemberRow>()
+                       .Where(row => row.Match == match)
+                       .Where(row => row.Index == index)
+                       .Where(row => row.Player == player)
+                       .Any();
+        }
+
+        public MemberRow GetRow(int match, int index, string player) {
+            var rows = this.AsEnumerable<MemberRow>()
+                           .Where(row => row.Match == match)
+                           .Where(row => row.Index == index)
+                           .Where(row => row.Player == player)
+                           .ToList();
+
+            if (rows.Count == 0) throw new KeyNotFoundException($"{match} {index} {player}");
+            return rows[0];
+        }             
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {
