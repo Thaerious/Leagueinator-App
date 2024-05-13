@@ -55,7 +55,9 @@ namespace Leagueinator.Model.Tables {
             return rows[0];
         }
 
-        public MemberTable() : base("members", dataRow => new MemberRow(dataRow)) {
+        public MemberTable() : base("members") {
+            this.NewInstance = dataRow => new MemberRow(dataRow);
+
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
 

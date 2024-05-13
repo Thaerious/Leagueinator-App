@@ -16,34 +16,50 @@ namespace Leagueinator.Model {
 
         public League() {
             this.PlayerTable = new();
-            this.Tables.Add(this.PlayerTable);
-
             this.EventTable = new();
-            this.Tables.Add(this.EventTable);
-
             this.RoundTable = new();
-            this.Tables.Add(this.RoundTable);
-
             this.MatchTable = new();
-            this.Tables.Add(this.MatchTable);
-
             this.TeamTable = new();
-            this.Tables.Add(this.TeamTable);
-
             this.SettingsTable = new();
-            this.Tables.Add(this.SettingsTable);
-
             this.MemberTable = new();
-            this.Tables.Add(this.MemberTable);
-
             this.IdleTable = new();
-            this.Tables.Add(this.IdleTable);
+            
+            this.AddTables();
+            this.AddListeners();
+            this.BuildColumns();
+            this.AddConstraints();
+        }
 
+        public League(League that) : this(){
+            this.PlayerTable.ImportTable(that.PlayerTable);
+            this.EventTable.ImportTable(that.EventTable);
+            this.RoundTable.ImportTable(that.RoundTable);
+            this.MatchTable.ImportTable(that.MatchTable);
+            this.TeamTable.ImportTable(that.TeamTable);
+            this.SettingsTable.ImportTable(that.SettingsTable);
+            this.MemberTable.ImportTable(that.MemberTable);
+            this.IdleTable.ImportTable(that.IdleTable);
+        }
+
+        private void AddListeners() {
             foreach (DataTable table in this.Tables) {
                 table.RowChanged += (s, e) => this.LeagueUpdate.Invoke(s, e);
                 table.RowDeleted += (s, e) => this.LeagueUpdate.Invoke(s, e);
             }
+        }
 
+        private void AddTables() {
+            this.Tables.Add(this.PlayerTable);
+            this.Tables.Add(this.EventTable);
+            this.Tables.Add(this.RoundTable);
+            this.Tables.Add(this.MatchTable);
+            this.Tables.Add(this.TeamTable);
+            this.Tables.Add(this.SettingsTable);
+            this.Tables.Add(this.MemberTable);
+            this.Tables.Add(this.IdleTable);
+        }
+
+        private void BuildColumns() {
             this.PlayerTable.BuildColumns();
             this.EventTable.BuildColumns();
             this.RoundTable.BuildColumns();
@@ -52,14 +68,16 @@ namespace Leagueinator.Model {
             this.SettingsTable.BuildColumns();
             this.IdleTable.BuildColumns();
             this.MemberTable.BuildColumns();
+        }
 
+        private void AddConstraints() {
             this.RoundTable.Constraints.Add(
-                new ForeignKeyConstraint(
-                    "FK_Round_Event",
-                    [this.EventTable.Columns[EventTable.COL.UID]!],
-                    [this.RoundTable.Columns[RoundTable.COL.EVENT]!]
-                )
-            );
+                            new ForeignKeyConstraint(
+                                "FK_Round_Event",
+                                [this.EventTable.Columns[EventTable.COL.UID]!],
+                                [this.RoundTable.Columns[RoundTable.COL.EVENT]!]
+                            )
+                        );
 
             this.MatchTable.Constraints.Add(
                 new ForeignKeyConstraint(
@@ -110,12 +128,12 @@ namespace Leagueinator.Model {
             );
 
             this.SettingsTable.Constraints.Add(
-            new ForeignKeyConstraint(
-                "FK_Settings_Events",
-                [this.EventTable.Columns[EventTable.COL.UID]!],
-                [this.SettingsTable.Columns[SettingsTable.COL.EVENT]!]
-            )
-);
+                new ForeignKeyConstraint(
+                    "FK_Settings_Events",
+                    [this.EventTable.Columns[EventTable.COL.UID]!],
+                    [this.SettingsTable.Columns[SettingsTable.COL.EVENT]!]
+                )
+            );
         }
 
         public string PrettyPrint() {

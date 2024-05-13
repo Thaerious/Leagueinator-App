@@ -2,19 +2,6 @@
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
-
-    public class SettingsRowBoundView(LeagueTable<SettingRow> childTable, string[] fkCol, object[] fkVal)
-        : IndexRowBoundView<SettingRow, string>(childTable, fkCol, fkVal) {
-
-        public override SettingRow this[string key] {
-            get {
-                if (key == null) throw new IndexOutOfRangeException();
-                if (!this.Has([key])) return this.Add(key, "");
-                return this.Get([key])!;
-            }
-        }
-    }
-
     public class SettingRow(DataRow dataRow) : CustomRow(dataRow) {
         public EventRow Event {
             get => this.League.EventTable.GetRow((int)this[SettingsTable.COL.EVENT]);
@@ -30,19 +17,25 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class SettingsTable() : LeagueTable<SettingRow>("settings", dataRow => new SettingRow(dataRow)) {
+    public class SettingsTable : LeagueTable<SettingRow> {
+        public SettingsTable() : base("settings"){
+            this.NewInstance = dataRow => new SettingRow(dataRow);
+            GetInstance = args => this.GetRow((int)args[0], (string)args[1]);
+            HasInstance = args => this.HasRow((int)args[0], (string)args[1]);
+            AddInstance = args => this.AddRow((int)args[0], (string)args[1]);
+        }
+
         public static class COL {
             public static readonly string EVENT = "event_uid";
             public static readonly string KEY = "key";
             public static readonly string VALUE = "value";
         }
 
-        public SettingRow AddRow(int eventUID, string key, string value) {
+        public SettingRow AddRow(int eventUID, string key) {
             var row = this.NewRow();
 
             row[COL.EVENT] = eventUID;
             row[COL.KEY] = key;
-            row[COL.VALUE] = value;
 
             this.Rows.Add(row);
             return new(row);

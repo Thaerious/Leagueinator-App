@@ -32,9 +32,6 @@ namespace Leagueinator.Forms.Main {
             this.EventRow = this.League.EventTable.GetLast();
         }
 
-        private void HndRename(object sender, RoutedEventArgs e) {
-        }
-
         /// <summary>
         /// Indirectly triggered when a change is made to the underlying model.
         /// </summary>
@@ -69,7 +66,11 @@ namespace Leagueinator.Forms.Main {
 
         private void HndEventManagerClick(object sender, RoutedEventArgs e) {
             EventManager dialog = new EventManager(this.League);
-            dialog.ShowDialog();
+            if (dialog.ShowDialog() == true) {
+                if (dialog.Selected is null) return;
+                this.League = dialog.Selected.EventRow.League;
+                this.EventRow = dialog.Selected.EventRow;
+            }
         }
 
         private void HndNewClick(object sender, RoutedEventArgs e) {

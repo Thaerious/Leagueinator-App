@@ -1,13 +1,11 @@
 ﻿using Leagueinator.Model.Views;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
-
     public class EventRow : CustomRow {
         public readonly RowBoundView<RoundRow> Rounds;
-        public readonly IndexRowBoundView<SettingRow, string> Settings;
+        public readonly RowBoundView<SettingRow> Settings;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
             this.Rounds = new(this.League.RoundTable, [RoundTable.COL.EVENT], [this.UID]);
@@ -75,7 +73,13 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class EventTable() : LeagueTable<EventRow>("events", dataRow => new EventRow(dataRow)) {
+    public class EventTable : LeagueTable<EventRow> {
+        public EventTable() : base("events"){
+            this.NewInstance = dataRow => new EventRow(dataRow);
+            GetInstance = args => this.GetRow((string)args[0]);
+            HasInstance = args => this.HasRow((string)args[0]);
+            AddInstance = args => this.AddRow((string)args[0]);
+        }
 
         public static class COL {
             public static readonly string UID = "uid";
@@ -106,6 +110,11 @@ namespace Leagueinator.Model.Tables {
             return new EventRow(foundRows[0]);
         }
 
+        public bool HasRow(string eventName) {
+            DataRow[] foundRows = this.Select($"{COL.NAME} = '{eventName}'");
+            return foundRows.Length > 0;
+        }
+
         public EventRow GetLast() {
             return new(this.Rows[^1]);
         }
@@ -121,7 +130,6 @@ namespace Leagueinator.Model.Tables {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(string),
                 ColumnName = COL.NAME,
-                Unique = true,
             });
 
             this.Columns.Add(new DataColumn {

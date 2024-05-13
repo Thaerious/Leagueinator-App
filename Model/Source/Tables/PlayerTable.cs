@@ -10,7 +10,13 @@ namespace Leagueinator.Model.Tables {
         public static implicit operator string(PlayerRow playerRow) => playerRow.Name;
     }
 
-    public class PlayerTable() : LeagueTable<PlayerRow>("players", dataRow => new PlayerRow(dataRow)) {
+    public class PlayerTable : LeagueTable<PlayerRow> {
+        public PlayerTable() : base("players"){
+            this.NewInstance = dataRow => new PlayerRow(dataRow);
+            GetInstance = args => this.GetRow((string)args[0]);
+            HasInstance = args => this.HasRow((string)args[0]);
+            AddInstance = args => this.AddRow((string)args[0]);
+        }
 
         public static class COL {
             public static readonly string NAME = "name";

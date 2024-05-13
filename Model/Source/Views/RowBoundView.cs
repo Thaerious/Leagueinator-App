@@ -19,7 +19,6 @@ namespace Leagueinator.Model.Views {
     /// <typeparam name="ROW">Table B row type.</typeparam>
     public class RowBoundView<ROW> : DataView, IEnumerable<ROW> where ROW : CustomRow {
         public object[] ForeignKeyValue { get; }
-
         public DataColumn[] ForeignKeyColumn { get; }
         public LeagueTable<ROW> ChildTable { get; }
 

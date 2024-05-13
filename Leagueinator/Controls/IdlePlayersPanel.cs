@@ -106,15 +106,16 @@ namespace Leagueinator.Controls {
         private void HndIdleTableNewRow(object sender, DataRowChangeEventArgs e) {
             if (e.Action != DataRowAction.Add) return;
             if (this.RowToTextBox.ContainsKey(e.Row)) return;
+            if (e.Row is null) throw new NullReferenceException("DataRowChangeEventArgs.Row");
+            PlayerTextBox textBox = (this.Children[^1] as PlayerTextBox)! ?? throw new NullReferenceException("this.Children[^1]:PlayerTextBox");
 
-            PlayerTextBox textBox = (this.Children[^1] as PlayerTextBox)!;
             textBox.Text = new IdleRow(e.Row).Player;
             this.RowToTextBox[e.Row] = textBox;
             this.AddTextBox();
         }
 
         public MemoryTextBox AddTextBox(string playerName = "") {
-            MemoryTextBox textBox = new(playerName) {
+            PlayerTextBox textBox = new(playerName) {
                 Margin = new System.Windows.Thickness(3)
             };
 

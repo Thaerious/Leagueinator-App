@@ -22,28 +22,39 @@
             </Grid.ColumnDefinitions>
 
             <!-- Name / Date Display -->
-            <StackPanel Grid.Column="0" x:Name="NamePanel"></StackPanel>
+            <StackPanel x:Name="NamePanel" Grid.Column="0" Margin="10,10,0,0"></StackPanel>
 
             <!-- Event Options -->
-            <StackPanel Grid.Column="1" x:Name="OptionPanel">
+            <StackPanel x:Name="OptionPanel" Grid.Column="1" >
                 <!-- Event Date -->
-                <DatePicker x:Name="DatePicker" Margin="10,10,10,0"></DatePicker>
+                <DatePicker 
+                    x:Name="DatePicker" 
+                    Margin="10,10,10,0" 
+                    SelectedDate="{Binding Path=Date}"
+                ></DatePicker>
 
                 <!-- Default Ends -->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <Label Grid.Column="0" Content="Default Ends:" Margin="3,3,3,3" HorizontalAlignment="Right" Width="100" />
+                    <Label Grid.Column="0" Content="Default Ends:" Margin="10,3,3,3" HorizontalAlignment="Right" Width="100" />
                     <TextBox VerticalContentAlignment="Center" Grid.Column="1" Text="10" x:Name="TxtEnds" Margin="3,3,10,3" Width="100"/>
                 </StackPanel>
 
                 <!-- Lane Count -->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <Label Grid.Column="0" Content="Lane Count:" Margin="3,3,3,3" HorizontalAlignment="Right" Width="100" />
-                    <TextBox VerticalContentAlignment="Center" Grid.Column="1" Text="8" x:Name="TxtLane" Margin="3,3,10,3" Width="100"/>
+                    <Label Grid.Column="0" Content="Lane Count:" Margin="10,3,3,3" HorizontalAlignment="Right" Width="100" />
+                    <TextBox 
+                        VerticalContentAlignment="Center" 
+                        Grid.Column="1" 
+                        x:Name="TxtLane"
+                        Margin="3,3,10,3"
+                        Width="100"
+                        Text="{Binding UpdateSourceTrigger=PropertyChanged ,Path=lane}"
+                    />
                 </StackPanel>
 
                 <!-- Match Type -->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <Label Grid.Column="0" Content="Match Type:" Margin="3,3,3,3" HorizontalAlignment="Right" Width="100" />
+                    <Label Grid.Column="0" Content="Match Type:" Margin="10,3,3,3" HorizontalAlignment="Right" Width="100" />
                     <RadioButton GroupName="MatchType" IsChecked="True" Content="Teams" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <RadioButton GroupName="MatchType" Content="4321" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 </StackPanel>
@@ -60,16 +71,22 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="Event Name:" Margin="3,3,3,3" HorizontalAlignment="Right" />
-                <TextBox Grid.Column="1" x:Name="TxtEventName" Margin="3,3,10,3"/>
+                <TextBox 
+                    VerticalContentAlignment="Center" 
+                    Grid.Column="1" 
+                    x:Name="TxtEventName" 
+                    Margin="3,3,10,3" 
+                    TextChanged="HndNameChanged"
+                    Text="{Binding UpdateSourceTrigger=PropertyChanged ,Path=Name}"
+                />
             </Grid>
 
             <!-- Buttons -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
-                <Button Width="100" x:Name="ButNew" Content="New" Margin="5,0,5,0"/>
-                <Button Width="100" x:Name="ButUpdate" Content="Update" Margin="5,0,5,0"/>
-                <Button Width="100" x:Name="ButOpen" Content="Open" Margin="5,0,5,0"/>
-                <Button Width="100" x:Name="ButDelete" Content="Delete" Margin="5,0,5,0"/>
-                <Button Width="100" x:Name="ButCancel" Content="Cancel" Margin="5,0,5,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,10,0">
+                <Button Width="75" x:Name="ButNew" Content="New" Margin="5,0,5,0" Click="HndClickNew"/>
+                <Button Width="75" x:Name="ButOpen" Content="Open" Margin="5,0,5,0" Click="HndClickOpen" IsEnabled="False"/>
+                <Button Width="75" x:Name="ButDelete" Content="Delete" Margin="5,0,5,0" Click="HndClickDelete" IsEnabled="False"/>
+                <Button Width="75" x:Name="ButCancel" Content="Cancel" Margin="5,0,0,0" Click="HndClickCancel"/>
             </StackPanel>
         </StackPanel>
     </Grid>

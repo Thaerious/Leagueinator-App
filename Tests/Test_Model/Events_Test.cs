@@ -89,7 +89,7 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             eventRow.Settings.Add("MyKey", "MyValue");
-            Assert.AreEqual("MyValue", eventRow.Settings["MyKey"]!.Value);
+            Assert.AreEqual("MyValue", eventRow.Settings.Get("MyKey")!.Value);
         }
 
         [TestMethod]
@@ -99,8 +99,8 @@ namespace Model_Test {
             EventRow eventRow2 = league.EventTable.AddRow("my_event2");
             eventRow1.Settings.Add("MyKey", "MyValue1");
             eventRow2.Settings.Add("MyKey", "MyValue2");
-            Assert.AreEqual("MyValue1", eventRow1.Settings["MyKey"]!.Value);
-            Assert.AreEqual("MyValue2", eventRow2.Settings["MyKey"]!.Value);
+            Assert.AreEqual("MyValue1", eventRow1.Settings.Get("MyKey")!.Value);
+            Assert.AreEqual("MyValue2", eventRow2.Settings.Get("MyKey")!.Value);
         }
 
         [TestMethod]
@@ -108,8 +108,8 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             eventRow.Settings.Add("MyKey", "MyValue");
-            eventRow.Settings["MyKey"]!.Value = "AnotherValue";
-            Assert.AreEqual("AnotherValue", eventRow.Settings["MyKey"]!.Value);
+            eventRow.Settings.Get("MyKey")!.Value = "AnotherValue";
+            Assert.AreEqual("AnotherValue", eventRow.Settings.Get("MyKey")!.Value);
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace Model_Test {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             eventRow.Settings.Add("MyKey", "MyValue");
-            eventRow.Settings["MyKey"]!.Remove();
+            eventRow.Settings.Get("MyKey")!.Remove();
             Assert.IsFalse(eventRow.Settings.Has("MyKey"));
         }
 
@@ -126,7 +126,7 @@ namespace Model_Test {
         public void NonExistant_Setting() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("my_event");
-            Assert.IsNull(eventRow.Settings["MyKey"]);
+            Assert.IsNull(eventRow.Settings.Get("MyKey"));
         }
 
         [TestMethod]

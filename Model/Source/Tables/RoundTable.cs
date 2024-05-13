@@ -66,7 +66,7 @@ namespace Leagueinator.Model.Tables {
                 int ends = 10;
                 
                 if (this.Event.Settings.Has("ends")) {
-                    ends = int.Parse(this.Event.Settings["ends"]!.Value);
+                    ends = int.Parse(this.Event.Settings.Get("ends")!.Value);
                 }
 
                 MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
@@ -81,7 +81,7 @@ namespace Leagueinator.Model.Tables {
         /// <returns></returns>
         public RoundRow PopulateMatches(int matchCount, int teamCount) {
             while (this.Matches.Count < matchCount) {
-                int ends = int.Parse(this.Event.Settings["ends"]?.Value ?? "10");
+                int ends = int.Parse(this.Event.Settings.Get("ends")?.Value ?? "10");
                 MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
                 while (matchRow.Teams.Count < teamCount) matchRow.Teams.Add();
             }
@@ -104,10 +104,28 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class RoundTable() : LeagueTable<RoundRow>("rounds", dataRow => new RoundRow(dataRow)) {
+    public class RoundTable : LeagueTable<RoundRow> {
+        public RoundTable() : base("rounds"){
+            this.NewInstance = dataRow => new RoundRow(dataRow);
+            GetInstance = args => this.GetRow((int)args[0]);
+            HasInstance = args => this.HasRow((int)args[0]);
+            AddInstance = args => this.AddRow((int)args[0]);
+        }
+
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string EVENT = "event_uid";
+        }
+
+        public RoundRow GetRow(int roundUID) {
+            DataRow[] foundRows = this.Select($"{COL.UID} = {roundUID}");
+            if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {roundUID}");
+            return new(foundRows[0]);
+        }
+
+        public bool HasRow(int roundUID) {
+            DataRow[] foundRows = this.Select($"{COL.UID} = {roundUID}");
+            return foundRows.Length > 0;
         }
 
         public RoundRow AddRow(int eventUID) {
@@ -130,12 +148,6 @@ namespace Leagueinator.Model.Tables {
                 ColumnName = COL.EVENT,
                 Unique = false
             });
-        }
-
-        internal RoundRow GetRow(int roundUID) {
-            DataRow[] foundRows = this.Select($"{COL.UID} = {roundUID}");
-            if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {roundUID}");
-            return new(foundRows[0]);
         }
     }
 }

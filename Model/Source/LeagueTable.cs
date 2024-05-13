@@ -4,14 +4,39 @@ using System.Data;
 
 namespace Leagueinator.Model {
     public abstract class LeagueTable<R> : DataTable, IEnumerable<R> where R : CustomRow {
-        public Func<DataRow, R> NewInstance;
+        
+        /// <summary>
+        ///  Implement New, Get, Has, to deal with foreign keys.
+        /// </summary>
+
+        public Func<DataRow, R> NewInstance { get; protected set; }     // New row from a data row, does not add data to the table.
+        public Func<object[], R> GetInstance { get; protected set; }    // Retrieve existing row base on index values.
+        public Func<object[], bool> HasInstance { get; protected set; } // Has row based on index values.
+        public Func<object[], R> AddInstance { get; protected set; }    // Insert data based on index values.
 
         public League League {
             get => (League)this.DataSet!;
         }
 
-        public LeagueTable(string tableName, Func<DataRow, R> newInstance) : base(tableName) { 
-            this.NewInstance = newInstance;
+        public R this[int index] {
+            get {
+                return this.NewInstance(this.Rows[index]);
+            }
+        }
+
+        public LeagueTable(string tableName) : base(tableName) {
+            NewInstance = args => throw new NotImplementedException();
+            GetInstance = args => throw new NotImplementedException();
+            HasInstance = args => throw new NotImplementedException();
+            AddInstance = args => throw new NotImplementedException();
+        }
+
+        public LeagueTable<R> ImportTable(LeagueTable<R> source) {
+            foreach (DataRow row in source.Rows) {
+                this.ImportRow(row);
+            }
+
+            return this;
         }
 
         public IEnumerator<EventRow> GetEnumerator() {

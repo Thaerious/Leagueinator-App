@@ -40,7 +40,14 @@ namespace Leagueinator.Model.Tables {
         }
     }
 
-    public class MatchTable() : LeagueTable<MatchRow>("matches", dataRow => new MatchRow(dataRow)) {
+    public class MatchTable : LeagueTable<MatchRow> {
+        public MatchTable() : base("matches"){
+            this.NewInstance = dataRow => new MatchRow(dataRow);
+            GetInstance = args => this.GetRow((int)args[0], (int)args[1]);
+            HasInstance = args => this.HasRow((int)args[0], (int)args[1]);
+            AddInstance = args => this.AddRow((int)args[0], (int)args[1]);
+        }
+
         public static class COL {
             public static readonly string UID = "uid";
             public static readonly string ROUND = "round";
@@ -74,6 +81,25 @@ namespace Leagueinator.Model.Tables {
 
             if (rows.Count == 0) throw new KeyNotFoundException();
             return rows[0];
+        }
+
+        public bool HasRow(int round, int lane) {
+            return this.AsEnumerable<MatchRow>()
+                       .Where(row => row.Round == round)
+                       .Where(row => row.Lane == lane)
+                       .Any();
+        }
+
+        public MatchRow AddRow(int round, int lane) {
+            var row = this.NewRow();
+
+            row[COL.ROUND] = round;
+            row[COL.LANE] = lane;
+
+            this.League.EnforceConstraints = false;
+            this.Rows.Add(row);
+            this.League.EnforceConstraints = true;
+            return new(row);
         }
 
         public override void BuildColumns() {

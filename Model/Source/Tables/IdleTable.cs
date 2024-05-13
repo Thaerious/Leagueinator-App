@@ -43,12 +43,14 @@ namespace Leagueinator.Model.Tables {
                        .Any();
         }
 
-        public IdleRow? GetRow(int round, string player) {
-            return this.AsEnumerable<IdleRow>()
+        public IdleRow GetRow(int round, string player) {
+            var rows = this.AsEnumerable<IdleRow>()
                        .Where(row => row.Round == round)
                        .Where(row => row.Player == player)
-                       .DefaultIfEmpty(null)
-                       .First();
+                       .ToList();
+
+            if (rows.Count == 0) throw new KeyNotFoundException();
+            return rows[0];
         }
 
         public void RemoveRows(int round, string player) {
@@ -63,7 +65,13 @@ namespace Leagueinator.Model.Tables {
             }
         }
 
-        public IdleTable() : base("idle_players", dataRow => new IdleRow(dataRow)) {
+        public IdleTable() : base("idle_players") {
+            this.NewInstance = dataRow => new IdleRow(dataRow);
+            GetInstance = args => this.GetRow((int)args[0], (string)args[1]);
+            HasInstance = args => this.HasRow((int)args[0], (string)args[1]);
+            AddInstance = args => this.AddRow((int)args[0], (string)args[1]);
+
+            // WHen a player is added to the idle table, remove it from any team tables.
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
 
