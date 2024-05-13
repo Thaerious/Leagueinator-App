@@ -117,12 +117,13 @@ namespace Leagueinator.Model.Tables {
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.LANE
+                ColumnName = COL.LANE                
             });
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.ENDS
+                ColumnName = COL.ENDS,
+                DefaultValue = 10
             });
 
             // TODO re-enable, it mucks with rearranging lanes.

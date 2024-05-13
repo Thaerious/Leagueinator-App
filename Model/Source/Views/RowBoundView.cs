@@ -60,24 +60,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public ROW Add(params object[] args) {
-            List<object> argList = [.. (IEnumerable<object>)[.. this.ForeignKeyValue], .. args];
-
-            Type tableType = this.Table!.GetType();
-            List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
-
-            try {
-                MethodInfo? method
-                    = tableType.GetMethod("AddRow", [.. argTypes])
-                    ?? throw new InvalidOperationException($"No matching AddRow({argTypes.DelString()}) method found for type '{tableType}'.");
-
-                ROW? r = (ROW?)method.Invoke(this.Table, [.. argList]);
-                return r ?? throw new InvalidOperationException($"AddRow method for type '{tableType}' returned NULL.");
-            }
-            catch (Exception ex) {
-                var innerException = ex.InnerException ?? ex;
-                ExceptionDispatchInfo.Capture(innerException).Throw();
-                throw;
-            }
+            return this.ChildTable.AddInstance([..this.ForeignKeyValue, ..args]);
         }
 
         /// <summary>
@@ -86,24 +69,8 @@ namespace Leagueinator.Model.Views {
         /// <param name="args"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public ROW? Get(params object[] args) {
-            List<object> argList = [.. (IEnumerable<object>)[.. this.ForeignKeyValue], .. args];
-
-            Type tableType = this.Table!.GetType();
-            List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
-
-            try {
-                MethodInfo? method
-                    = tableType.GetMethod("GetRow", [.. argTypes])
-                    ?? throw new InvalidOperationException($"No matching GetRow({argTypes.DelString()}) method found for type '{tableType}'.");
-
-                return (ROW?)method.Invoke(this.Table, [.. argList]);
-            }
-            catch (Exception ex) {
-                var innerException = ex.InnerException ?? ex;
-                ExceptionDispatchInfo.Capture(innerException).Throw();
-                throw;
-            }
+        public ROW Get(params object[] args) {
+            return this.ChildTable.GetInstance([..this.ForeignKeyValue, ..args]); 
         }
 
         /// <summary>
@@ -113,24 +80,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public bool Has(params object[] args) {
-            List<object> argList = [.. (IEnumerable<object>)[.. this.ForeignKeyValue], .. args];
-
-            Type tableType = this.Table!.GetType();
-            List<Type> argTypes = argList.Select(arg => arg.GetType()).ToList();
-
-            try {
-                MethodInfo? method
-                    = tableType.GetMethod("HasRow", [.. argTypes])
-                    ?? throw new InvalidOperationException($"No matching HasRow({argTypes.DelString()}) method found for type '{tableType}'.");
-
-                bool? r = (bool?)method.Invoke(this.Table, [.. argList]);
-                return r ?? throw new InvalidOperationException($"HasRow method for type '{tableType}' returned NULL.");
-            }
-            catch (Exception ex) {
-                var innerException = ex.InnerException ?? ex;
-                ExceptionDispatchInfo.Capture(innerException).Throw();
-                throw;
-            }
+            return this.ChildTable.HasInstance([..this.ForeignKeyValue, ..args]);
         }
 
         /// <summary>

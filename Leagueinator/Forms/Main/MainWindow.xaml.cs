@@ -103,6 +103,9 @@ namespace Leagueinator.Forms.Main {
             eventRow.Settings.Add("lanes", "8");
             eventRow.Settings.Add("teams", "2");
             eventRow.Settings.Add("ends", "10");
+
+            Debug.WriteLine(eventRow.Settings.PrettyPrint());
+
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches(8, 2);
             return league;

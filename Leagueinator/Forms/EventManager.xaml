@@ -48,7 +48,7 @@
                         x:Name="TxtLane"
                         Margin="3,3,10,3"
                         Width="100"
-                        Text="{Binding UpdateSourceTrigger=PropertyChanged ,Path=lane}"
+                        Text="10"
                     />
                 </StackPanel>
 

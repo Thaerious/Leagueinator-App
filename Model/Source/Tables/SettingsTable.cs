@@ -1,5 +1,6 @@
-﻿using Leagueinator.Model.Views;
+﻿using Leagueinator.Utility;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
     public class SettingRow(DataRow dataRow) : CustomRow(dataRow) {
@@ -22,7 +23,11 @@ namespace Leagueinator.Model.Tables {
             this.NewInstance = dataRow => new SettingRow(dataRow);
             GetInstance = args => this.GetRow((int)args[0], (string)args[1]);
             HasInstance = args => this.HasRow((int)args[0], (string)args[1]);
-            AddInstance = args => this.AddRow((int)args[0], (string)args[1]);
+            AddInstance = args => {
+                string value = "";
+                if (args.Length > 2) value = (string)args[2];
+                return this.AddRow((int)args[0], (string)args[1], value);
+            };
         }
 
         public static class COL {
@@ -31,11 +36,12 @@ namespace Leagueinator.Model.Tables {
             public static readonly string VALUE = "value";
         }
 
-        public SettingRow AddRow(int eventUID, string key) {
+        public SettingRow AddRow(int eventUID, string key, string value) {
             var row = this.NewRow();
 
             row[COL.EVENT] = eventUID;
             row[COL.KEY] = key;
+            row[COL.VALUE] = value;
 
             this.Rows.Add(row);
             return new(row);

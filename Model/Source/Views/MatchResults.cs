@@ -36,8 +36,6 @@ namespace Leagueinator.Model.Views {
         }
 
         public MatchResults(TeamRow teamRow) {
-            Debug.WriteLine($"new MatchResults({teamRow.Match.Round.UID}, {teamRow.Match.Lane}, {teamRow.Index})");
-
             this.TeamRow = teamRow;
             this.Round = teamRow.Match.Round;
             this.Lane = teamRow.Match.Lane;
@@ -64,16 +62,6 @@ namespace Leagueinator.Model.Views {
             foreach (TeamRow t in teamRow.Match.Teams) {
                 if (!t.Equals(teamRow)) this.BowlsAgainst += t.Bowls;
             }
-        }
-
-        public MatchResults(TeamRow teamRow, int bowlsFor, int bowlsAgainst) {
-            this.TeamRow = teamRow;
-            this.Round = teamRow.Match.Round;
-            this.Lane = teamRow.Match.Lane;
-            this.Ends = teamRow.Match.Ends;
-            this.BowlsFor = bowlsFor;
-            this.BowlsAgainst = bowlsAgainst;
-            this.TieBreaker = teamRow.Tie;
         }
 
         public override string ToString() {
