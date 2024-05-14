@@ -49,6 +49,7 @@
                         Margin="3,3,10,3"
                         Width="100"
                         Text="8"
+                        TextChanged="HndLaneChanged"
                     />
                 </StackPanel>
 
@@ -76,7 +77,6 @@
                     Grid.Column="1" 
                     x:Name="TxtEventName" 
                     Margin="3,3,10,3" 
-                    TextChanged="HndNameChanged"
                     Text="{Binding UpdateSourceTrigger=PropertyChanged ,Path=Name}"
                 />
             </Grid>

@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -123,14 +122,9 @@ namespace Leagueinator.Forms {
             this.NamePanel.Children.Add(card);
             card.MouseDown += this.HndCardMouseDown;
 
-            int lanes = int.Parse(this.TxtLane.Text);
-            int ends = int.Parse(this.TxtLane.Text);
-
-            eventRow.Settings.Add("lanes", lanes);
+            eventRow.Settings.Add("lanes", "8");
             eventRow.Settings.Add("teams", "2");
-            eventRow.Settings.Add("ends", ends);
-            RoundRow roundRow = eventRow.Rounds.Add();
-            roundRow.PopulateMatches(8, 2);
+            eventRow.Settings.Add("ends", "10");
 
             this.Selected = card;
         }
@@ -148,6 +142,16 @@ namespace Leagueinator.Forms {
 
         private void HndClickCancel(object sender, RoutedEventArgs args) {
             this.DialogResult = false;
+        }
+
+        private void HndLaneChanged(object sender, RoutedEventArgs args) {
+            if (this.Selected is null) return;
+            int desiredMatchCount = int.Parse(this.TxtLane.Text);
+            this.Selected.EventRow.Settings.Get("lanes").Value = $"{desiredMatchCount}";
+
+            foreach (RoundRow roundRow in this.Selected.EventRow.Rounds) {
+                roundRow.PopulateMatches(desiredMatchCount, 2); // TODO change team count to actual variable (instead of 2)
+            }
         }
 
         public League League { get; }
@@ -176,13 +180,6 @@ namespace Leagueinator.Forms {
                     this.TxtEventName.DataContext = value.EventRow;
                     this.OptionPanel.DataContext = value.EventRow.Settings;
                 }
-            }
-        }
-
-        private void HndNameChanged(object sender, RoutedEventArgs args) {
-            Debug.WriteLine(this.League.EventTable.PrettyPrint());
-            if (this.Selected != null) {
-                Debug.WriteLine(this.Selected.EventRow.Settings.PrettyPrint());
             }
         }
 

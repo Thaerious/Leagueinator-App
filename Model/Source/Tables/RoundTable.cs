@@ -42,7 +42,7 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Retreive a colloection of team rows for all matches in this round.
+        /// Retreive a collection of team rows for all matches in this round.
         /// </summary>
         public IEnumerable<TeamRow> Teams {
             get {
@@ -57,19 +57,22 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Add empty matches to this round.
+        /// Add empty matches to this round so that there are as many matches are laneCount matches.
         /// </summary>
-        /// <param name="matchCount"></param>
+        /// <param name="laneCount"></param>
         /// <returns></returns>
-        public RoundRow PopulateMatches(int matchCount) {
-            while (this.Matches.Count < matchCount) {
-                int ends = 10;
-                
-                if (this.Event.Settings.Has("ends")) {
-                    ends = int.Parse(this.Event.Settings.Get("ends")!.Value);
+        public RoundRow PopulateMatches() {
+            int ends = int.Parse(this.Event.Settings.Get("ends")!.Value);
+            int laneCount = int.Parse(this.Event.Settings.Get("lanes")!.Value);
+            int teams = int.Parse(this.Event.Settings.Get("teams")!.Value);
+
+            for (int lane = 0; lane < laneCount; lane++) {
+                if (!this.Matches.Has(lane)) {
+                    this.Matches.Add(lane, ends);
                 }
 
-                MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
+                MatchRow matchRow = this.Matches[lane]!;
+                while (matchRow.Teams.Count < teams) matchRow.Teams.Add(matchRow.Teams.Count);
             }
             return this;
         }

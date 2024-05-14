@@ -68,6 +68,14 @@ namespace Leagueinator.Forms.Main {
             EventManager dialog = new EventManager(this.League);
             if (dialog.ShowDialog() == true) {
                 if (dialog.Selected is null) return;
+
+                League league = dialog.Selected.EventRow.League;
+                EventRow eventRow = dialog.Selected.EventRow;
+                if (eventRow.Rounds.Count == 0) {
+                    RoundRow roundRow = eventRow.Rounds.Add();
+                    roundRow.PopulateMatches();
+                }
+
                 this.League = dialog.Selected.EventRow.League;
                 this.EventRow = dialog.Selected.EventRow;
             }
@@ -103,8 +111,6 @@ namespace Leagueinator.Forms.Main {
             eventRow.Settings.Add("lanes", "8");
             eventRow.Settings.Add("teams", "2");
             eventRow.Settings.Add("ends", "10");
-
-            Debug.WriteLine(eventRow.Settings.PrettyPrint());
 
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches(8, 2);

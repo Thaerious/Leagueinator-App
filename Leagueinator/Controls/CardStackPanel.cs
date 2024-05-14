@@ -38,7 +38,7 @@ namespace Leagueinator.Controls {
             }
         }
 
-        public CardTarget Wrap(MatchCard matchCard) {
+        private CardTarget Wrap(MatchCard matchCard) {
             CardTarget target = new CardTarget {
                 Height = matchCard.Height,
                 Lane = this.Children.Count + 1,
@@ -60,7 +60,7 @@ namespace Leagueinator.Controls {
             return target;
         }
 
-        public void HndMouseDown(object sender, MouseButtonEventArgs e) {
+        private void HndMouseDown(object sender, MouseButtonEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             LastPoint = e.GetPosition(this);
             Panel.SetZIndex(matchCard.CardTarget, 1);
@@ -69,7 +69,7 @@ namespace Leagueinator.Controls {
             CardTarget target = matchCard.Ancestors<CardTarget>()[0];
             this.StartingIndex = this.Children.IndexOf(target);
         }
-        public void HndMouseUp(object sender, MouseButtonEventArgs e) {
+        private void HndMouseUp(object sender, MouseButtonEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             if (matchCard != Active) return;
 
@@ -102,7 +102,7 @@ namespace Leagueinator.Controls {
 
             this.CardStackPanelReorder.Invoke(this, new(reorderMap));
         }
-        public void HndMouseLeave(object sender, MouseEventArgs e) {
+        private void HndMouseLeave(object sender, MouseEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             if (matchCard != Active) return;
 
@@ -113,7 +113,7 @@ namespace Leagueinator.Controls {
                 Canvas.SetTop(child.Children[0], 0);
             }
         }
-        public void HndMouseMove(object sender, MouseEventArgs e) {
+        private void HndMouseMove(object sender, MouseEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             if (Active is null) return;
 

@@ -34,7 +34,7 @@ namespace Model_Test {
             eventRow.Settings.Add("ends", "10");
             eventRow.Settings.Add("matches", "8");
             Console.WriteLine(league.SettingsTable.PrettyPrint());
-            roundRow.PopulateMatches(8);
+            roundRow.PopulateMatches();
 
             Assert.AreEqual(8, roundRow.Matches.Count);
 
@@ -46,9 +46,10 @@ namespace Model_Test {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
+            eventRow.Settings.Add("lanes", "8");
 
             Console.WriteLine(league.SettingsTable.PrettyPrint());
-            roundRow.PopulateMatches(8);
+            roundRow.PopulateMatches();
 
             Assert.AreEqual(8, roundRow.Matches.Count);
             Console.WriteLine(league.MatchTable.PrettyPrint());
