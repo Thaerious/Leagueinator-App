@@ -45,7 +45,10 @@ namespace Leagueinator.Model.Tables {
             this.NewInstance = dataRow => new MatchRow(dataRow);
             GetInstance = args => this.GetRow((int)args[0], (int)args[1]);
             HasInstance = args => this.HasRow((int)args[0], (int)args[1]);
-            AddInstance = args => this.AddRow((int)args[0], (int)args[1]);
+            AddInstance = args => {
+                if ((args as object[]).Length == 3) return this.AddRow((int)args[0], (int)args[1], (int)args[2]);
+                return this.AddRow((int)args[0], (int)args[1]);
+            };
         }
 
         public static class COL {

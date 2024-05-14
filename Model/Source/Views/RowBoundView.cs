@@ -59,7 +59,7 @@ namespace Leagueinator.Model.Views {
         /// <param name="args"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public ROW Add(params object[] args) {
+        public virtual ROW Add(params object[] args) {
             return this.ChildTable.AddInstance([..this.ForeignKeyValue, ..args]);
         }
 
@@ -69,7 +69,7 @@ namespace Leagueinator.Model.Views {
         /// <param name="args"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public ROW Get(params object[] args) {
+        public virtual ROW Get(params object[] args) {
             return this.ChildTable.GetInstance([..this.ForeignKeyValue, ..args]); 
         }
 
@@ -79,7 +79,7 @@ namespace Leagueinator.Model.Views {
         /// <param name="args"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public bool Has(params object[] args) {
+        public virtual bool Has(params object[] args) {
             return this.ChildTable.HasInstance([..this.ForeignKeyValue, ..args]);
         }
 

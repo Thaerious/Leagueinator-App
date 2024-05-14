@@ -27,10 +27,6 @@ namespace Leagueinator.Forms.Main {
         public EventRow? EventRow {
             get => this._eventRow;
             set {
-                if (this.EventRow != null) {
-                    this.EventRow.League.RoundTable.RowChanged -= this.HndRoundTableRow;
-                }
-
                 this._eventRow = value;
                 this.RoundButtonContainer.Children.Clear();
 
@@ -46,7 +42,6 @@ namespace Leagueinator.Forms.Main {
 
                 // Click the last round button (sets current round).
                 var lastButton = this.RoundButtonContainer.Children[^1];
-                this.EventRow.League.RoundTable.RowChanged += this.HndRoundTableRow;
                 lastButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             }
         }
@@ -106,7 +101,6 @@ namespace Leagueinator.Forms.Main {
 
         /// <summary>
         /// Triggered when the "Add Round" button is clicked.
-        /// See HndRoundTableRow
         /// </summary>
         /// <param name="__"></param>
         /// <param name="_"></param>
@@ -115,10 +109,11 @@ namespace Leagueinator.Forms.Main {
             this.ClearFocus();
 
             RoundRow roundRow = this.EventRow.Rounds.Add();
-            int lanes = int.Parse(this.EventRow.Settings.Get("lanes").Value);
-            int teams = int.Parse(this.EventRow.Settings.Get("teams").Value);
-            roundRow.PopulateMatches(lanes, teams);
+            roundRow.PopulateMatches();
+            this.AddRoundButton(roundRow);
+            this.InvokeRoundButton();
         }
+
 
         /// <summary>
         /// Triggered when the delete round button is clicked.
@@ -143,19 +138,6 @@ namespace Leagueinator.Forms.Main {
             foreach (DataButton<RoundRow> button in this.RoundButtonContainer.Children) {
                 button.Content = $"Round {i++}";
             }
-        }
-
-        /// <summary>
-        /// When a row is added to the table, add a button.
-        /// This button is added to the end of the button container.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HndRoundTableRow(object sender, System.Data.DataRowChangeEventArgs e) {
-            if ((int)e.Row[RoundTable.COL.EVENT] != this.EventRow!.UID) return;
-            if (e.Action != System.Data.DataRowAction.Add) return;
-            this.AddRoundButton(new(e.Row));
-            this.InvokeRoundButton();
         }
 
         private void InvokeRoundButton(DataButton<RoundRow>? button = null) {

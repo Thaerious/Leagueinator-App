@@ -74,7 +74,7 @@ namespace Leagueinator.Forms.Main {
                 if (eventRow.Rounds.Count == 0) {
                     RoundRow roundRow = eventRow.Rounds.Add();
                     roundRow.PopulateMatches();
-                }
+                }                
 
                 this.League = dialog.Selected.EventRow.League;
                 this.EventRow = dialog.Selected.EventRow;
@@ -113,7 +113,7 @@ namespace Leagueinator.Forms.Main {
             eventRow.Settings.Add("ends", "10");
 
             RoundRow roundRow = eventRow.Rounds.Add();
-            roundRow.PopulateMatches(8, 2);
+            roundRow.PopulateMatches();
             return league;
         }
 
@@ -200,7 +200,6 @@ namespace Leagueinator.Forms.Main {
         }
 
         private void HndMenuClick(object sender, RoutedEventArgs e) {
-            Debug.WriteLine("HndMenuClick");
             this.Focus();
         }
     }

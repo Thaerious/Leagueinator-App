@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -144,14 +145,16 @@ namespace Leagueinator.Forms {
             this.DialogResult = false;
         }
 
+        private void HndEndsChanged(object sender, RoutedEventArgs args) {
+            if (this.Selected is null) return;
+            int ends = int.Parse(this.TxtEnds.Text);
+            this.Selected.EventRow.Settings.Get("ends").Value = $"{ends}";
+        }
+
         private void HndLaneChanged(object sender, RoutedEventArgs args) {
             if (this.Selected is null) return;
-            int desiredMatchCount = int.Parse(this.TxtLane.Text);
-            this.Selected.EventRow.Settings.Get("lanes").Value = $"{desiredMatchCount}";
-
-            foreach (RoundRow roundRow in this.Selected.EventRow.Rounds) {
-                roundRow.PopulateMatches(desiredMatchCount, 2); // TODO change team count to actual variable (instead of 2)
-            }
+            int lanes = int.Parse(this.TxtLanes.Text);
+            this.Selected.EventRow.Settings.Get("lanes").Value = $"{lanes}";
         }
 
         public League League { get; }
@@ -175,6 +178,10 @@ namespace Leagueinator.Forms {
                 else {
                     value.IsSelected = true;
                     if (this.League.EventTable.Rows.Count > 1) this.ButDelete.IsEnabled = true;
+
+                    this.TxtEnds.Text = this.Selected?.EventRow.Settings.Get("ends").Value;
+                    this.TxtLanes.Text = this.Selected?.EventRow.Settings.Get("lanes").Value;
+
                     this.ButOpen.IsEnabled = true;
                     this.DatePicker.DataContext = value.EventRow;
                     this.TxtEventName.DataContext = value.EventRow;

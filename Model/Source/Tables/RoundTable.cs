@@ -78,26 +78,6 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Add matches with empty teams to this round.
-        /// </summary>
-        /// <param name="matchCount"></param>
-        /// <returns></returns>
-        public RoundRow PopulateMatches(int matchCount, int teamCount) {
-            while (this.Matches.Count < matchCount) {
-                int ends = 10;
-                // TODO reenable
-                //if (this.Event.Settings.Has("ends")) {
-                //    var setting = this.Event.Settings.Get("ends");
-                //    if (setting.Value != null) ends = int.Parse(setting.Value);
-                //}
-
-                MatchRow matchRow = this.Matches.Add(this.NextLane(), ends);
-                while (matchRow.Teams.Count < teamCount) matchRow.Teams.Add(matchRow.Teams.Count);
-            }
-            return this;
-        }
-
-        /// <summary>
         /// Return a 1-indexed value for the next lane.
         /// The next lane is one larger than the largest lane value.
         /// </summary>
