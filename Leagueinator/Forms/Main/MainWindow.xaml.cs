@@ -74,7 +74,7 @@ namespace Leagueinator.Forms.Main {
                 if (eventRow.Rounds.Count == 0) {
                     RoundRow roundRow = eventRow.Rounds.Add();
                     roundRow.PopulateMatches();
-                }                
+                }
 
                 this.League = dialog.Selected.EventRow.League;
                 this.EventRow = dialog.Selected.EventRow;
@@ -108,6 +108,7 @@ namespace Leagueinator.Forms.Main {
         private static League NewLeague() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
+            eventRow.Settings.Add("format", "assigned_ladder");
             eventRow.Settings.Add("lanes", "8");
             eventRow.Settings.Add("teams", "2");
             eventRow.Settings.Add("ends", "10");
@@ -177,8 +178,10 @@ namespace Leagueinator.Forms.Main {
         }
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
-            var form = new PrinterForm(this.EventRow);
-            form.Owner = this;
+            this.ClearFocus();
+            PrinterForm form = new(this.EventRow) {
+                Owner = this
+            };
             form.Show();
         }
 

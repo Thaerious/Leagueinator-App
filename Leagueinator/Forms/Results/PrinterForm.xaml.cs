@@ -21,14 +21,14 @@ namespace Leagueinator.Forms {
         public PrinterForm(EventRow eventRow) {
             InitializeComponent();
             this.SizeChanged += this.HndSizeChanged;
-            this.InnerCanvas.Pages = new Flex().DoLayout(ResultBuilder.BuildElement(eventRow));
+            this.InnerCanvas.Pages = new Flex().DoLayout(ResultPlusXMLBuilder.BuildElement(eventRow));
         }
 
         /// <summary>
         /// Attempt to fit the width of the inner to the width of the outer.
         /// The width will be equal to the outer width.
         /// The height will be proportional to the width keeping the ratio of Dims.Width : Dim.Height.
-        /// This is used to determine if the inner nees to pin to width or height.
+        /// This is used to determine if the inner needs to pin to width or height.
         /// </summary>
         /// <returns></returns>
         private void HndSizeChanged(object sender, SizeChangedEventArgs e) {

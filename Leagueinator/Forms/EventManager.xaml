@@ -67,6 +67,15 @@
                     <RadioButton GroupName="MatchType" IsChecked="True" Content="Teams" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <RadioButton GroupName="MatchType" Content="4321" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 </StackPanel>
+
+                <!-- Tournement Format -->
+                <Border BorderBrush="Black" BorderThickness="1" Height="100" Margin="10,0,10,0">
+                    <StackPanel Orientation="Vertical" Margin="5,0,5,0">
+                        <Label Grid.Column="0" Content="Format" Margin="3,3,3,3" HorizontalAlignment="Center" />
+                        <RadioButton Tag="assigned_ladder" x:Name="RadioAssignedLadder" GroupName="TourneyFormat" IsChecked="True" Content="Assigned Ladder" VerticalAlignment="Top" Margin="0,0,10,0" HorizontalAlignment="Center" Checked="HndTourneyFormatChecked"/>
+                    </StackPanel>
+                </Border>
+
             </StackPanel>
         </Grid>
 

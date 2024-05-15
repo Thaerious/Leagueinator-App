@@ -1,12 +1,11 @@
-﻿using Leagueinator.Model.Tables;
+﻿using Leagueinator.Model.Views;
 
-namespace Leagueinator.Model.Views {
+namespace Leagueinator.Forms.Results.Plus {
     
     /// <summary>
-    /// A view of the Match results for a single Team.
+    /// A summary of all match results for a specific team.
     /// </summary>
-    /// <param name="teamRow"></param>    
-    public record MatchSummary : IComparable<MatchSummary>{
+    public record SummaryResultsPlus : IComparable<SummaryResultsPlus>{
         public Team Team { get;}
         public int GamesPlayed { get; }
         public int Ends { get; }
@@ -18,10 +17,10 @@ namespace Leagueinator.Model.Views {
         public int PlusFor { get; }
         public int PlusAgainst { get; }
 
-        public MatchSummary(Team teamRow, IReadOnlyList<MatchResults> matchResults) {
-            this.Team = teamRow;
+        public SummaryResultsPlus(Team team, IReadOnlyList<MatchResultsPlus> matchResults) {
+            this.Team = team;
             
-            foreach (MatchResults matchResult in matchResults) {
+            foreach (MatchResultsPlus matchResult in matchResults) {
                 this.GamesPlayed++;
                 this.Ends += matchResult.Ends;
                 this.BowlsFor += matchResult.BowlsFor;
@@ -38,14 +37,14 @@ namespace Leagueinator.Model.Views {
             return $"[{Wins}, {Ends}, {BowlsFor}, {BowlsAgainst}, {PointsFor}, {PlusFor}, {PointsAgainst}, {PlusAgainst}]";
         }
 
-        public int CompareTo(MatchSummary? that) {
-            if (that is null) return 1;
+        public int CompareTo(SummaryResultsPlus? that) {
+            if (that is null) return -1;
 
-            if (this.Wins != that.Wins) return this.Wins - that.Wins;
-            if (this.PointsFor != that.PointsFor) return this.PointsFor - that.PointsFor;
-            if (this.PlusFor != that.PlusFor) return this.PlusFor - that.PlusFor;
-            if (this.PointsAgainst != that.PointsAgainst) return this.PointsAgainst - that.PointsAgainst;
-            if (this.PlusAgainst != that.PlusAgainst) return this.PlusAgainst - that.PlusAgainst;
+            if (that.Wins != this.Wins) return that.Wins - this.Wins;
+            if (that.PointsFor != this.PointsFor) return that.PointsFor - this.PointsFor;
+            if (that.PlusFor != this.PlusFor) return that.PlusFor - this.PlusFor;
+            if (that.PointsAgainst != this.PointsAgainst) return that.PointsAgainst - this.PointsAgainst;
+            if (that.PlusAgainst != this.PlusAgainst) return that.PlusAgainst - this.PlusAgainst;
             return 0;
         }
     }

@@ -249,7 +249,7 @@ namespace Model_Test {
             Assert.AreEqual(3, allTeams[new(teamRow2)].Count);
             Assert.AreEqual(1, allTeams[new(teamRow6)].Count);
 
-            foreach (MatchResults match in allTeams[new(teamRow2)]) {
+            foreach (MatchResultsPlus match in allTeams[new(teamRow2)]) {
                 Console.WriteLine(match);
             }
 
@@ -302,11 +302,11 @@ namespace Model_Test {
             Assert.AreEqual(3, allTeams[new(teamRow2)].Count);
             Assert.AreEqual(1, allTeams[new(teamRow6)].Count);
 
-            List<MatchResults> sorted = [.. allTeams[new(teamRow2)]];
+            List<MatchResultsPlus> sorted = [.. allTeams[new(teamRow2)]];
             sorted.Reverse();
-            //sorted.Sort(MatchResults.CompareByRound);
+            //sorted.Sort(MatchResultsPlus.CompareByRound);
 
-            foreach (MatchResults match in sorted) {
+            foreach (MatchResultsPlus match in sorted) {
                 Console.WriteLine(match);
             }
 

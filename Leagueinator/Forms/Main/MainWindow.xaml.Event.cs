@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Controls;
+using Leagueinator.Formats;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
 using System.Windows;
@@ -143,6 +144,21 @@ namespace Leagueinator.Forms.Main {
         private void InvokeRoundButton(DataButton<RoundRow>? button = null) {
             button ??= (DataButton<RoundRow>)this.RoundButtonContainer.Children[^1];
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
+
+        public void HndGenNextRound(object sender, RoutedEventArgs args) {
+            if (this.EventRow is null) return;
+
+            TournamentFormat? tournamentFormat = null;
+
+            switch (this.EventRow.Settings.Get("format").Value){
+                case "assigned_ladder":
+                    tournamentFormat = new AssignedLadder();
+                    break;
+            }
+
+            if (tournamentFormat == null) throw new NotSupportedException(this.EventRow.Settings.Get("format").Value);
+            RoundRow nextRound = tournamentFormat.GenerateNextRound(this.EventRow);
         }
     }
 }

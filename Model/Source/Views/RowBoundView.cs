@@ -54,7 +54,7 @@ namespace Leagueinator.Model.Views {
         }
 
         /// <summary>
-        /// Adds a new Row to Table B using the AddRow method (must be defined in the custom tables).
+        /// Adds a new TeamRow to Table B using the AddRow method (must be defined in the custom tables).
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
@@ -81,6 +81,16 @@ namespace Leagueinator.Model.Views {
         /// <exception cref="InvalidOperationException"></exception>
         public virtual bool Has(params object[] args) {
             return this.ChildTable.HasInstance([..this.ForeignKeyValue, ..args]);
+        }
+
+        /// <summary>
+        /// Retrieve a row if it exists, otherwise create the row.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public virtual ROW GetIf(params object[] args) {
+            if (!this.Has(args)) this.Add(args);
+            return this.Get(args);
         }
 
         /// <summary>

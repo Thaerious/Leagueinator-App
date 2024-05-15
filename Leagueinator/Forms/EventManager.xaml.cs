@@ -1,4 +1,5 @@
-﻿using Leagueinator.Model;
+﻿using Leagueinator.Formats;
+using Leagueinator.Model;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
 using System.Windows;
@@ -47,7 +48,7 @@ namespace Leagueinator.Forms {
 
             dateLabel.SetBinding(Label.ContentProperty, dateBinding);
             this.Children.Add(dateLabel);
-            
+
             Grid.SetColumn(this.Children[0], 0);
             Grid.SetColumn(this.Children[1], 1);
 
@@ -123,6 +124,7 @@ namespace Leagueinator.Forms {
             this.NamePanel.Children.Add(card);
             card.MouseDown += this.HndCardMouseDown;
 
+            eventRow.Settings.GetIf("format").Value = "assigned_ladder";
             eventRow.Settings.Add("lanes", "8");
             eventRow.Settings.Add("teams", "2");
             eventRow.Settings.Add("ends", "10");
@@ -155,6 +157,12 @@ namespace Leagueinator.Forms {
             if (this.Selected is null) return;
             int lanes = int.Parse(this.TxtLanes.Text);
             this.Selected.EventRow.Settings.Get("lanes").Value = $"{lanes}";
+        }
+
+        private void HndTourneyFormatChecked(object sender, RoutedEventArgs args) {
+            if (this.Selected is null) return;
+            if (sender is not RadioButton radioButton) return;
+            this.Selected.EventRow.Settings.GetIf("format").Value = (string)radioButton.Tag;
         }
 
         public League League { get; }

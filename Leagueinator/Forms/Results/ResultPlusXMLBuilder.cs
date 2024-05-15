@@ -1,18 +1,19 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using Leagueinator.Forms.Results.Plus;
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Printer;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace Leagueinator.Forms {
-    internal class ResultBuilder {
+    internal class ResultPlusXMLBuilder {
 
-        /// <summary>
-        /// Build a XML element with a results summary organized by team.
-        /// </summary>
+        /// <resultsPlus>
+        /// Build a XML element with a results resultsPlus organized by team.
+        /// </resultsPlus>
         /// <param name="eventRow"></param>
         /// <returns></returns>
         public static Element BuildElement(EventRow eventRow) {
@@ -21,19 +22,18 @@ namespace Leagueinator.Forms {
             Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamScore.xml");
             Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.ScoreRow.xml");
 
-            var matchResults = eventRow.MatchResults();
-            var matchSummaries = eventRow.MatchSummaries();
+            ReadOnlyDictionary<Team, ResultsPlus> resultsPlus = ResultsPlus.AllResults(eventRow);
+            List<ResultsPlus> sortedResults = [.. resultsPlus.Values];
+            sortedResults.Sort();
 
-            for (int i = 0; i < matchSummaries.Count; i++){
-                MatchSummary summary = matchSummaries[i];
+            for (int i = 0; i < sortedResults.Count; i++){
+                ResultsPlus currentResult = sortedResults[i];
                 Element xmlFragment = teamXML.Clone();
-                Team team = summary.Team;
-                IReadOnlyList<MatchResults> results = matchResults[team];
 
                 xmlFragment["placement"][0].InnerText = $"{i + 1}";
 
                 // Add names to the xml fragment.
-                foreach (string name in team.Players) {
+                foreach (string name in currentResult.Team.Players) {
                     xmlFragment["names"][0].AddChild(
                         new Element {
                             TagName = "Name",
@@ -42,8 +42,8 @@ namespace Leagueinator.Forms {
                     );
                 }
 
-                // Add match summaries to the xml fragment.
-                foreach (MatchResults match in results) {
+                // Add match sortedResults to the xml fragment.
+                foreach (MatchResultsPlus match in currentResult.MatchResults) {
                     Element row = rowXML.Clone();
 
                     row["index"][0].InnerText = (match.Round + 1).ToString();
@@ -62,16 +62,18 @@ namespace Leagueinator.Forms {
                 Element sumRow = rowXML.Clone();
                 sumRow["index"][0].InnerText = "Σ";
                 sumRow["lane"][0].InnerText = "";
-                sumRow["ends_played"][0].InnerText = summary.Ends.ToString();
-                sumRow["bowls_for"][0].InnerText = summary.BowlsFor.ToString();
-                sumRow["bowls_against"][0].InnerText = summary.BowlsAgainst.ToString();
+                sumRow["ends_played"][0].InnerText = currentResult.Summary.Ends.ToString();
+                sumRow["bowls_for"][0].InnerText = currentResult.Summary.BowlsFor.ToString();
+                sumRow["bowls_against"][0].InnerText = currentResult.Summary.BowlsAgainst.ToString();
                 sumRow["tie"][0].InnerText = "";
-                sumRow["result"][0].InnerText = summary.Wins.ToString();
-                sumRow["score_for"][0].InnerText = $"{summary.PointsFor}+{summary.PlusFor}";
-                sumRow["score_against"][0].InnerText = $"{summary.PointsAgainst}+{summary.PlusAgainst}";
+                sumRow["result"][0].InnerText = currentResult.Summary.Wins.ToString();
+                sumRow["score_for"][0].InnerText = $"{currentResult.Summary.PointsFor}+{currentResult.Summary.PlusFor}";
+                sumRow["score_against"][0].InnerText = $"{currentResult.Summary.PointsAgainst}+{currentResult.Summary.PlusAgainst}";
 
                 xmlFragment["rounds"][0].AddChild(sumRow);
                 docroot["page"][0].AddChild(xmlFragment);
+
+                Debug.WriteLine(sumRow.ToXML());
             }
 
             styles.AssignTo(docroot);
