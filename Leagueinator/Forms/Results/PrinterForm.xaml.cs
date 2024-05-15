@@ -6,6 +6,7 @@ using PrintDialog = System.Windows.Controls.PrintDialog;
 using Size = System.Windows.Size;
 using System.Printing;
 using Leagueinator.Model.Tables;
+using System.Diagnostics;
 
 namespace Leagueinator.Forms {
     /// <summary>
@@ -13,6 +14,24 @@ namespace Leagueinator.Forms {
     /// </summary>
     public partial class PrinterForm : Window {
         private readonly Size Dims = new(850, 1100);
+        private int _page = 0;
+
+        private int Page {
+            get => _page;
+            set {
+                if (value < 0 || value > this.InnerCanvas.LastPage) return;
+                this._page = value;
+                this.InnerCanvas.SetPage(value);
+
+                Debug.WriteLine($"{value} {this.InnerCanvas.LastPage}");
+
+                if (value <= 0) this.ButPrev.IsEnabled = false;
+                else this.ButPrev.IsEnabled = true;
+
+                if (value >= this.InnerCanvas.LastPage) this.ButNext.IsEnabled = false;
+                else this.ButNext.IsEnabled = true;
+            }
+        }
 
         /// <summary>
         /// Create a new printer form for the specified eventRow.
@@ -52,7 +71,7 @@ namespace Leagueinator.Forms {
                 this.InnerCanvas.Height = outerHeight;
             }
 
-            this.InnerCanvas.SetPage(0);
+            this.Page = 0;
         }
 
         /// <summary>
@@ -77,6 +96,14 @@ namespace Leagueinator.Forms {
                     dialog.PrintVisual(image, "Printing Results");
                 }
             }
+        }
+
+        private void HndClickPrev(object sender, RoutedEventArgs e) {
+            this.Page = this.Page - 1;
+        }
+
+        private void HndClickNext(object sender, RoutedEventArgs e) {
+            this.Page = this.Page + 1;
         }
     }
 }

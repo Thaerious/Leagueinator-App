@@ -72,8 +72,6 @@ namespace Leagueinator.Forms {
 
                 xmlFragment["rounds"][0].AddChild(sumRow);
                 docroot["page"][0].AddChild(xmlFragment);
-
-                Debug.WriteLine(sumRow.ToXML());
             }
 
             styles.AssignTo(docroot);

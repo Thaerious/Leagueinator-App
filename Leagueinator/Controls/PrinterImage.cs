@@ -13,6 +13,8 @@ namespace Leagueinator.Controls {
             set => this.Bitmaps = CreateBitmaps(value);
         }
 
+        public int LastPage { get => this.Bitmaps.Count - 1; }   
+
         public void SetPage(int index) {
             BitmapSource bitmapSource = ConvertBitmapToBitmapSource(this.Bitmaps[index]);
             this.Source = bitmapSource;            
@@ -27,7 +29,6 @@ namespace Leagueinator.Controls {
         public static List<Bitmap> CreateBitmaps(List<RenderNode> pages) {
             List<Bitmap> list = [];
 
-            int i = 0;
             foreach (RenderNode page in pages) {
                 if ((int)page.Size.Width <= 0) throw new InvalidOperationException();
                 if ((int)page.Size.Height <= 0) throw new InvalidOperationException();
