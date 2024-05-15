@@ -1,11 +1,14 @@
 ﻿using Leagueinator.Model.Tables;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Leagueinator.Model.Views {
     public class Team(TeamRow teamRow) : IEquatable<Team> {
         public TeamRow TeamRow { get; } = teamRow;
 
         /// <summary>
-        /// A read only list of players on the team.
+        /// A read only prevLanes of players on the team.
         /// Recalculates with every call.
         /// </summary>
         public IReadOnlySet<string> Players {
@@ -16,6 +19,25 @@ namespace Leagueinator.Model.Views {
                 }
                 return players;
             }
+        }
+
+        public HashSet<int> PrevLanes(RoundRow skip) {
+            HashSet<int> prevLanes = [];
+
+            EventRow eventRow = this.TeamRow.Match.Round.Event;
+            foreach (RoundRow roundRow in eventRow.Rounds) {
+                if (roundRow.Equals(skip)) continue;
+                foreach (MatchRow matchRow in roundRow.Matches) {
+                    foreach (TeamRow teamRow in matchRow.Teams) {
+                        foreach (MemberRow memberRow in teamRow.Members) {
+                            if (this.Players.Contains(memberRow.Player)) {
+                                prevLanes.Add(matchRow.Lane);
+                            }
+                        }
+                    }
+                }
+            }
+            return prevLanes;
         }
 
         public override bool Equals(object? @object) {

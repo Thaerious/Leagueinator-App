@@ -4,14 +4,6 @@ using System.Data;
 namespace Leagueinator.Model.Tables {
 
     public class MatchRow(DataRow dataRow) : CustomRow(dataRow) {
-        public DataView Members {
-            get {
-                DataView players = new DataView(this.League.MemberTable) {
-                    RowFilter = $"{MemberTable.COL.MATCH} = {this.UID}"
-                };
-                return players;
-            }
-        }
 
         public RowBoundView<TeamRow> Teams {
             get {

@@ -115,14 +115,20 @@ namespace Leagueinator.Controls {
             if (sender is not CheckBox checkBox) return;
 
             if (checkBox.IsChecked == true) {
-                if (checkBox == this.CheckTie0) this.CheckTie1.IsChecked = false;
-                else this.CheckTie0.IsChecked = false;
-                this.MatchRow.Teams[0]!.Tie = 1;
-                this.MatchRow.Teams[1]!.Tie = 0;
+                if (checkBox == this.CheckTie0) {
+                    this.CheckTie1.IsChecked = false;
+                    this.MatchRow.Teams[0]!.Tie = 1;
+                    this.MatchRow.Teams[1]!.Tie = -1;
+                }
+                else {
+                    this.CheckTie0.IsChecked = false;
+                    this.MatchRow.Teams[0]!.Tie = -1;
+                    this.MatchRow.Teams[1]!.Tie = 1;
+                }
             }
             else {
-                if (checkBox == this.CheckTie0) this.MatchRow.Teams[0]!.Tie = 0;
-                if (checkBox == this.CheckTie1) this.MatchRow.Teams[1]!.Tie = 0;
+                this.MatchRow.Teams[0]!.Tie = 0;
+                this.MatchRow.Teams[1]!.Tie = 0;
             }
         }
     }

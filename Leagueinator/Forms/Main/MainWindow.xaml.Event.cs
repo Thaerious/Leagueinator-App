@@ -57,7 +57,9 @@ namespace Leagueinator.Forms.Main {
             this.CardStackPanel.Size = roundRow.Matches.Count;
 
             for (int i = 0; i < roundRow.Matches.Count; i++) {
-                this.CardStackPanel[i].MatchRow = roundRow.Matches[i];
+                MatchRow? matchRow = roundRow.Matches[i];
+                if (matchRow is null) continue;
+                this.CardStackPanel[matchRow.Lane].MatchRow = matchRow;
             }
         }
 
@@ -112,7 +114,7 @@ namespace Leagueinator.Forms.Main {
             RoundRow roundRow = this.EventRow.Rounds.Add();
             roundRow.PopulateMatches();
             this.AddRoundButton(roundRow);
-            this.InvokeRoundButton();
+            this.InvokeLastRoundButton();
         }
 
 
@@ -132,7 +134,7 @@ namespace Leagueinator.Forms.Main {
 
             // Make sure there is at least one button and select the last one.
             if (this.EventRow.Rounds.Count == 0) this.HndClickAddRound(null, null);
-            this.InvokeRoundButton();
+            this.InvokeLastRoundButton();
 
             // Rename buttons
             int i = 1;
@@ -141,7 +143,7 @@ namespace Leagueinator.Forms.Main {
             }
         }
 
-        private void InvokeRoundButton(DataButton<RoundRow>? button = null) {
+        private void InvokeLastRoundButton(DataButton<RoundRow>? button = null) {
             button ??= (DataButton<RoundRow>)this.RoundButtonContainer.Children[^1];
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
@@ -159,6 +161,8 @@ namespace Leagueinator.Forms.Main {
 
             if (tournamentFormat == null) throw new NotSupportedException(this.EventRow.Settings.Get("format").Value);
             RoundRow nextRound = tournamentFormat.GenerateNextRound(this.EventRow);
+            this.AddRoundButton(nextRound);
+            this.InvokeLastRoundButton();
         }
     }
 }

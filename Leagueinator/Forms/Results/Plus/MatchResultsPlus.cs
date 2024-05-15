@@ -82,6 +82,7 @@ namespace Leagueinator.Forms.Results.Plus {
             if (this.BowlsFor > BowlsAgainst) return Plus.Result.Win;
             if (this.BowlsFor < BowlsAgainst) return Plus.Result.Loss;
             if (this.TieBreaker > 0) return Plus.Result.Win;
+            if (this.TieBreaker < 0) return Plus.Result.Loss;
 
             foreach (TeamRow t in TeamRow.Match.Teams) {
                 if (!t.Equals(TeamRow)) continue;
