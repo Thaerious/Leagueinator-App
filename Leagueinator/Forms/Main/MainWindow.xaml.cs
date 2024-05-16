@@ -6,24 +6,13 @@ using System.Windows;
 using System.Windows.Input;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
+using Leagueinator.Formats;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-
-        private League _league = NewLeague();
-        public League League {
-            get => this._league;
-            set {
-                this.League.LeagueUpdate -= this.HndLeagueUpdate;
-                this._league = value;
-                this.EventRow = this.League.EventTable.GetLast();
-                value.LeagueUpdate += this.HndLeagueUpdate;
-            }
-        }
-
         public MainWindow() {
             InitializeComponent();
             SaveState.StateChanged += this.HndStateChanged;
@@ -32,6 +21,23 @@ namespace Leagueinator.Forms.Main {
             this.EventRow = this.League.EventTable.GetLast();
         }
 
+        public League League {
+            get => this._league;
+            set {
+                this.League.LeagueUpdate -= this.HndLeagueUpdate;
+                this._league = value;
+                this.EventRow = this.League.EventTable.GetLast();
+                value.LeagueUpdate += this.HndLeagueUpdate;
+
+                switch (this.EventRow.Settings.Get("format").Value) {
+                    case "assigned_ladder":
+                        this.TournamentFormat = new AssignedLadder();
+                        break;
+                }
+            }
+        }
+
+        internal TournamentFormat TournamentFormat { get; private set;} = new AssignedLadder();
         /// <summary>
         /// Indirectly triggered when a change is made to one of the underlying tables.
         /// </summary>
@@ -204,5 +210,7 @@ namespace Leagueinator.Forms.Main {
 
             public static string Filename { get => _filename; set => _filename = value; }
         }
+
+        private League _league = NewLeague();        
     }
 }

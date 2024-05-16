@@ -110,10 +110,9 @@ namespace Leagueinator.Forms.Main {
         private void HndClickAddRound(object? __, RoutedEventArgs? _) {
             if (this.EventRow is null) return;
             this.ClearFocus();
-
-            RoundRow roundRow = this.EventRow.Rounds.Add();
-            roundRow.PopulateMatches();
-            this.AddRoundButton(roundRow);
+            if (this.EventRow is null) return;
+            RoundRow nextRound = this.TournamentFormat.GenerateNextRound(this.EventRow);
+            this.AddRoundButton(nextRound);
             this.InvokeLastRoundButton();
         }
 
@@ -148,19 +147,19 @@ namespace Leagueinator.Forms.Main {
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
 
+        public void HndGenEmptyRound(object sender, RoutedEventArgs e) {
+            if (this.EventRow is null) return;
+            this.ClearFocus();
+            RoundRow roundRow = this.EventRow.Rounds.Add();
+            roundRow.PopulateMatches();
+            this.AddRoundButton(roundRow);
+            this.InvokeLastRoundButton();
+        }
+
         public void HndGenNextRound(object sender, RoutedEventArgs args) {
             if (this.EventRow is null) return;
-
-            TournamentFormat? tournamentFormat = null;
-
-            switch (this.EventRow.Settings.Get("format").Value){
-                case "assigned_ladder":
-                    tournamentFormat = new AssignedLadder();
-                    break;
-            }
-
-            if (tournamentFormat == null) throw new NotSupportedException(this.EventRow.Settings.Get("format").Value);
-            RoundRow nextRound = tournamentFormat.GenerateNextRound(this.EventRow);
+            this.ClearFocus();
+            RoundRow nextRound = this.TournamentFormat.GenerateNextRound(this.EventRow);
             this.AddRoundButton(nextRound);
             this.InvokeLastRoundButton();
         }
