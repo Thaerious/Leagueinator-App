@@ -33,7 +33,7 @@ namespace Leagueinator.Forms.Main {
         }
 
         /// <summary>
-        /// Indirectly triggered when a change is made to the underlying model.
+        /// Indirectly triggered when a change is made to one of the underlying tables.
         /// </summary>
         /// <param name="isSaved">The new state isSaved</param>
         private void HndStateChanged(object? sender, bool isSaved) {
@@ -51,17 +51,16 @@ namespace Leagueinator.Forms.Main {
 
         private void HndCardStackPanelReorder(CardStackPanel panel, ReorderArgs args) {
             if (this.CurrentRoundRow is null) return;
+            Debug.WriteLine(this.CurrentRoundRow.Matches.PrettyPrint());
 
-            Dictionary<int, MatchRow> matchRows = [];
+            this.League.EnforceConstraints = false;
+            this.CurrentRoundRow.Matches
+                .Where(match => args.ReorderMap.ContainsKey(match.Lane))
+                .ToList()
+                .ForEach(match => match.Lane = args.ReorderMap[match.Lane]);
+            this.League.EnforceConstraints = true;
 
-            foreach (int key in args.ReorderMap.Keys) {
-                MatchRow? matchRow = this.CurrentRoundRow.Matches.Get(key);
-                if (matchRow is not null) matchRows[matchRow.Lane] = matchRow;
-            }
-
-            foreach (int key in args.ReorderMap.Keys) {
-                matchRows[key].Lane = args.ReorderMap[key];
-            }
+            Debug.WriteLine(this.CurrentRoundRow.Matches.PrettyPrint());
         }
 
         private void HndEventManagerClick(object sender, RoutedEventArgs e) {
@@ -185,6 +184,10 @@ namespace Leagueinator.Forms.Main {
             form.Show();
         }
 
+        private void HndMenuClick(object sender, RoutedEventArgs e) {
+            this.Focus();
+        }
+
         static class SaveState {
             public delegate void StateChangedHandler(object? source, bool IsSaved);
             public static event StateChangedHandler StateChanged = delegate { };
@@ -200,10 +203,6 @@ namespace Leagueinator.Forms.Main {
             }
 
             public static string Filename { get => _filename; set => _filename = value; }
-        }
-
-        private void HndMenuClick(object sender, RoutedEventArgs e) {
-            this.Focus();
         }
     }
 }

@@ -8,11 +8,27 @@ using System.Windows.Input;
 
 namespace Leagueinator.Controls {
 
+
+    /// <summary>
+    /// The event arguments for a reorder event (CardStackPanelReorder).
+    /// </summary>
+    /// <param name="ReorderMap">A map of old index to new index.</param>
     public record ReorderArgs(Dictionary<int, int> ReorderMap);
 
+    /// <summary>
+    /// Delegate for invoking reorder events (CardStackPanelReorder).
+    /// </summary>
+    /// <param name="panel">The panel that the event originated from</param>
+    /// <param name="args"></param>
     public delegate void CardStackPanelReorderHandler(CardStackPanel panel, ReorderArgs args);
 
+    /// <summary>
+    /// Manage Match Card elements so that they can be drag dropped to another index.
+    /// </summary>
     public class CardStackPanel : StackPanel, IEnumerable<MatchCard> {
+        /// <summary>
+        /// Trigger's when a child element is relocated.
+        /// </summary>
         public event CardStackPanelReorderHandler CardStackPanelReorder = delegate { };
 
         private Point LastPoint = new();
@@ -26,6 +42,10 @@ namespace Leagueinator.Controls {
             }
         }
 
+        /// <summary>
+        /// The number of permitted child elements.
+        /// The sets or resets the number of card holders.
+        /// </summary>
         public int Size {
             get {
                 return this.Children.Count;
@@ -69,6 +89,7 @@ namespace Leagueinator.Controls {
             CardTarget target = matchCard.Ancestors<CardTarget>()[0];
             this.StartingIndex = this.Children.IndexOf(target);
         }
+
         private void HndMouseUp(object sender, MouseButtonEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             if (matchCard != Active) return;
@@ -102,6 +123,7 @@ namespace Leagueinator.Controls {
 
             this.CardStackPanelReorder.Invoke(this, new(reorderMap));
         }
+
         private void HndMouseLeave(object sender, MouseEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             if (matchCard != Active) return;
@@ -113,6 +135,7 @@ namespace Leagueinator.Controls {
                 Canvas.SetTop(child.Children[0], 0);
             }
         }
+
         private void HndMouseMove(object sender, MouseEventArgs e) {
             if (sender is not MatchCard matchCard) return;
             if (Active is null) return;
