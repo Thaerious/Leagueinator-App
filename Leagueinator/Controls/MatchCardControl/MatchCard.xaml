@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="Leagueinator.Controls.MatchCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Leagueinator.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="130" d:DesignWidth="500"
+             Height="120"           
+             >
+
+    <Border BorderBrush="Black" BorderThickness="2" Margin="5">
+        <Grid Background="green">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Team 1 Card -->
+            <local:TeamCard 
+                x:Name="Team0" TeamIndex="0"
+                BorderBrush="Black" BorderThickness="0 0 1 0" Grid.Column="0"  
+            >
+                <Grid Background="green">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+
+               <!-- Player Container -->
+                    <StackPanel VerticalAlignment="Center" Grid.Column="0" Margin="10 10 0 10">
+                        <local:PlayerTextBox Padding="2" />
+                        <local:PlayerTextBox Padding="2"/>
+                        <local:PlayerTextBox Padding="2"/>
+                        <local:PlayerTextBox Padding="2"/>
+                    </StackPanel>
+
+                    <!-- Team 1 Bowls -->
+                    <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="10">
+                        <TextBlock HorizontalAlignment="Center" Text="Tie" FontFamily="Arial Black" FontSize="10" Margin="0,0,0,3"/>
+                        <CheckBox x:Name="CheckTie0" Margin="0,0,0,10" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.548,-0.431" Checked="HndCheckTie"/>
+                        <TextBox x:Name="TxtBowls0" Padding="2" Text="{Binding Bowls}" Width="30" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="Bowls" FontFamily="Arial Black" FontSize="10" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </local:TeamCard>
+
+            <!-- Ends -->
+            <StackPanel 
+                VerticalAlignment="Center" HorizontalAlignment="Center"
+                Width="50"
+                Grid.Column="1" Margin="10,50,10,10" 
+            >
+                <TextBox x:Name="TxtEnds" Padding="2" Text="{Binding Ends}" Width="30" TextAlignment="Center"/>
+                <TextBlock HorizontalAlignment="Center" Text="Ends" Margin="0,3,0,0" FontFamily="Arial Black" FontSize="10"/>
+            </StackPanel>
+
+            <!-- Team 2 Card -->
+            <local:TeamCard 
+                x:Name="Team1" TeamIndex="0"
+                BorderBrush="Black" BorderThickness="1 0 0 0" Grid.Column="4"                  
+>
+                <Grid Background="green">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Team 2 Bowls -->
+                    <StackPanel VerticalAlignment="Center" Grid.Column="0" Margin="10">
+                        <TextBlock HorizontalAlignment="Center" Text="Tie" FontFamily="Arial Black" FontSize="10" Margin="0,0,0,3"/>
+                        <CheckBox x:Name="CheckTie1" Margin="0,0,0,10" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.548,-0.431"  Checked="HndCheckTie"/>
+                        <TextBox x:Name="TxtBowls1" Padding="2"  Text="{Binding Bowls}" Width="30" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="Bowls" Margin="0,3,0,0" FontFamily="Arial Black" FontSize="10"/>
+                    </StackPanel>
+
+                    <!-- Player Container -->
+                    <StackPanel 
+                         VerticalAlignment="Center" Grid.Column="1" Margin="0 10 10 10"
+                    >
+                        <local:PlayerTextBox Padding="2" />
+                        <local:PlayerTextBox Padding="2"/>
+                        <local:PlayerTextBox Padding="2"/>
+                        <local:PlayerTextBox Padding="2"/>
+                    </StackPanel>
+                </Grid>
+            </local:TeamCard>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Data;
+using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
+    [Serializable]
     public class CustomRow : INotifyPropertyChanged {
 
         public CustomRow(DataRow dataRow) {
@@ -46,6 +48,10 @@ namespace Leagueinator.Model {
 
         public override int GetHashCode() {
             return this.DataRow.GetHashCode();
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+            throw new NotImplementedException();
         }
     }
 }

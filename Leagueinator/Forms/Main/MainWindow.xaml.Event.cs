@@ -53,14 +53,16 @@ namespace Leagueinator.Forms.Main {
         /// </summary>
         /// <param name="roundRow"></param>
         private void PopulateMatchCards(RoundRow roundRow) {
-            if (this.EventRow is null) throw new NullReferenceException();            
-            this.CardStackPanel.Size = roundRow.Matches.Count;
+            if (this.EventRow is null) throw new NullReferenceException();
+            this.CardStackPanel.Children.Clear();
 
             for (int i = 0; i < roundRow.Matches.Count; i++) {
-                MatchRow? matchRow = roundRow.Matches[i];
-                if (matchRow is null) continue;
-                this.CardStackPanel[matchRow.Lane].MatchRow = matchRow;
-            }
+                this.CardStackPanel.Children.Add(
+                    new MatchCard() {
+                        MatchRow = roundRow.Matches[i]!
+                    }
+                );
+            };
         }
 
         /// <summary>

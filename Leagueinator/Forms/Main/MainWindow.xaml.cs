@@ -16,7 +16,7 @@ namespace Leagueinator.Forms.Main {
         public MainWindow() {
             InitializeComponent();
             SaveState.StateChanged += this.HndStateChanged;
-            this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
+            //this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
             this._league.LeagueUpdate += this.HndLeagueUpdate;
             this.EventRow = this.League.EventTable.GetLast();
         }

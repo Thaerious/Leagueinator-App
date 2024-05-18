@@ -1,8 +1,11 @@
-﻿using Leagueinator.Model.Tables;
+﻿using Leagueinator.Extensions;
+using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
@@ -31,24 +34,12 @@ namespace Leagueinator.Controls {
 
                 if (MatchRow.Teams.Count != 2) throw new NullReferenceException("MatchRow in MatchCard must have exactly 2 teams");
 
-                for (int i = 0; i < MatchRow.Teams[0]!.Members.Count; i++) {
-                    MemberRow member = MatchRow.Teams[0]!.Members[i]!;
-                    MemoryTextBox textBox = (MemoryTextBox)this.Team0.Children[i];
-                    textBox.Text = member.Player;
-                }
-
-                for (int i = 0; i < MatchRow.Teams[1]!.Members.Count; i++) {
-                    MemberRow member = MatchRow.Teams[1]!.Members[i]!;
-                    MemoryTextBox textBox = (MemoryTextBox)this.Team1.Children[i];
-                    textBox.Text = member.Player;
-                }
-
                 this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;
                 this.CheckTie1.IsChecked = MatchRow.Teams[1]!.Tie == 1;
 
                 this.DataContext = MatchRow;
-                this.TxtBowls0.DataContext = MatchRow.Teams[0];
-                this.TxtBowls1.DataContext = MatchRow.Teams[1];
+                this.Team0.TeamRow = MatchRow.Teams[0];
+                this.Team1.TeamRow = MatchRow.Teams[1];
                 this.TxtEnds.DataContext = MatchRow;
             }
         }
@@ -68,7 +59,7 @@ namespace Leagueinator.Controls {
                 e.TextBox.Text = e.Before;
             }
             else {
-                TeamStackPanel parent = (TeamStackPanel)e.TextBox.Parent;
+                TeamCard parent = e.TextBox.Ancestors<TeamCard>()[0];
 
                 // Remove new name from the idle table
                 if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
@@ -100,8 +91,8 @@ namespace Leagueinator.Controls {
         }
 
         public void Clear() {
-            foreach (MemoryTextBox textBox in this.Team0.Children) textBox.Text = string.Empty;
-            foreach (MemoryTextBox textBox in this.Team1.Children) textBox.Text = string.Empty;
+            this.Team0.Clear();
+            this.Team1.Clear();
             this.TxtBowls0.Text = "0";
             this.TxtBowls1.Text = "0";
             this.TxtEnds.Text = "0";
@@ -129,6 +120,6 @@ namespace Leagueinator.Controls {
                 this.MatchRow.Teams[0]!.Tie = 0;
                 this.MatchRow.Teams[1]!.Tie = 0;
             }
-        }
+        } 
     }
 }
