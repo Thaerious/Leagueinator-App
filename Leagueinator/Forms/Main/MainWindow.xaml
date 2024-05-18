@@ -49,6 +49,7 @@
             <MenuItem Header="Action">
                 <MenuItem Header="Generate Next Round" Click="HndGenNextRound"/>
                 <MenuItem Header="Add Empty Round" Click="HndGenEmptyRound"/>
+                <MenuItem Header="Copy Round" Click="HndCopyRnd"/>
             </MenuItem>
 
             <!-- Result (Report) Menu -->

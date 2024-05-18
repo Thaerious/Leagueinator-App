@@ -48,8 +48,8 @@ namespace Leagueinator.Forms.Main {
         }
 
         /// <summary>
-        /// Fill match cards with values from "roundRow".
-        /// Clears all match cards that does not have a value in "roundRow".
+        /// Fill matchRow cards with values from "roundRow".
+        /// Clears all matchRow cards that does not have a value in "roundRow".
         /// </summary>
         /// <param name="roundRow"></param>
         private void PopulateMatchCards(RoundRow roundRow) {
@@ -162,6 +162,27 @@ namespace Leagueinator.Forms.Main {
             if (this.EventRow is null) return;
             this.ClearFocus();
             RoundRow nextRound = this.TournamentFormat.GenerateNextRound(this.EventRow);
+            this.AddRoundButton(nextRound);
+            this.InvokeLastRoundButton();
+        }
+
+        public void HndCopyPrevRnd(object sender, RoutedEventArgs args) {
+            if (this.EventRow is null) return;
+            if (this.CurrentRoundRow is null) return;
+            this.ClearFocus();
+            RoundRow nextRound = this.EventRow.Rounds.Add();
+            nextRound.PopulateMatches();
+
+            for (int m = 0; m < this.CurrentRoundRow.Matches.Count; m++) {
+                MatchRow matchRow = this.CurrentRoundRow.Matches[m]!;
+                for (int t = 0; t < matchRow.Teams.Count; t++) {
+                    TeamRow teamRow = matchRow.Teams[t]!;
+                    foreach (MemberRow member in teamRow.Members) {
+                        nextRound.Matches[m]!.Teams[t]!.Members.Add(member.Player);
+                    }
+                }
+            }
+
             this.AddRoundButton(nextRound);
             this.InvokeLastRoundButton();
         }
