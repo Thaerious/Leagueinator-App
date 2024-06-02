@@ -53,8 +53,9 @@
             </MenuItem>
 
             <!-- Result (Report) Menu -->
-            <MenuItem Header="View" Click="HndViewResults">
-                <MenuItem Header="Results"/>
+            <MenuItem Header="View">
+                <MenuItem Header="Results By Team" Click="HndViewResults"/>
+                <MenuItem Header="Results By Player"/>
             </MenuItem>
 
             <!-- Debug (Tables) Menu -->

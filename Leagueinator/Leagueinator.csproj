@@ -35,4 +35,10 @@
     <ProjectReference Include="..\Printer\Printer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Controls\MatchCards\MatchCard4321\MatchCard4321.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

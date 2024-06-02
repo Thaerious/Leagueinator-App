@@ -16,28 +16,10 @@ namespace Leagueinator.Forms.Main {
         public MainWindow() {
             InitializeComponent();
             SaveState.StateChanged += this.HndStateChanged;
-            //this.CardStackPanel.CardStackPanelReorder += this.HndCardStackPanelReorder;
             this._league.LeagueUpdate += this.HndLeagueUpdate;
             this.EventRow = this.League.EventTable.GetLast();
         }
 
-        public League League {
-            get => this._league;
-            set {
-                this.League.LeagueUpdate -= this.HndLeagueUpdate;
-                this._league = value;
-                this.EventRow = this.League.EventTable.GetLast();
-                value.LeagueUpdate += this.HndLeagueUpdate;
-
-                switch (this.EventRow.Settings.Get("format").Value) {
-                    case "assigned_ladder":
-                        this.TournamentFormat = new AssignedLadder();
-                        break;
-                }
-            }
-        }
-
-        internal TournamentFormat TournamentFormat { get; private set;} = new AssignedLadder();
         /// <summary>
         /// Indirectly triggered when a change is made to one of the underlying tables.
         /// </summary>
@@ -53,20 +35,6 @@ namespace Leagueinator.Forms.Main {
         /// <param name="IsSaved">The new state isSaved</param>
         private void HndLeagueUpdate(object? sender, EventArgs? e) {
             SaveState.ChangeState(sender, false);
-        }
-
-        private void HndCardStackPanelReorder(CardStackPanel panel, ReorderArgs args) {
-            if (this.CurrentRoundRow is null) return;
-            Debug.WriteLine(this.CurrentRoundRow.Matches.PrettyPrint());
-
-            this.League.EnforceConstraints = false;
-            this.CurrentRoundRow.Matches
-                .Where(match => args.ReorderMap.ContainsKey(match.Lane))
-                .ToList()
-                .ForEach(match => match.Lane = args.ReorderMap[match.Lane]);
-            this.League.EnforceConstraints = true;
-
-            Debug.WriteLine(this.CurrentRoundRow.Matches.PrettyPrint());
         }
 
         private void HndEventManagerClick(object sender, RoutedEventArgs e) {
@@ -123,7 +91,7 @@ namespace Leagueinator.Forms.Main {
             return league;
         }
 
-        public void ClearFocus() {
+        private void ClearFocus() {
             FocusManager.SetFocusedElement(this, null);
         }
 
@@ -209,8 +177,6 @@ namespace Leagueinator.Forms.Main {
             }
 
             public static string Filename { get => _filename; set => _filename = value; }
-        }
-
-        private League _league = NewLeague();        
+        } 
     }
 }

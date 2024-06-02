@@ -23,8 +23,6 @@ namespace Leagueinator.Forms {
                 this._page = value;
                 this.InnerCanvas.SetPage(value);
 
-                Debug.WriteLine($"{value} {this.InnerCanvas.LastPage}");
-
                 if (value <= 0) this.ButPrev.IsEnabled = false;
                 else this.ButPrev.IsEnabled = true;
 

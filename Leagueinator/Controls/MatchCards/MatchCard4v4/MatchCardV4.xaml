@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Leagueinator.Controls.MatchCard"
+﻿<local:MatchCard x:Class="Leagueinator.Controls.MatchCardV4"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -58,7 +58,7 @@
 
             <!-- Team 2 Card -->
             <local:TeamCard 
-                x:Name="Team1" TeamIndex="0"
+                x:Name="Team1" TeamIndex="1"
                 BorderBrush="Black" BorderThickness="1 0 0 0" Grid.Column="4"                  
 >
                 <Grid Background="green">
@@ -88,4 +88,4 @@
             </local:TeamCard>
         </Grid>
     </Border>
-</UserControl>
+</local:MatchCard>

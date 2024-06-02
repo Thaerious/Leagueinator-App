@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.10.34825.169
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leagueinator", "Leagueinator.csproj", "{5BBE6CF2-1661-458B-85F4-41F902E76BF0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{03A0D543-7B21-4216-B2ED-A95A25E99DD0} = {03A0D543-7B21-4216-B2ED-A95A25E99DD0}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "..\Model\Model.csproj", "{BF3A9EA1-7E2B-4196-8F2E-75E319726F1C}"
 EndProject
@@ -24,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_Style", "..\Tests\Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualUnitTest", "..\Tests\VisualUnitTest\VisualUnitTest.csproj", "{A2E753D5-5119-4074-8DE4-92AC2DD4EF3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatchCard", "..\MatchCard\MatchCard.csproj", "{D16FEE86-ACDF-4203-BF6F-3826B82C51F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchCard", "..\MatchCard\MatchCard.csproj", "{D16FEE86-ACDF-4203-BF6F-3826B82C51F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

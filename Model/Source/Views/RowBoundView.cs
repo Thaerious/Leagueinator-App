@@ -1,8 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Data;
-using System.Reflection;
-using System.Runtime.ExceptionServices;
-using Leagueinator.Utility;
 
 namespace Leagueinator.Model.Views {
     /// <summary>

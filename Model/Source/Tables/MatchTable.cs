@@ -1,7 +1,9 @@
 ﻿using Leagueinator.Model.Views;
 using System.Data;
+using static Leagueinator.Model.Tables.MatchRow;
 
 namespace Leagueinator.Model.Tables {
+    public enum MatchType { VS1, VS2, VS3, VS4, A4321 };
 
     public class MatchRow(DataRow dataRow) : CustomRow(dataRow) {
 
@@ -30,6 +32,11 @@ namespace Leagueinator.Model.Tables {
             get => (int)this[MatchTable.COL.ENDS];
             set => this[MatchTable.COL.ENDS] = value;
         }
+
+        public MatchType MatchType {
+            get => (MatchType)this[MatchTable.COL.FORMAT];
+            set => this[MatchTable.COL.FORMAT] = value;
+        }
     }
 
     public class MatchTable : LeagueTable<MatchRow> {
@@ -48,6 +55,7 @@ namespace Leagueinator.Model.Tables {
             public static readonly string ROUND = "round";
             public static readonly string LANE = "lane";
             public static readonly string ENDS = "ends";
+            public static readonly string FORMAT = "format";
         }
 
         public MatchRow AddRow(int round, int lane, int ends) {
@@ -119,6 +127,12 @@ namespace Leagueinator.Model.Tables {
                 DataType = typeof(int),
                 ColumnName = COL.ENDS,
                 DefaultValue = 10
+            });
+
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(MatchType),
+                ColumnName = COL.FORMAT,
+                DefaultValue = MatchType.VS4
             });
 
             // TODO re-enable, it mucks with rearranging lanes.

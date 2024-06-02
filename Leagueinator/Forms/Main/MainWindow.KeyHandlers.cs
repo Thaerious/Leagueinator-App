@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Controls;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Leagueinator.Forms.Main {

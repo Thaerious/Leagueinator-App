@@ -1,7 +1,6 @@
 ﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

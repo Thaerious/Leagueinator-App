@@ -1,51 +1,13 @@
 ﻿using Leagueinator.Controls;
-using Leagueinator.Formats;
+using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model.Tables;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
-        private EventRow? _eventRow;
-        private RoundRow? _currentRoundRow;
         private DataButton<RoundRow>? CurrentRoundButton;
-
-        public RoundRow? CurrentRoundRow {
-            get {
-                return this._currentRoundRow;
-            }
-            set {
-                // Save the round row value, if it's not null make it the current round.
-                this._currentRoundRow = value;
-                if (this.CurrentRoundRow != null) {
-                    this.IdlePlayerContainer.RoundRow = this.CurrentRoundRow;
-                }
-            }
-        }
-
-        public EventRow? EventRow {
-            get => this._eventRow;
-            set {
-                this._eventRow = value;
-                this.RoundButtonContainer.Children.Clear();
-
-                if (this.EventRow is null) return;
-                if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Must set event with a minimum of one round");
-
-                // Add a round button for each round.
-                foreach (RoundRow roundRow in this.EventRow.Rounds) {
-                    this.AddRoundButton(roundRow);
-                }
-
-                this.PopulateMatchCards(this.EventRow.Rounds[^1]!);
-
-                // Click the last round button (sets current round).
-                var lastButton = this.RoundButtonContainer.Children[^1];
-                lastButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            }
-        }
 
         /// <summary>
         /// Fill matchRow cards with values from "roundRow".
@@ -56,13 +18,9 @@ namespace Leagueinator.Forms.Main {
             if (this.EventRow is null) throw new NullReferenceException();
             this.CardStackPanel.Children.Clear();
 
-            for (int i = 0; i < roundRow.Matches.Count; i++) {
-                this.CardStackPanel.Children.Add(
-                    new MatchCard() {
-                        MatchRow = roundRow.Matches[i]!
-                    }
-                );
-            };
+            foreach (MatchRow matchRow in roundRow.Matches) {
+                this.CardStackPanel.Children.Add(MatchCardFactory.GenerateMatchCard(matchRow));
+            }
         }
 
         /// <summary>
@@ -166,7 +124,7 @@ namespace Leagueinator.Forms.Main {
             this.InvokeLastRoundButton();
         }
 
-        public void HndCopyPrevRnd(object sender, RoutedEventArgs args) {
+        public void HndCopyRnd(object sender, RoutedEventArgs args) {
             if (this.EventRow is null) return;
             if (this.CurrentRoundRow is null) return;
             this.ClearFocus();
