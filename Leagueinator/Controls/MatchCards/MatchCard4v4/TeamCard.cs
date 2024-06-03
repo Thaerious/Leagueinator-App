@@ -17,7 +17,7 @@ namespace Leagueinator.Controls {
         }
 
         private void TextBox_Loaded(object sender, RoutedEventArgs e) {
-            foreach (PlayerTextBox textBox in this.Descendents<PlayerTextBox>()) {
+            foreach (PlayerTextBox textBox in this.Descendants<PlayerTextBox>()) {
                 textBox.AllowDrop = true;
                 textBox.DragEnter += this.HndDragEnter;
                 textBox.PreviewDragOver += this.HndPreviewDragOver;
@@ -100,7 +100,7 @@ namespace Leagueinator.Controls {
 
 
         public void AddName(string name) {
-            foreach (PlayerTextBox textBox in this.Descendents<PlayerTextBox>()) {
+            foreach (PlayerTextBox textBox in this.Descendants<PlayerTextBox>()) {
                 if (textBox.Text.IsEmpty()) {
                     textBox.Text = name;
                     return;
@@ -110,7 +110,7 @@ namespace Leagueinator.Controls {
         }
 
         public void Clear() {
-            foreach (PlayerTextBox textBox in this.Descendents<PlayerTextBox>()) {
+            foreach (PlayerTextBox textBox in this.Descendants<PlayerTextBox>()) {
                 textBox.Clear();
             }
         }

@@ -4,21 +4,22 @@ using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
-    public class MatchCardFormatArgs(RoutedEvent routedEvent, MatchCard matchCard, MatchType matchType) : RoutedEventArgs(routedEvent) {
+    public class MatchCardFormatArgs(RoutedEvent routedEvent, MatchCard matchCard, MatchFormat matchFormat) : RoutedEventArgs(routedEvent) {
         public readonly MatchCard MatchCard = matchCard;
-        public readonly MatchType MatchType = matchType;
+        public readonly MatchFormat MatchFormat = matchFormat;
     }
 
     public abstract class MatchCard : UserControl {
         public delegate void FormatChangedEventHandler(object sender, MatchCardFormatArgs e);
 
         public static readonly RoutedEvent RegisteredFormatChangedEvent = EventManager.RegisterRoutedEvent(
-            "FormatChanged",          // Event name
-            RoutingStrategy.Bubble,   // Routing strategy (Bubble, Tunnel, or Direct)
+            "FormatChanged",                      // Event name
+            RoutingStrategy.Bubble,               // Routing strategy (Bubble, Tunnel, or Direct)
             typeof(FormatChangedEventHandler),    // Delegate type
-            typeof(MatchCard)         // Owner type
+            typeof(MatchCard)                     // Owner type
         );
 
         public event FormatChangedEventHandler FormatChanged {
@@ -26,13 +27,34 @@ namespace Leagueinator.Controls {
             remove { RemoveHandler(RegisteredFormatChangedEvent, value); }
         }
 
+        public abstract MatchFormat MatchFormat { get; }
         public abstract MatchRow MatchRow { get; set; }
         internal CardTarget? CardTarget { get; set; }
 
+        public MatchCard() {
+            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
+        }
+
+        public TeamCard? GetTeamCard(int teamIndex) {
+            List<TeamCard> teamCards = this.Descendants<TeamCard>();
+
+            foreach (TeamCard teamCard in teamCards) {
+                if (teamCard.TeamIndex == teamIndex) return teamCard;
+            }
+
+            return null;
+        }
+
         public void HndCheckFormat(object sender, RoutedEventArgs e) {
-            MenuItem menuItem = sender as MenuItem;
-            Debug.WriteLine($"MatchCard.HndCheckFormat {menuItem.Header}");
-            MatchCardFormatArgs newEventArgs = new(RegisteredFormatChangedEvent, this, MatchType.VS4);
+            MenuItem menuItem = (MenuItem)sender;
+
+            if (menuItem.Tag is null) return;  // tag is null during initialization
+            if (menuItem.Tag is not string customData) throw new NullReferenceException("Missing tag on context menu item");
+
+            bool success = Enum.TryParse(customData, out MatchFormat matchFormat);
+            if (!success) throw new ArgumentException("Error on tag on context menu item");
+
+            MatchCardFormatArgs newEventArgs = new(RegisteredFormatChangedEvent, this, matchFormat);
             RaiseEvent(newEventArgs);
         }
 
@@ -58,6 +80,11 @@ namespace Leagueinator.Controls {
                     this.MatchRow.Round.IdlePlayers.Get(e.After)!.Remove();
                 }
 
+                // Ensure the team exists
+                if (!this.MatchRow.Teams.Has(parent.TeamIndex)){
+                    this.MatchRow.Teams.Add(parent.TeamIndex);
+                }
+                
                 // Add new name to the teams table
                 if (!e.After.IsEmpty()) {
                     this.MatchRow.League.PlayerTable.AddRowIf(e.After);

@@ -34,17 +34,14 @@ namespace Leagueinator.Model.Tables {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
 
-                // Check for name in idle table
+                // Remove name from idle table
                 int matchUID = (int)e.Row[COL.MATCH];
                 MatchRow matchRow = this.League.MatchTable.GetRow(matchUID);
                 RoundRow roundRow = matchRow.Round;
+                string name = (string)e.Row[COL.PLAYER];
 
-                if (this.League.IdleTable.HasRow(roundRow, memberRow.Player)) {
-                    throw new ConstraintException(
-                        $"Player can not be shared between " +
-                        $"table '{this.League.IdleTable.TableName}' and table '{this.League.MemberTable.TableName}' " +
-                        $"for a given round."
-                    );
+                foreach (IdleRow idleRow in roundRow.IdlePlayers) {
+                    if (idleRow.Player == name) idleRow.Remove();
                 }
 
                 bool hasPlayer = memberRow.Match.Round.Members.Where(row => row.Player == memberRow.Player).Any();

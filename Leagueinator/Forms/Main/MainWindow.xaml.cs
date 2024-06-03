@@ -23,10 +23,6 @@ namespace Leagueinator.Forms.Main {
             this.AddHandler(MatchCard.RegisteredFormatChangedEvent, new FormatChangedEventHandler(HndFormatChanged));
         }
 
-        private void HndFormatChanged(object source, RoutedEventArgs args) {
-            Debug.WriteLine(" *** Success ***");
-        }
-
         /// <summary>
         /// Indirectly triggered when a change is made to one of the underlying tables.
         /// </summary>

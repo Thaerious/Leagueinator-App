@@ -3,23 +3,64 @@ using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
-using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
     /// <summary>
     /// Interaction logic for MatchCard.xaml
     /// </summary>
     public partial class MatchCard4321 : MatchCard {
-        public MatchCard4321() {
+        private bool isLoaded = false;
+
+        public MatchCard4321() : base(){
             InitializeComponent();
+            this.Loaded += this.HndLoaded;
+        }
+
+        private void HndLoaded(object sender, RoutedEventArgs e) {
+            if (!this.isLoaded) this.ProcessMatchCard();
+            this.isLoaded = true;
+        }
+
+        public override MatchFormat MatchFormat {
+            get => MatchFormat.A4321;
         }
 
         public override MatchRow MatchRow {
             get => _matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
             set {
-
+                this._matchRow = value;
+                if (!this.isLoaded) return;
+                this.ProcessMatchCard();
             }
         }
+
+        private void ProcessMatchCard() {
+            if (MatchRow is null) {
+                this.Clear();
+                this.DataContext = null;
+                return;
+            }
+
+            foreach (TeamRow teamRow in MatchRow.Teams) {
+                TeamCard? teamCard = this.GetTeamCard(teamRow.Index);
+
+                Debug.WriteLine($"Team Card #{teamRow.Index} is null {teamCard is null}");
+                if (teamCard is null) {
+                    teamRow.Remove();
+                    return;
+                }
+
+                teamCard.Clear();
+
+                if (teamRow.Members.Count > 0) {
+                    teamCard.AddName(teamRow.Members[0].Player);
+                }
+            }
+
+            //this.DataContext = MatchRow;
+            //this.TxtEnds.DataContext = MatchRow;
+        }
+
 
         /// <summary>
         /// Triggered when the value of a players name (MemoryTextBox) is changed.

@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 namespace Leagueinator.Controls.MatchCards {
     public static class MatchCardFactory {
         public static MatchCard GenerateMatchCard(MatchRow matchRow) {
-            switch (matchRow.MatchType) {
-                case MatchType.VS1:
+            switch (matchRow.MatchFormat) {
+                case MatchFormat.VS1:
                     throw new NotImplementedException();
-                case MatchType.VS2:
+                case MatchFormat.VS2:
                     throw new NotImplementedException();
-                case MatchType.VS3:
+                case MatchFormat.VS3:
                     throw new NotImplementedException();
-                case MatchType.VS4:
+                case MatchFormat.VS4:
                     return new MatchCardV4() { MatchRow = matchRow };
-                case MatchType.A4321:
+                case MatchFormat.A4321:
                     return new MatchCard4321() { MatchRow = matchRow };
                 default:
                     throw new NotImplementedException();

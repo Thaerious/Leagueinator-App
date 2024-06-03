@@ -12,11 +12,11 @@
     <Border BorderBrush="Black" BorderThickness="2" Margin="5">
         <Border.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="1 v 1" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
-                <MenuItem Header="2 v 2" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
-                <MenuItem Header="3 v 3" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
-                <MenuItem Header="4 v 4" IsCheckable="True" IsChecked="True" Checked="HndCheckFormat"/>
-                <MenuItem Header="4321" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
+                <MenuItem Header="1 vs 1" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="VS1"/>
+                <MenuItem Header="2 vs 2" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="VS2"/>
+                <MenuItem Header="3 vs 3" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="VS3"/>
+                <MenuItem Header="4 vs 4" IsCheckable="False" IsChecked="True"  Checked="HndCheckFormat" Tag="VS4"/>
+                <MenuItem Header="4321"  IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="A4321"/>
             </ContextMenu>
         </Border.ContextMenu>
 

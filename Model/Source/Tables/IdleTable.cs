@@ -71,7 +71,7 @@ namespace Leagueinator.Model.Tables {
             HasInstance = args => this.HasRow((int)args[0], (string)args[1]);
             AddInstance = args => this.AddRow((int)args[0], (string)args[1]);
 
-            // WHen a player is added to the idle table, remove it from any team tables.
+            // When a player is added to the idle table, remove it from any team tables.
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
 
@@ -83,11 +83,7 @@ namespace Leagueinator.Model.Tables {
                     foreach (TeamRow teamRow in matchRow.Teams) {
                         foreach (MemberRow memberRow in teamRow.Members) {
                             if (memberRow.Player == name) {
-                                throw new ConstraintException(
-                                    $"Player can not be shared between " +
-                                    $"table '{this.League.IdleTable.TableName}' and table '{this.League.MemberTable.TableName}' " +
-                                    $"for a given round."
-                                );
+                                memberRow.Remove();
                             }
                         }
                     }

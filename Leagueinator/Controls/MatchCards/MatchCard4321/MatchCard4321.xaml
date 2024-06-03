@@ -6,15 +6,25 @@
              xmlns:local="clr-namespace:Leagueinator.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="130" d:DesignWidth="500"
-             Height="120"           
+             Height="140"           
              >
 
     <Border BorderBrush="Black" BorderThickness="2" Margin="5">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="1 vs 1" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="VS1"/>
+                <MenuItem Header="2 vs 2" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="VS2"/>
+                <MenuItem Header="3 vs 3" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="VS3"/>
+                <MenuItem Header="4 vs 4" IsCheckable="True" IsChecked="False"  Checked="HndCheckFormat" Tag="VS4"/>
+                <MenuItem Header="4321"  IsCheckable="True" IsChecked="False" Checked="HndCheckFormat" Tag="A4321"/>
+            </ContextMenu>
+        </Border.ContextMenu>        
+        
         <!-- Outer Horz Grid -->
         <Grid Background="green">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
 
             <!-- Inner Team Vert Grid -->
@@ -29,7 +39,7 @@
                 <!-- Team 1 Card -->
                 <local:TeamCard 
                     x:Name="Team0" TeamIndex="0"
-                    BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="0"  
+                    BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="0"
                 >
                     <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Margin="10 10 10 10">

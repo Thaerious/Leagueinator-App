@@ -1,30 +1,38 @@
 ﻿using Leagueinator.Model.Tables;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
     /// <summary>
     /// Interaction logic for MatchCard.xaml
     /// </summary>
     public partial class MatchCardV4 : MatchCard {
-        public MatchCardV4() {
+        public MatchCardV4() : base() {
             InitializeComponent();
-            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
+        }
+
+        public override MatchFormat MatchFormat {
+            get => MatchFormat.VS4;
         }
 
         public override MatchRow MatchRow {
             get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
             set {
                 this._matchRow = value;
-                if (MatchRow is null) {
+                if (this.MatchRow is null) {
                     this.Clear();
                     this.DataContext = null;
                     return;
                 }
 
-                if (MatchRow.Teams.Count != 2) throw new NullReferenceException("MatchRow in MatchCard must have exactly 2 teams");
+                // Remove extra teams to idle players
+                foreach (TeamRow teamRow in this.MatchRow.Teams) {
+                    if (teamRow.Index >= 2) {
+                        foreach (MemberRow memberRow in teamRow.Members) {
+                            this.MatchRow.Round.IdlePlayers.Add(memberRow.Player);
+                        }
+                    }
+                }
 
                 this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;
                 this.CheckTie1.IsChecked = MatchRow.Teams[1]!.Tie == 1;

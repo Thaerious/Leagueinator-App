@@ -80,7 +80,7 @@ namespace Leagueinator.Extensions {
             return null;
         }
 
-        public static List<T> Descendents<T>(this DependencyObject parent) where T : DependencyObject {
+        public static List<T> Descendants<T>(this DependencyObject parent) where T : DependencyObject {            
             if (parent is null) return [];
             List<T> descendents = [];
             int childCount = VisualTreeHelper.GetChildrenCount(parent);
@@ -93,7 +93,7 @@ namespace Leagueinator.Extensions {
                 if (child is T t) descendents.Add(t);
 
                 // Recursively call this method on the child
-                descendents = [.. descendents, .. Descendents<T>(child)];
+                descendents = [.. descendents, .. Descendants<T>(child)];
             }
 
             // If no child of the specified type is found, return null

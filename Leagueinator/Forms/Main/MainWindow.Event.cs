@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Controls;
 using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model.Tables;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -21,6 +22,42 @@ namespace Leagueinator.Forms.Main {
 
             foreach (MatchRow matchRow in roundRow.Matches) {
                 this.CardStackPanel.Children.Add(MatchCardFactory.GenerateMatchCard(matchRow));                
+            }
+        }
+
+        /// <summary>
+        /// Triggered when a match card changes type.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="args"></param>
+        private void HndFormatChanged(object source, RoutedEventArgs args) {
+            MatchCardFormatArgs formatArgs = (MatchCardFormatArgs)args;
+            int index = this.CardStackPanel.Children.IndexOf(formatArgs.MatchCard);
+            this.CardStackPanel.Children.Remove(formatArgs.MatchCard);
+            formatArgs.MatchCard.MatchRow.MatchFormat = formatArgs.MatchFormat;
+
+            MatchCard? newMatchCard = null;
+            switch (formatArgs.MatchFormat) {
+                case MatchFormat.VS1:                    
+                    break;
+                case MatchFormat.VS2:
+                    break;
+                case MatchFormat.VS3:
+                    break;
+                case MatchFormat.VS4:
+                    newMatchCard = new MatchCardV4() {
+                        MatchRow = formatArgs.MatchCard.MatchRow
+                    };
+                    break;
+                case MatchFormat.A4321:
+                    newMatchCard = new MatchCard4321() {
+                        MatchRow = formatArgs.MatchCard.MatchRow
+                    };
+                    break;
+            }
+
+            if (newMatchCard is not null) {
+                this.CardStackPanel.Children.Insert(index, newMatchCard);
             }
         }
 

@@ -3,7 +3,7 @@ using System.Data;
 using static Leagueinator.Model.Tables.MatchRow;
 
 namespace Leagueinator.Model.Tables {
-    public enum MatchType { VS1, VS2, VS3, VS4, A4321 };
+    public enum MatchFormat { VS1, VS2, VS3, VS4, A4321 };
 
     public class MatchRow(DataRow dataRow) : CustomRow(dataRow) {
 
@@ -33,8 +33,8 @@ namespace Leagueinator.Model.Tables {
             set => this[MatchTable.COL.ENDS] = value;
         }
 
-        public MatchType MatchType {
-            get => (MatchType)this[MatchTable.COL.FORMAT];
+        public MatchFormat MatchFormat {
+            get => (MatchFormat)this[MatchTable.COL.FORMAT];
             set => this[MatchTable.COL.FORMAT] = value;
         }
     }
@@ -130,9 +130,9 @@ namespace Leagueinator.Model.Tables {
             });
 
             this.Columns.Add(new DataColumn {
-                DataType = typeof(MatchType),
+                DataType = typeof(MatchFormat),
                 ColumnName = COL.FORMAT,
-                DefaultValue = MatchType.VS4
+                DefaultValue = MatchFormat.VS4
             });
 
             // TODO re-enable, it mucks with rearranging lanes.
