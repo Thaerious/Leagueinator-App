@@ -3,9 +3,6 @@ using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
@@ -15,7 +12,6 @@ namespace Leagueinator.Controls {
     public partial class MatchCard4321 : MatchCard {
         public MatchCard4321() {
             InitializeComponent();
-            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
         }
 
         public override MatchRow MatchRow {
@@ -55,7 +51,6 @@ namespace Leagueinator.Controls {
 
                 // Remove the old name from the members table
                 if (!e.Before.IsEmpty()) {
-                    Debug.WriteLine($"Remove the old name ({e.Before}) from the members table");
                     TeamRow teamRow = this.MatchRow.Teams[parent.TeamIndex] ?? throw new NullReferenceException();
                     MemberRow memberRow = teamRow.Members.Get(e.Before) ?? throw new NullReferenceException();
                     memberRow.Remove();

@@ -4,6 +4,7 @@ using Leagueinator.Model.Tables;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
@@ -19,7 +20,7 @@ namespace Leagueinator.Forms.Main {
             this.CardStackPanel.Children.Clear();
 
             foreach (MatchRow matchRow in roundRow.Matches) {
-                this.CardStackPanel.Children.Add(MatchCardFactory.GenerateMatchCard(matchRow));
+                this.CardStackPanel.Children.Add(MatchCardFactory.GenerateMatchCard(matchRow));                
             }
         }
 

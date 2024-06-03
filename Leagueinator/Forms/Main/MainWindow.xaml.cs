@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Leagueinator.Model.Tables;
 using System.Diagnostics;
 using Leagueinator.Formats;
+using static Leagueinator.Controls.MatchCard;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>
@@ -18,6 +19,12 @@ namespace Leagueinator.Forms.Main {
             SaveState.StateChanged += this.HndStateChanged;
             this._league.LeagueUpdate += this.HndLeagueUpdate;
             this.EventRow = this.League.EventTable.GetLast();
+
+            this.AddHandler(MatchCard.RegisteredFormatChangedEvent, new FormatChangedEventHandler(HndFormatChanged));
+        }
+
+        private void HndFormatChanged(object source, RoutedEventArgs args) {
+            Debug.WriteLine(" *** Success ***");
         }
 
         /// <summary>

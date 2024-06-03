@@ -10,6 +10,16 @@
              >
 
     <Border BorderBrush="Black" BorderThickness="2" Margin="5">
+        <Border.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="1 v 1" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
+                <MenuItem Header="2 v 2" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
+                <MenuItem Header="3 v 3" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
+                <MenuItem Header="4 v 4" IsCheckable="True" IsChecked="True" Checked="HndCheckFormat"/>
+                <MenuItem Header="4321" IsCheckable="True" IsChecked="False" Checked="HndCheckFormat"/>
+            </ContextMenu>
+        </Border.ContextMenu>
+
         <Grid Background="green">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>

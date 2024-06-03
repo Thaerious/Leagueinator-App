@@ -11,13 +11,10 @@ namespace Leagueinator.Controls.MatchCards {
             switch (matchRow.MatchType) {
                 case MatchType.VS1:
                     throw new NotImplementedException();
-                    break;
                 case MatchType.VS2:
                     throw new NotImplementedException();
-                    break;
                 case MatchType.VS3:
                     throw new NotImplementedException();
-                    break;
                 case MatchType.VS4:
                     return new MatchCardV4() { MatchRow = matchRow };
                 case MatchType.A4321:
