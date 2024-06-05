@@ -5,23 +5,12 @@ using static Leagueinator.Model.Tables.MatchRow;
 namespace Leagueinator.Model.Tables {
     public enum MatchFormat { VS1, VS2, VS3, VS4, A4321 };
 
-    public class MatchRow(DataRow dataRow) : CustomRow(dataRow) {
-
-        public RowBoundView<TeamRow> Teams {
-            get {
-                return new(this.League.TeamTable, [TeamTable.COL.MATCH], [this.UID]);
-            }
+    public class MatchRow : CustomRow {
+        public MatchRow(DataRow dataRow) : base(dataRow) {
+            this.Teams = new(this.League.TeamTable, [TeamTable.COL.MATCH], [this.UID]);
         }
 
-        public int UID {
-            get => (int)this[MatchTable.COL.UID];
-        }
-
-        public static implicit operator int(MatchRow matchRow) => matchRow.UID;
-
-        public RoundRow Round {
-            get => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
-        }
+        public readonly RowBoundView<TeamRow> Teams;
 
         public int Lane {
             get => (int)this[MatchTable.COL.LANE];
@@ -37,6 +26,12 @@ namespace Leagueinator.Model.Tables {
             get => (MatchFormat)this[MatchTable.COL.FORMAT];
             set => this[MatchTable.COL.FORMAT] = value;
         }
+
+        public int UID => (int)this[MatchTable.COL.UID];        
+
+        public RoundRow Round => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
+
+        public EventRow Event => this.Round.Event;
     }
 
     public class MatchTable : LeagueTable<MatchRow> {
@@ -78,7 +73,7 @@ namespace Leagueinator.Model.Tables {
 
         public MatchRow GetRow(int round, int lane) {
             var rows = this.AsEnumerable<MatchRow>()
-                        .Where(row => row.Round == round)
+                        .Where(row => row.Round.UID == round)
                         .Where(row => row.Lane == lane)
                         .ToList();
 
@@ -88,7 +83,7 @@ namespace Leagueinator.Model.Tables {
 
         public bool HasRow(int round, int lane) {
             return this.AsEnumerable<MatchRow>()
-                       .Where(row => row.Round == round)
+                       .Where(row => row.Round.UID == round)
                        .Where(row => row.Lane == lane)
                        .Any();
         }

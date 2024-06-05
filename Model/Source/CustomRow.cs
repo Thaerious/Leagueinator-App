@@ -4,15 +4,10 @@ using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
     [Serializable]
-    public class CustomRow : INotifyPropertyChanged {
-
-        public CustomRow(DataRow dataRow) {
-            this.DataRow = dataRow;
-        }
-
+    public class CustomRow(DataRow dataRow) : INotifyPropertyChanged {
         public League League => (League)this.DataRow.Table.DataSet!;
 
-        public DataRow DataRow { get; }
+        public DataRow DataRow { get; } = dataRow;
 
         public static implicit operator DataRow(CustomRow customRow) => customRow.DataRow;
 

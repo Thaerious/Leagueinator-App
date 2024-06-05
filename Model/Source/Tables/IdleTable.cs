@@ -1,20 +1,19 @@
 ﻿using System.Data;
-using System.Numerics;
 
 namespace Leagueinator.Model.Tables {
 
     public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {
-        public EventRow Event {
-            get => this.League.EventTable.GetRow((int)this[IdleTable.COL.ROUND]);
-        }
 
         public string Player {
             get => (string)this[IdleTable.COL.PLAYER];
         }
 
-        public int Round {
-            get => (int)this[IdleTable.COL.ROUND];
-            set => this[IdleTable.COL.ROUND] = value;
+        public RoundRow Round {
+            get => this.League.RoundTable.GetRow((int)this[IdleTable.COL.ROUND]);
+        }
+
+        public EventRow Event {
+            get => this.Round.Event;
         }
     }
 
@@ -38,14 +37,14 @@ namespace Leagueinator.Model.Tables {
 
         public bool HasRow(int round, string player) {
             return this.AsEnumerable<IdleRow>()
-                       .Where(row => row.Round == round)
+                       .Where(row => row.Round.UID == round)
                        .Where(row => row.Player == player)
                        .Any();
         }
 
         public IdleRow GetRow(int round, string player) {
             var rows = this.AsEnumerable<IdleRow>()
-                       .Where(row => row.Round == round)
+                       .Where(row => row.Round.UID == round)
                        .Where(row => row.Player == player)
                        .ToList();
 
@@ -56,7 +55,7 @@ namespace Leagueinator.Model.Tables {
         public void RemoveRows(int round, string player) {
 
             var rowsToDelete = this.AsEnumerable<IdleRow>()
-                                   .Where(row => row.Round == round)
+                                   .Where(row => row.Round.UID == round)
                                    .Where(row => row.Player == player)
                                    .ToList();
 

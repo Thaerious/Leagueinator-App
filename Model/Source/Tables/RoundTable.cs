@@ -5,17 +5,18 @@ using System.Diagnostics;
 namespace Leagueinator.Model.Tables {
 
     public class RoundRow : CustomRow {
-        public readonly RowBoundView<IdleRow> IdlePlayers;
-        public readonly RowBoundView<MatchRow> Matches;
-
         public RoundRow(DataRow dataRow) : base(dataRow) {
             this.IdlePlayers = new(this.League.IdleTable, [IdleTable.COL.ROUND], [this.UID]);
             this.Matches = new(this.League.MatchTable, [MatchTable.COL.ROUND], [this.UID]);
         }
 
-        public int UID {
-            get => (int)this[RoundTable.COL.UID];
-        }
+        public readonly RowBoundView<IdleRow> IdlePlayers;
+        public readonly RowBoundView<MatchRow> Matches;
+
+        public int UID => (int)this[RoundTable.COL.UID];
+
+        public EventRow Event => this.League.EventTable.GetRow((int)this[RoundTable.COL.EVENT]);
+
 
         public IReadOnlyList<string> AllPlayers {
             get {
@@ -33,12 +34,6 @@ namespace Leagueinator.Model.Tables {
 
                 return allPlayers;
             }
-        }
-
-        public static implicit operator int(RoundRow roundRow) => roundRow.UID;
-
-        public EventRow Event {
-            get => this.League.EventTable.GetRow((int)this[RoundTable.COL.EVENT]);
         }
 
         /// <summary>
@@ -90,6 +85,30 @@ namespace Leagueinator.Model.Tables {
             }
 
             return next;
+        }
+
+        /// <summary>
+        /// Removes all instances of the specified player's name from the IdlePlayers collection
+        /// for this round.
+        /// </summary>
+        /// <param name="name">The name of the player to be removed from the idle table.</param>
+        public void RemoveNameFromIdle(string name) {
+            foreach (IdleRow idleRow in this.IdlePlayers) {
+                if (idleRow.Player == name) idleRow.Remove();
+            }
+        }
+
+        /// <summary>
+        /// Removes all members with the specified player's name from the Members collection for
+        /// for any match/team in this round.
+        /// </summary>
+        /// <param name="name">The name of the player to be removed from the member table.</param>
+        public void RemoveNameFromTeams(string name) {
+            foreach (TeamRow teamRow in this.Teams) {
+                foreach (MemberRow memberRow in teamRow.Members) {
+                    if (memberRow.Player == name) memberRow.Remove();
+                }
+            }
         }
     }
 

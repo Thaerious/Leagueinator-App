@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
+using System.Data;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,12 +29,25 @@ namespace Leagueinator.Controls {
         }
 
         public abstract MatchFormat MatchFormat { get; }
-        public abstract MatchRow MatchRow { get; set; }
+
+        public virtual MatchRow MatchRow {
+            get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
+            set {
+                this._matchRow = value;
+                if (this._matchRow is null) {
+                    this.Clear();
+                    this.DataContext = null;
+                    return;
+                }
+            }
+        }
         internal CardTarget? CardTarget { get; set; }
 
         public MatchCard() {
             this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
         }
+
+        public abstract void Clear();
 
         public TeamCard? GetTeamCard(int teamIndex) {
             List<TeamCard> teamCards = this.Descendants<TeamCard>();
@@ -67,43 +81,37 @@ namespace Leagueinator.Controls {
         protected void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
 
-            if (this.MatchRow.Round.AllPlayers.Contains(e.After)) {
-                // if the player already exists in the round, reject.
-                MessageBox.Show($"Player {e.After} previously assigned.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
-                e.TextBox.Text = e.Before;
+
+            TeamCard parent = e.TextBox.Ancestors<TeamCard>()[0];
+
+            // Remove new name from the idle table
+            if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
+                this.MatchRow.Round.IdlePlayers.Get(e.After)!.Remove();
             }
-            else {
-                TeamCard parent = e.TextBox.Ancestors<TeamCard>()[0];
 
-                // Remove new name from the idle table
-                if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
-                    this.MatchRow.Round.IdlePlayers.Get(e.After)!.Remove();
-                }
+            // Ensure the team exists
+            if (!this.MatchRow.Teams.Has(parent.TeamIndex)) {
+                this.MatchRow.Teams.Add(parent.TeamIndex);
+            }
 
-                // Ensure the team exists
-                if (!this.MatchRow.Teams.Has(parent.TeamIndex)){
-                    this.MatchRow.Teams.Add(parent.TeamIndex);
-                }
-                
-                // Add new name to the teams table
-                if (!e.After.IsEmpty()) {
-                    this.MatchRow.League.PlayerTable.AddRowIf(e.After);
-                    this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(e.After);
-                }
+            // Add new name to the teams table
+            if (!e.After.IsEmpty()) {
+                this.MatchRow.League.PlayerTable.AddRowIf(e.After);
+                this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(e.After);
+            }
 
-                // Remove the old name from the members table
-                if (!e.Before.IsEmpty()) {
-                    TeamRow teamRow = this.MatchRow.Teams[parent.TeamIndex] ?? throw new NullReferenceException();
-                    MemberRow memberRow = teamRow.Members.Get(e.Before) ?? throw new NullReferenceException();
-                    memberRow.Remove();
-                }
+            // Remove the old name from the members table
+            if (!e.Before.IsEmpty()) {
+                TeamRow teamRow = this.MatchRow.Teams[parent.TeamIndex] ?? throw new NullReferenceException();
+                MemberRow memberRow = teamRow.Members.Get(e.Before) ?? throw new NullReferenceException();
+                memberRow.Remove();
             }
 
             if (e.Cause == Cause.EnterPressed) {
-                TeamStackPanel parent = (TeamStackPanel)e.TextBox.Parent;
-                int index = parent.Children.IndexOf(e.TextBox);
-                if (index + 1 < parent.Children.Count) {
-                    parent.Children[index + 1].Focus();
+                StackPanel stackPanel = (StackPanel)e.TextBox.Parent;
+                int index = stackPanel.Children.IndexOf(e.TextBox);
+                if (index + 1 < stackPanel.Children.Count) {
+                    stackPanel.Children[index + 1].Focus();
                 }
             }
         }

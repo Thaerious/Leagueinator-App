@@ -78,7 +78,6 @@ namespace Leagueinator.Controls {
 
             
             if (!this.Compare(prevMem, this.Text)) {
-                Debug.WriteLine($"RaiseUpdateTextEvent {this.GetHashCode()} '{prevMem}' '{this.Text}' '{Cause.LostFocus}'");
                 RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
             }
         }

@@ -16,6 +16,8 @@ namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+            this.League = NewLeague();
+
             SaveState.StateChanged += this.HndStateChanged;
             this._league.LeagueUpdate += this.HndLeagueUpdate;
             this.EventRow = this.League.EventTable.GetLast();

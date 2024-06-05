@@ -4,24 +4,15 @@ using System.Data;
 namespace Leagueinator.Model.Tables {
 
     public class TeamRow : CustomRow {
-
-        public readonly RowBoundView<MemberRow> Members;
-
         public TeamRow(DataRow dataRow) : base(dataRow) {
             this.Members = new(
-                this.League.MemberTable, 
-                [TeamTable.COL.MATCH, TeamTable.COL.INDEX], 
+                this.League.MemberTable,
+                [TeamTable.COL.MATCH, TeamTable.COL.INDEX],
                 [this.Match.UID, this.Index]
             );
         }
 
-        public MatchRow Match {
-            get => this.League.MatchTable.GetRow((int)this[TeamTable.COL.MATCH]);
-        }
-
-        public int Index {
-            get => (int)this[TeamTable.COL.INDEX];
-        }
+        public readonly RowBoundView<MemberRow> Members;
 
         public int Bowls {
             get => (int)this[TeamTable.COL.BOWLS];
@@ -32,6 +23,14 @@ namespace Leagueinator.Model.Tables {
             get => (int)this[TeamTable.COL.TIE];
             set => this[TeamTable.COL.TIE] = value;
         }
+
+        public int Index => (int)this[TeamTable.COL.INDEX];
+
+        public MatchRow Match => this.League.MatchTable.GetRow((int)this[TeamTable.COL.MATCH]);
+
+        public RoundRow Round => this.Match.Round;
+
+        public EventRow Event => this.Round.Event;     
     }
 
     public class TeamTable : LeagueTable<TeamRow> {
@@ -51,7 +50,7 @@ namespace Leagueinator.Model.Tables {
 
         public int LastIndex(int match) {
             return this.AsEnumerable<TeamRow>()
-                .Where(row => row.Match == match)
+                .Where(row => row.Match.UID == match)
                 .Select(row => row.Index)
                 .DefaultIfEmpty(-1)
                 .Max();
@@ -71,14 +70,14 @@ namespace Leagueinator.Model.Tables {
 
         public TeamRow GetRow(int match, int index) {
             return this.AsEnumerable<TeamRow>()
-                       .Where(row => row.Match == match)
+                       .Where(row => row.Match.UID == match)
                        .Where(row => row.Index == index)
                        .First();
         }
 
         public bool HasRow(int match, int index) {
             return this.AsEnumerable<TeamRow>()
-                       .Where(row => row.Match == match)
+                       .Where(row => row.Match.UID == match)
                        .Where(row => row.Index == index)
                        .Any();
         }

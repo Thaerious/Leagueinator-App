@@ -18,12 +18,7 @@ namespace Leagueinator.Controls {
         public override MatchRow MatchRow {
             get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
             set {
-                this._matchRow = value;
-                if (this.MatchRow is null) {
-                    this.Clear();
-                    this.DataContext = null;
-                    return;
-                }
+                base.MatchRow = value;
 
                 // Remove extra teams to idle players
                 foreach (TeamRow teamRow in this.MatchRow.Teams) {
@@ -44,7 +39,7 @@ namespace Leagueinator.Controls {
             }
         }
 
-        public void Clear() {
+        public override void Clear() {
             this.Team0.Clear();
             this.Team1.Clear();
             this.TxtBowls0.Text = "0";

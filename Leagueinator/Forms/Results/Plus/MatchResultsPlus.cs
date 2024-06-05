@@ -13,7 +13,7 @@ namespace Leagueinator.Forms.Results.Plus {
     /// <param name="teamRow"></param>    
     public record MatchResultsPlus : IComparable<MatchResultsPlus> {
         public readonly TeamRow TeamRow;
-        public int Round { get => this.TeamRow.Match.Round; }
+        public int Round { get => this.TeamRow.Match.Round.UID; }
         public int Lane { get => this.TeamRow.Match.Lane; }
         public int Ends { get => this.TeamRow.Match.Ends; }
         public int BowlsFor { get; } = 0;

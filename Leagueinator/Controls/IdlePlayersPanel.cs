@@ -1,9 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
@@ -26,13 +23,6 @@ namespace Leagueinator.Controls {
         /// <exception cref="ArgumentNullException"></exception>
         private void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.RoundRow is null) throw new NullReferenceException(nameof(this.RoundRow));
-
-            if (this.RoundRow.AllPlayers.Contains(e.After)) {
-                // if the player already exists reject.
-                MessageBox.Show($"Player {e.After} previously assigned.", "Alert", MessageBoxButton.OK, MessageBoxImage.Warning);
-                e.TextBox.Text = e.Before;
-                return;
-            }
 
             if (!e.Before.IsEmpty()) {
                 IdleRow idleRow = this.RoundRow.IdlePlayers.Get(e.Before) ?? throw new ArgumentNullException(nameof(idleRow));
@@ -71,6 +61,9 @@ namespace Leagueinator.Controls {
             }
         }
 
+        /// <summary>
+        /// Set the current round row for this panel.
+        /// </summary>
         public RoundRow? RoundRow {
             get => this._roundRow;
             set {

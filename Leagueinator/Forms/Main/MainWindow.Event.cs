@@ -1,11 +1,11 @@
 ﻿using Leagueinator.Controls;
 using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model.Tables;
+using System.Data;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
@@ -18,10 +18,16 @@ namespace Leagueinator.Forms.Main {
         /// <param name="roundRow"></param>
         private void PopulateMatchCards(RoundRow roundRow) {
             if (this.EventRow is null) throw new NullReferenceException();
-            this.CardStackPanel.Children.Clear();
+            
+            while (this.CardStackPanel.Children.Count > 0) {
+                var child = this.CardStackPanel.Children[0];
+                MatchCard matchCard = (MatchCard)child;
+                this.CardStackPanel.Children.Remove(matchCard);
+            }
 
             foreach (MatchRow matchRow in roundRow.Matches) {
-                this.CardStackPanel.Children.Add(MatchCardFactory.GenerateMatchCard(matchRow));                
+                MatchCard matchCard = MatchCardFactory.GenerateMatchCard(matchRow);
+                this.CardStackPanel.Children.Add(matchCard);
             }
         }
 
@@ -101,7 +107,7 @@ namespace Leagueinator.Forms.Main {
         }
 
         /// <summary>
-        /// Triggered when the "Add Round" button is clicked.
+        /// Triggered when the "Add RoundIndex" button is clicked.
         /// </summary>
         /// <param name="__"></param>
         /// <param name="_"></param>
@@ -181,6 +187,30 @@ namespace Leagueinator.Forms.Main {
 
             this.AddRoundButton(nextRound);
             this.InvokeLastRoundButton();
+        }
+
+        private void HndMemberTableDeletingRow(object sender, DataRowChangeEventArgs e) {
+            Debug.WriteLine("HndMemberTableDeletingRow");
+            MemberRow memberRow = new(e.Row);
+            TeamRow teamRow = memberRow.Team;
+            MatchRow matchRow = teamRow.Match;
+            RoundRow roundRow = matchRow.Round;
+
+            Debug.WriteLine($"roundRow, this.CurrentRoundRow = ({roundRow}, {this.CurrentRoundRow})");
+            if (!roundRow.Equals(this.CurrentRoundRow)) {
+                Debug.WriteLine("roundRow != this.CurrentRoundRow");
+                return;
+            }
+
+            MatchCard matchCard = (MatchCard)this.CardStackPanel.Children[matchRow.Lane];
+            TeamCard? teamCard = matchCard.GetTeamCard(teamRow.Index);
+            if (teamCard is null) return;
+
+            teamCard.RemoveName(memberRow.Player);
+
+            Debug.WriteLine(memberRow.DataRow.PrettyPrint("Hnd Deleting Row"));
+
+            
         }
     }
 }

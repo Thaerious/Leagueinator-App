@@ -1,27 +1,27 @@
 ﻿using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
     public class MemberRow(DataRow dataRow) : CustomRow(dataRow) {
-        public TeamRow Team {
-            get => this.League.TeamTable.GetRow(this.Match, this.Index);
-        }
-
-        public int Index {
-            get => (int)this[MemberTable.COL.INDEX];
-        }
-
-        public MatchRow Match {
-            get => this.League.MatchTable.GetRow((int)this[MemberTable.COL.MATCH]);
-        }
-
+        
+        /// <summary>
+        /// Set the player name.
+        /// Will remove name from the idle table and other teams.
+        /// </summary>
         public string Player {
             get => (string)this[MemberTable.COL.PLAYER];
             set => this[MemberTable.COL.PLAYER] = value;
         }
 
-        public static implicit operator string(MemberRow playerRow) => playerRow.Player;
+        public int Index => (int)this[MemberTable.COL.INDEX];
+
+        public TeamRow Team => this.League.TeamTable.GetRow((int)this[MemberTable.COL.MATCH], (int)this[MemberTable.COL.INDEX]);
+
+        public MatchRow Match => this.Team.Match;
+
+        public RoundRow Round => this.Match.Round;
+
+        public EventRow Event => this.Round.Event;        
     }
 
     public class MemberTable : LeagueTable<MemberRow> {
@@ -30,27 +30,11 @@ namespace Leagueinator.Model.Tables {
             GetInstance = args => this.GetRow((int)args[0], (int)args[1], (string)args[2]);
             HasInstance = args => this.HasRow((int)args[0], (int)args[1], (string)args[2]);
             AddInstance = args => this.AddRow((int)args[0], (int)args[1], (string)args[2]);
-
+            
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
-
-                // Remove name from idle table
-                int matchUID = (int)e.Row[COL.MATCH];
-                MatchRow matchRow = this.League.MatchTable.GetRow(matchUID);
-                RoundRow roundRow = matchRow.Round;
-                string name = (string)e.Row[COL.PLAYER];
-
-                foreach (IdleRow idleRow in roundRow.IdlePlayers) {
-                    if (idleRow.Player == name) idleRow.Remove();
-                }
-
-                bool hasPlayer = memberRow.Match.Round.Members.Where(row => row.Player == memberRow.Player).Any();
-
-                if (hasPlayer && e.Row.RowState == DataRowState.Detached) {
-                    throw new ConstraintException(
-                        $"Each round can only have a given player once in table '{this.League.MemberTable.TableName}'"
-                    );
-                }
+                memberRow.Round.RemoveNameFromIdle(memberRow.Player);
+                memberRow.Round.RemoveNameFromTeams(memberRow.Player);
             };
         }
 
@@ -74,7 +58,7 @@ namespace Leagueinator.Model.Tables {
 
         public bool HasRow(int match, int index, string player) {
             return this.AsEnumerable<MemberRow>()
-                       .Where(row => row.Match == match)
+                       .Where(row => row.Match.UID == match)
                        .Where(row => row.Index == index)
                        .Where(row => row.Player == player)
                        .Any();
@@ -82,7 +66,7 @@ namespace Leagueinator.Model.Tables {
 
         public MemberRow GetRow(int match, int index, string player) {
             var rows = this.AsEnumerable<MemberRow>()
-                           .Where(row => row.Match == match)
+                           .Where(row => row.Match.UID == match)
                            .Where(row => row.Index == index)
                            .Where(row => row.Player == player)
                            .ToList();

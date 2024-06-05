@@ -1,9 +1,11 @@
 ﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace Leagueinator.Controls {
     public class TeamCard : Border {
@@ -107,6 +109,13 @@ namespace Leagueinator.Controls {
                 }
             }
             throw new IndexOutOfRangeException("No available text boxes.");
+        }
+
+        internal void RemoveName(string name) {
+            Debug.WriteLine($"RemoveName({name}");
+            foreach (PlayerTextBox textBox in this.Descendants<PlayerTextBox>()) {
+                if (textBox.Text == name) textBox.Text = "";
+            }
         }
 
         public void Clear() {

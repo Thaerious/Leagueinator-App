@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Formats;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,6 +20,8 @@ namespace Leagueinator.Forms.Main {
         internal League League {
             get => this._league;
             set {
+                this.League.MemberTable.RowDeleting -= this.HndMemberTableDeletingRow;
+
                 this.League.LeagueUpdate -= this.HndLeagueUpdate;
                 this._league = value;
                 this.EventRow = this.League.EventTable.GetLast();
@@ -29,6 +32,8 @@ namespace Leagueinator.Forms.Main {
                         this.TournamentFormat = new AssignedLadder();
                         break;
                 }
+
+                this.League.MemberTable.RowDeleting += this.HndMemberTableDeletingRow;
             }
         }
 
