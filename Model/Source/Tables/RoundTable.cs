@@ -57,17 +57,13 @@ namespace Leagueinator.Model.Tables {
         /// <param name="laneCount"></param>
         /// <returns></returns>
         public RoundRow PopulateMatches() {
-            int ends = int.Parse(this.Event.Settings.Get("ends")!.Value);
-            int laneCount = int.Parse(this.Event.Settings.Get("lanes")!.Value);
-            int teams = int.Parse(this.Event.Settings.Get("teams")!.Value);
+            int ends = this.Event.EndsDefault;
+            int laneCount = this.Event.LaneCount;
 
             for (int lane = 0; lane < laneCount; lane++) {
                 if (!this.Matches.Has(lane)) {
                     this.Matches.Add(lane, ends);
                 }
-
-                MatchRow matchRow = this.Matches[lane]!;
-                while (matchRow.Teams.Count < teams) matchRow.Teams.Add(matchRow.Teams.Count);
             }
             return this;
         }

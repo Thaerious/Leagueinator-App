@@ -1,9 +1,11 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Leagueinator.Model.Views {
+    [TimeTrace]
     public class Team(TeamRow teamRow) : IEquatable<Team> {
         public TeamRow TeamRow { get; } = teamRow;
 

@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,6 +7,7 @@ namespace Leagueinator.Controls {
     /// <summary>
     /// Interaction logic for MatchCard.xaml
     /// </summary>
+    [TimeTrace]
     public partial class MatchCardV4 : MatchCard {
         public MatchCardV4() : base() {
             InitializeComponent();
@@ -21,12 +23,17 @@ namespace Leagueinator.Controls {
                 base.MatchRow = value;
 
                 // Remove extra teams to idle players
-                foreach (TeamRow teamRow in this.MatchRow.Teams) {
-                    if (teamRow.Index >= 2) {
-                        foreach (MemberRow memberRow in teamRow.Members) {
-                            this.MatchRow.Round.IdlePlayers.Add(memberRow.Player);
-                        }
+                while (this.MatchRow.Teams.Count > 2){
+                    TeamRow teamRow = this.MatchRow.Teams[^1]!;
+                    foreach (MemberRow memberRow in teamRow.Members) {
+                        this.MatchRow.Round.IdlePlayers.Add(memberRow.Player);
                     }
+                    teamRow.Remove();
+                }
+
+                // Ensure there are 2 teams
+                while (this.MatchRow.Teams.Count < 2) {
+                    this.MatchRow.Teams.Add(this.MatchRow.Teams.Count);
                 }
 
                 this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;

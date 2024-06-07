@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using AspectInjector.Broker;
-using Leagueinator.Printer.Styles;
 
 namespace Leagueinator.Printer.Utility {
 

@@ -5,6 +5,19 @@ using static Leagueinator.Model.Tables.MatchRow;
 namespace Leagueinator.Model.Tables {
     public enum MatchFormat { VS1, VS2, VS3, VS4, A4321 };
 
+    public static class Match {
+        public static int TeamCount(this MatchFormat matchFormat) {
+            switch (matchFormat) {
+                case MatchFormat.A4321:
+                    return 4;
+                default:
+                    return 2;
+            }
+        }
+    }
+
+
+
     public class MatchRow : CustomRow {
         public MatchRow(DataRow dataRow) : base(dataRow) {
             this.Teams = new(this.League.TeamTable, [TeamTable.COL.MATCH], [this.UID]);

@@ -3,15 +3,31 @@ using System.Collections.ObjectModel;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
+
+    public enum EventFormat { AssignedLadder }
+
     public class EventRow : CustomRow {
         public readonly RowBoundView<RoundRow> Rounds;
-        public readonly RowBoundView<SettingRow> Settings;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
             this.Rounds = new(this.League.RoundTable, [RoundTable.COL.EVENT], [this.UID]);
-            this.Settings = new(this.League.SettingsTable, [SettingsTable.COL.EVENT], [this.UID]);
         }
-          
+
+        public int EndsDefault {
+            get => (int)this[EventTable.COL.ENDS_DEFAULT];
+            set => this[EventTable.COL.ENDS_DEFAULT] = value;
+        }
+
+        public int LaneCount {
+            get => (int)this[EventTable.COL.LANE_COUNT];
+            set => this[EventTable.COL.LANE_COUNT] = value;
+        }
+
+        public EventFormat EventFormat {
+            get => (EventFormat)this[EventTable.COL.EVENT_FORMAT];
+            set => this[EventTable.COL.EVENT_FORMAT] = value;
+        }
+
         public int UID {
             get => (int)this[EventTable.COL.UID];
         }
@@ -41,6 +57,9 @@ namespace Leagueinator.Model.Tables {
             public static readonly string UID = "uid";
             public static readonly string NAME = "name";
             public static readonly string DATE = "date";
+            public static readonly string LANE_COUNT = "lanes";
+            public static readonly string ENDS_DEFAULT = "ends";
+            public static readonly string EVENT_FORMAT = "format";
         }
 
         public EventRow AddRow(string eventName, string? date = null) {
@@ -91,6 +110,24 @@ namespace Leagueinator.Model.Tables {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(string),
                 ColumnName = COL.DATE,
+            });
+
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.LANE_COUNT,
+                DefaultValue = 8
+            });
+
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(int),
+                ColumnName = COL.ENDS_DEFAULT,
+                DefaultValue = 10
+            });
+
+            this.Columns.Add(new DataColumn {
+                DataType = typeof(EventFormat),
+                ColumnName = COL.EVENT_FORMAT,
+                DefaultValue = EventFormat.AssignedLadder
             });
 
             this.PrimaryKey = [this.Columns[COL.UID]!];

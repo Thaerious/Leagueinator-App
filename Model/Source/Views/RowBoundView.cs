@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 using System.Data;
 
 namespace Leagueinator.Model.Views {
@@ -14,6 +15,7 @@ namespace Leagueinator.Model.Views {
     /// 
     /// </summary>
     /// <typeparam name="ROW">Table B row type.</typeparam>
+    [TimeTrace]
     public class RowBoundView<ROW> : DataView, IEnumerable<ROW> where ROW : CustomRow {
         public object[] ForeignKeyValue { get; }
         public DataColumn[] ForeignKeyColumn { get; }
@@ -57,7 +59,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public virtual ROW Add(params object[] args) {
-            return this.ChildTable.AddInstance([..this.ForeignKeyValue, ..args]);
+            return this.ChildTable.AddInstance([.. this.ForeignKeyValue, .. args]);
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public virtual ROW Get(params object[] args) {
-            return this.ChildTable.GetInstance([..this.ForeignKeyValue, ..args]); 
+            return this.ChildTable.GetInstance([.. this.ForeignKeyValue, .. args]);
         }
 
         /// <summary>
@@ -77,7 +79,7 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public virtual bool Has(params object[] args) {
-            return this.ChildTable.HasInstance([..this.ForeignKeyValue, ..args]);
+            return this.ChildTable.HasInstance([.. this.ForeignKeyValue, .. args]);
         }
 
         /// <summary>

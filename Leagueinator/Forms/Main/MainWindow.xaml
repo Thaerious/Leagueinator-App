@@ -67,7 +67,6 @@
                 <MenuItem Header="Members" Click="HndMembersClick"/>
                 <MenuItem Header="Players" Click="HndPlayersClick"/>
                 <MenuItem Header="Idle" Click="HndIdleClick"/>
-                <MenuItem Header="Settings" Click="HndSettingsClick"/>
             </MenuItem>
         </Menu>
 

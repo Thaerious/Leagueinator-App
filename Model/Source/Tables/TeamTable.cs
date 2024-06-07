@@ -64,6 +64,11 @@ namespace Leagueinator.Model.Tables {
             return new(row);
         }
 
+        /// <summary>
+        /// Add a row, infer the index from the previous indices.
+        /// </summary>
+        /// <param name="match"></param>
+        /// <returns></returns>
         public TeamRow AddRow(int match) {
             return this.AddRow(match, this.LastIndex(match) + 1);
         }

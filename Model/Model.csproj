@@ -11,8 +11,4 @@
     <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Source\Tables\SettingsTable.cs" />
-  </ItemGroup>
-
 </Project>

@@ -123,12 +123,6 @@ namespace Leagueinator.Forms {
             NameDateCard card = new(eventRow);
             this.NamePanel.Children.Add(card);
             card.MouseDown += this.HndCardMouseDown;
-
-            eventRow.Settings.GetIf("format").Value = "assigned_ladder";
-            eventRow.Settings.Add("lanes", "8");
-            eventRow.Settings.Add("teams", "2");
-            eventRow.Settings.Add("ends", "10");
-
             this.Selected = card;
         }
 
@@ -150,19 +144,19 @@ namespace Leagueinator.Forms {
         private void HndEndsChanged(object sender, RoutedEventArgs args) {
             if (this.Selected is null) return;
             int ends = int.Parse(this.TxtEnds.Text);
-            this.Selected.EventRow.Settings.Get("ends").Value = $"{ends}";
+            this.Selected.EventRow.EndsDefault = ends;
         }
 
         private void HndLaneChanged(object sender, RoutedEventArgs args) {
             if (this.Selected is null) return;
             int lanes = int.Parse(this.TxtLanes.Text);
-            this.Selected.EventRow.Settings.Get("lanes").Value = $"{lanes}";
+            this.Selected.EventRow.LaneCount = lanes;
         }
 
         private void HndTourneyFormatChecked(object sender, RoutedEventArgs args) {
             if (this.Selected is null) return;
             if (sender is not RadioButton radioButton) return;
-            this.Selected.EventRow.Settings.GetIf("format").Value = (string)radioButton.Tag;
+            this.Selected.EventRow.EventFormat = (EventFormat)Enum.Parse(typeof(EventFormat), (string)radioButton.Tag);
         }
 
         public League League { get; }
@@ -187,13 +181,13 @@ namespace Leagueinator.Forms {
                     value.IsSelected = true;
                     if (this.League.EventTable.Rows.Count > 1) this.ButDelete.IsEnabled = true;
 
-                    this.TxtEnds.Text = this.Selected?.EventRow.Settings.Get("ends").Value;
-                    this.TxtLanes.Text = this.Selected?.EventRow.Settings.Get("lanes").Value;
+                    this.TxtEnds.Text = this.Selected?.EventRow.EndsDefault.ToString();
+                    this.TxtLanes.Text = this.Selected?.EventRow.LaneCount.ToString();
 
                     this.ButOpen.IsEnabled = true;
                     this.DatePicker.DataContext = value.EventRow;
                     this.TxtEventName.DataContext = value.EventRow;
-                    this.OptionPanel.DataContext = value.EventRow.Settings;
+                    //this.OptionPanel.DataContext = value.EventRow.Settings; // TODO
                 }
             }
         }

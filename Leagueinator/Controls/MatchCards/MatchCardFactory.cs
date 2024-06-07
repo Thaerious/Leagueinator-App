@@ -1,6 +1,8 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Controls.MatchCards {
+    [TimeTrace]
     public static class MatchCardFactory {
         public static MatchCard GenerateMatchCard(MatchRow matchRow) {
             switch (matchRow.MatchFormat) {

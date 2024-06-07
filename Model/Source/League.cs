@@ -10,7 +10,6 @@ namespace Leagueinator.Model {
         public MatchTable MatchTable { init; get; }
         public TeamTable TeamTable { init; get; }
         public PlayerTable PlayerTable { init; get; }
-        public SettingsTable SettingsTable { init; get; }
         public MemberTable MemberTable { init; get; }
         public IdleTable IdleTable { init; get; }
 
@@ -20,7 +19,6 @@ namespace Leagueinator.Model {
             this.RoundTable = new();
             this.MatchTable = new();
             this.TeamTable = new();
-            this.SettingsTable = new();
             this.MemberTable = new();
             this.IdleTable = new();
             
@@ -36,7 +34,6 @@ namespace Leagueinator.Model {
             this.RoundTable.ImportTable(that.RoundTable);
             this.MatchTable.ImportTable(that.MatchTable);
             this.TeamTable.ImportTable(that.TeamTable);
-            this.SettingsTable.ImportTable(that.SettingsTable);
             this.MemberTable.ImportTable(that.MemberTable);
             this.IdleTable.ImportTable(that.IdleTable);
         }
@@ -54,7 +51,6 @@ namespace Leagueinator.Model {
             this.Tables.Add(this.RoundTable);
             this.Tables.Add(this.MatchTable);
             this.Tables.Add(this.TeamTable);
-            this.Tables.Add(this.SettingsTable);
             this.Tables.Add(this.MemberTable);
             this.Tables.Add(this.IdleTable);
         }
@@ -65,7 +61,6 @@ namespace Leagueinator.Model {
             this.RoundTable.BuildColumns();
             this.MatchTable.BuildColumns();
             this.TeamTable.BuildColumns();
-            this.SettingsTable.BuildColumns();
             this.IdleTable.BuildColumns();
             this.MemberTable.BuildColumns();
         }
@@ -126,22 +121,13 @@ namespace Leagueinator.Model {
                     [this.IdleTable.Columns[IdleTable.COL.ROUND]!]
                 )
             );
-
-            this.SettingsTable.Constraints.Add(
-                new ForeignKeyConstraint(
-                    "FK_Settings_Events",
-                    [this.EventTable.Columns[EventTable.COL.UID]!],
-                    [this.SettingsTable.Columns[SettingsTable.COL.EVENT]!]
-                )
-            );
         }
 
         public string PrettyPrint() {
             return this.MatchTable.PrettyPrint() + "\n" +
                 this.TeamTable.PrettyPrint() + "\n" +
                 this.IdleTable.PrettyPrint() + "\n" +
-                this.EventTable.PrettyPrint() + "\n" +
-                this.SettingsTable.PrettyPrint();
+                this.EventTable.PrettyPrint() + "\n";
         }
     }
 }

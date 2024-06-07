@@ -2,17 +2,20 @@
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace Leagueinator.Formats {
+
+    [TimeTrace]
     public class AssignedLadder : TournamentFormat {
-        private static Random random = new();
+        private readonly static Random random = new();
+        private PlayersPreviousLanes previousLanes = [];
 
         public RoundRow GenerateNextRound(EventRow eventRow) {
+            this.previousLanes = new(eventRow);
+
             RoundRow roundRow = eventRow.Rounds.Add();
-            roundRow.PopulateMatches();
             ReadOnlyDictionary<Team, ResultsPlus> results = ResultsPlus.AllResults(eventRow);
 
             List<ResultsPlus> sortedResults = [.. results.Values];
@@ -20,21 +23,33 @@ namespace Leagueinator.Formats {
             AssignMatches(eventRow, roundRow, sortedResults);
             AssignLanes(eventRow, roundRow, results);
 
+            Debug.WriteLine(roundRow.League.MatchTable.PrettyPrint());
+            Debug.WriteLine(roundRow.League.TeamTable.PrettyPrint());
+            Debug.WriteLine(roundRow.League.MemberTable.PrettyPrint());
+
             return roundRow;
         }
 
         private static void AssignMatches(EventRow eventRow, RoundRow roundRow, List<ResultsPlus> sortedResults) {
+            roundRow.PopulateMatches();
+
             int match = 0;
             int team = 0;
 
             // Assign Matches
             foreach (ResultsPlus result in sortedResults) {
+                int maxTeams = Match.TeamCount(roundRow.Matches[match]!.MatchFormat);
+
+                MatchRow matchRow = roundRow.Matches[match]!;
+                while (matchRow.Teams.Count < maxTeams) {
+                    matchRow.Teams.Add(matchRow.Teams.Count);
+                }
+
                 foreach (string player in result.Team.Players) {
-                    roundRow.Matches[match]!.Teams[team]!.Members.Add(player);
+                    matchRow.Teams[team]!.Members.Add(player);
                 }
                 team++;
 
-                int maxTeams = int.Parse(eventRow.Settings.Get("teams").Value);
                 if (team >= maxTeams) {
                     match++;
                     team = 0;
@@ -50,19 +65,15 @@ namespace Leagueinator.Formats {
         /// <param name="results"></param>
 
         private static void AssignLanes(EventRow eventRow, RoundRow roundRow, ReadOnlyDictionary<Team, ResultsPlus> results) {
-            // Random Assignment
-            int sanity = 20;
-            while (sanity-- > 0) {
-                RandomAssignment(eventRow, roundRow);
-                if (CountRepeats(roundRow) == 0) break;
-            }
+            int lane = 0;
+            foreach (MatchRow matchRow in roundRow.Matches) matchRow.Lane = lane++;
         }
 
 
         private static void RandomAssignment(EventRow eventRow, RoundRow roundRow) {
             // Create a list of available lanes.
             List<int> availableLanes = [];
-            for (int i = 0; i < int.Parse(eventRow.Settings.Get("lanes").Value); i++) {
+            for (int i = 0; i < eventRow.LaneCount; i++) {
                 availableLanes.Add(i);
             }
 
@@ -93,19 +104,32 @@ namespace Leagueinator.Formats {
 
             return repeats;
         }
+    }
 
-        public static List<string> Players(MatchRow matchRow) {
-            List<string> list = [];
+    internal class MatchLaneList {
+        public MatchRow MatchRow;
+        public List<int> lanes = [];
 
-            foreach (TeamRow teamRow in matchRow.Teams) {
-                foreach (MemberRow memberRow in teamRow.Members) {
-                    if (memberRow.Player != null && memberRow.Player != "") {
-                        list.Add(memberRow.Player);
+        public MatchLaneList(MatchRow matchRow) {
+            this.MatchRow = matchRow;
+        }
+    }
+
+    internal class PlayersPreviousLanes : Dictionary<string, HashSet<int>> {
+
+        public PlayersPreviousLanes() { }
+
+        public PlayersPreviousLanes(EventRow eventRow) {
+            foreach (RoundRow roundRow in eventRow.Rounds) {
+                foreach (MatchRow matchRow in roundRow.Matches) {
+                    foreach (TeamRow teamRow in matchRow.Teams) {
+                        foreach (MemberRow memberRow in teamRow.Members) {
+                            if (!this.ContainsKey(memberRow.Player)) this[memberRow.Player] = [];
+                            this[memberRow.Player].Add(matchRow.Lane);
+                        }
                     }
                 }
             }
-
-            return list;
         }
     }
 }

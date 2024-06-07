@@ -16,9 +16,10 @@ namespace Leagueinator.Forms.Main {
         /// Clears all matchRow cards that does not have a value in "roundRow".
         /// </summary>
         /// <param name="roundRow"></param>
-        private void PopulateMatchCards(RoundRow roundRow) {
+        private void 
+            PopulateMatchCards(RoundRow roundRow) {
             if (this.EventRow is null) throw new NullReferenceException();
-            
+
             while (this.CardStackPanel.Children.Count > 0) {
                 var child = this.CardStackPanel.Children[0];
                 MatchCard matchCard = (MatchCard)child;
@@ -196,11 +197,7 @@ namespace Leagueinator.Forms.Main {
             MatchRow matchRow = teamRow.Match;
             RoundRow roundRow = matchRow.Round;
 
-            Debug.WriteLine($"roundRow, this.CurrentRoundRow = ({roundRow}, {this.CurrentRoundRow})");
-            if (!roundRow.Equals(this.CurrentRoundRow)) {
-                Debug.WriteLine("roundRow != this.CurrentRoundRow");
-                return;
-            }
+            if (!roundRow.Equals(this.CurrentRoundRow)) return;
 
             MatchCard matchCard = (MatchCard)this.CardStackPanel.Children[matchRow.Lane];
             TeamCard? teamCard = matchCard.GetTeamCard(teamRow.Index);

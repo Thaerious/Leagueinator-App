@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Reflection;
 using System.Windows;
+using Leagueinator.Utility;
 
 namespace SortableCardContainer {
     /// <summary>
@@ -8,7 +8,6 @@ namespace SortableCardContainer {
     /// </summary>
     public partial class App : Application {
         public App() {
-            Debug.WriteLine("App Constructor");
             this.DispatcherUnhandledException += this.HndUIException;
             AppDomain.CurrentDomain.UnhandledException += this.HndDomainException;
         }

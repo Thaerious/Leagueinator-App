@@ -27,8 +27,8 @@ namespace Leagueinator.Forms.Main {
                 this.EventRow = this.League.EventTable.GetLast();
                 value.LeagueUpdate += this.HndLeagueUpdate;
 
-                switch (this.EventRow.Settings.Get("format").Value) {
-                    case "assigned_ladder":
+                switch (this.EventRow.EventFormat) {
+                    case EventFormat.AssignedLadder:
                         this.TournamentFormat = new AssignedLadder();
                         break;
                 }
@@ -57,8 +57,6 @@ namespace Leagueinator.Forms.Main {
                 foreach (RoundRow roundRow in this.EventRow.Rounds) {
                     this.AddRoundButton(roundRow);
                 }
-
-                this.PopulateMatchCards(this.EventRow.Rounds[^1]!);
 
                 // Click the last round button (sets current round).
                 var lastButton = this.RoundButtonContainer.Children[^1];

@@ -5,16 +5,22 @@ using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Input;
 using Leagueinator.Model.Tables;
-using System.Diagnostics;
-using Leagueinator.Formats;
 using static Leagueinator.Controls.MatchCard;
+using System.Diagnostics;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    [TimeTrace]
     public partial class MainWindow : Window {
+
         public MainWindow() {
+            this.Closed += (s, e) => {
+                Debug.WriteLine("TimeTrace Report");
+                Debug.WriteLine(TimeTrace.Report());
+            };
+
             InitializeComponent();
             this.League = NewLeague();
 
@@ -28,7 +34,7 @@ namespace Leagueinator.Forms.Main {
         /// <summary>
         /// Indirectly triggered when a change is made to one of the underlying tables.
         /// </summary>
-        /// <param name="isSaved">The new state isSaved</param>
+        /// <param name="isSaved">The new state isSaved</param>        
         private void HndStateChanged(object? sender, bool isSaved) {
             if (isSaved) this.Title = $"Leagueinator [{SaveState.Filename}]";
             else this.Title = $"Leagueinator [{SaveState.Filename}] *";
@@ -86,10 +92,6 @@ namespace Leagueinator.Forms.Main {
         private static League NewLeague() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
-            eventRow.Settings.Add("format", "assigned_ladder");
-            eventRow.Settings.Add("lanes", "8");
-            eventRow.Settings.Add("teams", "2");
-            eventRow.Settings.Add("ends", "10");
 
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches();
@@ -150,9 +152,6 @@ namespace Leagueinator.Forms.Main {
         }
         private void HndIdleClick(object sender, RoutedEventArgs e) {
             new TableViewer().Show(this.League.IdleTable);
-        }
-        private void HndSettingsClick(object sender, RoutedEventArgs e) {
-            new TableViewer().Show(this.League.SettingsTable);
         }
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
