@@ -2,7 +2,6 @@
 using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model.Tables;
 using System.Data;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -26,7 +25,10 @@ namespace Leagueinator.Forms.Main {
                 this.CardStackPanel.Children.Remove(matchCard);
             }
 
-            foreach (MatchRow matchRow in roundRow.Matches) {
+            List<MatchRow> matchList = [.. roundRow.Matches];
+            matchList.Sort((m1, m2) => m1.Lane.CompareTo(m2.Lane));
+
+            foreach (MatchRow matchRow in matchList) {
                 MatchCard matchCard = MatchCardFactory.GenerateMatchCard(matchRow);
                 this.CardStackPanel.Children.Add(matchCard);
             }
@@ -191,7 +193,6 @@ namespace Leagueinator.Forms.Main {
         }
 
         private void HndMemberTableDeletingRow(object sender, DataRowChangeEventArgs e) {
-            Debug.WriteLine("HndMemberTableDeletingRow");
             MemberRow memberRow = new(e.Row);
             TeamRow teamRow = memberRow.Team;
             MatchRow matchRow = teamRow.Match;
@@ -204,10 +205,6 @@ namespace Leagueinator.Forms.Main {
             if (teamCard is null) return;
 
             teamCard.RemoveName(memberRow.Player);
-
-            Debug.WriteLine(memberRow.DataRow.PrettyPrint("Hnd Deleting Row"));
-
-            
         }
     }
 }

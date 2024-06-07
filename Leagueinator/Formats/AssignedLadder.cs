@@ -21,7 +21,7 @@ namespace Leagueinator.Formats {
             List<ResultsPlus> sortedResults = [.. results.Values];
             sortedResults.Sort();
             AssignMatches(eventRow, roundRow, sortedResults);
-            AssignLanes(eventRow, roundRow, results);
+            new LaneAssigner(eventRow, roundRow).AssignLanes();
 
             Debug.WriteLine(roundRow.League.MatchTable.PrettyPrint());
             Debug.WriteLine(roundRow.League.TeamTable.PrettyPrint());
@@ -55,54 +55,6 @@ namespace Leagueinator.Formats {
                     team = 0;
                 }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="eventRow">The event in question</param>
-        /// <param name="roundRow">The new round being added</param>
-        /// <param name="results"></param>
-
-        private static void AssignLanes(EventRow eventRow, RoundRow roundRow, ReadOnlyDictionary<Team, ResultsPlus> results) {
-            int lane = 0;
-            foreach (MatchRow matchRow in roundRow.Matches) matchRow.Lane = lane++;
-        }
-
-
-        private static void RandomAssignment(EventRow eventRow, RoundRow roundRow) {
-            // Create a list of available lanes.
-            List<int> availableLanes = [];
-            for (int i = 0; i < eventRow.LaneCount; i++) {
-                availableLanes.Add(i);
-            }
-
-            foreach (MatchRow matchRow in roundRow.Matches) {
-                int randomLane = availableLanes[random.Next(availableLanes.Count)];
-                availableLanes.Remove(randomLane);
-                matchRow.Lane = randomLane;
-            }
-        }
-
-        private static int CountRepeats(RoundRow roundRow) {
-            int repeats = 0;
-            Dictionary<MatchRow, List<int>> prevLanes = [];
-
-            // Create a list of previous lanes for each match
-            foreach (MatchRow matchRow in roundRow.Matches) {
-                prevLanes[matchRow] = [];
-                foreach (TeamRow teamRow in matchRow.Teams) {
-                    Team team = new Team(teamRow);
-                    prevLanes[matchRow].AddRange(team.PrevLanes(roundRow));
-                }
-            }
-
-            // Count repeats
-            foreach (MatchRow matchRow in prevLanes.Keys) {
-                if (prevLanes[matchRow].Contains(matchRow.Lane)) repeats++;
-            }
-
-            return repeats;
         }
     }
 

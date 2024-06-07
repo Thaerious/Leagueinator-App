@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Views;
 using System.Data;
+using System.Linq;
 using static Leagueinator.Model.Tables.MatchRow;
 
 namespace Leagueinator.Model.Tables {
@@ -15,8 +16,6 @@ namespace Leagueinator.Model.Tables {
             }
         }
     }
-
-
 
     public class MatchRow : CustomRow {
         public MatchRow(DataRow dataRow) : base(dataRow) {
@@ -45,6 +44,15 @@ namespace Leagueinator.Model.Tables {
         public RoundRow Round => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
 
         public EventRow Event => this.Round.Event;
+
+        public IReadOnlyList<string> Players {
+            get {
+                return this.Teams
+                .SelectMany(teamRow => teamRow.Members)
+                .Select(memberRow => memberRow.Player)
+                .ToList();
+            }
+        }
     }
 
     public class MatchTable : LeagueTable<MatchRow> {
