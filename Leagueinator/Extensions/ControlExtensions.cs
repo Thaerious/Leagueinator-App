@@ -1,11 +1,13 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Xml;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Leagueinator.Extensions {
     public static class ControlExtensions {
-
 
         public static bool HasTag(this FrameworkElement source, string tag) {
             if (source is null) return false;
@@ -124,6 +126,14 @@ namespace Leagueinator.Extensions {
             }
 
             return result;
+        }
+
+        public static T? XAMLClone<T>(this T source) {
+            if (source == null) return default(T);
+            string xaml = XamlWriter.Save(source);
+            StringReader stringReader = new StringReader(xaml);
+            XmlReader xmlReader = XmlReader.Create(stringReader);
+            return (T)XamlReader.Load(xmlReader);
         }
     }
 }

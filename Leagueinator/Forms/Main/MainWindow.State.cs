@@ -51,7 +51,7 @@ namespace Leagueinator.Forms.Main {
                 this.RoundButtonContainer.Children.Clear();
 
                 if (this.EventRow is null) return;
-                if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Must set event with a minimum of one round");
+                if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Set event at minimum must have one round.");
 
                 // Add a round button for each round.
                 foreach (RoundRow roundRow in this.EventRow.Rounds) {
@@ -68,9 +68,9 @@ namespace Leagueinator.Forms.Main {
         /// The currently selected RoundRow.
         /// Will throw an exception if attempting to retrieve before it's set.
         /// </summary>
-        internal RoundRow? CurrentRoundRow {
+        internal RoundRow CurrentRoundRow {
             get {
-                if (this._currentRoundRow is null) throw new NullReferenceException();
+                if (this._currentRoundRow is null) throw new InvalidOperationException("CurrentRoundRow not initialized");
                 return this._currentRoundRow;
             }
             set {

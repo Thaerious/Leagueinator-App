@@ -3,6 +3,7 @@ using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Windows;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
@@ -81,13 +82,12 @@ namespace Leagueinator.Controls {
         protected void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
 
+            string before = e.Before?.Trim() ?? "";
+            string after = e.After?.Trim() ?? "";
+
+            Debug.WriteLine($"Match Card Update Text '{before}' => '{after}'");
 
             TeamCard parent = e.TextBox.Ancestors<TeamCard>()[0];
-
-            // Remove new name from the idle table
-            if (this.MatchRow.Round.IdlePlayers.Has(e.After)) {
-                this.MatchRow.Round.IdlePlayers.Get(e.After)!.Remove();
-            }
 
             // Ensure the team exists
             if (!this.MatchRow.Teams.Has(parent.TeamIndex)) {
@@ -95,16 +95,17 @@ namespace Leagueinator.Controls {
             }
 
             // Add new name to the teams table
-            if (!e.After.IsEmpty()) {
-                this.MatchRow.League.PlayerTable.AddRowIf(e.After);
-                this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(e.After);
+            if (!after.IsEmpty()) {
+                this.MatchRow.League.PlayerTable.AddRowIf(after);
+                this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(after);
             }
 
             // Remove the old name from the members table
-            if (!e.Before.IsEmpty()) {
+            if (!before.IsEmpty()) {
                 TeamRow teamRow = this.MatchRow.Teams[parent.TeamIndex] ?? throw new NullReferenceException();
-                MemberRow memberRow = teamRow.Members.Get(e.Before) ?? throw new NullReferenceException();
-                memberRow.Remove();
+                if (teamRow.Members.Has(before)) {
+                    teamRow.Members.Get(before).Remove();
+                }
             }
 
             if (e.Cause == Cause.EnterPressed) {

@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
 
@@ -73,6 +74,11 @@ namespace Leagueinator.Model.Tables {
             // When a player is added to the idle table, remove it from any team tables.
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
+
+                // Ensure the name is in the players table
+                if (!this.League.PlayerTable.HasRow(name)) {
+                    this.League.PlayerTable.AddRow(name);
+                }
 
                 // Remove the name from the teams table
                 int roundUID = (int)e.Row[COL.ROUND];

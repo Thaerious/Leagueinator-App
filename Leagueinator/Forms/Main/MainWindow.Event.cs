@@ -175,20 +175,24 @@ namespace Leagueinator.Forms.Main {
             if (this.EventRow is null) return;
             if (this.CurrentRoundRow is null) return;
             this.ClearFocus();
-            RoundRow nextRound = this.EventRow.Rounds.Add();
-            nextRound.PopulateMatches();
 
-            for (int m = 0; m < this.CurrentRoundRow.Matches.Count; m++) {
-                MatchRow matchRow = this.CurrentRoundRow.Matches[m]!;
-                for (int t = 0; t < matchRow.Teams.Count; t++) {
-                    TeamRow teamRow = matchRow.Teams[t]!;
-                    foreach (MemberRow member in teamRow.Members) {
-                        nextRound.Matches[m]!.Teams[t]!.Members.Add(member.Player);
+            RoundRow newRoundRow = this.EventRow.Rounds.Add();
+
+            foreach (MatchRow matchRow in this.CurrentRoundRow.Matches) {
+                MatchRow newMatchRow = newRoundRow.Matches.Add(matchRow.Lane, matchRow.Ends);
+                foreach (TeamRow teamRow in matchRow.Teams) {
+                    TeamRow newTeamRow = newMatchRow.Teams.Add(teamRow.Index);
+                    foreach (MemberRow memberRow in teamRow.Members) {
+                        newTeamRow.Members.Add(memberRow.Player);
                     }
                 }
             }
 
-            this.AddRoundButton(nextRound);
+            foreach (IdleRow idleRow in this.CurrentRoundRow.IdlePlayers) {
+                newRoundRow.IdlePlayers.Add(idleRow.Player);
+            }
+
+            this.AddRoundButton(newRoundRow);
             this.InvokeLastRoundButton();
         }
 
