@@ -9,6 +9,10 @@
              Height="120"           
              >
 
+    <UserControl.Resources>
+        <local:LaneConverter x:Key="LaneConverter"/>
+    </UserControl.Resources>
+
     <Border BorderBrush="Black" BorderThickness="2" Margin="5">
         <Border.ContextMenu>
             <ContextMenu>
@@ -38,7 +42,7 @@
                         <ColumnDefinition Width="50"/>
                     </Grid.ColumnDefinitions>
 
-               <!-- Player Container -->
+                    <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Grid.Column="0" Margin="10 10 0 10">
                         <local:PlayerTextBox Padding="2" />
                         <local:PlayerTextBox Padding="2"/>
@@ -56,15 +60,24 @@
                 </Grid>
             </local:TeamCard>
 
-            <!-- Ends -->
-            <StackPanel 
-                VerticalAlignment="Center" HorizontalAlignment="Center"
-                Width="50"
-                Grid.Column="1" Margin="10,50,10,10" 
-            >
-                <TextBox x:Name="TxtEnds" Padding="2" Text="{Binding Ends}" Width="30" TextAlignment="Center"/>
-                <TextBlock HorizontalAlignment="Center" Text="Ends" Margin="0,3,0,0" FontFamily="Arial Black" FontSize="10"/>
-            </StackPanel>
+            <!-- Match Info Box -->
+            <Grid x:Name="InfoGrid" Grid.Column="1">
+                <!-- Lane Information -->
+                <TextBlock HorizontalAlignment="Center" 
+                           Text="{Binding Path=Lane, Converter={StaticResource LaneConverter}, Mode=TwoWay}" 
+                           Margin="0,22,0,-18" 
+                           FontFamily="Arial Black" FontSize="20"
+                />
+
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Width="50"
+                            Margin="10,50,10,10" 
+                >
+                    <!-- Ends -->
+                    <TextBox x:Name="TxtEnds" Padding="2" Text="{Binding Ends}" Width="30" TextAlignment="Center"/>
+                    <TextBlock HorizontalAlignment="Center" Text="Ends" Margin="0,3,0,0" FontFamily="Arial Black" FontSize="10"/>
+                </StackPanel>
+            </Grid>
 
             <!-- Team 2 Card -->
             <local:TeamCard 

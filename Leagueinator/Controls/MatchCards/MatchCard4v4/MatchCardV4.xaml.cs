@@ -42,7 +42,6 @@ namespace Leagueinator.Controls {
                 this.DataContext = MatchRow;
                 this.Team0.TeamRow = MatchRow.Teams[0];
                 this.Team1.TeamRow = MatchRow.Teams[1];
-                this.TxtEnds.DataContext = MatchRow;
             }
         }
 
@@ -67,11 +66,11 @@ namespace Leagueinator.Controls {
                 this.CheckTie0.IsChecked = false;
             }
 
-                if (this.CheckTie0.IsChecked && !this.CheckTie1.IsChecked) {
+                if (this.CheckTie0.IsChecked == true && this.CheckTie1.IsChecked == false) {
                 this.MatchRow.Teams[0]!.Tie = 1;
                 this.MatchRow.Teams[1]!.Tie = -1;
             }
-            else if (!this.CheckTie0.IsChecked && this.CheckTie1.IsChecked) {
+            else if (this.CheckTie0.IsChecked == false && this.CheckTie1.IsChecked == true) {
                 this.MatchRow.Teams[0]!.Tie = -1;
                 this.MatchRow.Teams[1]!.Tie = 1;
             }

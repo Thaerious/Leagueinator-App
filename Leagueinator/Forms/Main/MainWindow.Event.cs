@@ -15,8 +15,7 @@ namespace Leagueinator.Forms.Main {
         /// Clears all matchRow cards that does not have a value in "roundRow".
         /// </summary>
         /// <param name="roundRow"></param>
-        private void 
-            PopulateMatchCards(RoundRow roundRow) {
+        private void PopulateMatchCards(RoundRow roundRow) {
             if (this.EventRow is null) throw new NullReferenceException();
 
             while (this.CardStackPanel.Children.Count > 0) {
@@ -47,7 +46,7 @@ namespace Leagueinator.Forms.Main {
 
             MatchCard? newMatchCard = null;
             switch (formatArgs.MatchFormat) {
-                case MatchFormat.VS1:                    
+                case MatchFormat.VS1:
                     break;
                 case MatchFormat.VS2:
                     break;

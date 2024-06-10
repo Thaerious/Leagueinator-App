@@ -29,6 +29,7 @@ namespace Leagueinator.Controls {
                 this._matchRow = value;
                 if (!this.isLoaded) return;
                 this.ProcessMatchCard();
+                this.DataContext = MatchRow;
             }
         }
 

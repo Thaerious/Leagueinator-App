@@ -9,6 +9,10 @@
              Height="140"           
              >
 
+    <UserControl.Resources>
+        <local:LaneConverter x:Key="LaneConverter"/>
+    </UserControl.Resources>
+
     <Border BorderBrush="Black" BorderThickness="2" Margin="5">
         <Border.ContextMenu>
             <ContextMenu>
@@ -18,14 +22,7 @@
                 <MenuItem Header="4 vs 4" IsCheckable="True" IsChecked="False"  Checked="HndChangeFormat" Tag="VS4"/>
                 <MenuItem Header="4321"  IsCheckable="True" IsChecked="False" Checked="HndChangeFormat" Tag="A4321"/>
             </ContextMenu>
-        </Border.ContextMenu>        
-        
-        <!-- Outer Horz Grid -->
-        <Grid Background="green">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        </Border.ContextMenu>
 
             <!-- Inner Team Vert Grid -->
             <Grid Background="green">
@@ -34,12 +31,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Team 1 Card -->
-                <local:TeamCard 
-                    x:Name="Team0" TeamIndex="0"
-                    BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="0"
+                <local:TeamCard x:Name="Team0" Grid.Column="0" TeamIndex="0"
+                                BorderBrush="Black" BorderThickness="0 0 1 1" 
                 >
                     <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Margin="10 10 10 10">
@@ -50,10 +47,10 @@
                 </local:TeamCard>
 
                 <!-- Team 2 Card -->
-                <local:TeamCard 
-                    x:Name="Team1" TeamIndex="1"
-                    BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="1"  
+                <local:TeamCard x:Name="Team1" Grid.Column="1" TeamIndex="1"
+                                BorderBrush="Black" BorderThickness="0 0 1 1"
                 >
+                    
                     <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Margin="10 10 10 10">
                         <local:PlayerTextBox Padding="2" />
@@ -62,10 +59,29 @@
                     </StackPanel>
                 </local:TeamCard>
 
+                <!-- Match Info Box -->
+                <Grid x:Name="InfoGrid" Grid.Column="2">
+                    <!-- Lane Information -->
+                    <TextBlock HorizontalAlignment="Center" 
+                               Text="{Binding Path=Lane, Converter={StaticResource LaneConverter}, Mode=TwoWay}" 
+                               Margin="0,22,0,-18" 
+                               FontFamily="Arial Black" FontSize="20"
+    />
+
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                Width="50"
+                                Margin="10,50,10,10" 
+    >
+                        <!-- Ends -->
+                        <TextBox x:Name="TxtEnds" Padding="2" Text="{Binding Ends}" Width="30" TextAlignment="Center"/>
+                        <TextBlock HorizontalAlignment="Center" Text="Ends" Margin="0,3,0,0" FontFamily="Arial Black" FontSize="10"/>
+                    </StackPanel>
+                </Grid>
+
                 <!-- Team 3 Card -->
                 <local:TeamCard 
-                    x:Name="Team2" TeamIndex="2"
-                    BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Column="2"  
+                    x:Name="Team2" Grid.Column="3" TeamIndex="2"
+                    BorderBrush="Black" BorderThickness="0 0 1 1" 
                 >
                     <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Margin="10 10 10 10">
@@ -77,8 +93,8 @@
 
                 <!-- Team 4 Card -->
                 <local:TeamCard 
-                    x:Name="Team3" TeamIndex="3"
-                    BorderBrush="Black" BorderThickness="0 0 0 1" Grid.Column="3"  
+                    x:Name="Team3" Grid.Column="4" TeamIndex="3"
+                    BorderBrush="Black" BorderThickness="0 0 0 1"   
                 >
                     <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Margin="10 10 10 10">
@@ -88,16 +104,5 @@
                     </StackPanel>
                 </local:TeamCard>
             </Grid>
-            
-            <!-- Ends -->
-            <StackPanel 
-                VerticalAlignment="Center" HorizontalAlignment="Center"
-                Width="50"
-                Grid.Row="1"
->
-                <TextBox x:Name="TxtEnds" Padding="2" Text="{Binding Ends}" Width="30" TextAlignment="Center"/>
-                <TextBlock HorizontalAlignment="Center" Text="Ends" Margin="0,3,0,0" FontFamily="Arial Black" FontSize="10"/>
-            </StackPanel>
-        </Grid>
     </Border>
 </local:MatchCard>
