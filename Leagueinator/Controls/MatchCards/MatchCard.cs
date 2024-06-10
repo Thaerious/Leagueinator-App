@@ -60,7 +60,7 @@ namespace Leagueinator.Controls {
             return null;
         }
 
-        public void HndCheckFormat(object sender, RoutedEventArgs e) {
+        public void HndChangeFormat(object sender, RoutedEventArgs e) {
             MenuItem menuItem = (MenuItem)sender;
 
             if (menuItem.Tag is null) return;  // tag is null during initialization

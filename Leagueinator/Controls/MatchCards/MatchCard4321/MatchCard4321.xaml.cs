@@ -1,9 +1,6 @@
-﻿using Leagueinator.Extensions;
-using Leagueinator.Model.Tables;
-using Leagueinator.Utility;
+﻿using Leagueinator.Model.Tables;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Leagueinator.Controls {
     /// <summary>

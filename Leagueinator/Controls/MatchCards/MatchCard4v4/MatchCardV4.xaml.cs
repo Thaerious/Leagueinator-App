@@ -60,17 +60,20 @@ namespace Leagueinator.Controls {
             if (this.MatchRow.Teams[1] is null) throw new NullReferenceException();
             if (sender is not CheckBox checkBox) return;
 
-            if (checkBox.IsChecked == true) {
-                if (checkBox == this.CheckTie0) {
-                    this.CheckTie1.IsChecked = false;
-                    this.MatchRow.Teams[0]!.Tie = 1;
-                    this.MatchRow.Teams[1]!.Tie = -1;
-                }
-                else {
-                    this.CheckTie0.IsChecked = false;
-                    this.MatchRow.Teams[0]!.Tie = -1;
-                    this.MatchRow.Teams[1]!.Tie = 1;
-                }
+            if (checkBox.IsChecked == true && checkBox == this.CheckTie0) {
+                this.CheckTie1.IsChecked = false;
+            }
+            else if (checkBox.IsChecked == true && checkBox == this.CheckTie1) {
+                this.CheckTie0.IsChecked = false;
+            }
+
+                if (this.CheckTie0.IsChecked && !this.CheckTie1.IsChecked) {
+                this.MatchRow.Teams[0]!.Tie = 1;
+                this.MatchRow.Teams[1]!.Tie = -1;
+            }
+            else if (!this.CheckTie0.IsChecked && this.CheckTie1.IsChecked) {
+                this.MatchRow.Teams[0]!.Tie = -1;
+                this.MatchRow.Teams[1]!.Tie = 1;
             }
             else {
                 this.MatchRow.Teams[0]!.Tie = 0;
