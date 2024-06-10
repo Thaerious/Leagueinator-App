@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Leagueinator.Extensions {
     public static class ControlExtensions {
@@ -82,8 +81,15 @@ namespace Leagueinator.Extensions {
             return null;
         }
 
-        public static List<T> Descendants<T>(this DependencyObject parent) where T : DependencyObject {            
-            if (parent is null) return [];
+        /// <summary>
+        /// Retrieve all decedents (child elements recursively) based on a specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of decedent to retrieve</typeparam>
+        /// <param name="parent">Source element</param>
+        /// <returns></returns>
+        public static List<T> Descendants<T>(this DependencyObject parent) where T : DependencyObject {
+            ArgumentNullException.ThrowIfNull(parent);
+
             List<T> descendents = [];
             int childCount = VisualTreeHelper.GetChildrenCount(parent);
 
@@ -98,7 +104,6 @@ namespace Leagueinator.Extensions {
                 descendents = [.. descendents, .. Descendants<T>(child)];
             }
 
-            // If no child of the specified type is found, return null
             return descendents;
         }
 

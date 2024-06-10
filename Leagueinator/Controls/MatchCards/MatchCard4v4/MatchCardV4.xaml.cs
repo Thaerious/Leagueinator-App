@@ -1,5 +1,7 @@
-﻿using Leagueinator.Model.Tables;
+﻿using Leagueinator.Extensions;
+using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -22,26 +24,12 @@ namespace Leagueinator.Controls {
             set {
                 base.MatchRow = value;
 
-                // Remove extra teams to idle players
-                while (this.MatchRow.Teams.Count > 2){
-                    TeamRow teamRow = this.MatchRow.Teams[^1]!;
-                    foreach (MemberRow memberRow in teamRow.Members) {
-                        this.MatchRow.Round.IdlePlayers.Add(memberRow.Player);
-                    }
-                    teamRow.Remove();
-                }
-
-                // Ensure there are 2 teams
-                while (this.MatchRow.Teams.Count < 2) {
-                    this.MatchRow.Teams.Add(this.MatchRow.Teams.Count);
-                }
-
-                this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;
-                this.CheckTie1.IsChecked = MatchRow.Teams[1]!.Tie == 1;
-
-                this.DataContext = MatchRow;
-                this.Team0.TeamRow = MatchRow.Teams[0];
-                this.Team1.TeamRow = MatchRow.Teams[1];
+                this.Deferred = delegate {
+                    this.NormalizeTeams(2, 4);
+                    this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;
+                    this.CheckTie1.IsChecked = MatchRow.Teams[1]!.Tie == 1;
+                    this.DataContext = value;
+                };
             }
         }
 

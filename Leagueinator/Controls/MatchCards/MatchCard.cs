@@ -1,9 +1,7 @@
 ﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
-using System.Data;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Windows;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
@@ -46,6 +44,22 @@ namespace Leagueinator.Controls {
 
         public MatchCard() {
             this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
+            this.Loaded += this.HndLoaded;
+        }
+
+        private void HndLoaded(object sender, RoutedEventArgs e) {
+            this.IsLoaded = true;
+            this._deferred.Invoke();
+            this._deferred = delegate { };
+        }
+
+        public Action Deferred {
+            get => this._deferred;
+
+            set {
+                if (this.IsLoaded) value.Invoke();
+                else this._deferred = value;
+            }
         }
 
         public abstract void Clear();
@@ -117,6 +131,36 @@ namespace Leagueinator.Controls {
             }
         }
 
+        protected void NormalizeTeams(int teamCount, int teamSize) {
+            // Ensure there are not too many teams
+            while (this.MatchRow.Teams.Count > teamCount) {
+                TeamRow teamRow = this.MatchRow.Teams[^1]!;
+                foreach (MemberRow memberRow in teamRow.Members) {
+                    this.MatchRow.Round.IdlePlayers.Add(memberRow.Player);
+                }
+                teamRow.Remove();
+            }
+
+            // Ensure there are enough teams
+            while (this.MatchRow.Teams.Count < teamCount) {
+                this.MatchRow.Teams.Add(this.MatchRow.Teams.Count);
+            }
+
+            // Ensure that each team is not oversize
+            foreach (TeamRow teamRow in this.MatchRow.Teams) {
+                while (teamRow.Members.Count > teamSize) {
+                    this.MatchRow.Round.IdlePlayers.Add(teamRow.Members[^1]!.Player);
+                }
+            }
+
+            foreach (TeamCard teamCard in this.Descendants<TeamCard>()) {
+                int index = teamCard.TeamIndex;
+                teamCard.TeamRow = this.MatchRow.Teams[index];
+            }
+        }
+
         protected MatchRow? _matchRow = default;
+        private Action _deferred = delegate { };
+        private bool IsLoaded = false;
     }
 }
