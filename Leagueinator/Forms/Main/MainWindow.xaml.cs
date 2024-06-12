@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Leagueinator.Model.Tables;
 using static Leagueinator.Controls.MatchCard;
 using System.Diagnostics;
+using Leagueinator.Forms.MatchAssignments;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>
@@ -156,12 +157,22 @@ namespace Leagueinator.Forms.Main {
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
             this.ClearFocus();
-            PrinterForm form = new(this.EventRow) {
+            PrinterForm form = new(new ResultPlusXMLBuilder(this.EventRow)) {
                 Owner = this
             };
             form.Show();
         }
 
+        private void HndMatchAssignments(object sender, RoutedEventArgs e) {
+            if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
+            this.ClearFocus();
+            PrinterForm form = new(new MatchAssignmentsBuilder(this.CurrentRoundRow)) {
+                Owner = this
+            };
+            form.Show();
+        }
+
+        
         private void HndMenuClick(object sender, RoutedEventArgs e) {
             this.Focus();
         }

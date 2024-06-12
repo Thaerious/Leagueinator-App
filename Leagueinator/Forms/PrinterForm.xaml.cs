@@ -5,8 +5,6 @@ using System.Windows.Controls;
 using PrintDialog = System.Windows.Controls.PrintDialog;
 using Size = System.Windows.Size;
 using System.Printing;
-using Leagueinator.Model.Tables;
-using System.Diagnostics;
 
 namespace Leagueinator.Forms {
     /// <summary>
@@ -35,10 +33,10 @@ namespace Leagueinator.Forms {
         /// Create a new printer form for the specified eventRow.
         /// </summary>
         /// <param name="eventRow"></param>
-        public PrinterForm(EventRow eventRow) {
+        public PrinterForm(IXMLBuilder xmlBuilder) {
             InitializeComponent();
             this.SizeChanged += this.HndSizeChanged;
-            this.InnerCanvas.Pages = new Flex().DoLayout(ResultPlusXMLBuilder.BuildElement(eventRow));
+            this.InnerCanvas.Pages = new Flex().DoLayout(xmlBuilder.BuildElement());
         }
 
         /// <summary>

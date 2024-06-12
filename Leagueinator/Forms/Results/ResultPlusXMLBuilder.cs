@@ -5,24 +5,24 @@ using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Printer;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace Leagueinator.Forms {
-    internal class ResultPlusXMLBuilder {
+    internal class ResultPlusXMLBuilder(EventRow eventRow) : IXMLBuilder {
+        private readonly EventRow EventRow = eventRow;
 
         /// <resultsPlus>
         /// Build a XML element with a results resultsPlus organized by team.
         /// </resultsPlus>
-        /// <param name="eventRow"></param>
+        /// <param name="this.EventRow"></param>
         /// <returns></returns>
-        public static Element BuildElement(EventRow eventRow) {
-            LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.EventScoreForm.style");
-            Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.EventScoreForm.xml");
-            Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamScore.xml");
-            Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.ScoreRow.xml");
+        public Element BuildElement() {
+            LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.TeamStandings.EventScoreForm.style");
+            Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamStandings.EventScoreForm.xml");
+            Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamStandings.TeamScore.xml");
+            Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.TeamStandings.ScoreRow.xml");
 
-            ReadOnlyDictionary<Team, ResultsPlus> resultsPlus = ResultsPlus.AllResults(eventRow);
+            ReadOnlyDictionary<Team, ResultsPlus> resultsPlus = ResultsPlus.AllResults(this.EventRow);
             List<ResultsPlus> sortedResults = [.. resultsPlus.Values];
             sortedResults.Sort();
 

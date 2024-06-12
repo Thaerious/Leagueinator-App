@@ -1,0 +1,45 @@
+root{
+    width: 850px;
+    height: 1100px;
+    align-items: center;
+    justify-content: center;
+}
+
+page{
+    width: 90%;
+    height: 95%;
+    overflow: paged;
+    align-items: center;
+    flex-axis: column;
+}
+
+card{
+    width: 100%;
+    border: 1px solid black;
+    margin: 5px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: white;
+}
+
+info{
+    width: 50%;
+    align-items: center;
+    justify-content: flex_start;
+}
+
+lane{
+    width: 50px;
+    font-size: 20px;
+}
+
+format{
+    width: 50px;
+}
+
+team{
+    width: 100px;
+    align-items: center;
+    flex-axis: column;
+}

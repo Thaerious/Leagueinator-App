@@ -54,6 +54,7 @@
 
             <!-- Result (Report) Menu -->
             <MenuItem Header="View">
+                <MenuItem Header="Match Assignments" Click="HndMatchAssignments"/>
                 <MenuItem Header="Results By Team" Click="HndViewResults"/>
                 <MenuItem Header="Results By Player"/>
             </MenuItem>

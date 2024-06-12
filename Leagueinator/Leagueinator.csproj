@@ -13,17 +13,23 @@
     <None Remove="Assets\default.xml" />
     <None Remove="Assets\EventScoreForm.style" />
     <None Remove="Assets\EventScoreForm.xml" />
+    <None Remove="Assets\MatchAssignments\Match.xml" />
+    <None Remove="Assets\MatchAssignments\Root.style" />
+    <None Remove="Assets\MatchAssignments\Root.xml" />
     <None Remove="Assets\ScoreRow.xml" />
     <None Remove="Assets\TeamScore.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\default.style" />
-    <EmbeddedResource Include="Assets\default.xml" />
-    <EmbeddedResource Include="Assets\EventScoreForm.style" />
-    <EmbeddedResource Include="Assets\EventScoreForm.xml" />
-    <EmbeddedResource Include="Assets\ScoreRow.xml" />
-    <EmbeddedResource Include="Assets\TeamScore.xml" />
+    <EmbeddedResource Include="Assets\MatchAssignments\Match.xml" />
+    <EmbeddedResource Include="Assets\MatchAssignments\Root.style" />
+    <EmbeddedResource Include="Assets\MatchAssignments\Root.xml" />
+    <EmbeddedResource Include="Assets\TeamStandings\default.style" />
+    <EmbeddedResource Include="Assets\TeamStandings\default.xml" />
+    <EmbeddedResource Include="Assets\TeamStandings\EventScoreForm.style" />
+    <EmbeddedResource Include="Assets\TeamStandings\EventScoreForm.xml" />
+    <EmbeddedResource Include="Assets\TeamStandings\ScoreRow.xml" />
+    <EmbeddedResource Include="Assets\TeamStandings\TeamScore.xml" />
   </ItemGroup>
 
   <ItemGroup>
