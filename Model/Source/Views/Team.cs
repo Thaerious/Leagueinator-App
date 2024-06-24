@@ -1,8 +1,9 @@
-﻿using Leagueinator.Model.Tables;
-using Leagueinator.Utility;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
+﻿using Leagueinator.Utility;
+using Leagueinator.Model.Tables.Event;
+using Leagueinator.Model.Tables.Match;
+using Leagueinator.Model.Tables.Member;
+using Leagueinator.Model.Tables.Round;
+using Leagueinator.Model.Tables.Team;
 
 namespace Leagueinator.Model.Views {
     [TimeTrace]

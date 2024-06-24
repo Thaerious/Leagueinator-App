@@ -1,4 +1,11 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables.Event;
+using Leagueinator.Model.Tables.Idle;
+using Leagueinator.Model.Tables.Match;
+using Leagueinator.Model.Tables.Member;
+using Leagueinator.Model.Tables.Player;
+using Leagueinator.Model.Tables.Round;
+using Leagueinator.Model.Tables.Team;
 using System.Data;
 
 namespace Leagueinator.Model {

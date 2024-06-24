@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Diagnostics;
 using Leagueinator.Utility;
+using Model.Source.Tables.Event;
 
 namespace Leagueinator.Formats {
     internal class LaneAssigner {

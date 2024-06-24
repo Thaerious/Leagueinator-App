@@ -8,6 +8,7 @@ using Leagueinator.Model.Tables;
 using static Leagueinator.Controls.MatchCard;
 using System.Diagnostics;
 using Leagueinator.Forms.MatchAssignments;
+using Model.Source.Tables.Event;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>

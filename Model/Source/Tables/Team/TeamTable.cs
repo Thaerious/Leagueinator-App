@@ -1,39 +1,7 @@
-﻿using Leagueinator.Model.Views;
-using System.Data;
+﻿using System.Data;
 
-namespace Leagueinator.Model.Tables {
-
-    public class TeamRow : CustomRow {
-        public TeamRow(DataRow dataRow) : base(dataRow) {
-            this.Members = new(
-                this.League.MemberTable,
-                [TeamTable.COL.MATCH, TeamTable.COL.INDEX],
-                [this.Match.UID, this.Index]
-            );
-        }
-
-        public readonly RowBoundView<MemberRow> Members;
-
-        public int Bowls {
-            get => (int)this[TeamTable.COL.BOWLS];
-            set => this[TeamTable.COL.BOWLS] = value;
-        }
-
-        public int Tie {
-            get => (int)this[TeamTable.COL.TIE];
-            set => this[TeamTable.COL.TIE] = value;
-        }
-
-        public int Index => (int)this[TeamTable.COL.INDEX];
-
-        public MatchRow Match => this.League.MatchTable.GetRow((int)this[TeamTable.COL.MATCH]);
-
-        public RoundRow Round => this.Match.Round;
-
-        public EventRow Event => this.Round.Event;     
-    }
-
-    public class TeamTable : LeagueTable<TeamRow> {
+namespace Leagueinator.Model.Tables.Team {
+        public class TeamTable : LeagueTable<TeamRow> {
         public TeamTable() : base("teams"){
             this.NewInstance = dataRow => new TeamRow(dataRow);
             GetInstance = args => this.GetRow((int)args[0], (int)args[1]);

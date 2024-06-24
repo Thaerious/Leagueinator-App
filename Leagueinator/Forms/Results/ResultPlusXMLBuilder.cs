@@ -1,8 +1,8 @@
 ﻿using Leagueinator.Forms.Results.Plus;
-using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
+using Model.Source.Tables.Event;
 using Printer;
 using System.Collections.ObjectModel;
 using System.Reflection;

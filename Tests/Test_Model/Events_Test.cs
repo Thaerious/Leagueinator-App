@@ -2,6 +2,7 @@
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
+using Model.Source.Tables.Event;
 using System.Data;
 using System.Diagnostics;
 

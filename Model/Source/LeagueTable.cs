@@ -1,4 +1,4 @@
-﻿using Leagueinator.Model.Tables;
+﻿using Leagueinator.Model.Tables.Event;
 using System.Collections;
 using System.Data;
 

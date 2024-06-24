@@ -1,22 +1,10 @@
-﻿using System.Data;
-using System.Diagnostics;
+﻿using Leagueinator.Model.Tables.Match;
+using Leagueinator.Model.Tables.Member;
+using Leagueinator.Model.Tables.Round;
+using Leagueinator.Model.Tables.Team;
+using System.Data;
 
-namespace Leagueinator.Model.Tables {
-
-    public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {
-
-        public string Player {
-            get => (string)this[IdleTable.COL.PLAYER];
-        }
-
-        public RoundRow Round {
-            get => this.League.RoundTable.GetRow((int)this[IdleTable.COL.ROUND]);
-        }
-
-        public EventRow Event {
-            get => this.Round.Event;
-        }
-    }
+namespace Leagueinator.Model.Tables.Idle {
 
     public class IdleTable : LeagueTable<IdleRow> {
         public static class COL {

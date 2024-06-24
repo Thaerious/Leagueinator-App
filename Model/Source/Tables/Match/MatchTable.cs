@@ -1,60 +1,6 @@
-﻿using Leagueinator.Model.Views;
-using System.Data;
-using System.Linq;
-using static Leagueinator.Model.Tables.MatchRow;
+﻿using System.Data;
 
-namespace Leagueinator.Model.Tables {
-    public enum MatchFormat { VS1, VS2, VS3, VS4, A4321 };
-
-    public static class Match {
-        public static int TeamCount(this MatchFormat matchFormat) {
-            switch (matchFormat) {
-                case MatchFormat.A4321:
-                    return 4;
-                default:
-                    return 2;
-            }
-        }
-    }
-
-    public class MatchRow : CustomRow {
-        public MatchRow(DataRow dataRow) : base(dataRow) {
-            this.Teams = new(this.League.TeamTable, [TeamTable.COL.MATCH], [this.UID]);
-        }
-
-        public readonly RowBoundView<TeamRow> Teams;
-
-        public int Lane {
-            get => (int)this[MatchTable.COL.LANE];
-            set => this[MatchTable.COL.LANE] = value;
-        }
-
-        public int Ends {
-            get => (int)this[MatchTable.COL.ENDS];
-            set => this[MatchTable.COL.ENDS] = value;
-        }
-
-        public MatchFormat MatchFormat {
-            get => (MatchFormat)this[MatchTable.COL.FORMAT];
-            set => this[MatchTable.COL.FORMAT] = value;
-        }
-
-        public int UID => (int)this[MatchTable.COL.UID];        
-
-        public RoundRow Round => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
-
-        public EventRow Event => this.Round.Event;
-
-        public IReadOnlyList<string> Players {
-            get {
-                return this.Teams
-                .SelectMany(teamRow => teamRow.Members)
-                .Select(memberRow => memberRow.Player)
-                .ToList();
-            }
-        }
-    }
-
+namespace Leagueinator.Model.Tables.Match {
     public class MatchTable : LeagueTable<MatchRow> {
         public MatchTable() : base("matches"){
             this.NewInstance = dataRow => new MatchRow(dataRow);

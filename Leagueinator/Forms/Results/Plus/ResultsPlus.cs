@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
+using Model.Source.Tables.Event;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Forms.Results.Plus {

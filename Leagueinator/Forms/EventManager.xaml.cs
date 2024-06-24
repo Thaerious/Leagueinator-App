@@ -1,6 +1,6 @@
 ﻿using Leagueinator.Formats;
 using Leagueinator.Model;
-using Leagueinator.Model.Tables;
+using Model.Source.Tables.Event;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
