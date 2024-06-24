@@ -2,7 +2,7 @@
 
 namespace Leagueinator.Model.Tables {
     public class MemberRow(DataRow dataRow) : CustomRow(dataRow) {
-        
+
         /// <summary>
         /// Set the player name.
         /// Will remove name from the idle table and other teams.
@@ -20,6 +20,6 @@ namespace Leagueinator.Model.Tables {
 
         public RoundRow Round => this.Match.Round;
 
-        public EventRow Event => this.Round.Event;        
+        public EventRow Event => this.Round.Event;
     }
 }

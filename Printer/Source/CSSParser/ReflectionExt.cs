@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using Leagueinator.Utility;
+using System.Collections.ObjectModel;
 using System.Reflection;
-using Leagueinator.Utility;
 
 namespace Leagueinator.CSSParser {
     public static class ReflectionExt {

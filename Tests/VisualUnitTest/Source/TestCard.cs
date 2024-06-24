@@ -1,9 +1,4 @@
-﻿using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Styles;
-using Leagueinator.Printer;
-using System.Diagnostics;
-
-namespace Leagueinator.VisualUnitTest {
+﻿namespace Leagueinator.VisualUnitTest {
     public enum Status { PENDING, PASS, FAIL, UNTESTED, NO_TEST, NOT_SET }
 
     public partial class TestCard : Card {

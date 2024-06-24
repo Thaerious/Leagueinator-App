@@ -1,8 +1,4 @@
-﻿
-using System.Diagnostics;
-using System.Windows.Forms;
-
-namespace Leagueinator.VisualUnitTest {
+﻿namespace Leagueinator.VisualUnitTest {
     internal class CustomRichTextBox : RichTextBox {
         public CustomRichTextBox() : base() {
             this.KeyDown += HndKeyDown;

@@ -10,25 +10,23 @@ namespace Leagueinator.Forms.Main {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void HndKeyDownRenamePlayer(object sender, KeyEventArgs e) {
-            if (e.Key == Key.F2) {
-                if (this.EventRow is null) return;
+            if (e.Key != Key.F2) return;
+            if (this.EventRow is null) return;
+            if (Keyboard.FocusedElement is not PlayerTextBox textBox) return;
 
-                if (Keyboard.FocusedElement is PlayerTextBox textBox) {
-                    this.ClearFocus();
-                    string oldName = textBox.Text;
-                    RenameDialog dialog = new RenameDialog(oldName);
+            this.ClearFocus();
+            string prevName = textBox.Text;
+            RenameDialog dialog = new RenameDialog(prevName);
 
-                    if (dialog.ShowDialog() == true) {
-                        bool oldNameExists = this.EventRow.League.PlayerTable.HasRow(oldName);
-                        if (!oldNameExists) return;
+            if (dialog.ShowDialog() == true) {
+                bool prevNameExists = this.EventRow.League.PlayerTable.HasRow(prevName);
+                if (!prevNameExists) return;
 
-                        string newName = dialog.NewName;
-                        var row = this.EventRow.League.PlayerTable.GetRow(oldName);
-                        row.Name = newName;
+                string newName = dialog.NewName;
+                var row = this.EventRow.League.PlayerTable.GetRow(prevName);
+                row.Name = newName;
 
-                        textBox.Text = newName;
-                    }
-                }
+                textBox.Text = newName;
             }
         }
     }

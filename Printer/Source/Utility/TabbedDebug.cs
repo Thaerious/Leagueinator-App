@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using AspectInjector.Broker;
+﻿using AspectInjector.Broker;
+using System.Diagnostics;
 
 namespace Leagueinator.Printer.Utility {
 

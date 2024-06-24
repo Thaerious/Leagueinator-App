@@ -1,12 +1,5 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer;
-using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Styles;
-using Leagueinator.Printer.Styles.Enums;
-using Leagueinator.Utility;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
-using System.Reflection;
 using static Test_Style.Loader;
 
 namespace Test_Style {

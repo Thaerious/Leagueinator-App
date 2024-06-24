@@ -2,14 +2,8 @@
 
 namespace Leagueinator.Model.Tables {
     public class MatchTable : LeagueTable<MatchRow> {
-        public MatchTable() : base("matches"){
-            this.NewInstance = dataRow => new MatchRow(dataRow);
-            GetInstance = args => this.GetRow((int)args[0], (int)args[1]);
-            HasInstance = args => this.HasRow((int)args[0], (int)args[1]);
-            AddInstance = args => {
-                if ((args as object[]).Length == 3) return this.AddRow((int)args[0], (int)args[1], (int)args[2]);
-                return this.AddRow((int)args[0], (int)args[1]);
-            };
+        public MatchTable() : base("matches") {
+            this.NewInstance = dataRow => new MatchRow(dataRow);           
         }
 
         public static class COL {
@@ -82,7 +76,7 @@ namespace Leagueinator.Model.Tables {
 
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
-                ColumnName = COL.LANE                
+                ColumnName = COL.LANE
             });
 
             this.Columns.Add(new DataColumn {

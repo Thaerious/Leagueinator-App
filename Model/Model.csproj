@@ -12,13 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Source\Tables\Match\MatchBoundTeams.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Source\Tables\Round\RoundBoundIdles.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Source\Views\ARowBoundView.cs" />
+    <Compile Update="Source\Tables\Match\MatchBoundTeams.cs" />
+    <Compile Update="Source\Tables\Round\RoundBoundIdles.cs" />
   </ItemGroup>
 
 </Project>

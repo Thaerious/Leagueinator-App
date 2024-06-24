@@ -25,6 +25,6 @@ namespace Leagueinator.Model.Tables {
 
         public RoundRow Round => this.Match.Round;
 
-        public EventRow Event => this.Round.Event;     
+        public EventRow Event => this.Round.Event;
     }
 }

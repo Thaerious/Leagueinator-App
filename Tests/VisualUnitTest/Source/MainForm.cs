@@ -1,8 +1,4 @@
-﻿using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Styles;
-using Leagueinator.Printer;
-using Leagueinator.Utility;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Leagueinator.VisualUnitTest {
     public partial class MainForm : Form {

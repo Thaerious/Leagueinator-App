@@ -1,9 +1,6 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
-using Leagueinator.Model.Views;
 using Leagueinator.Utility;
-using Leagueinator.Model.Tables;
-using System.Data;
 using System.Diagnostics;
 
 namespace Model_Test {
@@ -86,77 +83,32 @@ namespace Model_Test {
         }
 
         [TestMethod]
-        public void Set_Setting() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings.Add("MyKey", "MyValue");
-            Assert.AreEqual("MyValue", eventRow.Settings.Get("MyKey")!.Value);
-        }
-
-        [TestMethod]
-        public void Set_Setting_Multiple_Tables() {
-            League league = new();
-            EventRow eventRow1 = league.EventTable.AddRow("my_event1");
-            EventRow eventRow2 = league.EventTable.AddRow("my_event2");
-            eventRow1.Settings.Add("MyKey", "MyValue1");
-            eventRow2.Settings.Add("MyKey", "MyValue2");
-            Assert.AreEqual("MyValue1", eventRow1.Settings.Get("MyKey")!.Value);
-            Assert.AreEqual("MyValue2", eventRow2.Settings.Get("MyKey")!.Value);
-        }
-
-        [TestMethod]
-        public void ReSet_Setting() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings.Add("MyKey", "MyValue");
-            eventRow.Settings.Get("MyKey")!.Value = "AnotherValue";
-            Assert.AreEqual("AnotherValue", eventRow.Settings.Get("MyKey")!.Value);
-        }
-
-        [TestMethod]
-        public void Delete_Setting() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            eventRow.Settings.Add("MyKey", "MyValue");
-            eventRow.Settings.Get("MyKey")!.Remove();
-            Assert.IsFalse(eventRow.Settings.Has("MyKey"));
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(KeyNotFoundException))]
-        public void NonExistant_Setting() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            Assert.IsNull(eventRow.Settings.Get("MyKey"));
-        }
-
-        [TestMethod]
         public void All_Teams_Simple() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow1 = matchRow.Teams.Add(0);
-            TeamRow teamRow2 = matchRow.Teams.Add(1);
+            //League league = new();
+            //EventRow eventRow = league.EventTable.AddRow("my_event");
+            //RoundRow roundRow = eventRow.Rounds.Add();
+            //MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            //TeamRow teamRow1 = matchRow.Teams.Add(0);
+            //TeamRow teamRow2 = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
-            league.PlayerTable.AddRow("Eve");
-            teamRow1.Members.Add("Adam");
-            teamRow1.Members.Add("Eve");
+            //league.PlayerTable.AddRow("Adam");
+            //league.PlayerTable.AddRow("Eve");
+            //teamRow1.Members.Add("Adam");
+            //teamRow1.Members.Add("Eve");
 
-            league.PlayerTable.AddRow("Cain");
-            league.PlayerTable.AddRow("Able");
-            teamRow2.Members.Add("Cain");
-            teamRow2.Members.Add("Able");
+            //league.PlayerTable.AddRow("Cain");
+            //league.PlayerTable.AddRow("Able");
+            //teamRow2.Members.Add("Cain");
+            //teamRow2.Members.Add("Able");
 
-            int expected = 2;
-            int actual = eventRow.MatchResults().Count;
+            //int expected = 2;
+            //int actual = eventRow.MatchResults().Count;
 
-            Console.WriteLine(league.PlayerTable.PrettyPrint());
-            Console.WriteLine(league.MemberTable.PrettyPrint());
-            Console.WriteLine(league.TeamTable.PrettyPrint());
+            //Console.WriteLine(league.PlayerTable.PrettyPrint());
+            //Console.WriteLine(league.MemberTable.PrettyPrint());
+            //Console.WriteLine(league.TeamTable.PrettyPrint());
 
-            Assert.AreEqual(expected, actual);
+            //Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]

@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Leagueinator.Utility;
+﻿using Leagueinator.Utility;
+using System.Reflection;
 
 namespace Leagueinator.CSSParser {
     public static partial class MultiParse {

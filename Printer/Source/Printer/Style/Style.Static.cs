@@ -1,7 +1,6 @@
 ﻿using Leagueinator.CSSParser;
-using System.Reflection;
 using Leagueinator.Utility;
-using System.Diagnostics;
+using System.Reflection;
 
 namespace Leagueinator.Printer.Styles {
     public partial class Style {

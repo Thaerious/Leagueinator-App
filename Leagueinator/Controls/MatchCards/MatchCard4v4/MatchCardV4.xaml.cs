@@ -10,7 +10,7 @@ namespace Leagueinator.Controls {
     [TimeTrace]
     public partial class MatchCardV4 : MatchCard {
         public MatchCardV4() : base() {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public override MatchFormat MatchFormat {
@@ -24,8 +24,8 @@ namespace Leagueinator.Controls {
 
                 this.Deferred = delegate {
                     this.NormalizeTeams(2, 4);
-                    this.CheckTie0.IsChecked = MatchRow.Teams[0]!.Tie == 1;
-                    this.CheckTie1.IsChecked = MatchRow.Teams[1]!.Tie == 1;
+                    this.CheckTie0.IsChecked = this.MatchRow.Teams[0]!.Tie == 1;
+                    this.CheckTie1.IsChecked = this.MatchRow.Teams[1]!.Tie == 1;
                     this.DataContext = value;
                 };
             }

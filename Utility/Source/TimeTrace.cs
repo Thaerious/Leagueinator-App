@@ -1,6 +1,5 @@
-﻿using System.Text;
-using System.Xml.Linq;
-using AspectInjector.Broker;
+﻿using AspectInjector.Broker;
+using System.Text;
 
 namespace Leagueinator.Utility {
 
@@ -13,17 +12,17 @@ namespace Leagueinator.Utility {
 
         public double Duration => End - Start;
 
-        public override string ToString() {            
-            return $"[{this.Duration/10000}ms] {Type.Name}.{MethodName}";
+        public override string ToString() {
+            return $"[{this.Duration / 10000}ms] {Type.Name}.{MethodName}";
         }
     }
 
-    class MarkRec(string methodName, Type type) : TimeTraceRec(methodName, type) {}
+    class MarkRec(string methodName, Type type) : TimeTraceRec(methodName, type) { }
 
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     [Injection(typeof(TimeTraceAspect))]
     public class TimeTraceAttribute : Attribute {
-        public TimeTraceAttribute() {}
+        public TimeTraceAttribute() { }
     }
 
     [Aspect(Scope.Global)]
@@ -61,14 +60,14 @@ namespace Leagueinator.Utility {
 
     public class ClassRecord : Dictionary<string, MethodRecord> {
         internal void Add(TimeTraceRec ttRecord) {
-            string methodName = ttRecord.MethodName;            
+            string methodName = ttRecord.MethodName;
             if (!this.ContainsKey(methodName)) this[methodName] = new(ttRecord.Type.Name);
             this[methodName].AddInstance(ttRecord);
         }
     }
 
     public class Report : Dictionary<string, ClassRecord> {
-        internal void Add(TimeTraceRec ttRecord ) {
+        internal void Add(TimeTraceRec ttRecord) {
             if (!this.ContainsKey(ttRecord.Type.Name)) this[ttRecord.Type.Name] = new();
             ClassRecord classRecord = this[ttRecord.Type.Name];
             classRecord.Add(ttRecord);
@@ -86,7 +85,7 @@ namespace Leagueinator.Utility {
                     string totalTime = (methodRecord.TotalTime / 10000).ToString("F1");
                     string avgTime = (methodRecord.TotalTime / 10000 / methodRecord.CallCount).ToString("F1");
                     sb.AppendLine($"|-- {methodName} {methodRecord.CallCount} x {avgTime}ms = {totalTime}ms ");
-                    this.AppendCallsToString(sb, methodRecord.Calls);                    
+                    this.AppendCallsToString(sb, methodRecord.Calls);
                 }
                 sb.AppendLine($"");
             }

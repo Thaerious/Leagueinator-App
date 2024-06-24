@@ -4,11 +4,11 @@ using System.Reflection;
 namespace Leagueinator.Printer.Aspects {
     [Aspect(Scope.Global)]
     [Injection(typeof(Validated))]
-    
+
     ///
     /// Set the 'Invalid' (bool) property to true when the method is called.
     ///
-    public class Validated : Attribute{
+    public class Validated : Attribute {
         [Advice(Kind.Before, Targets = Target.Any)]
         public void Enter([Argument(Source.Name)] string name, [Argument(Source.Instance)] object instance) {
             PropertyInfo? property = instance.GetType().GetProperty("Invalid");

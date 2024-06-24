@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Printer.Aspects;
-using Leagueinator.Printer.Elements;
 using Leagueinator.Utility;
 using System.Collections.ObjectModel;
 

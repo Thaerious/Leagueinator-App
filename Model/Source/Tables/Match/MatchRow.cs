@@ -9,6 +9,7 @@ namespace Leagueinator.Model.Tables {
             this.Teams = new(this);
         }
 
+
         public int Lane {
             get => (int)this[MatchTable.COL.LANE];
             set => this[MatchTable.COL.LANE] = value;
@@ -24,7 +25,7 @@ namespace Leagueinator.Model.Tables {
             set => this[MatchTable.COL.FORMAT] = value;
         }
 
-        public int UID => (int)this[MatchTable.COL.UID];        
+        public int UID => (int)this[MatchTable.COL.UID];
 
         public RoundRow Round => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
 

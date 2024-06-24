@@ -3,12 +3,11 @@ using Antlr4.Runtime.Misc;
 using Leagueinator.Printer;
 using Leagueinator.Printer.Query;
 using Leagueinator.Printer.Styles;
+using Leagueinator.Utility;
+using System.IO;
 using System.Reflection;
 using System.Text;
-using Leagueinator.Utility;
 using static StyleParser;
-using System.Diagnostics;
-using System.IO;
 
 namespace Leagueinator.CSSParser {
     internal class StyleListener(StyleSheet stylesheet) : StyleParserBaseListener {
@@ -23,7 +22,7 @@ namespace Leagueinator.CSSParser {
         /// <returns></returns>
         public static string GetText(RuleContext inputContext, StringBuilder? sb = null) {
             sb ??= new();
-            
+
             if (inputContext.ChildCount == 0) {
                 return string.Empty;
             }

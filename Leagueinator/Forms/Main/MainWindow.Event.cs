@@ -82,7 +82,7 @@ namespace Leagueinator.Forms.Main {
             };
 
             this.RoundButtonContainer.Children.Add(button);
-            button.Click += HndClickSelectRound;
+            button.Click += this.HndClickSelectRound;
             return button;
         }
 
@@ -116,7 +116,6 @@ namespace Leagueinator.Forms.Main {
         private void HndClickAddRound(object? __, RoutedEventArgs? _) {
             if (this.EventRow is null) return;
             this.ClearFocus();
-            if (this.EventRow is null) return;
             RoundRow nextRound = this.TournamentFormat.GenerateNextRound(this.EventRow);
             this.AddRoundButton(nextRound);
             this.InvokeLastRoundButton();

@@ -1,12 +1,7 @@
-﻿using Leagueinator.Utility;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
+﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Model.Views {
-    [TimeTrace]
     public class Team(TeamRow teamRow) : IEquatable<Team> {
         public TeamRow TeamRow { get; } = teamRow;
 

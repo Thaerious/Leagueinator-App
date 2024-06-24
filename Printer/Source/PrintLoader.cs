@@ -1,8 +1,8 @@
-﻿using Leagueinator.Printer.Elements;
-using Leagueinator.Printer;
-using System.Reflection;
+﻿using Leagueinator.Printer;
+using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using System.IO;
+using System.Reflection;
 
 namespace Printer {
     public static class PrintLoader {

@@ -1,6 +1,4 @@
 ﻿using Leagueinator.Model.Tables;
-using Leagueinator.Utility;
-using System.Diagnostics;
 
 namespace Leagueinator.Formats {
     internal class LaneAssigner {
@@ -21,24 +19,18 @@ namespace Leagueinator.Formats {
         private readonly List<MatchRow> UnassignedMatches = [];
 
         public LaneAssigner(EventRow eventRow, RoundRow roundRow) {
-            EventRow = eventRow;
-            RoundRow = roundRow;
+            this.EventRow = eventRow;
+            this.RoundRow = roundRow;
         }
 
         internal void AssignLanes() {
-            PopulateUnassignedMatches();
-            PopulateFreeLanes();
-            PopulateAvailableLanes();
-            PopulatePreviousLanes();
-            RemovePlayedLanes();
-            foreach (MatchRow match in AvailableLanes.Keys) {
-                Debug.WriteLine($"[{match.Players.DelString()}] - [{AvailableLanes[match].DelString()}]");
-            }
-            AssignLanesToMatches();
-            foreach (MatchRow match in AvailableLanes.Keys) {
-                Debug.WriteLine($"[{match.Players.DelString()}] => {match.Lane}");
-            }
-            AssignLanesToDeferredMatches();
+            this.PopulateUnassignedMatches();
+            this.PopulateFreeLanes();
+            this.PopulateAvailableLanes();
+            this.PopulatePreviousLanes();
+            this.RemovePlayedLanes();
+            this.AssignLanesToMatches();
+            this.AssignLanesToDeferredMatches();
         }
 
         /// <summary>
@@ -46,8 +38,10 @@ namespace Leagueinator.Formats {
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
         private void PopulateUnassignedMatches() {
-            foreach (MatchRow matchRow in RoundRow.Matches) {
-                this.UnassignedMatches.Add(matchRow);
+            foreach (MatchRow matchRow in this.RoundRow.Matches) {
+                if (matchRow.Players.Count > 0) {
+                    this.UnassignedMatches.Add(matchRow);
+                }
             }
         }
 
@@ -56,8 +50,8 @@ namespace Leagueinator.Formats {
         /// ie [0, 1, 2, 3, 4, 5, 6, 7]
         /// </summary>
         private void PopulateFreeLanes() {
-            for (int i = 0; i < EventRow.LaneCount; i++) {
-                FreeLanes.Add(i);
+            for (int i = 0; i < this.EventRow.LaneCount; i++) {
+                this.FreeLanes.Add(i);
             }
         }
 
@@ -67,12 +61,12 @@ namespace Leagueinator.Formats {
         /// ie (Adam, Eve) => [0, 1, 2, 3, 4, 5, 6, 7]
         /// </summary>
         private void PopulateAvailableLanes() {
-            foreach (MatchRow matchRow in RoundRow.Matches) {
+            foreach (MatchRow matchRow in this.RoundRow.Matches) {
                 if (matchRow.Players.Count <= 0) continue;
-                AvailableLanes[matchRow] = [];
+                this.AvailableLanes[matchRow] = [];
 
-                for (int i = 0; i < EventRow.LaneCount; i++) {
-                    AvailableLanes[matchRow].Add(i);
+                for (int i = 0; i < this.EventRow.LaneCount; i++) {
+                    this.AvailableLanes[matchRow].Add(i);
                 }
             }
         }
@@ -82,14 +76,14 @@ namespace Leagueinator.Formats {
         /// ie (Adam) => [2, 4];
         /// </summary>
         private void PopulatePreviousLanes() {
-            foreach (RoundRow roundRow in EventRow.Rounds) {
-                if (roundRow == RoundRow) continue;
+            foreach (RoundRow roundRow in this.EventRow.Rounds) {
+                if (roundRow == this.RoundRow) continue;
                 foreach (MatchRow matchRow in roundRow.Matches) {
                     foreach (TeamRow teamRow in matchRow.Teams) {
                         foreach (MemberRow memberRow in teamRow.Members) {
                             string player = memberRow.Player;
-                            if (!PreviousLanes.ContainsKey(player)) PreviousLanes[player] = [];
-                            PreviousLanes[player].Add(matchRow.Lane);
+                            if (!this.PreviousLanes.ContainsKey(player)) this.PreviousLanes[player] = [];
+                            this.PreviousLanes[player].Add(matchRow.Lane);
                         }
                     }
                 }
@@ -101,11 +95,11 @@ namespace Leagueinator.Formats {
         /// match's available lanes;
         /// </summary>
         private void RemovePlayedLanes() {
-            foreach (MatchRow matchRow in AvailableLanes.Keys) {
-                List<int> lanes = AvailableLanes[matchRow];
+            foreach (MatchRow matchRow in this.AvailableLanes.Keys) {
+                List<int> lanes = this.AvailableLanes[matchRow];
                 foreach (TeamRow teamRow in matchRow.Teams) {
                     foreach (MemberRow memberRow in teamRow.Members) {
-                        foreach (int lane in PreviousLanes[memberRow.Player]) {
+                        foreach (int lane in this.PreviousLanes[memberRow.Player]) {
                             lanes.Remove(lane);
                         }
                     }
@@ -120,19 +114,19 @@ namespace Leagueinator.Formats {
         /// Remove this lane from the available lanes of each match.
         /// </summary>
         private void AssignLanesToMatches() {
-            foreach (MatchRow matchRow in AvailableLanes.Keys) {
-                if (AvailableLanes[matchRow].Count == 0) {
-                    UnassignedMatches.Add(matchRow);
+            foreach (MatchRow matchRow in this.AvailableLanes.Keys) {
+                if (this.AvailableLanes[matchRow].Count == 0) {
+                    this.UnassignedMatches.Add(matchRow);
                 }
                 else {
-                    List<int> potentialLanes = [.. AvailableLanes[matchRow]];
-                    int randomIndex = Random.Next(potentialLanes.Count);
+                    List<int> potentialLanes = [.. this.AvailableLanes[matchRow]];
+                    int randomIndex = this.Random.Next(potentialLanes.Count);
                     int lane = potentialLanes[randomIndex];
                     matchRow.Lane = lane;
                     this.UnassignedMatches.Remove(matchRow);
-                    FreeLanes.Remove(lane);
+                    this.FreeLanes.Remove(lane);
 
-                    foreach (List<int> lanes in AvailableLanes.Values) {
+                    foreach (List<int> lanes in this.AvailableLanes.Values) {
                         lanes.Remove(lane);
                     }
                 }
@@ -140,12 +134,15 @@ namespace Leagueinator.Formats {
         }
 
         private void AssignLanesToDeferredMatches() {
-            foreach (MatchRow matchRow in UnassignedMatches) {
-                if (FreeLanes.Count == 0) throw new NotSupportedException();
-                int randomIndex = Random.Next(FreeLanes.Count);
-                int lane = FreeLanes[randomIndex];
+            foreach (MatchRow matchRow in this.UnassignedMatches) {
+                if (this.FreeLanes.Count == 0) {
+                    throw new NotSupportedException("Not Enough Lanes to Assign to All Matches");
+                }
+
+                int randomIndex = this.Random.Next(this.FreeLanes.Count);
+                int lane = this.FreeLanes[randomIndex];
                 matchRow.Lane = lane;
-                FreeLanes.Remove(lane);
+                this.FreeLanes.Remove(lane);
             }
         }
     }

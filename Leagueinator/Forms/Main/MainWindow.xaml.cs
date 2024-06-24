@@ -23,14 +23,14 @@ namespace Leagueinator.Forms.Main {
                 Debug.WriteLine(TimeTrace.Report());
             };
 
-            InitializeComponent();
+            this.InitializeComponent();
             this.League = NewLeague();
 
             SaveState.StateChanged += this.HndStateChanged;
             this._league.LeagueUpdate += this.HndLeagueUpdate;
             this.EventRow = this.League.EventTable.GetLast();
 
-            this.AddHandler(MatchCard.RegisteredFormatChangedEvent, new FormatChangedEventHandler(HndFormatChanged));
+            this.AddHandler(MatchCard.RegisteredFormatChangedEvent, new FormatChangedEventHandler(this.HndFormatChanged));
         }
 
         /// <summary>

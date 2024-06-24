@@ -10,7 +10,7 @@ namespace Leagueinator.Controls {
     public class IdlePlayersPanel : StackPanel {
         public IdlePlayersPanel() : base() {
             // Handle text box updates.
-            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
+            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(this.HndUpdateText));
         }
 
         /// <summary>

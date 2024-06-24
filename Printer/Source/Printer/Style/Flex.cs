@@ -1,8 +1,5 @@
 ﻿using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Utility;
-using Leagueinator.Utility;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Leagueinator.Printer.Styles {
     //[DebugTrace]

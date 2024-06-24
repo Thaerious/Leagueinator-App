@@ -25,14 +25,14 @@ namespace Leagueinator.Controls {
         );
 
         public event MemoryEventHandler UpdateText {
-            add { AddHandler(RegisteredUpdateEvent, value); }
-            remove { RemoveHandler(RegisteredUpdateEvent, value); }
+            add { this.AddHandler(RegisteredUpdateEvent, value); }
+            remove { this.RemoveHandler(RegisteredUpdateEvent, value); }
         }
 
 
         private void RaiseUpdateTextEvent(string before, string after, Cause cause) {
             MemoryTextBoxArgs newEventArgs = new(RegisteredUpdateEvent, this, before, after, cause);
-            RaiseEvent(newEventArgs);
+            this.RaiseEvent(newEventArgs);
         }
 
         public MemoryTextBox() {
@@ -70,7 +70,7 @@ namespace Leagueinator.Controls {
                 this.Memory = this.Text;
 
                 if (!this.Compare(prevMem, this.Text)) {
-                    RaiseUpdateTextEvent(prevMem, this.Text, Cause.EnterPressed);
+                    this.RaiseUpdateTextEvent(prevMem, this.Text, Cause.EnterPressed);
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace Leagueinator.Controls {
                 e.Handled = true;
 
                 if (!this.Compare(prevMem, this.Text)) {
-                    RaiseUpdateTextEvent(prevMem, this.Text, Cause.TextDropped);
+                    this.RaiseUpdateTextEvent(prevMem, this.Text, Cause.TextDropped);
                 }
             }
 
@@ -110,7 +110,7 @@ namespace Leagueinator.Controls {
 
 
             if (!this.Compare(prevMem, this.Text)) {
-                RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
+                this.RaiseUpdateTextEvent(prevMem, this.Text, Cause.LostFocus);
             }
         }
 

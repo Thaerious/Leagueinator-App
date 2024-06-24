@@ -1,10 +1,10 @@
 ﻿using Leagueinator.CSSParser;
+using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Query;
+using Leagueinator.Utility;
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Text;
-using Leagueinator.Printer.Elements;
-using Leagueinator.Utility;
 
 namespace Leagueinator.Printer.Styles {
 
@@ -38,7 +38,7 @@ namespace Leagueinator.Printer.Styles {
                 if (this.Owner is not null) this.Owner.Invalid = value;
             }
         }
-        
+
         public Enums.Direction Flex_Major_Direction {
             get {
                 switch (this.Flex_Axis) {
@@ -72,7 +72,7 @@ namespace Leagueinator.Printer.Styles {
 
             this.BorderColor ??= new(Color.Black);
             this.BorderStyle ??= new(DashStyle.Solid);
-            this.BorderSize ??= new(new UnitFloat() { Factor = 1, Unit = "px"});
+            this.BorderSize ??= new(new UnitFloat() { Factor = 1, Unit = "px" });
         }
 
         public override string ToString() {

@@ -15,7 +15,7 @@ namespace Leagueinator.Forms {
         private int _page = 0;
 
         private int Page {
-            get => _page;
+            get => this._page;
             set {
                 if (value < 0 || value > this.InnerCanvas.LastPage) return;
                 this._page = value;
@@ -34,7 +34,7 @@ namespace Leagueinator.Forms {
         /// </summary>
         /// <param name="eventRow"></param>
         public PrinterForm(IXMLBuilder xmlBuilder) {
-            InitializeComponent();
+            this.InitializeComponent();
             this.SizeChanged += this.HndSizeChanged;
             this.InnerCanvas.Pages = new Flex().DoLayout(xmlBuilder.BuildElement());
         }

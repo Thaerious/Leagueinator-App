@@ -1,6 +1,4 @@
-﻿using Leagueinator.Model.Tables;
-using Leagueinator.Model.Views;
-using Model.Source.Tables.Round;
+﻿using Model.Source.Tables.Round;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {

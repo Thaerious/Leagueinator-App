@@ -1,14 +1,14 @@
 ﻿using Leagueinator.CSSParser;
-using System.Drawing.Drawing2D;
-using Leagueinator.Printer.Styles.Enums;
 using Leagueinator.Printer.Aspects;
+using Leagueinator.Printer.Styles.Enums;
+using System.Drawing.Drawing2D;
 
 namespace Leagueinator.Printer.Styles {
 
     public partial class Style : IComparable<Style> {
         [CSS("Flex")] public Position? Position { get => this.position; set => this.position = value; }
         [CSS("Visible")] public Overflow? Overflow { get => this.overflow; set => this.overflow = value; }
-        [CSS("0px")] public Cardinal<UnitFloat>? BorderSize {get => this.borderSize; set => this.borderSize = value;}
+        [CSS("0px")] public Cardinal<UnitFloat>? BorderSize { get => this.borderSize; set => this.borderSize = value; }
         [CSS("0px, 0px")] public Coordinate<UnitFloat>? Translate { get => this.translate; set => this.translate = value; }
         [CSS] public UnitFloat? Left { get => left; set => left = value; }
         [CSS] public UnitFloat? Right { get => right; set => right = value; }

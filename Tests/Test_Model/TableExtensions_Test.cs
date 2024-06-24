@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
 
 namespace Model_Test {
     [TestClass]

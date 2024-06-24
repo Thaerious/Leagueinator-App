@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Leagueinator.VisualUnitTest {
+﻿namespace Leagueinator.VisualUnitTest {
     public partial class DirectoryCard : Card {
         public delegate void CardCopyEvent(TestCard from, DirectoryCard to);
         public event CardCopyEvent OnCopy = delegate { };
@@ -53,7 +51,7 @@ namespace Leagueinator.VisualUnitTest {
         }
 
         public async void RunTests() {
-            this.labelCount.ForeColor = Color.Black;            
+            this.labelCount.ForeColor = Color.Black;
             int count = this.Cards.Count;
             int failed = 0;
             int passed = 0;

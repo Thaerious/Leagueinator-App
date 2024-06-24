@@ -34,7 +34,7 @@ namespace Leagueinator.Forms.Results.Plus {
         }
 
         public override string ToString() {
-            return $"[{Wins}, {Ends}, {BowlsFor}, {BowlsAgainst}, {PointsFor}, {PlusFor}, {PointsAgainst}, {PlusAgainst}]";
+            return $"[{this.Wins}, {this.Ends}, {this.BowlsFor}, {this.BowlsAgainst}, {this.PointsFor}, {this.PlusFor}, {this.PointsAgainst}, {this.PlusAgainst}]";
         }
 
         public int CompareTo(SummaryResultsPlus? that) {

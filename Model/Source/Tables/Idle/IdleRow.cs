@@ -1,5 +1,4 @@
-﻿using Leagueinator.Model.Tables;
-using System.Data;
+﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {

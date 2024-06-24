@@ -44,8 +44,8 @@ namespace Leagueinator.Controls {
         );
 
         public int TeamIndex {
-            get { return (int)GetValue(TeamIndexProperty); }
-            set { SetValue(TeamIndexProperty, value); }
+            get { return (int)this.GetValue(TeamIndexProperty); }
+            set { this.SetValue(TeamIndexProperty, value); }
         }
 
         public TeamRow? TeamRow {

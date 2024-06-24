@@ -46,7 +46,7 @@ namespace Leagueinator.Forms.Results.Plus {
             // For a bye, average th bowls for and against from all other matches.
             // These values will be the same.
             if (this.Result() == Plus.Result.Bye) {
-                RoundRow roundRow = TeamRow.Match.Round;
+                RoundRow roundRow = this.TeamRow.Match.Round;
                 this.BowlsFor = (int)roundRow.Matches
                                 .SelectMany(match => match.Teams)
                                 .Where(team => team.Members.Count > 0)
@@ -55,7 +55,7 @@ namespace Leagueinator.Forms.Results.Plus {
                                 .DefaultIfEmpty(0)
                                 .Average();
 
-                this.BowlsAgainst = BowlsFor;
+                this.BowlsAgainst = this.BowlsFor;
             }
             else {
                 this.BowlsFor = teamRow.Bowls;
@@ -66,7 +66,7 @@ namespace Leagueinator.Forms.Results.Plus {
         }
 
         public override string ToString() {
-            return $"[{Round}, {Lane}, {Ends}, {BowlsFor}, {BowlsAgainst}, {TieBreaker}, {PointsFor}, {PlusFor}, {PointsAgainst}, {PlusAgainst}]";
+            return $"[{this.Round}, {this.Lane}, {this.Ends}, {this.BowlsFor}, {this.BowlsAgainst}, {this.TieBreaker}, {this.PointsFor}, {this.PlusFor}, {this.PointsAgainst}, {this.PlusAgainst}]";
         }
 
         /// <summary>
@@ -75,16 +75,16 @@ namespace Leagueinator.Forms.Results.Plus {
         /// </summary>
         /// <returns></returns>
         public Result Result() {
-            int nonEmptyTeams = TeamRow.Match.Teams.Where(t => t.Members.Count > 0).Count();
+            int nonEmptyTeams = this.TeamRow.Match.Teams.Where(t => t.Members.Count > 0).Count();
 
             if (nonEmptyTeams == 1) return Plus.Result.Bye;
-            if (this.BowlsFor > BowlsAgainst) return Plus.Result.Win;
-            if (this.BowlsFor < BowlsAgainst) return Plus.Result.Loss;
+            if (this.BowlsFor > this.BowlsAgainst) return Plus.Result.Win;
+            if (this.BowlsFor < this.BowlsAgainst) return Plus.Result.Loss;
             if (this.TieBreaker > 0) return Plus.Result.Win;
             if (this.TieBreaker < 0) return Plus.Result.Loss;
 
-            foreach (TeamRow t in TeamRow.Match.Teams) {
-                if (!t.Equals(TeamRow)) continue;
+            foreach (TeamRow t in this.TeamRow.Match.Teams) {
+                if (!t.Equals(this.TeamRow)) continue;
                 if (t.Tie > 0) return Plus.Result.Loss;
             }
 

@@ -1,8 +1,4 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer;
-using Leagueinator.Printer.Aspects;
-
-namespace Test_Style {
+﻿namespace Test_Style {
     internal class Dummy {
         private bool _invalid;
 

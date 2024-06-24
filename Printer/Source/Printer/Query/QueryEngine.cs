@@ -1,7 +1,6 @@
 ﻿using Leagueinator.Printer.Elements;
-using System.Text.RegularExpressions;
 using Leagueinator.Utility;
-using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace Leagueinator.Printer.Query {
     public class QueryEngine {

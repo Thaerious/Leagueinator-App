@@ -1,7 +1,5 @@
 ﻿using Leagueinator.Printer.Aspects;
-using Leagueinator.Printer.Styles;
 using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Text;
 using System.Xml.Linq;
 
@@ -30,7 +28,7 @@ namespace Leagueinator.Printer.Elements {
                 @new.AddChild(child.Clone());
             }
 
-            return @new;            
+            return @new;
         }
 
         /// <summary>

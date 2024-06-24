@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-
-namespace Leagueinator.VisualUnitTest {
+﻿namespace Leagueinator.VisualUnitTest {
     public partial class InputNameDialog : Form {
         public string Value {
             get => this.TextName.Text;

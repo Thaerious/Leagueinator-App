@@ -4,9 +4,6 @@ namespace Leagueinator.Model.Tables {
     public class EventTable : LeagueTable<EventRow> {
         public EventTable() : base("events") {
             NewInstance = dataRow => new EventRow(dataRow);
-            GetInstance = args => GetRow((string)args[0]);
-            HasInstance = args => HasRow((string)args[0]);
-            AddInstance = args => AddRow((string)args[0]);
         }
 
         public static class COL {

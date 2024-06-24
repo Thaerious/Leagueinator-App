@@ -25,16 +25,6 @@ namespace Leagueinator.Model {
             }
         }
 
-        public class InvalidTableException(string? message) : Exception(message) {
-            public static void CheckTable<T>(DataRow row) {
-                if (typeof(T) != row.Table.GetType()) {
-                    throw new InvalidTableException(
-                        $"Incorrect table in DataRow, expected {typeof(T)}, found {row.Table.GetType()}"
-                    );
-                }
-            }
-        }
-
         public override bool Equals(object? that) {
             if (that is null) return false;
             if (that is not CustomRow row) return false;
@@ -43,10 +33,6 @@ namespace Leagueinator.Model {
 
         public override int GetHashCode() {
             return this.DataRow.GetHashCode();
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            throw new NotImplementedException();
         }
     }
 }

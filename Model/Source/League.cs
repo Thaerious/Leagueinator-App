@@ -21,14 +21,14 @@ namespace Leagueinator.Model {
             this.TeamTable = new();
             this.MemberTable = new();
             this.IdleTable = new();
-            
+
             this.AddTables();
             this.AddListeners();
             this.BuildColumns();
             this.AddConstraints();
         }
 
-        public League(League that) : this(){
+        public League(League that) : this() {
             this.PlayerTable.ImportTable(that.PlayerTable);
             this.EventTable.ImportTable(that.EventTable);
             this.RoundTable.ImportTable(that.RoundTable);

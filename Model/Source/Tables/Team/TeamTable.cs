@@ -1,12 +1,9 @@
 ﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-        public class TeamTable : LeagueTable<TeamRow> {
-        public TeamTable() : base("teams"){
+    public class TeamTable : LeagueTable<TeamRow> {
+        public TeamTable() : base("teams") {
             this.NewInstance = dataRow => new TeamRow(dataRow);
-            GetInstance = args => this.GetRow((int)args[0], (int)args[1]);
-            HasInstance = args => this.HasRow((int)args[0], (int)args[1]);
-            AddInstance = args => this.AddRow((int)args[0], (int)args[1]);
         }
 
         public static class COL {

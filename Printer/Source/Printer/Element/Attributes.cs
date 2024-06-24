@@ -16,8 +16,8 @@ namespace Leagueinator.Printer.Elements {
             }
         }
 
-        public IEnumerable<string> Keys { 
-            get => this.attributes.Keys; 
+        public IEnumerable<string> Keys {
+            get => this.attributes.Keys;
         }
 
         internal bool TryGetValue(string v, out string? value) {

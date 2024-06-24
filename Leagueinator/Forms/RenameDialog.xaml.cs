@@ -9,10 +9,10 @@ namespace Leagueinator.Forms {
         public string NewName { get; private set; } = "";
 
         public RenameDialog(string currentName) {
-            InitializeComponent();
-            txtNewName.Text = currentName;
-            txtNewName.SelectAll();
-            txtNewName.Focus();
+            this.InitializeComponent();
+            this.txtNewName.Text = currentName;
+            this.txtNewName.SelectAll();
+            this.txtNewName.Focus();
 
             this.txtNewName.KeyDown += this.HndKeyDown;
         }
@@ -27,14 +27,14 @@ namespace Leagueinator.Forms {
 
         private void HndOkButtonClick(object sender, RoutedEventArgs e) {
             // Set the NewName property to the text in the textbox.
-            NewName = txtNewName.Text;
-            DialogResult = true;
-            Close();
+            this.NewName = this.txtNewName.Text;
+            this.DialogResult = true;
+            this.Close();
         }
 
         private void HndCancelButtonClick(object sender, RoutedEventArgs e) {
-            DialogResult = false;
-            Close();
+            this.DialogResult = false;
+            this.Close();
         }
     }
 }

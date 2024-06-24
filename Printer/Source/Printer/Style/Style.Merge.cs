@@ -1,12 +1,4 @@
-﻿using Leagueinator.CSSParser;
-using Leagueinator.Printer.Query;
-using System.Drawing.Drawing2D;
-using System.Reflection;
-using System.Text;
-using Leagueinator.Printer.Elements;
-using Leagueinator.Utility;
-
-namespace Leagueinator.Printer.Styles {
+﻿namespace Leagueinator.Printer.Styles {
 
     public partial class Style : IComparable<Style> {
 
@@ -23,7 +15,7 @@ namespace Leagueinator.Printer.Styles {
         }
 
         internal void MergeWith(Style source) {
-            this.sourceStyles.Add(source);  
+            this.sourceStyles.Add(source);
 
             foreach (var property in Style.CSSProperties.Values) {
                 var sourceValue = property.GetValue(source);

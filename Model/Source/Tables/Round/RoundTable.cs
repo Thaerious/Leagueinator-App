@@ -3,11 +3,8 @@
 namespace Leagueinator.Model.Tables {
 
     public class RoundTable : LeagueTable<RoundRow> {
-        public RoundTable() : base("rounds"){
+        public RoundTable() : base("rounds") {
             this.NewInstance = dataRow => new RoundRow(dataRow);
-            GetInstance = args => this.GetRow((int)args[0]);
-            HasInstance = args => this.HasRow((int)args[0]);
-            AddInstance = args => this.AddRow((int)args[0]);
         }
 
         public static class COL {

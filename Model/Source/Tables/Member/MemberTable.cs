@@ -4,10 +4,7 @@ namespace Leagueinator.Model.Tables {
     public class MemberTable : LeagueTable<MemberRow> {
         public MemberTable() : base("members") {
             this.NewInstance = dataRow => new MemberRow(dataRow);
-            GetInstance = args => this.GetRow((int)args[0], (int)args[1], (string)args[2]);
-            HasInstance = args => this.HasRow((int)args[0], (int)args[1], (string)args[2]);
-            AddInstance = args => this.AddRow((int)args[0], (int)args[1], (string)args[2]);
-            
+
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
                 string previousName = memberRow.Player;
@@ -52,7 +49,7 @@ namespace Leagueinator.Model.Tables {
 
             if (rows.Count == 0) throw new KeyNotFoundException($"{match} {index} {player}");
             return rows[0];
-        }             
+        }
 
         public override void BuildColumns() {
             this.Columns.Add(new DataColumn {

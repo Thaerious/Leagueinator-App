@@ -23,8 +23,8 @@ namespace Leagueinator.Controls {
         );
 
         public event FormatChangedEventHandler FormatChanged {
-            add { AddHandler(RegisteredFormatChangedEvent, value); }
-            remove { RemoveHandler(RegisteredFormatChangedEvent, value); }
+            add { this.AddHandler(RegisteredFormatChangedEvent, value); }
+            remove { this.RemoveHandler(RegisteredFormatChangedEvent, value); }
         }
 
         public abstract MatchFormat MatchFormat { get; }
@@ -43,7 +43,7 @@ namespace Leagueinator.Controls {
         internal CardTarget? CardTarget { get; set; }
 
         public MatchCard() {
-            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(HndUpdateText));
+            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(this.HndUpdateText));
             this.Loaded += this.HndLoaded;
         }
 
@@ -84,7 +84,7 @@ namespace Leagueinator.Controls {
             if (!success) throw new ArgumentException("Error on tag on context menu item");
 
             MatchCardFormatArgs newEventArgs = new(RegisteredFormatChangedEvent, this, matchFormat);
-            RaiseEvent(newEventArgs);
+            this.RaiseEvent(newEventArgs);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Leagueinator.Controls {
         /// <param name="e"></param>
         /// <exception cref="NullReferenceException"></exception>
         protected void HndUpdateText(object sender, MemoryTextBoxArgs e) {
-            if (this.MatchRow is null) throw new NullReferenceException(nameof(MatchRow));
+            if (this.MatchRow is null) throw new NullReferenceException(nameof(this.MatchRow));
 
             string before = e.Before?.Trim() ?? "";
             string after = e.After?.Trim() ?? "";

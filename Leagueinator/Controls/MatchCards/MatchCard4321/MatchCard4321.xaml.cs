@@ -7,7 +7,7 @@ namespace Leagueinator.Controls {
     /// </summary>
     public partial class MatchCard4321 : MatchCard {
         public MatchCard4321() : base() {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public override MatchFormat MatchFormat {
@@ -15,7 +15,7 @@ namespace Leagueinator.Controls {
         }
 
         public override MatchRow MatchRow {
-            get => _matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
+            get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
 
             set {
                 base.MatchRow = value;
@@ -30,13 +30,13 @@ namespace Leagueinator.Controls {
         private void ProcessMatchRow() {
 
 
-            if (MatchRow is null) {
+            if (this.MatchRow is null) {
                 this.Clear();
                 this.DataContext = null;
                 return;
             }
 
-            foreach (TeamRow teamRow in MatchRow.Teams) {
+            foreach (TeamRow teamRow in this.MatchRow.Teams) {
                 TeamCard? teamCard = this.GetTeamCard(teamRow.Index);
 
                 Debug.WriteLine($"Team Card #{teamRow.Index} is null {teamCard is null}");
@@ -52,7 +52,7 @@ namespace Leagueinator.Controls {
                 }
             }
 
-            this.DataContext = MatchRow;
+            this.DataContext = this.MatchRow;
         }
 
         public override void Clear() {

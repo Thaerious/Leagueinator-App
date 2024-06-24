@@ -9,7 +9,7 @@ namespace Leagueinator.Forms {
     /// </summary>
     public partial class TableViewer : Window {
         public TableViewer() {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public void Show(DataTable dataTable) {
@@ -18,7 +18,7 @@ namespace Leagueinator.Forms {
                     Header = col.ColumnName,
                     Binding = new Binding($"[{col.ColumnName}]")
                 };
-                DataGrid.Columns.Add(dgCol);
+                this.DataGrid.Columns.Add(dgCol);
             }
 
             List<dynamic> list = [];

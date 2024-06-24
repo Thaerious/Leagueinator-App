@@ -14,7 +14,7 @@ table.AcceptChanges(); // Accept changes to simulate a fully integrated row
 table.RowDeleting += Table_RowDeleting;
 
 void Table_RowDeleting(object sender, DataRowChangeEventArgs e) {
-    Console.WriteLine("Deleting DataRow - Name: " + e.Row["Name"] + " " + e.Row.GetHashCode()); 
+    Console.WriteLine("Deleting DataRow - Name: " + e.Row["Name"] + " " + e.Row.GetHashCode());
 }
 
 // Trying to access the DataRow data

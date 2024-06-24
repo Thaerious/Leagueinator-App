@@ -1,7 +1,4 @@
-﻿using Leagueinator.Printer;
-using Leagueinator.Printer.Elements;
-using Leagueinator.Printer.Query;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 
 namespace Test_Style {

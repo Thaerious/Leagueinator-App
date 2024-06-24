@@ -34,7 +34,7 @@
         }
 
         public static RectangleF Translate(this RectangleF rect, PointF point) {
-            return new(rect.X + point.X, rect.Y + point.Y, rect.Width, rect.Height );
+            return new(rect.X + point.X, rect.Y + point.Y, rect.Width, rect.Height);
         }
 
         public static RectangleF Translate(this RectangleF rect, float x, float y) {

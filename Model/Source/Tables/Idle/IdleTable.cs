@@ -1,7 +1,4 @@
-﻿using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using System.Data;
+﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
 
@@ -54,9 +51,6 @@ namespace Leagueinator.Model.Tables {
 
         public IdleTable() : base("idle_players") {
             this.NewInstance = dataRow => new IdleRow(dataRow);
-            GetInstance = args => this.GetRow((int)args[0], (string)args[1]);
-            HasInstance = args => this.HasRow((int)args[0], (string)args[1]);
-            AddInstance = args => this.AddRow((int)args[0], (string)args[1]);
 
             // When a player is added to the idle table, remove it from any team tables.
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {

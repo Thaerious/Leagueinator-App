@@ -1,8 +1,8 @@
-﻿using Antlr4.Runtime.Tree;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using Leagueinator.CSSParser;
 using Leagueinator.Printer.Elements;
 using System.Collections;
-using Leagueinator.CSSParser;
 using System.IO;
 
 namespace Leagueinator.Printer.Styles {

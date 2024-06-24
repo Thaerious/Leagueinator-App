@@ -6,7 +6,7 @@ namespace Leagueinator.Controls {
     /// </summary>
     public partial class CardTarget : UserControl {
         public CardTarget() {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public UIElementCollection Children {

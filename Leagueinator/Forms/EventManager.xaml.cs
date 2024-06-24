@@ -55,21 +55,21 @@ namespace Leagueinator.Forms {
         }
 
         private void HndMouseLeave(object sender, MouseEventArgs e) {
-            if (this.IsSelected) this.Background = selectedBrush;
+            if (this.IsSelected) this.Background = this.selectedBrush;
             else this.Background = null;
             Mouse.OverrideCursor = null;
         }
 
         private void HndMouseEnter(object sender, MouseEventArgs e) {
-            this.Background = hoverBrush;
+            this.Background = this.hoverBrush;
             Mouse.OverrideCursor = Cursors.Hand;
         }
 
         public bool IsSelected {
-            get => _isSelected;
+            get => this._isSelected;
             set {
-                _isSelected = value;
-                if (value) this.Background = selectedBrush;
+                this._isSelected = value;
+                if (value) this.Background = this.selectedBrush;
                 else this.Background = null;
             }
         }
@@ -86,7 +86,7 @@ namespace Leagueinator.Forms {
     /// </summary>
     public partial class EventManager : Window {
         public EventManager(League league) {
-            InitializeComponent();
+            this.InitializeComponent();
             this.League = new(league);
             this.PopulateNamePanel();
 
