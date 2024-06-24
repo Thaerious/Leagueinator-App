@@ -2,8 +2,8 @@
 using Leagueinator.Model.Views;
 
 namespace Model.Source.Tables.Round {
-    public class RoundBoundIdles(IdleTable childTable, RoundRow roundRow)
-        : ARowBoundView<IdleTable, RoundRow, IdleRow>(childTable, roundRow) {
+    public class RoundBoundIdles(RoundRow roundRow)
+        : ARowBoundView<IdleTable, RoundRow, IdleRow>(roundRow.League.IdleTable, roundRow) {
 
         public IdleRow Add(string name) => this.ChildTable.AddRow(roundRow.UID, name);
 

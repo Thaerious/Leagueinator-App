@@ -1,20 +1,17 @@
 ﻿using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
+using Model.Source.Tables.Round;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class RoundRow : CustomRow {
         public RoundRow(DataRow dataRow) : base(dataRow) {
-            this.IdlePlayers = new(this.League.IdleTable, [IdleTable.COL.ROUND], [this.UID]);
-            this.Matches = new(this.League.MatchTable, [MatchTable.COL.ROUND], [this.UID]);
+            this.IdlePlayers = new(this);
+            this.Matches = new(this);
         }
 
-        public readonly RowBoundView<IdleRow> IdlePlayers;
-        public readonly RowBoundView<MatchRow> Matches;
+        public readonly RoundBoundIdles IdlePlayers;
+        public readonly RoundBoundMatches Matches;
 
         public int UID => (int)this[RoundTable.COL.UID];
 

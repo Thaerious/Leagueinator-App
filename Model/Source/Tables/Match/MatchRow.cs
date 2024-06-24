@@ -1,13 +1,13 @@
-﻿using Leagueinator.Model.Views;
+﻿using Model.Source.Tables.Round;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class MatchRow : CustomRow {
-        public MatchRow(DataRow dataRow) : base(dataRow) {
-            this.Teams = new(this.League.TeamTable, [TeamTable.COL.MATCH], [this.UID]);
-        }
+        public readonly MatchBoundTeams Teams;
 
-        public readonly RowBoundView<TeamRow> Teams;
+        public MatchRow(DataRow dataRow) : base(dataRow) {
+            this.Teams = new(this);
+        }
 
         public int Lane {
             get => (int)this[MatchTable.COL.LANE];

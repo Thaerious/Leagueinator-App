@@ -6,7 +6,7 @@ namespace Leagueinator.Model.Tables {
         public readonly EventBoundRounds Rounds;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
-            Rounds = new(this.League.RoundTable, this);
+            Rounds = new(this);
         }
 
         public int EndsDefault {

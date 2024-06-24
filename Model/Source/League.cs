@@ -1,11 +1,4 @@
 ﻿using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
-using Leagueinator.Model.Tables;
 using System.Data;
 
 namespace Leagueinator.Model {

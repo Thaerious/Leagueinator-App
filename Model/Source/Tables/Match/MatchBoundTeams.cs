@@ -2,8 +2,8 @@
 using Leagueinator.Model.Views;
 
 namespace Model.Source.Tables.Round {
-    public class MatchBoundTeams(TeamTable childTable, MatchRow matchRow)
-        : ARowBoundView<TeamTable, MatchRow, TeamRow>(childTable, matchRow) {
+    public class MatchBoundTeams(MatchRow matchRow)
+        : ARowBoundView<TeamTable, MatchRow, TeamRow>(matchRow.League.TeamTable, matchRow) {
 
         public TeamRow Add(int index) => this.ChildTable.AddRow(matchRow.UID, index);
 

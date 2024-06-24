@@ -1,17 +1,13 @@
-﻿using Leagueinator.Model.Views;
+﻿using Model.Source.Tables.Team;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class TeamRow : CustomRow {
         public TeamRow(DataRow dataRow) : base(dataRow) {
-            this.Members = new(
-                this.League.MemberTable,
-                [TeamTable.COL.MATCH, TeamTable.COL.INDEX],
-                [this.Match.UID, this.Index]
-            );
+            this.Members = new(this);
         }
 
-        public readonly RowBoundView<MemberRow> Members;
+        public readonly TeamBoundMembers Members;
 
         public int Bowls {
             get => (int)this[TeamTable.COL.BOWLS];

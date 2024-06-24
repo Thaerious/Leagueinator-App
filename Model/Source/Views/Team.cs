@@ -45,16 +45,16 @@ namespace Leagueinator.Model.Views {
 
         public override bool Equals(object? @object) {
             if (@object is null) return false;
-            else if (@object is Team that) {
-                if (that.Players.Count != this.Players.Count) return false;
+            else if (@object is Team otherTeam) {
+                if (otherTeam.Players.Count != this.Players.Count) return false;
                 foreach (string player in this.Players) {
-                    if (!that.Players.Contains(player)) return false;
+                    if (!otherTeam.Players.Contains(player)) return false;
                 }
             }
-            else if (@object is TeamRow teamRow) {
-                if (teamRow.Members.Count != this.Players.Count) return false;
+            else if (@object is TeamRow otherTeamRow) {
+                if (otherTeamRow.Members.Count != this.Players.Count) return false;
                 foreach (string player in this.Players) {
-                    if (!teamRow.Members.Has(player)) return false;
+                    if (!otherTeamRow.Members.Has(player)) return false;
                 }
             }
 
