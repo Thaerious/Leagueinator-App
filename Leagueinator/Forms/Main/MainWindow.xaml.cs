@@ -15,6 +15,7 @@ namespace Leagueinator.Forms.Main {
     /// </summary>
     [TimeTrace]
     public partial class MainWindow : Window {
+        public static string VERSION = "0.1.0";
 
         public MainWindow() {
             this.Closed += (s, e) => {
@@ -172,9 +173,13 @@ namespace Leagueinator.Forms.Main {
             form.Show();
         }
 
-        
+
         private void HndMenuClick(object sender, RoutedEventArgs e) {
             this.Focus();
+        }
+
+        public void HndHelpAbout(object sender, RoutedEventArgs e) {
+            MessageBox.Show(MainWindow.VERSION, "About", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         static class SaveState {
@@ -192,6 +197,6 @@ namespace Leagueinator.Forms.Main {
             }
 
             public static string Filename { get => _filename; set => _filename = value; }
-        } 
+        }
     }
 }

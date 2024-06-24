@@ -33,8 +33,10 @@ namespace Leagueinator.Model.Tables {
             
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
-                memberRow.Round.RemoveNameFromIdle(memberRow.Player);
-                memberRow.Round.RemoveNameFromTeams(memberRow.Player);
+                string previousName = memberRow.Player;
+
+                memberRow.Round.RemoveNameFromIdle(previousName);
+                memberRow.Round.RemoveNameFromTeams(previousName);
             };
         }
 
