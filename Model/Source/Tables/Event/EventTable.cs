@@ -15,7 +15,9 @@ namespace Leagueinator.Model.Tables {
             public static readonly string EVENT_FORMAT = "format";
         }
 
-        public EventRow AddRow(string eventName, string? date = null) {
+        public EventRow AddRow(string eventName, string? date = null) {   
+            ArgumentNullException.ThrowIfNull(eventName, nameof(eventName));
+
             date ??= DateTime.Today.ToString("yyyy-MM-dd");
             var row = NewRow();
 

@@ -10,12 +10,18 @@ namespace Leagueinator.Model.Tables {
 
         public int EndsDefault {
             get => (int)this[EventTable.COL.ENDS_DEFAULT];
-            set => this[EventTable.COL.ENDS_DEFAULT] = value;
+            set {
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(EndsDefault), "Default ends cannot be less than 0.");
+                this[EventTable.COL.ENDS_DEFAULT] = value;
+            }
         }
 
         public int LaneCount {
             get => (int)this[EventTable.COL.LANE_COUNT];
-            set => this[EventTable.COL.LANE_COUNT] = value;
+            set {
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(LaneCount), "Lane count cannot be less than 0.");
+                this[EventTable.COL.LANE_COUNT] = value;
+            }
         }
 
         public EventFormat EventFormat {

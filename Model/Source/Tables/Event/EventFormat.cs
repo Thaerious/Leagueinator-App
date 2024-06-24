@@ -1,3 +1,3 @@
 ﻿namespace Leagueinator.Model.Tables {
-    public enum EventFormat { AssignedLadder }
+    public enum EventFormat { AssignedLadder, Bracket }
 }

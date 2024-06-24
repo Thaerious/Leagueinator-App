@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
-using Leagueinator.Utility;
 using System.Data;
 using System.Diagnostics;
 
@@ -14,6 +13,41 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             Assert.AreEqual(league, eventRow.League);
             Assert.IsNotNull(eventRow);
+        }
+
+        [TestMethod]
+        public void VerifyColumnProperties() {
+            League league = new();
+            DataTable eventTable = league.EventTable;
+
+            Assert.AreEqual(typeof(int), eventTable.Columns[EventTable.COL.UID]!.DataType);
+            Assert.AreEqual(true, eventTable.Columns[EventTable.COL.UID]!.Unique);
+            Assert.AreEqual(typeof(string), eventTable.Columns[EventTable.COL.NAME]!.DataType);
+            Assert.AreEqual(typeof(string), eventTable.Columns[EventTable.COL.DATE]!.DataType);
+            Assert.AreEqual(typeof(int), eventTable.Columns[EventTable.COL.LANE_COUNT]!.DataType);
+            Assert.AreEqual(8, eventTable.Columns[EventTable.COL.LANE_COUNT]!.DefaultValue);
+            Assert.AreEqual(typeof(int), eventTable.Columns[EventTable.COL.ENDS_DEFAULT]!.DataType);
+            Assert.AreEqual(10, eventTable.Columns[EventTable.COL.ENDS_DEFAULT]!.DefaultValue);
+            Assert.AreEqual(typeof(EventFormat), eventTable.Columns[EventTable.COL.EVENT_FORMAT]!.DataType);
+            Assert.AreEqual(EventFormat.AssignedLadder, eventTable.Columns[EventTable.COL.EVENT_FORMAT]!.DefaultValue);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddRow_InvalidName_ThrowsException() {
+            League league = new();
+            league.EventTable.AddRow(null);
+        }
+
+        [DataTestMethod]
+        [DataRow("Event1", "2024-06-01")]
+        [DataRow("Event2", null)] // Test with default date
+        public void AddRow_Parameterized(string eventName, string date) {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow(eventName, date);
+
+            Assert.AreEqual(eventName, eventRow.Name);
+            Assert.AreEqual(date ?? DateTime.Today.ToString("yyyy-MM-dd"), eventRow.Date);
         }
 
         [TestMethod]
@@ -89,6 +123,106 @@ namespace Model_Test {
             Debug.WriteLine(view.Count);
             Debug.WriteLine(view[0]);
             Assert.IsNotNull(eventRow.Rounds[0]);
+        }
+
+        [TestMethod]
+        public void GetRowByName_Exists() {
+            League league = new();
+            league.EventTable.AddRow("existing_event");
+            EventRow eventRow = league.EventTable.GetRow("existing_event");
+
+            Assert.AreEqual("existing_event", eventRow.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(KeyNotFoundException))]
+        public void GetRowByName_NotExists() {
+            League league = new();
+            league.EventTable.GetRow("nonexistent_event");
+        }
+
+        [TestMethod]
+        public void HasRow() {
+            League league = new();
+            league.EventTable.AddRow("test_event");
+
+            Assert.IsTrue(league.EventTable.HasRow("test_event"));
+            Assert.IsFalse(league.EventTable.HasRow("nonexistent_event"));
+        }
+
+        [TestMethod]
+        public void GetLast() {
+            League league = new();
+            league.EventTable.AddRow("first_event");
+            EventRow lastRow = league.EventTable.AddRow("last_event");
+
+            Assert.AreEqual(lastRow.Name, league.EventTable.GetLast().Name);
+        }
+
+        [TestMethod]
+        public void CountRows_Test() {
+            League league = new();
+
+            // Initially, the table should be empty
+            Assert.AreEqual(0, league.EventTable.Rows.Count);
+
+            // Add a few rows
+            league.EventTable.AddRow("event_1");
+            league.EventTable.AddRow("event_2");
+            league.EventTable.AddRow("event_3");
+
+            // Verify the count of rows in the table
+            Assert.AreEqual(3, league.EventTable.Rows.Count);
+        }
+
+        [TestMethod]
+        public void SetEndsDefault_Test() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("event_with_ends_default");
+
+            // Verify the default value
+            Assert.AreEqual(10, eventRow[EventTable.COL.ENDS_DEFAULT]);
+
+            // Change the value of EndsDefault
+            eventRow[EventTable.COL.ENDS_DEFAULT] = 15;
+
+            // Verify the new value
+            Assert.AreEqual(15, eventRow[EventTable.COL.ENDS_DEFAULT]);
+        }
+
+        [TestMethod]
+        public void SetLaneCount_Test() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("event_with_lanes_default");
+
+            // Verify the default value
+            Assert.AreEqual(8, eventRow[EventTable.COL.LANE_COUNT]);
+
+            // Change the value of LaneCount
+            eventRow[EventTable.COL.LANE_COUNT] = 12;
+
+            // Verify the new value
+            Assert.AreEqual(12, eventRow[EventTable.COL.LANE_COUNT]);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void SetLaneCount_LessThanZero_ThrowsException() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("event_with_invalid_lanes");
+
+            // Attempt to set LaneCount to a value less than 0
+            eventRow.LaneCount = -1;
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void SetEndsDefault_LessThanZero_ThrowsException() {
+            League league = new();
+            EventRow eventRow = league.EventTable.AddRow("event_with_invalid_ends");
+
+            // Attempt to set LaneCount to a value less than 0
+            eventRow.EndsDefault = -1;
         }
     }
 }
