@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Leagueinator.Model.Tables.Round {
+namespace Leagueinator.Model.Tables {
 
     public class RoundTable : LeagueTable<RoundRow> {
         public RoundTable() : base("rounds"){

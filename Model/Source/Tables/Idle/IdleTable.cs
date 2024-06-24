@@ -1,10 +1,9 @@
-﻿using Leagueinator.Model.Tables.Match;
-using Leagueinator.Model.Tables.Member;
-using Leagueinator.Model.Tables.Round;
-using Leagueinator.Model.Tables.Team;
+﻿using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables;
 using System.Data;
 
-namespace Leagueinator.Model.Tables.Idle {
+namespace Leagueinator.Model.Tables {
 
     public class IdleTable : LeagueTable<IdleRow> {
         public static class COL {

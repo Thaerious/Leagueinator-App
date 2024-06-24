@@ -1,5 +1,5 @@
 ﻿using Leagueinator.Model;
-using Model.Source.Tables.Event;
+using Leagueinator.Model.Tables;
 using System.Data;
 
 namespace Model_Test {

@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
-using Model.Source.Tables.Event;
+using Leagueinator.Model.Tables;
 using System.Data;
 
 namespace Model_Test {

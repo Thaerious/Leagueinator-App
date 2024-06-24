@@ -1,7 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
-using Model.Source.Tables.Event;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Forms.Results.Plus {
@@ -12,7 +11,7 @@ namespace Leagueinator.Forms.Results.Plus {
     /// When sorted, will sort by the summary result.
     /// </summary>
     [TimeTrace]
-    public class ResultsPlus (Team team) : IComparable<ResultsPlus> {
+    public class ResultsPlus(Team team) : IComparable<ResultsPlus> {
         public readonly Team Team = team;
 
         public IReadOnlyList<MatchResultsPlus> MatchResults { get => this._matchResults; }
@@ -44,7 +43,7 @@ namespace Leagueinator.Forms.Results.Plus {
 
         public int CompareTo(ResultsPlus? that) {
             if (that is null) return 1;
-            return this.Summary.CompareTo(that.Summary);            
+            return this.Summary.CompareTo(that.Summary);
         }
 
         private readonly List<MatchResultsPlus> _matchResults = [];

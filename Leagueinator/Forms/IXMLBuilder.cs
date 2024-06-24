@@ -1,10 +1,4 @@
-﻿using Leagueinator.Model.Tables;
-using Leagueinator.Printer.Elements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Leagueinator.Printer.Elements;
 
 namespace Leagueinator.Forms {
     public interface IXMLBuilder {

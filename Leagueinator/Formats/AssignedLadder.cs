@@ -2,7 +2,6 @@
 using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Utility;
-using Model.Source.Tables.Event;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -39,7 +38,7 @@ namespace Leagueinator.Formats {
 
             // Assign Matches
             foreach (ResultsPlus result in sortedResults) {
-                int maxTeams = Match.TeamCount(roundRow.Matches[match]!.MatchFormat);
+                int maxTeams = roundRow.Matches[match]!.MatchFormat.TeamCount();
 
                 MatchRow matchRow = roundRow.Matches[match]!;
                 while (matchRow.Teams.Count < maxTeams) {

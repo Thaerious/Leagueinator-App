@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Leagueinator.Model.Tables.Member {
+namespace Leagueinator.Model.Tables {
     public class MemberTable : LeagueTable<MemberRow> {
         public MemberTable() : base("members") {
             this.NewInstance = dataRow => new MemberRow(dataRow);

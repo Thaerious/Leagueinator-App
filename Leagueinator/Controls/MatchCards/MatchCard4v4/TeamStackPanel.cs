@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace Leagueinator.Controls {

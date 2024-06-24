@@ -1,7 +1,5 @@
-﻿using Leagueinator.Extensions;
-using Leagueinator.Model.Tables;
+﻿using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -54,7 +52,7 @@ namespace Leagueinator.Controls {
                 this.CheckTie0.IsChecked = false;
             }
 
-                if (this.CheckTie0.IsChecked == true && this.CheckTie1.IsChecked == false) {
+            if (this.CheckTie0.IsChecked == true && this.CheckTie1.IsChecked == false) {
                 this.MatchRow.Teams[0]!.Tie = 1;
                 this.MatchRow.Teams[1]!.Tie = -1;
             }

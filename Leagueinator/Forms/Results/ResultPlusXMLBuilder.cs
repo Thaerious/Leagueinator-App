@@ -1,8 +1,8 @@
 ﻿using Leagueinator.Forms.Results.Plus;
+using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
-using Model.Source.Tables.Event;
 using Printer;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -26,7 +26,7 @@ namespace Leagueinator.Forms {
             List<ResultsPlus> sortedResults = [.. resultsPlus.Values];
             sortedResults.Sort();
 
-            for (int i = 0; i < sortedResults.Count; i++){
+            for (int i = 0; i < sortedResults.Count; i++) {
                 ResultsPlus currentResult = sortedResults[i];
                 Element xmlFragment = teamXML.Clone();
 

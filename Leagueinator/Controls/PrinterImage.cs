@@ -1,10 +1,9 @@
 ﻿using Leagueinator.Printer.Styles;
-using System.Windows.Media;
 using System.Drawing;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 using System.Windows;
-using System.Diagnostics;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Leagueinator.Controls {
     public class PrinterImage : System.Windows.Controls.Image {
@@ -13,11 +12,11 @@ namespace Leagueinator.Controls {
             set => this.Bitmaps = CreateBitmaps(value);
         }
 
-        public int LastPage { get => this.Bitmaps.Count - 1; }   
+        public int LastPage { get => this.Bitmaps.Count - 1; }
 
         public void SetPage(int index) {
             BitmapSource bitmapSource = ConvertBitmapToBitmapSource(this.Bitmaps[index]);
-            this.Source = bitmapSource;            
+            this.Source = bitmapSource;
         }
 
         public List<Bitmap> Bitmaps { get => this._bitmaps; private set => this._bitmaps = value; }

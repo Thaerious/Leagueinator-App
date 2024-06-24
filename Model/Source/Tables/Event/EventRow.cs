@@ -1,13 +1,12 @@
-﻿using Leagueinator.Model.Tables.Round;
-using Leagueinator.Model.Views;
+﻿using Leagueinator.Model.Tables;
 using System.Data;
 
-namespace Leagueinator.Model.Tables.Event {
+namespace Leagueinator.Model.Tables {
     public class EventRow : CustomRow {
-        public readonly RowBoundView<RoundRow> Rounds;
+        public readonly EventBoundRounds Rounds;
 
         public EventRow(DataRow dataRow) : base(dataRow) {
-            Rounds = new(League.RoundTable, [RoundTable.COL.EVENT], [UID]);
+            Rounds = new(this.League.RoundTable, this);
         }
 
         public int EndsDefault {

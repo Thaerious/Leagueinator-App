@@ -1,4 +1,4 @@
-﻿namespace Leagueinator.Model.Tables.Match {
+﻿namespace Leagueinator.Model.Tables {
     public static class MatchExtensions {
         public static int TeamCount(this MatchFormat matchFormat) {
             switch (matchFormat) {

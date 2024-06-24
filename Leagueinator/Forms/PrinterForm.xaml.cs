@@ -1,10 +1,10 @@
-﻿using Leagueinator.Printer.Styles;
-using Leagueinator.Controls;
+﻿using Leagueinator.Controls;
+using Leagueinator.Printer.Styles;
+using System.Printing;
 using System.Windows;
 using System.Windows.Controls;
 using PrintDialog = System.Windows.Controls.PrintDialog;
 using Size = System.Windows.Size;
-using System.Printing;
 
 namespace Leagueinator.Forms {
     /// <summary>

@@ -1,7 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
-using System.Diagnostics;
 using Leagueinator.Utility;
-using Model.Source.Tables.Event;
+using System.Diagnostics;
 
 namespace Leagueinator.Formats {
     internal class LaneAssigner {
@@ -16,7 +15,7 @@ namespace Leagueinator.Formats {
         private readonly Dictionary<MatchRow, List<int>> AvailableLanes = [];
 
         // The previous lanes a player has played on
-        private readonly Dictionary<string, HashSet<int>> PreviousLanes = [];  
+        private readonly Dictionary<string, HashSet<int>> PreviousLanes = [];
 
         // Matches that have not been assigned a lane
         private readonly List<MatchRow> UnassignedMatches = [];

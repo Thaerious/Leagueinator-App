@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Leagueinator.Model.Tables.Match {
+namespace Leagueinator.Model.Tables {
     public class MatchTable : LeagueTable<MatchRow> {
         public MatchTable() : base("matches"){
             this.NewInstance = dataRow => new MatchRow(dataRow);

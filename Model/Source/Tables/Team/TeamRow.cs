@@ -1,11 +1,7 @@
-﻿using Leagueinator.Model.Tables.Event;
-using Leagueinator.Model.Tables.Match;
-using Leagueinator.Model.Tables.Member;
-using Leagueinator.Model.Tables.Round;
-using Leagueinator.Model.Views;
+﻿using Leagueinator.Model.Views;
 using System.Data;
 
-namespace Leagueinator.Model.Tables.Team {
+namespace Leagueinator.Model.Tables {
     public class TeamRow : CustomRow {
         public TeamRow(DataRow dataRow) : base(dataRow) {
             this.Members = new(

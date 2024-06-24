@@ -1,14 +1,13 @@
-﻿using Leagueinator.Model;
-using Leagueinator.Controls;
+﻿using Leagueinator.Controls;
+using Leagueinator.Forms.MatchAssignments;
+using Leagueinator.Model;
+using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using Leagueinator.Model.Tables;
 using static Leagueinator.Controls.MatchCard;
-using System.Diagnostics;
-using Leagueinator.Forms.MatchAssignments;
-using Model.Source.Tables.Event;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>

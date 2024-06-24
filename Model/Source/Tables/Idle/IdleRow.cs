@@ -1,8 +1,7 @@
-﻿using Leagueinator.Model.Tables.Event;
-using Leagueinator.Model.Tables.Round;
+﻿using Leagueinator.Model.Tables;
 using System.Data;
 
-namespace Leagueinator.Model.Tables.Idle {
+namespace Leagueinator.Model.Tables {
     public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {
 
         public string Player {

@@ -1,12 +1,12 @@
 ﻿using Leagueinator.Model.Views;
 
 namespace Leagueinator.Forms.Results.Plus {
-    
+
     /// <summary>
     /// A summary of all match results for a specific team.
     /// </summary>
-    public record SummaryResultsPlus : IComparable<SummaryResultsPlus>{
-        public Team Team { get;}
+    public record SummaryResultsPlus : IComparable<SummaryResultsPlus> {
+        public Team Team { get; }
         public int GamesPlayed { get; }
         public int Ends { get; }
         public int BowlsFor { get; }
@@ -19,7 +19,7 @@ namespace Leagueinator.Forms.Results.Plus {
 
         public SummaryResultsPlus(Team team, IReadOnlyList<MatchResultsPlus> matchResults) {
             this.Team = team;
-            
+
             foreach (MatchResultsPlus matchResult in matchResults) {
                 this.GamesPlayed++;
                 this.Ends += matchResult.Ends;

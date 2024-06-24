@@ -43,7 +43,7 @@ namespace Leagueinator.Model.Views {
         }
 
         /// <summary>
-        /// Retrieve a specific row from Table B by index as a custom row of type 'ROW'.
+        /// Retrieve a specific row from Table B by index as a custom row of type 'DEST_ROW'.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>

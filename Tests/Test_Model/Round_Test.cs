@@ -1,6 +1,6 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
-using Model.Source.Tables.Event;
+using Leagueinator.Model.Tables;
 using System.Data;
 using System.Diagnostics;
 

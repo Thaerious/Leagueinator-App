@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Leagueinator.Model.Tables.Player {
+namespace Leagueinator.Model.Tables {
     public class PlayerRow(DataRow dataRow) : CustomRow(dataRow) {
         public string Name {
             get => (string)this[PlayerTable.COL.NAME];

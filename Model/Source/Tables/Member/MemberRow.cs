@@ -1,10 +1,6 @@
-﻿using Leagueinator.Model.Tables.Event;
-using Leagueinator.Model.Tables.Match;
-using Leagueinator.Model.Tables.Round;
-using Leagueinator.Model.Tables.Team;
-using System.Data;
+﻿using System.Data;
 
-namespace Leagueinator.Model.Tables.Member {
+namespace Leagueinator.Model.Tables {
     public class MemberRow(DataRow dataRow) : CustomRow(dataRow) {
         
         /// <summary>

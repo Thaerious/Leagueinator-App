@@ -1,12 +1,12 @@
-﻿using Leagueinator.Model.Tables.Event;
-using Leagueinator.Model.Tables.Idle;
-using Leagueinator.Model.Tables.Match;
-using Leagueinator.Model.Tables.Member;
-using Leagueinator.Model.Tables.Team;
+﻿using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables;
+using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
 using System.Data;
 
-namespace Leagueinator.Model.Tables.Round {
+namespace Leagueinator.Model.Tables {
     public class RoundRow : CustomRow {
         public RoundRow(DataRow dataRow) : base(dataRow) {
             this.IdlePlayers = new(this.League.IdleTable, [IdleTable.COL.ROUND], [this.UID]);

@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Diagnostics;
-using System.Windows;
 
 namespace Leagueinator.Controls {
     /// <summary>
@@ -17,7 +16,7 @@ namespace Leagueinator.Controls {
 
         public override MatchRow MatchRow {
             get => _matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
-            
+
             set {
                 base.MatchRow = value;
 

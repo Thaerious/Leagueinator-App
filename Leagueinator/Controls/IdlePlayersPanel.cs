@@ -1,5 +1,4 @@
-﻿using AspectInjector.Broker;
-using Leagueinator.Extensions;
+﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System.Data;
@@ -59,7 +58,7 @@ namespace Leagueinator.Controls {
             // If after is empty and this isn't the last text box, remove it
             if (after.IsEmpty() && e.TextBox != this.Children[^1]) {
                 this.Children.Remove(e.TextBox);
-            }           
+            }
         }
 
         /// <summary>
@@ -72,8 +71,8 @@ namespace Leagueinator.Controls {
                     this.RoundRow.League.IdleTable.RowChanged -= this.HndIdleTableNewRow;
                     this.RoundRow.League.IdleTable.RowDeleting -= this.HndIdleTableDeletingRow;
                 }
-                
-                this._roundRow = value;                
+
+                this._roundRow = value;
                 this.Children.Clear();
                 if (this.RoundRow == null) return;
 
@@ -137,7 +136,7 @@ namespace Leagueinator.Controls {
             this.Children.Add(textBox);
             return textBox;
         }
- 
+
         private RoundRow? _roundRow = null;
     }
 }

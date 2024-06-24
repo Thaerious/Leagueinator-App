@@ -2,19 +2,13 @@
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Printer;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Leagueinator.Forms.MatchAssignments {
     internal class MatchAssignmentsBuilder(RoundRow roundRow) : IXMLBuilder {
-        
+
         private readonly RoundRow RoundRow = roundRow;
-        
+
         public Element BuildElement() {
             LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.MatchAssignments.Root.style");
             Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.MatchAssignments.Root.xml");
@@ -40,7 +34,7 @@ namespace Leagueinator.Forms.MatchAssignments {
                         this.BuildVS(matchCard, matchRow);
                         break;
                     case MatchFormat.VS3:
-                        matchCard["format"][0].InnerText = "3 v 3"; 
+                        matchCard["format"][0].InnerText = "3 v 3";
                         this.BuildVS(matchCard, matchRow);
                         break;
                     case MatchFormat.VS4:
@@ -67,7 +61,7 @@ namespace Leagueinator.Forms.MatchAssignments {
                         InnerText = memberRow.Player
                     });
                 }
-                
+
                 card["teams"][0].AddChild(teamElement);
                 if (teamRow.Index >= 2) break;
             }

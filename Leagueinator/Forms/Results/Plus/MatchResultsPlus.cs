@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Model.Tables;
-using System.Diagnostics;
 
 namespace Leagueinator.Forms.Results.Plus {
 

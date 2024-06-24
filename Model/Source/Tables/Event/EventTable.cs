@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Leagueinator.Model.Tables.Event {
+namespace Leagueinator.Model.Tables {
     public class EventTable : LeagueTable<EventRow> {
         public EventTable() : base("events") {
             NewInstance = dataRow => new EventRow(dataRow);
