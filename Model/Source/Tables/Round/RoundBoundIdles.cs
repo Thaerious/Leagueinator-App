@@ -2,15 +2,15 @@
 using System.Data;
 
 namespace Model.Source.Tables.Round {
-    public class RoundBoundIdles(RoundRow roundRow): DataView, IEnumerable<IdleRow> {
+    public class RoundBoundIdles(RoundRow roundRow): DataView(roundRow.League.IdleTable), IEnumerable<IdleRow> {
 
-        private IdleTable ChildTable { get; } = roundRow.League.IdleTable;
+        private IdleTable IdleTable { get; } = roundRow.League.IdleTable;
 
-        public IdleRow Add(string name) => this.ChildTable.AddRow(roundRow.UID, name);
+        public IdleRow Add(string name) => this.IdleTable.AddRow(roundRow.UID, name);
 
-        public IdleRow Get(string name) => this.ChildTable.GetRow(roundRow.UID, name);
+        public IdleRow Get(string name) => this.IdleTable.GetRow(roundRow.UID, name);
 
-        public bool Has(string name) => this.ChildTable.HasRow(roundRow.UID, name);
+        public bool Has(string name) => this.IdleTable.HasRow(roundRow.UID, name);
 
         public new IdleRow? this[int index] {
             get => new(base[index].Row);

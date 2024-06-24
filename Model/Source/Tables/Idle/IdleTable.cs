@@ -56,11 +56,6 @@ namespace Leagueinator.Model.Tables {
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 string name = (string)e.Row[COL.PLAYER];
 
-                // Ensure the name is in the players table
-                if (!this.League.PlayerTable.HasRow(name)) {
-                    this.League.PlayerTable.AddRow(name);
-                }
-
                 // Remove the name from the teams table
                 int roundUID = (int)e.Row[COL.ROUND];
                 RoundRow roundRow = this.League.RoundTable.GetRow(roundUID);

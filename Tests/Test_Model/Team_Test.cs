@@ -14,8 +14,6 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow1 = matchRow.Teams.Add(0);
 
-            league.PlayerTable.AddRow("Adam");
-            league.PlayerTable.AddRow("Eve");
             teamRow1.Members.Add("Adam");
             teamRow1.Members.Add("Eve");
 
@@ -35,8 +33,6 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow1 = matchRow.Teams.Add(0);
 
-            league.PlayerTable.AddRow("Adam");
-            league.PlayerTable.AddRow("Eve");
             teamRow1.Members.Add("Adam");
             teamRow1.Members.Add("Eve");
 

@@ -12,10 +12,6 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
-            league.PlayerTable.AddRow("Eve");
-            league.PlayerTable.AddRow("Cain");
-
             teamRow.Members.Add("Adam");
             teamRow.Members.Add("Eve");
             teamRow.Members.Add("Cain");
@@ -35,10 +31,6 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(0);
-
-            league.PlayerTable.AddRow("Adam");
-            league.PlayerTable.AddRow("Eve");
-            league.PlayerTable.AddRow("Cain");
 
             teamRow.Members.Add("Adam");
             teamRow.Members.Add("Eve");

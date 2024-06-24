@@ -15,7 +15,7 @@ namespace Leagueinator.Forms.Main {
     /// </summary>
     [TimeTrace]
     public partial class MainWindow : Window {
-        public static string VERSION = "0.1.0";
+        public static string VERSION = "0.1.1";
 
         public MainWindow() {
             this.Closed += (s, e) => {
@@ -94,7 +94,6 @@ namespace Leagueinator.Forms.Main {
         private static League NewLeague() {
             League league = new();
             EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
-
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches();
             return league;
@@ -148,9 +147,6 @@ namespace Leagueinator.Forms.Main {
         }
         private void HndMembersClick(object sender, RoutedEventArgs e) {
             new TableViewer().Show(this.League.MemberTable);
-        }
-        private void HndPlayersClick(object sender, RoutedEventArgs e) {
-            new TableViewer().Show(this.League.PlayerTable);
         }
         private void HndIdleClick(object sender, RoutedEventArgs e) {
             new TableViewer().Show(this.League.IdleTable);

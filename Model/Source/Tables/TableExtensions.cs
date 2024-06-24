@@ -118,6 +118,15 @@ namespace Leagueinator.Model.Tables {
             return clone;
         }
 
+        public static string PrettyPrint(this IReadOnlyList<CustomRow> customRows, string? title = null) {
+            title = title ?? $"{customRows.GetType()}";
+            DataTable table = customRows.First().DataRow.Table;
+            List<DataRow> rowList = [];
+            foreach (CustomRow row in customRows) rowList.Add(row.DataRow);
+
+            return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
+        }
+
         public static string PrettyPrint(this DataTable Table, string? title = null) {
             DataRowCollection rowCollection = Table.Rows;
             DataRow[] rowArray = new DataRow[rowCollection.Count];
@@ -234,8 +243,8 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Returns all records from the left ChildTable, and the matching records from 
-        /// the right ChildTable(table2).  Records are merged when leftCol equals rightCol.
+        /// Returns all records from the left TeamTable, and the matching records from 
+        /// the right TeamTable(table2).  Records are merged when leftCol equals rightCol.
         /// </summary>
         public static DataTable LeftJoin<T>(this DataTable left, DataTable right, string leftCol, string rightCol) {
             if (left.Columns[leftCol] == null) throw new KeyNotFoundException(leftCol);

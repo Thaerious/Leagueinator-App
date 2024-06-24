@@ -79,18 +79,15 @@ namespace Model_Test {
             matchRow.Teams.Add(0);
             matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
-            league.PlayerTable.AddRow("Eve");
-            league.PlayerTable.AddRow("Cain");
-            league.PlayerTable.AddRow("Able");
+            Assert.IsNotNull(matchRow.Teams[0]);
+            Assert.IsNotNull(matchRow.Teams[1]);
 
-            matchRow.Teams[0].Members.Add("Adam");
-            matchRow.Teams[0].Members.Add("Eve");
-            matchRow.Teams[1].Members.Add("Cain");
-            matchRow.Teams[1].Members.Add("Able");
+            matchRow.Teams[0]!.Members.Add("Adam");
+            matchRow.Teams[0]!.Members.Add("Eve");
+            matchRow.Teams[1]!.Members.Add("Cain");
+            matchRow.Teams[1]!.Members.Add("Able");
 
-            var a = matchRow.Members;
-            Console.WriteLine(a.PrettyPrint());
+            Console.WriteLine(matchRow.Members.PrettyPrint());
         }
 
         [TestMethod]

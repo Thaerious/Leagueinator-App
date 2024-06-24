@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Data;
-using System.Runtime.Serialization;
 
 namespace Leagueinator.Model {
     [Serializable]
@@ -13,7 +12,7 @@ namespace Leagueinator.Model {
 
         public event PropertyChangedEventHandler? PropertyChanged = delegate { };
 
-        public void Delete() => this.DataRow.Delete();
+        public void Delete() => this.DataRow.Delete(); // TODO change to remove
 
         public void Remove() => this.DataRow.Table.Rows.Remove(this.DataRow);
 

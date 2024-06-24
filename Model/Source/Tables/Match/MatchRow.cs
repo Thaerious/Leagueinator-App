@@ -9,7 +9,6 @@ namespace Leagueinator.Model.Tables {
             this.Teams = new(this);
         }
 
-
         public int Lane {
             get => (int)this[MatchTable.COL.LANE];
             set => this[MatchTable.COL.LANE] = value;
@@ -31,11 +30,10 @@ namespace Leagueinator.Model.Tables {
 
         public EventRow Event => this.Round.Event;
 
-        public IReadOnlyList<string> Players {
+        public IReadOnlyList<MemberRow> Members {
             get {
                 return this.Teams
                 .SelectMany(teamRow => teamRow.Members)
-                .Select(memberRow => memberRow.Player)
                 .ToList();
             }
         }

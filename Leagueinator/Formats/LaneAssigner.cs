@@ -39,7 +39,7 @@ namespace Leagueinator.Formats {
         /// <exception cref="NotImplementedException"></exception>
         private void PopulateUnassignedMatches() {
             foreach (MatchRow matchRow in this.RoundRow.Matches) {
-                if (matchRow.Players.Count > 0) {
+                if (matchRow.Members.Count > 0) {
                     this.UnassignedMatches.Add(matchRow);
                 }
             }
@@ -62,7 +62,7 @@ namespace Leagueinator.Formats {
         /// </summary>
         private void PopulateAvailableLanes() {
             foreach (MatchRow matchRow in this.RoundRow.Matches) {
-                if (matchRow.Players.Count <= 0) continue;
+                if (matchRow.Members.Count <= 0) continue;
                 this.AvailableLanes[matchRow] = [];
 
                 for (int i = 0; i < this.EventRow.LaneCount; i++) {

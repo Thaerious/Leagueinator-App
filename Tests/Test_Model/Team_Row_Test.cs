@@ -13,7 +13,7 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10); // lane, ends
 
-            league.TeamTable.AddRow(matchRow, 1);
+            league.TeamTable.AddRow(matchRow.UID, 1);
         }
 
         [TestMethod]
@@ -35,7 +35,6 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
 
             Assert.IsNotNull(teamRow);
@@ -49,14 +48,10 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
-
             MemberRow memberRow = teamRow.Members.Add("Adam");
-            league.PlayerTable.GetRow("Adam").Name = "Able";
 
             Assert.AreEqual("Able", memberRow.Player);
 
-            Console.WriteLine(league.PlayerTable.PrettyPrint());
             Console.WriteLine(league.MemberTable.PrettyPrint());
         }
 
@@ -69,7 +64,6 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
             roundRow.IdlePlayers.Add("Adam");
 
@@ -85,14 +79,10 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
             roundRow.IdlePlayers.Add("Adam");
             teamRow.Members.Add("Adam");
 
-            Assert.AreEqual(1, league.PlayerTable.Select("name = 'Adam'").Length);
             Assert.AreEqual(0, league.IdleTable.Select("player = 'Adam'").Length);
-
-            Console.WriteLine(league.PlayerTable.PrettyPrint());
         }
 
         [TestMethod]
@@ -107,9 +97,6 @@ namespace Model_Test {
             teamRow.Members.Add("Adam");
 
             Assert.IsNotNull(teamRow);
-            Assert.AreEqual(1, league.PlayerTable.Select("name = 'Adam'").Length);
-
-            Console.WriteLine(league.PlayerTable.PrettyPrint());
         }
 
         [TestMethod]
@@ -120,7 +107,6 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
-            league.PlayerTable.AddRow("Adam");
             teamRow.Members.Add("Adam");
 
             Assert.AreEqual("Adam", teamRow.Members[0].Player);
@@ -134,8 +120,6 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
-
-            league.PlayerTable.AddRow("Adam");
 
             teamRow.Members.Add("Adam");
             teamRow.Members.Add("Adam");

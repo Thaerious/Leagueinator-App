@@ -3,15 +3,15 @@ using Leagueinator.Model.Views;
 using System.Data;
 
 namespace Model.Source.Tables.Round {
-    public class RoundBoundMatches(RoundRow roundRow) : DataView, IEnumerable<MatchRow> {
+    public class RoundBoundMatches(RoundRow roundRow) : DataView(roundRow.League.MatchTable), IEnumerable<MatchRow> {
 
-        private MatchTable ChildTable { get; } = roundRow.League.MatchTable;
+        private MatchTable MatchTable { get; } = roundRow.League.MatchTable;
 
-        public MatchRow Add(int lane, int ends) => this.ChildTable.AddRow(roundRow.UID, lane, ends);
+        public MatchRow Add(int lane, int ends) => this.MatchTable.AddRow(roundRow.UID, lane, ends);
 
-        public MatchRow Get(int lane) => this.ChildTable.GetRow(roundRow.UID, lane);
+        public MatchRow Get(int lane) => this.MatchTable.GetRow(roundRow.UID, lane);
 
-        public bool Has(int lane) => this.ChildTable.HasRow(roundRow.UID, lane);
+        public bool Has(int lane) => this.MatchTable.HasRow(roundRow.UID, lane);
 
         public new MatchRow? this[int index] {
             get => new(base[index].Row);

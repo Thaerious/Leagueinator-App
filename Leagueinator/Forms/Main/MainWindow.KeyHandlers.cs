@@ -19,14 +19,7 @@ namespace Leagueinator.Forms.Main {
             RenameDialog dialog = new RenameDialog(prevName);
 
             if (dialog.ShowDialog() == true) {
-                bool prevNameExists = this.EventRow.League.PlayerTable.HasRow(prevName);
-                if (!prevNameExists) return;
-
-                string newName = dialog.NewName;
-                var row = this.EventRow.League.PlayerTable.GetRow(prevName);
-                row.Name = newName;
-
-                textBox.Text = newName;
+                // TODO RENAME PLAYER
             }
         }
     }

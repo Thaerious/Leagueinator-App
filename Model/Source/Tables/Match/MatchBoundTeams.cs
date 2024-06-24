@@ -2,15 +2,15 @@
 using System.Data;
 
 namespace Model.Source.Tables.Round {
-    public class MatchBoundTeams(MatchRow matchRow): DataView, IEnumerable<TeamRow> {
+    public class MatchBoundTeams(MatchRow matchRow): DataView(matchRow.League.TeamTable), IEnumerable<TeamRow> {
 
-        private TeamTable ChildTable { get; } = matchRow.League.TeamTable;
+        private TeamTable TeamTable { get; } = matchRow.League.TeamTable;
 
-        public TeamRow Add(int index) => this.ChildTable.AddRow(matchRow.UID, index);
+        public TeamRow Add(int index) => this.TeamTable.AddRow(matchRow.UID, index);
 
-        public TeamRow Get(int index) => this.ChildTable.GetRow(matchRow.UID, index);
+        public TeamRow Get(int index) => this.TeamTable.GetRow(matchRow.UID, index);
 
-        public bool Has(int index) => this.ChildTable.HasRow(matchRow.UID, index);
+        public bool Has(int index) => this.TeamTable.HasRow(matchRow.UID, index);
 
         public new TeamRow? this[int index] {
             get => new(base[index].Row);

@@ -31,9 +31,8 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            eventRow.Settings.Add("ends", "10");
-            eventRow.Settings.Add("matches", "8");
-            Console.WriteLine(league.SettingsTable.PrettyPrint());
+            eventRow.EndsDefault = 10;
+            eventRow.LaneCount = 8;
             roundRow.PopulateMatches();
 
             Assert.AreEqual(8, roundRow.Matches.Count);
@@ -46,9 +45,9 @@ namespace Model_Test {
             League league = new League();
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
-            eventRow.Settings.Add("lanes", "8");
+            eventRow.EndsDefault = 10;
+            eventRow.LaneCount = 8;
 
-            Console.WriteLine(league.SettingsTable.PrettyPrint());
             roundRow.PopulateMatches();
 
             Assert.AreEqual(8, roundRow.Matches.Count);
@@ -104,7 +103,6 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            league.PlayerTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
 
             Assert.IsTrue(roundRow.IdlePlayers.Has("Zen"));
@@ -118,8 +116,7 @@ namespace Model_Test {
             RoundRow roundRow = eventRow.Rounds.Add();
 
             roundRow.IdlePlayers.Add("Zen");
-
-            Assert.IsTrue(roundRow.IdlePlayers.Has("Player", "Zen"));
+            Assert.IsTrue(roundRow.IdlePlayers.Has("Zen"));
         }
 
         [TestMethod]
@@ -128,7 +125,6 @@ namespace Model_Test {
             EventRow eventRow = league.EventTable.AddRow("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            league.PlayerTable.AddRow("Zen");
             roundRow.IdlePlayers.Add("Zen");
             roundRow.IdlePlayers.Get("Zen")!.Delete();
 

@@ -88,7 +88,7 @@ namespace Leagueinator.Controls {
         }
 
         /// <summary>
-        /// Triggered when the value of a players name (MemoryTextBox) is changed.
+        /// Triggered when the value of a players name in a MemoryTextBox is changed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -96,29 +96,25 @@ namespace Leagueinator.Controls {
         protected void HndUpdateText(object sender, MemoryTextBoxArgs e) {
             if (this.MatchRow is null) throw new NullReferenceException(nameof(this.MatchRow));
 
-            string before = e.Before?.Trim() ?? "";
-            string after = e.After?.Trim() ?? "";
-
-            Debug.WriteLine($"Match Card Update Text '{before}' => '{after}'");
-
-            TeamCard parent = e.TextBox.Ancestors<TeamCard>()[0];
-
+            string nameBefore = e.Before?.Trim() ?? "";
+            string nameAfter = e.After?.Trim() ?? "";
+            int teamIndex = e.TextBox.Ancestors<TeamCard>()[0].TeamIndex;
+                        
             // Ensure the team exists
-            if (!this.MatchRow.Teams.Has(parent.TeamIndex)) {
-                this.MatchRow.Teams.Add(parent.TeamIndex);
+            if (!this.MatchRow.Teams.Has(teamIndex)) {
+                this.MatchRow.Teams.Add(teamIndex);
             }
 
             // Add new name to the teams table
-            if (!after.IsEmpty()) {
-                this.MatchRow.League.PlayerTable.AddRowIf(after);
-                this.MatchRow.Teams[parent.TeamIndex]!.Members.Add(after);
+            if (!nameAfter.IsEmpty()) {
+                this.MatchRow.Teams[teamIndex]!.Members.Add(nameAfter);
             }
 
             // Remove the old name from the members table
-            if (!before.IsEmpty()) {
-                TeamRow teamRow = this.MatchRow.Teams[parent.TeamIndex] ?? throw new NullReferenceException();
-                if (teamRow.Members.Has(before)) {
-                    teamRow.Members.Get(before).Remove();
+            if (!nameBefore.IsEmpty()) {
+                TeamRow teamRow = this.MatchRow.Teams[teamIndex] ?? throw new NullReferenceException();
+                if (teamRow.Members.Has(nameBefore)) {
+                    teamRow.Members.Get(nameBefore).Remove();
                 }
             }
 
