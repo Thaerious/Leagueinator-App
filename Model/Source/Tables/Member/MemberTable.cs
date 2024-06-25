@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Leagueinator.Utility;
+using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class MemberTable : LeagueTable<MemberRow> {
@@ -7,13 +8,16 @@ namespace Leagueinator.Model.Tables {
 
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
                 MemberRow memberRow = new(e.Row);
-                string previousName = memberRow.Player;
+                string nameBeingAdded = memberRow.Player;
 
-                if (memberRow.Round.IdlePlayers.Has(previousName)) {
-                    memberRow.Round.IdlePlayers.Get(previousName).Remove();
+                // Remove the name from the idle players list.
+                if (memberRow.Round.IdlePlayers.Has(nameBeingAdded)) {
+                    memberRow.Round.IdlePlayers.Get(nameBeingAdded).Remove();
                 }
 
-                memberRow.Round.RemoveNameFromTeams(previousName);
+                // Remove any existing members with the same name.
+                var matchingMembers = memberRow.Round.Members.Where(row => row.Player.Equals(nameBeingAdded));
+                if (matchingMembers.Any()) matchingMembers.First().Remove();    
             };
         }
 

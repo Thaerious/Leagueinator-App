@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 using System.Data;
 using System.Diagnostics;
 
@@ -81,6 +82,19 @@ namespace Model_Test {
         }
 
         [TestMethod]
+        public void Remove_Player_From_Teams() {
+            League league = new League();
+            EventRow eventRow = league.Events.Add("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0);
+            TeamRow teamRow = matchRow.Teams.Add();
+
+            teamRow.Members.Add("Adam");
+            roundRow.RemoveNameFromTeams("Adam");
+            Assert.IsFalse(teamRow.Members.Has("Adam"));
+        }
+
+        [TestMethod]
         public void Add_Player_To_Idle() {
             League league = new League();
             EventRow eventRow = league.Events.Add("my_event");
@@ -123,6 +137,26 @@ namespace Model_Test {
             Assert.IsTrue(roundRow.IdlePlayers.Has("Zen"));
         }
 
-        // TODO Add player to team, then idle, player removed from team and reverese
+        [DataTestMethod]
+        [DataRow(["Zen"])]
+        [DataRow(["Adam", "Eve"])]
+        public void All_Members_List(String[] names) {
+            League league = new League();
+            EventRow eventRow = league.Events.Add("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0);
+            TeamRow teamRow = matchRow.Teams.Add();
+
+            foreach(string name in names) teamRow.Members.Add(name);
+
+            List<MemberRow> memberList = roundRow.Members.ToList();
+            List<string> nameList = roundRow.Members.Select(row => row.Player).ToList();
+
+            Console.WriteLine(memberList.PrettyPrint("All Members"));
+            Console.WriteLine(nameList.DelString());
+            Console.WriteLine(memberList.Count);
+
+            Assert.AreEqual(names.Length, memberList.Count);
+        }
     }
 }

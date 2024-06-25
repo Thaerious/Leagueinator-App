@@ -11,6 +11,8 @@ namespace Leagueinator.Model.Tables {
 
         public TeamRow Add(int index) => this.TeamTable.AddRow(this.MatchRow.UID, index);
 
+        public TeamRow Add() => this.TeamTable.AddRow(this.MatchRow.UID, this.MatchRow.Teams.Count);
+
         public TeamRow Get(int index) => this.TeamTable.GetRow(this.MatchRow.UID, index);
 
         public bool Has(int index) => this.TeamTable.HasRow(this.MatchRow.UID, index);

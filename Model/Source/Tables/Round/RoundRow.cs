@@ -68,31 +68,15 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Return a 1-indexed value for the next lane.
-        /// The next lane is one larger than the largest lane value.
-        /// </summary>
-        /// <param name="match"></param>
-        /// <returns></returns>
-        private int NextLane() {
-            int next = 0;
-            foreach (MatchRow matchRow in this.Matches) {
-                if (next <= matchRow.Lane) next = matchRow.Lane + 1;
-            }
-
-            return next;
-        }
-
-        /// <summary>
         /// Removes all members with the specified player's name from the Members collection for
         /// for any match/team in this round.
         /// </summary>
         /// <param name="name">The name of the player to be removed from the member table.</param>
         public void RemoveNameFromTeams(string name) {
-            // TODO check for performance
-            foreach (TeamRow teamRow in this.Teams) {
-                foreach (MemberRow memberRow in teamRow.Members) {
-                    if (memberRow.Player == name) memberRow.Remove();
-                }
+            List<MemberRow> list = [.. this.Members.ToList()];
+
+            foreach (MemberRow memberRow in list) {
+                if (memberRow.Player == name) memberRow.Remove();
             }
         }
     }

@@ -13,6 +13,8 @@ namespace Model.Source.Tables.Round {
 
         public MatchRow Add(int lane, int ends) => this.MatchTable.AddRow(this.RoundRow.UID, lane, ends);
 
+        public MatchRow Add(int lane) => this.MatchTable.AddRow(this.RoundRow.UID, lane, this.RoundRow.Event.EndsDefault);
+
         public MatchRow Get(int lane) => this.MatchTable.GetRow(this.RoundRow.UID, lane);
 
         public bool Has(int lane) => this.MatchTable.HasRow(this.RoundRow.UID, lane);
