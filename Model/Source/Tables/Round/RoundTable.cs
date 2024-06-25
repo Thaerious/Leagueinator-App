@@ -3,34 +3,34 @@
 namespace Leagueinator.Model.Tables {
 
     public class RoundTable : LeagueTable<RoundRow> {
-        public RoundTable() : base("rounds") {
+        internal RoundTable() : base("rounds") {
             this.NewInstance = dataRow => new RoundRow(dataRow);
         }
 
-        public static class COL {
+        internal static class COL {
             public static readonly string UID = "uid";
             public static readonly string EVENT = "event_uid";
         }
 
-        public RoundRow GetRow(int roundUID) {
+        internal RoundRow GetRow(int roundUID) {
             DataRow[] foundRows = this.Select($"{COL.UID} = {roundUID}");
             if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {roundUID}");
             return new(foundRows[0]);
         }
 
-        public bool HasRow(int roundUID) {
+        internal bool HasRow(int roundUID) {
             DataRow[] foundRows = this.Select($"{COL.UID} = {roundUID}");
             return foundRows.Length > 0;
         }
 
-        public RoundRow AddRow(int eventUID) {
+        internal RoundRow AddRow(int eventUID) {
             var row = this.NewRow();
             row[COL.EVENT] = eventUID;
             this.Rows.Add(row);
             return new(row);
         }
 
-        public override void BuildColumns() {
+        internal override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.UID,

@@ -2,17 +2,21 @@
 using System.Data;
 
 namespace Model.Source.Tables.Round {
-    public class RoundBoundIdles(RoundRow roundRow): DataView(roundRow.League.IdleTable), IEnumerable<IdleRow> {
+    public class RoundBoundIdles: DataView, IEnumerable<IdleRow> {
 
-        private IdleTable IdleTable { get; } = roundRow.League.IdleTable;
+        internal RoundBoundIdles(RoundRow roundRow) : base(roundRow.League.IdleTable) {
+            this.RoundRow = roundRow;
+        }
 
-        public IdleRow Add(string name) => this.IdleTable.AddRow(roundRow.UID, name);
+        private IdleTable IdleTable => this.RoundRow.League.IdleTable;
 
-        public IdleRow Get(string name) => this.IdleTable.GetRow(roundRow.UID, name);
+        public IdleRow Add(string name) => this.IdleTable.AddRow(this.RoundRow.UID, name);
 
-        public bool Has(string name) => this.IdleTable.HasRow(roundRow.UID, name);
+        public IdleRow Get(string name) => this.IdleTable.GetRow(this.RoundRow.UID, name);
 
-        public new IdleRow? this[int index] {
+        public bool Has(string name) => this.IdleTable.HasRow(this.RoundRow.UID, name);
+
+        public new IdleRow this[int index] {
             get => new(base[index].Row);
         }
 
@@ -25,5 +29,7 @@ namespace Model.Source.Tables.Round {
                 if (this[i] is not null) yield return this[i]!;
             }
         }
+
+        private readonly RoundRow RoundRow;
     }
 }

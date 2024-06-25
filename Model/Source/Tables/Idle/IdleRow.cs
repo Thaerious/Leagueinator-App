@@ -1,7 +1,9 @@
 ﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-    public class IdleRow(DataRow dataRow) : CustomRow(dataRow) {
+    public class IdleRow : CustomRow {
+
+        internal IdleRow(DataRow dataRow) : base(dataRow) {}
 
         public string Player {
             get => (string)this[IdleTable.COL.PLAYER];

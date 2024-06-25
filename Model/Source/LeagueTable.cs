@@ -22,7 +22,7 @@ namespace Leagueinator.Model {
             }
         }
 
-        public LeagueTable(string tableName) : base(tableName) {
+        internal LeagueTable(string tableName) : base(tableName) {
             NewInstance = args => throw new NotImplementedException();
         }
 
@@ -40,7 +40,7 @@ namespace Leagueinator.Model {
             }
         }
 
-        abstract public void BuildColumns();
+        abstract internal void BuildColumns();
 
         IEnumerator<R> IEnumerable<R>.GetEnumerator() {
             foreach (DataRow dataRow in this.Rows) {

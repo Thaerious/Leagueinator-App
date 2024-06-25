@@ -1,7 +1,9 @@
 ﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-    public class MemberRow(DataRow dataRow) : CustomRow(dataRow) {
+    public class MemberRow : CustomRow {
+
+        internal MemberRow(DataRow dataRow) : base(dataRow) { }
 
         /// <summary>
         /// Set the player name.

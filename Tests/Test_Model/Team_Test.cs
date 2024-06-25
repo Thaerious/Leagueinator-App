@@ -9,7 +9,7 @@ namespace Model_Test {
         [TestMethod]
         public void Same_Hash_Code() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow1 = matchRow.Teams.Add(0);
@@ -28,7 +28,7 @@ namespace Model_Test {
         [TestMethod]
         public void Equals() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow1 = matchRow.Teams.Add(0);

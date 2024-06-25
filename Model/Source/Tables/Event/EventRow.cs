@@ -4,14 +4,14 @@ namespace Leagueinator.Model.Tables {
     public class EventRow : CustomRow {
         public readonly EventBoundRounds Rounds;
 
-        public EventRow(DataRow dataRow) : base(dataRow) {
+        internal EventRow(DataRow dataRow) : base(dataRow) {
             Rounds = new(this);
         }
 
         public int EndsDefault {
             get => (int)this[EventTable.COL.ENDS_DEFAULT];
             set {
-                if (value < 0) throw new ArgumentOutOfRangeException(nameof(EndsDefault), "Default ends cannot be less than 0.");
+                if (value < 1) throw new ArgumentOutOfRangeException(nameof(EndsDefault), "Default ends cannot be less than 0.");
                 this[EventTable.COL.ENDS_DEFAULT] = value;
             }
         }
@@ -19,7 +19,7 @@ namespace Leagueinator.Model.Tables {
         public int LaneCount {
             get => (int)this[EventTable.COL.LANE_COUNT];
             set {
-                if (value < 0) throw new ArgumentOutOfRangeException(nameof(LaneCount), "Lane count cannot be less than 0.");
+                if (value < 1) throw new ArgumentOutOfRangeException(nameof(LaneCount), "Lane count cannot be less than 0.");
                 this[EventTable.COL.LANE_COUNT] = value;
             }
         }
@@ -29,7 +29,7 @@ namespace Leagueinator.Model.Tables {
             set => this[EventTable.COL.EVENT_FORMAT] = value;
         }
 
-        public int UID {
+        internal int UID {
             get => (int)this[EventTable.COL.UID];
         }
 

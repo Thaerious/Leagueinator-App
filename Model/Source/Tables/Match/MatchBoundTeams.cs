@@ -1,18 +1,21 @@
-﻿using Leagueinator.Model.Tables;
-using System.Data;
+﻿using System.Data;
 
-namespace Model.Source.Tables.Round {
-    public class MatchBoundTeams(MatchRow matchRow): DataView(matchRow.League.TeamTable), IEnumerable<TeamRow> {
+namespace Leagueinator.Model.Tables {
+    public class MatchBoundTeams: DataView, IEnumerable<TeamRow> {
 
-        private TeamTable TeamTable { get; } = matchRow.League.TeamTable;
+        internal MatchBoundTeams(MatchRow matchRow) : base(matchRow.League.TeamTable) {
+            this.MatchRow = matchRow;
+        }
 
-        public TeamRow Add(int index) => this.TeamTable.AddRow(matchRow.UID, index);
+        private TeamTable TeamTable => this.MatchRow.League.TeamTable;
 
-        public TeamRow Get(int index) => this.TeamTable.GetRow(matchRow.UID, index);
+        public TeamRow Add(int index) => this.TeamTable.AddRow(this.MatchRow.UID, index);
 
-        public bool Has(int index) => this.TeamTable.HasRow(matchRow.UID, index);
+        public TeamRow Get(int index) => this.TeamTable.GetRow(this.MatchRow.UID, index);
 
-        public new TeamRow? this[int index] {
+        public bool Has(int index) => this.TeamTable.HasRow(this.MatchRow.UID, index);
+
+        public new TeamRow this[int index] {
             get => new(base[index].Row);
         }
 
@@ -25,5 +28,7 @@ namespace Model.Source.Tables.Round {
                 if (this[i] is not null) yield return this[i]!;
             }
         }
+
+        private readonly MatchRow MatchRow;
     }
 }

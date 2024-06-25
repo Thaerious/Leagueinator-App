@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class TeamRow : CustomRow {
-        public TeamRow(DataRow dataRow) : base(dataRow) {
+        internal TeamRow(DataRow dataRow) : base(dataRow) {
             this.Members = new(this);
         }
 

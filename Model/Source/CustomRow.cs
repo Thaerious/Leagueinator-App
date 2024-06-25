@@ -12,8 +12,6 @@ namespace Leagueinator.Model {
 
         public event PropertyChangedEventHandler? PropertyChanged = delegate { };
 
-        public void Delete() => this.DataRow.Delete(); // TODO change to remove
-
         public void Remove() => this.DataRow.Table.Rows.Remove(this.DataRow);
 
         public object this[string columnName] {

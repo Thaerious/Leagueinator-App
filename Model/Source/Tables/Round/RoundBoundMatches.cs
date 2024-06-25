@@ -3,17 +3,21 @@ using Leagueinator.Model.Views;
 using System.Data;
 
 namespace Model.Source.Tables.Round {
-    public class RoundBoundMatches(RoundRow roundRow) : DataView(roundRow.League.MatchTable), IEnumerable<MatchRow> {
+    public class RoundBoundMatches : DataView, IEnumerable<MatchRow> {
 
-        private MatchTable MatchTable { get; } = roundRow.League.MatchTable;
+        internal RoundBoundMatches(RoundRow roundRow) : base(roundRow.League.MatchTable) {
+            this.RoundRow = roundRow;
+        }
 
-        public MatchRow Add(int lane, int ends) => this.MatchTable.AddRow(roundRow.UID, lane, ends);
+        private MatchTable MatchTable => this.RoundRow.League.MatchTable;
 
-        public MatchRow Get(int lane) => this.MatchTable.GetRow(roundRow.UID, lane);
+        public MatchRow Add(int lane, int ends) => this.MatchTable.AddRow(this.RoundRow.UID, lane, ends);
 
-        public bool Has(int lane) => this.MatchTable.HasRow(roundRow.UID, lane);
+        public MatchRow Get(int lane) => this.MatchTable.GetRow(this.RoundRow.UID, lane);
 
-        public new MatchRow? this[int index] {
+        public bool Has(int lane) => this.MatchTable.HasRow(this.RoundRow.UID, lane);
+
+        public new MatchRow this[int index] {
             get => new(base[index].Row);
         }
 
@@ -27,5 +31,7 @@ namespace Model.Source.Tables.Round {
                 if (this[i] is not null) yield return this[i]!;
             }
         }
+
+        private readonly RoundRow RoundRow;
     }
 }

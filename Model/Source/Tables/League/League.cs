@@ -4,6 +4,7 @@ using System.Data;
 namespace Leagueinator.Model {
     public class League : DataSet {
         public event EventHandler<EventArgs> LeagueUpdate = delegate { };
+        public new LeagueBoundEvent Events { get; }
 
         public EventTable EventTable { init; get; }
         public RoundTable RoundTable { init; get; }
@@ -24,6 +25,8 @@ namespace Leagueinator.Model {
             this.AddListeners();
             this.BuildColumns();
             this.AddConstraints();
+
+            this.Events = new(this);
         }
 
         public League(League that) : this() {

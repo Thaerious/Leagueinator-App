@@ -3,15 +3,15 @@ using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class RoundRow : CustomRow {
-        public RoundRow(DataRow dataRow) : base(dataRow) {
+        public readonly RoundBoundIdles IdlePlayers;
+        public readonly RoundBoundMatches Matches;
+
+        internal RoundRow(DataRow dataRow) : base(dataRow) {
             this.IdlePlayers = new(this);
             this.Matches = new(this);
         }
 
-        public readonly RoundBoundIdles IdlePlayers;
-        public readonly RoundBoundMatches Matches;
-
-        public int UID => (int)this[RoundTable.COL.UID];
+        internal int UID => (int)this[RoundTable.COL.UID];
 
         public EventRow Event => this.League.EventTable.GetRow((int)this[RoundTable.COL.EVENT]);
 
@@ -50,7 +50,8 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Add empty matches to this round so that there are as many matches are laneCount matches.
+        /// Add empty matches to this round so that there are as many matches as the
+        /// lane count value of the parent event.
         /// </summary>
         /// <param name="laneCount"></param>
         /// <returns></returns>
@@ -82,22 +83,12 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Removes all instances of the specified player's name from the IdlePlayers collection
-        /// for this round.
-        /// </summary>
-        /// <param name="name">The name of the player to be removed from the idle table.</param>
-        public void RemoveNameFromIdle(string name) {
-            foreach (IdleRow idleRow in this.IdlePlayers) {
-                if (idleRow.Player == name) idleRow.Remove();
-            }
-        }
-
-        /// <summary>
         /// Removes all members with the specified player's name from the Members collection for
         /// for any match/team in this round.
         /// </summary>
         /// <param name="name">The name of the player to be removed from the member table.</param>
         public void RemoveNameFromTeams(string name) {
+            // TODO check for performance
             foreach (TeamRow teamRow in this.Teams) {
                 foreach (MemberRow memberRow in teamRow.Members) {
                     if (memberRow.Player == name) memberRow.Remove();

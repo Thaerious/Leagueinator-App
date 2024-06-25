@@ -2,11 +2,11 @@
 
 namespace Leagueinator.Model.Tables {
     public class MatchTable : LeagueTable<MatchRow> {
-        public MatchTable() : base("matches") {
-            this.NewInstance = dataRow => new MatchRow(dataRow);           
+        internal MatchTable() : base("matches") {
+            this.NewInstance = dataRow => new MatchRow(dataRow);
         }
 
-        public static class COL {
+        internal static class COL {
             public static readonly string UID = "uid";
             public static readonly string ROUND = "round";
             public static readonly string LANE = "lane";
@@ -14,7 +14,7 @@ namespace Leagueinator.Model.Tables {
             public static readonly string FORMAT = "format";
         }
 
-        public MatchRow AddRow(int round, int lane, int ends) {
+        internal MatchRow AddRow(int round, int lane, int ends) {
             var row = this.NewRow();
             row[COL.ROUND] = round;
             row[COL.LANE] = lane;
@@ -23,7 +23,7 @@ namespace Leagueinator.Model.Tables {
             return new(row);
         }
 
-        public MatchRow GetRow(int matchUID) {
+        internal MatchRow GetRow(int matchUID) {
             var rows = this.AsEnumerable<MatchRow>()
                            .Where(row => row.UID == matchUID)
                            .ToList();
@@ -32,7 +32,7 @@ namespace Leagueinator.Model.Tables {
             return rows[0];
         }
 
-        public MatchRow GetRow(int round, int lane) {
+        internal MatchRow GetRow(int round, int lane) {
             var rows = this.AsEnumerable<MatchRow>()
                         .Where(row => row.Round.UID == round)
                         .Where(row => row.Lane == lane)
@@ -42,26 +42,26 @@ namespace Leagueinator.Model.Tables {
             return rows[0];
         }
 
-        public bool HasRow(int round, int lane) {
+        internal bool HasRow(int round, int lane) {
             return this.AsEnumerable<MatchRow>()
                        .Where(row => row.Round.UID == round)
                        .Where(row => row.Lane == lane)
                        .Any();
         }
 
-        public MatchRow AddRow(int round, int lane) {
+        internal MatchRow AddRow(int round, int lane) {
             var row = this.NewRow();
 
             row[COL.ROUND] = round;
             row[COL.LANE] = lane;
 
-            this.League.EnforceConstraints = false;
+            //this.League.EnforceConstraints = false;
             this.Rows.Add(row);
-            this.League.EnforceConstraints = true;
+            //this.League.EnforceConstraints = true;
             return new(row);
         }
 
-        public override void BuildColumns() {
+        internal override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.UID,
@@ -91,12 +91,11 @@ namespace Leagueinator.Model.Tables {
                 DefaultValue = MatchFormat.VS4
             });
 
-            // TODO re-enable, it mucks with rearranging lanes.
-            //this.Constraints.Add(
-            //    new UniqueConstraint("UniqueConstraint", [
-            //    this.Columns[COL.ROUND]!,
-            //    this.Columns[COL.LANE]!
-            //]));
+            this.Constraints.Add(
+                new UniqueConstraint("UniqueConstraint", [
+                this.Columns[COL.ROUND]!,
+                this.Columns[COL.LANE]!
+            ]));
         }
     }
 }

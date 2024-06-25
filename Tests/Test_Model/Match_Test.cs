@@ -9,7 +9,7 @@ namespace Model_Test {
         [TestMethod]
         public void Match() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
 
@@ -19,7 +19,7 @@ namespace Model_Test {
         [TestMethod]
         public void Size_For_Empty_Match() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
 
@@ -29,7 +29,7 @@ namespace Model_Test {
         [TestMethod]
         public void Size_For_One_Match() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
 
@@ -39,7 +39,7 @@ namespace Model_Test {
         [TestMethod]
         public void Size_For_Two_Matches() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.Matches.Add(0, 10);
             roundRow.Matches.Add(1, 10);
@@ -51,21 +51,19 @@ namespace Model_Test {
         [ExpectedException(typeof(ConstraintException))]
         public void Lane_Must_Be_Unique() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.Matches.Add(0, 10);
             roundRow.Matches.Add(0, 10);
-
-            Assert.AreEqual(2, roundRow.Matches.Count);
         }
 
         [TestMethod]
         public void Delete() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            matchRow.Delete();
+            matchRow.Remove();
 
             Assert.AreEqual(0, roundRow.Matches.Count);
         }
@@ -73,7 +71,7 @@ namespace Model_Test {
         [TestMethod]
         public void Players() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             matchRow.Teams.Add(0);
@@ -90,20 +88,19 @@ namespace Model_Test {
             Console.WriteLine(matchRow.Members.PrettyPrint());
         }
 
+        /// <summary>
+        /// A new match has no players
+        /// </summary>
         [TestMethod]
         public void Empty_Players() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             matchRow.Teams.Add(0);
             matchRow.Teams.Add(1);
 
-            Console.WriteLine("Before");
-            var a = matchRow.Members;
-            Console.WriteLine(a.PrettyPrint());
-            Console.WriteLine("After");
-            Assert.IsTrue(true);
+            Assert.AreEqual(0, matchRow.Members.Count);
         }
     }
 }

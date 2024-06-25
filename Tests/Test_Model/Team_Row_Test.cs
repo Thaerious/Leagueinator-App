@@ -7,30 +7,20 @@ namespace Model_Test {
     public class Team_Row_Test {
 
         [TestMethod]
-        public void TeamTable_AddRow() {
+        public void TeamTable_Add() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10); // lane, ends
+            TeamRow teamRow = matchRow.Teams.Add(0);
 
-            league.TeamTable.AddRow(matchRow.UID, 1);
-        }
-
-        [TestMethod]
-        public void Team_Row() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add(1);
-
-            Assert.IsNotNull(teamRow);
+            Assert.IsNotNull(teamRow);            
         }
 
         [TestMethod]
         public void Add_Player() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
@@ -40,69 +30,70 @@ namespace Model_Test {
             Assert.IsNotNull(teamRow);
         }
 
+        /// <summary>
+        /// Adding a player to the idle table for a given round will
+        /// remove it from any team it is in.
+        /// </summary>
         [TestMethod]
-        public void Rename_Player() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add(1);
-
-            MemberRow memberRow = teamRow.Members.Add("Adam");
-
-            Assert.AreEqual("Able", memberRow.Player);
-
-            Console.WriteLine(league.MemberTable.PrettyPrint());
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ConstraintException))]
-        public void Add_Player_To_Idle_From_Team() {
+        public void Add_Player_To_Idle() {
             League league = new League();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
             teamRow.Members.Add("Adam");
-            roundRow.IdlePlayers.Add("Adam");
+            Assert.IsTrue(teamRow.Members.Has("Adam"));
 
-            Assert.AreEqual(0, teamRow.Members.Count);
+            roundRow.IdlePlayers.Add("Adam");
+            Assert.IsTrue(roundRow.IdlePlayers.Has("Adam"));
+            Assert.IsFalse(teamRow.Members.Has("Adam"));
         }
 
+        /// <summary>
+        /// For a given round, adding a player to a team will remove it from any 
+        /// other teams it is in.
+        /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(ConstraintException))]
+        public void Add_Player_To_Second_Team() {
+            League league = new League();
+            EventRow eventRow = league.Events.Add("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow = roundRow.Matches.Add(0, 10);
+            TeamRow teamRow0 = matchRow.Teams.Add(0);
+            TeamRow teamRow1 = matchRow.Teams.Add(1);
+
+            teamRow0.Members.Add("Adam");
+            Assert.IsTrue(teamRow0.Members.Has("Adam"));
+
+            teamRow1.Members.Add("Adam");
+            Assert.IsTrue(teamRow1.Members.Has("Adam"));
+            Assert.IsFalse(teamRow0.Members.Has("Adam"));
+        }
+
+        /// <summary>
+        /// For a given round, adding a player to the idle table will remove 
+        /// that player from the team table.
+        /// </summary>
+        [TestMethod]
         public void Add_Player_From_Idle() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
 
             roundRow.IdlePlayers.Add("Adam");
+            Assert.IsTrue(roundRow.IdlePlayers.Has("Adam"));
             teamRow.Members.Add("Adam");
-
-            Assert.AreEqual(0, league.IdleTable.Select("player = 'Adam'").Length);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ConstraintException))]
-        public void Add_Non_Existant_Player() {
-            League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
-            RoundRow roundRow = eventRow.Rounds.Add();
-            MatchRow matchRow = roundRow.Matches.Add(0, 10);
-            TeamRow teamRow = matchRow.Teams.Add(1);
-
-            teamRow.Members.Add("Adam");
-
-            Assert.IsNotNull(teamRow);
+            Assert.IsFalse(roundRow.IdlePlayers.Has("Adam"));
+            Assert.IsTrue(teamRow.Members.Has("Adam"));
         }
 
         [TestMethod]
         public void Retrieve_Player() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
@@ -114,9 +105,9 @@ namespace Model_Test {
 
         [TestMethod]
         [ExpectedException(typeof(ConstraintException))]
-        public void Add_Exising_Player() {
+        public void Add_Existing_Player() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("my_event");
+            EventRow eventRow = league.Events.Add("my_event");
             RoundRow roundRow = eventRow.Rounds.Add();
             MatchRow matchRow = roundRow.Matches.Add(0, 10);
             TeamRow teamRow = matchRow.Teams.Add(1);
@@ -128,7 +119,7 @@ namespace Model_Test {
         //[TestMethod]
         //public void Add_Multiple_Players_Mulitple_Teams() {
         //    League league = new();
-        //    var eventRow = league.EventTable.AddRow("My Event");
+        //    var eventRow = league.Events.Add("My Event");
         //    var roundRow = eventRow.Rounds.Add();
         //    var matchRow = roundRow.Matches.Add(0, 10);
         //    var teamRow1 = matchRow.Teams.Add();
@@ -149,15 +140,15 @@ namespace Model_Test {
         //[TestMethod]
         //public void List_Players() {
         //    League league = new();
-        //    EventRow eventRow = league.EventTable.AddRow("my_event");
+        //    EventRow eventRow = league.Events.Add("my_event");
         //    RoundRow roundRow = eventRow.Rounds.Add();
         //    MatchRow matchRow = roundRow.Matches.Add(0, 10);
         //    TeamRow teamRow = matchRow.Teams.Add();
 
-        //    league.PlayerTable.AddRow("Adam");
-        //    league.PlayerTable.AddRow("Eve");
-        //    league.PlayerTable.AddRow("Cain");
-        //    league.PlayerTable.AddRow("Able");
+        //    league.PlayerTable.Add("Adam");
+        //    league.PlayerTable.Add("Eve");
+        //    league.PlayerTable.Add("Cain");
+        //    league.PlayerTable.Add("Able");
 
         //    teamRow.Members.Add("Adam");
         //    teamRow.Members.Add("Eve");

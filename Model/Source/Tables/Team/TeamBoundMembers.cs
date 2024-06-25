@@ -2,17 +2,21 @@
 using System.Data;
 
 namespace Model.Source.Tables.Team {
-    public class TeamBoundMembers(TeamRow teamRow) : DataView(teamRow.League.MemberTable), IEnumerable<MemberRow> {
+    public class TeamBoundMembers : DataView, IEnumerable<MemberRow> {
 
-        private MemberTable MemberTable { get; } = teamRow.League.MemberTable;
+        internal TeamBoundMembers(TeamRow teamRow) : base(teamRow.League.MemberTable) {
+            this.TeamRow = teamRow;
+        }
 
-        public MemberRow Add(string name) => this.MemberTable.AddRow(teamRow.Match.UID, teamRow.Index, name);
+        private MemberTable MemberTable => this.TeamRow.League.MemberTable;
 
-        public MemberRow Get(string name) => this.MemberTable.GetRow(teamRow.Match.UID, teamRow.Index, name);
+        public MemberRow Add(string name) => this.MemberTable.AddRow(this.TeamRow.Match.UID, this.TeamRow.Index, name);
 
-        public bool Has(string name) => this.MemberTable.HasRow(teamRow.Match.UID, teamRow.Index, name);
+        public MemberRow Get(string name) => this.MemberTable.GetRow(this.TeamRow.Match.UID, this.TeamRow.Index, name);
 
-        public new MemberRow? this[int index] {
+        public bool Has(string name) => this.MemberTable.HasRow(this.TeamRow.Match.UID, this.TeamRow.Index, name);
+
+        public new MemberRow this[int index] {
             get => new(base[index].Row);
         }
 
@@ -25,5 +29,7 @@ namespace Model.Source.Tables.Team {
                 if (this[i] is not null) yield return this[i]!;
             }
         }
+
+        private readonly TeamRow TeamRow;
     }
 }

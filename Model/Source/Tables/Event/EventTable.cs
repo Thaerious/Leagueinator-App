@@ -2,11 +2,11 @@
 
 namespace Leagueinator.Model.Tables {
     public class EventTable : LeagueTable<EventRow> {
-        public EventTable() : base("events") {
+        internal EventTable() : base("events") {
             NewInstance = dataRow => new EventRow(dataRow);
         }
 
-        public static class COL {
+        internal static class COL {
             public static readonly string UID = "uid";
             public static readonly string NAME = "name";
             public static readonly string DATE = "date";
@@ -15,7 +15,7 @@ namespace Leagueinator.Model.Tables {
             public static readonly string EVENT_FORMAT = "format";
         }
 
-        public EventRow AddRow(string eventName, string? date = null) {   
+        internal EventRow AddRow(string eventName, string? date = null) {   
             ArgumentNullException.ThrowIfNull(eventName, nameof(eventName));
 
             date ??= DateTime.Today.ToString("yyyy-MM-dd");
@@ -28,19 +28,19 @@ namespace Leagueinator.Model.Tables {
             return new EventRow(row);
         }
 
-        public EventRow GetRow(string eventName) {
+        internal EventRow GetRow(int uid) {
+            DataRow[] foundRows = Select($"{COL.UID} = '{uid}'");
+            if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {uid}");
+            return new EventRow(foundRows[0]);
+        }
+
+        internal EventRow GetRow(string eventName) {
             DataRow[] foundRows = Select($"{COL.NAME} = '{eventName}'");
             if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.NAME} == {eventName}");
             return new EventRow(foundRows[0]);
         }
 
-        public EventRow GetRow(int eventUID) {
-            DataRow[] foundRows = Select($"{COL.UID} = {eventUID}");
-            if (foundRows.Length == 0) throw new KeyNotFoundException($"{COL.UID} == {eventUID}");
-            return new EventRow(foundRows[0]);
-        }
-
-        public bool HasRow(string eventName) {
+        internal bool HasRow(string eventName) {
             DataRow[] foundRows = Select($"{COL.NAME} = '{eventName}'");
             return foundRows.Length > 0;
         }
@@ -49,7 +49,7 @@ namespace Leagueinator.Model.Tables {
             return new(Rows[^1]);
         }
 
-        public override void BuildColumns() {
+        internal override void BuildColumns() {
             Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.UID,
@@ -60,6 +60,7 @@ namespace Leagueinator.Model.Tables {
             Columns.Add(new DataColumn {
                 DataType = typeof(string),
                 ColumnName = COL.NAME,
+                Unique = true
             });
 
             Columns.Add(new DataColumn {

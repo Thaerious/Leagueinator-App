@@ -1,55 +1,8 @@
 ﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-
     public class IdleTable : LeagueTable<IdleRow> {
-        public static class COL {
-            public static readonly string ROUND = "round";
-            public static readonly string PLAYER = "player";
-        }
-
-        public IdleRow AddRow(int round, string playerName) {
-            var row = this.NewRow();
-
-            row[COL.ROUND] = round;
-            row[COL.PLAYER] = playerName;
-
-            this.League.EnforceConstraints = false;
-            this.Rows.Add(row);
-            this.League.EnforceConstraints = true;
-            return new(row);
-        }
-
-        public bool HasRow(int round, string player) {
-            return this.AsEnumerable<IdleRow>()
-                       .Where(row => row.Round.UID == round)
-                       .Where(row => row.Player == player)
-                       .Any();
-        }
-
-        public IdleRow GetRow(int round, string player) {
-            var rows = this.AsEnumerable<IdleRow>()
-                       .Where(row => row.Round.UID == round)
-                       .Where(row => row.Player == player)
-                       .ToList();
-
-            if (rows.Count == 0) throw new KeyNotFoundException();
-            return rows[0];
-        }
-
-        public void RemoveRows(int round, string player) {
-
-            var rowsToDelete = this.AsEnumerable<IdleRow>()
-                                   .Where(row => row.Round.UID == round)
-                                   .Where(row => row.Player == player)
-                                   .ToList();
-
-            foreach (DataRow row in rowsToDelete) {
-                this.Rows.Remove(row);
-            }
-        }
-
-        public IdleTable() : base("idle_players") {
+        internal IdleTable() : base("idle_players") {
             this.NewInstance = dataRow => new IdleRow(dataRow);
 
             // When a player is added to the idle table, remove it from any team tables.
@@ -72,7 +25,53 @@ namespace Leagueinator.Model.Tables {
             };
         }
 
-        public override void BuildColumns() {
+        internal static class COL {
+            public static readonly string ROUND = "round";
+            public static readonly string PLAYER = "player";
+        }
+
+        internal IdleRow AddRow(int round, string playerName) {
+            var row = this.NewRow();
+
+            row[COL.ROUND] = round;
+            row[COL.PLAYER] = playerName;
+
+            this.League.EnforceConstraints = false;
+            this.Rows.Add(row);
+            this.League.EnforceConstraints = true;
+            return new(row);
+        }
+
+        internal bool HasRow(int round, string player) {
+            return this.AsEnumerable<IdleRow>()
+                       .Where(row => row.Round.UID == round)
+                       .Where(row => row.Player == player)
+                       .Any();
+        }
+
+        internal IdleRow GetRow(int round, string player) {
+            var rows = this.AsEnumerable<IdleRow>()
+                       .Where(row => row.Round.UID == round)
+                       .Where(row => row.Player == player)
+                       .ToList();
+
+            if (rows.Count == 0) throw new KeyNotFoundException();
+            return rows[0];
+        }
+
+        internal void RemoveRows(int round, string player) {
+
+            var rowsToDelete = this.AsEnumerable<IdleRow>()
+                                   .Where(row => row.Round.UID == round)
+                                   .Where(row => row.Player == player)
+                                   .ToList();
+
+            foreach (DataRow row in rowsToDelete) {
+                this.Rows.Remove(row);
+            }
+        }
+
+        internal override void BuildColumns() {
             this.Columns.Add(new DataColumn {
                 DataType = typeof(int),
                 ColumnName = COL.ROUND,

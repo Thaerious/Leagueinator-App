@@ -1,11 +1,10 @@
-﻿using Model.Source.Tables.Round;
-using System.Data;
+﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class MatchRow : CustomRow {
         public readonly MatchBoundTeams Teams;
 
-        public MatchRow(DataRow dataRow) : base(dataRow) {
+        internal MatchRow(DataRow dataRow) : base(dataRow) {
             this.Teams = new(this);
         }
 
@@ -24,7 +23,7 @@ namespace Leagueinator.Model.Tables {
             set => this[MatchTable.COL.FORMAT] = value;
         }
 
-        public int UID => (int)this[MatchTable.COL.UID];
+        internal int UID => (int)this[MatchTable.COL.UID];
 
         public RoundRow Round => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
 

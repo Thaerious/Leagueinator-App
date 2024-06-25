@@ -1,13 +1,17 @@
 ﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-    public class EventBoundRounds(EventRow eventRow) : DataView(eventRow.League.RoundTable), IEnumerable<RoundRow> {
+    public class EventBoundRounds : DataView, IEnumerable<RoundRow> {
 
-        private RoundTable RoundTable { get; } = eventRow.League.RoundTable;
+        internal EventBoundRounds(EventRow eventRow) : base(eventRow.League.RoundTable) {
+            this.EventRow = eventRow;
+        }
 
-        public RoundRow Add() => this.RoundTable.AddRow(eventRow.UID);
+        private RoundTable RoundTable => this.EventRow.League.RoundTable;
 
-        public new RoundRow? this[int index] {
+        public RoundRow Add() => this.RoundTable.AddRow(this.EventRow.UID);
+
+        public new RoundRow this[int index] {
             get => new(base[index].Row);
         }
 
@@ -20,5 +24,7 @@ namespace Leagueinator.Model.Tables {
                 if (this[i] is not null) yield return this[i]!;
             }
         }
+
+        private readonly EventRow EventRow;
     }
 }
