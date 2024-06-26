@@ -13,6 +13,11 @@ namespace Leagueinator.Controls {
     }
 
     public abstract class MatchCard : UserControl {
+        public MatchCard() {
+            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(this.HndUpdateText));
+            this.Loaded += this.HndLoaded;
+        }
+
         public delegate void FormatChangedEventHandler(object sender, MatchCardFormatArgs e);
 
         public static readonly RoutedEvent RegisteredFormatChangedEvent = EventManager.RegisterRoutedEvent(
@@ -32,6 +37,8 @@ namespace Leagueinator.Controls {
         public virtual MatchRow MatchRow {
             get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
             set {
+                Debug.WriteLine($"MatchCard.MatchRow.Set {value.Round.Index}.{value.Lane}");
+
                 this._matchRow = value;
                 if (this._matchRow is null) {
                     this.Clear();
@@ -41,11 +48,7 @@ namespace Leagueinator.Controls {
             }
         }
         internal CardTarget? CardTarget { get; set; }
-
-        public MatchCard() {
-            this.AddHandler(MemoryTextBox.RegisteredUpdateEvent, new MemoryEventHandler(this.HndUpdateText));
-            this.Loaded += this.HndLoaded;
-        }
+               
 
         private void HndLoaded(object sender, RoutedEventArgs e) {
             this.IsLoaded = true;
@@ -127,33 +130,12 @@ namespace Leagueinator.Controls {
             }
         }
 
-        protected void NormalizeTeams(int teamCount, int teamSize) {
-            // Ensure there are not too many teams
-            while (this.MatchRow.Teams.Count > teamCount) {
-                TeamRow teamRow = this.MatchRow.Teams[^1]!;
-                foreach (MemberRow memberRow in teamRow.Members) {
-                    this.MatchRow.Round.IdlePlayers.Add(memberRow.Player);
-                }
-                teamRow.Remove();
-            }
-
-            // Ensure there are enough teams
-            while (this.MatchRow.Teams.Count < teamCount) {
-                this.MatchRow.Teams.Add(this.MatchRow.Teams.Count);
-            }
-
-            // Ensure that each team is not oversize
-            foreach (TeamRow teamRow in this.MatchRow.Teams) {
-                while (teamRow.Members.Count > teamSize) {
-                    this.MatchRow.Round.IdlePlayers.Add(teamRow.Members[^1]!.Player);
-                }
-            }
-
-            foreach (TeamCard teamCard in this.Descendants<TeamCard>()) {
-                int index = teamCard.TeamIndex;
-                teamCard.TeamRow = this.MatchRow.Teams[index];
-            }
-        }
+        //protected void NormalizeTeams() {
+        //    foreach (TeamCard teamCard in this.Descendants<TeamCard>()) {
+        //        int index = teamCard.TeamIndex;
+        //        teamCard.TeamRow = this.MatchRow.Teams[index];
+        //    }
+        //}
 
         protected MatchRow? _matchRow = default;
         private Action _deferred = delegate { };

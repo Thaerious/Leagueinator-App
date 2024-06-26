@@ -33,7 +33,7 @@
 
             <!-- Team 1 Card -->
             <local:TeamCard 
-                x:Name="Team0" TeamIndex="0"
+                x:Name="TeamCard0" TeamIndex="0"
                 BorderBrush="Black" BorderThickness="0 0 1 0" Grid.Column="0"  
             >
                 <Grid Background="green">
@@ -81,7 +81,7 @@
 
             <!-- Team 2 Card -->
             <local:TeamCard 
-                x:Name="Team1" TeamIndex="1"
+                x:Name="TeamCard1" TeamIndex="1"
                 BorderBrush="Black" BorderThickness="1 0 0 0" Grid.Column="4"                  
 >
                 <Grid Background="green">

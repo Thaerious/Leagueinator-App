@@ -6,6 +6,7 @@ namespace Model.Source.Tables.Team {
 
         internal TeamBoundMembers(TeamRow teamRow) : base(teamRow.League.MemberTable) {
             this.TeamRow = teamRow;
+            this.RowFilter = $"{MemberTable.COL.MATCH} = '{teamRow.Match.UID}' AND {MemberTable.COL.INDEX} = '{teamRow.Index}'";
         }
 
         private MemberTable MemberTable => this.TeamRow.League.MemberTable;

@@ -5,6 +5,7 @@ namespace Leagueinator.Model.Tables {
 
         internal MatchBoundTeams(MatchRow matchRow) : base(matchRow.League.TeamTable) {
             this.MatchRow = matchRow;
+            this.RowFilter = $"{TeamTable.COL.MATCH} = '{matchRow.UID}'";
         }
 
         private TeamTable TeamTable => this.MatchRow.League.TeamTable;

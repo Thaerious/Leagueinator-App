@@ -21,7 +21,7 @@ namespace Leagueinator.Controls {
                 base.MatchRow = value;
 
                 this.Deferred = delegate {
-                    this.NormalizeTeams(4, 1);
+                    //this.NormalizeTeams(4, 1);
                     this.DataContext = value;
                 };
             }

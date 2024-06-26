@@ -102,5 +102,30 @@ namespace Model_Test {
 
             Assert.AreEqual(0, matchRow.Members.Count);
         }
+
+        [TestMethod]
+        public void Retrieve_Teams_From_Specific_Match() {
+            League league = new();
+            EventRow eventRow = league.Events.Add("my_event");
+            RoundRow roundRow = eventRow.Rounds.Add();
+            MatchRow matchRow1 = roundRow.Matches.Add(0);
+            matchRow1.Teams.Add(0);
+            matchRow1.Teams.Add(1);
+
+            MatchRow matchRow2 = roundRow.Matches.Add(1);
+            matchRow2.Teams.Add(0);
+            matchRow2.Teams.Add(1);
+
+            Console.WriteLine(league.TeamTable.PrettyPrint());
+            Console.WriteLine(matchRow1.PrettyPrint());
+            Console.WriteLine(matchRow1.Teams.PrettyPrint());
+            Console.WriteLine(matchRow2.PrettyPrint());
+            Console.WriteLine(matchRow2.Teams.PrettyPrint());
+
+            Assert.AreEqual(2, matchRow1.Teams.Count);
+            Assert.AreEqual(2, matchRow2.Teams.Count);
+            Assert.AreEqual(matchRow1, matchRow1.Teams[0].Match);
+            Assert.AreEqual(matchRow2, matchRow2.Teams[1].Match);
+        }
     }
 }

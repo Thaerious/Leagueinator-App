@@ -1,7 +1,7 @@
 ﻿using Leagueinator.Controls;
 using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model.Tables;
-using System.Data;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,10 +18,10 @@ namespace Leagueinator.Forms.Main {
         private void PopulateMatchCards(RoundRow roundRow) {
             if (this.EventRow is null) throw new NullReferenceException();
 
-            while (this.CardStackPanel.Children.Count > 0) {
-                var child = this.CardStackPanel.Children[0];
-                MatchCard matchCard = (MatchCard)child;
-                this.CardStackPanel.Children.Remove(matchCard);
+            // Remove all match cards from panel.
+            while (this.MachCardStackPanel.Children.Count > 0) {
+                var child = this.MachCardStackPanel.Children[0];
+                this.MachCardStackPanel.Children.Remove(child);
             }
 
             List<MatchRow> matchList = [.. roundRow.Matches];
@@ -29,7 +29,7 @@ namespace Leagueinator.Forms.Main {
 
             foreach (MatchRow matchRow in matchList) {
                 MatchCard matchCard = MatchCardFactory.GenerateMatchCard(matchRow);
-                this.CardStackPanel.Children.Add(matchCard);
+                this.MachCardStackPanel.Children.Add(matchCard);
             }
         }
 
@@ -40,8 +40,8 @@ namespace Leagueinator.Forms.Main {
         /// <param name="args"></param>
         private void HndFormatChanged(object source, RoutedEventArgs args) {
             MatchCardFormatArgs formatArgs = (MatchCardFormatArgs)args;
-            int index = this.CardStackPanel.Children.IndexOf(formatArgs.MatchCard);
-            this.CardStackPanel.Children.Remove(formatArgs.MatchCard);
+            int index = this.MachCardStackPanel.Children.IndexOf(formatArgs.MatchCard);
+            this.MachCardStackPanel.Children.Remove(formatArgs.MatchCard);
             formatArgs.MatchCard.MatchRow.MatchFormat = formatArgs.MatchFormat;
 
             MatchCard? newMatchCard = null;
@@ -65,7 +65,7 @@ namespace Leagueinator.Forms.Main {
             }
 
             if (newMatchCard is not null) {
-                this.CardStackPanel.Children.Insert(index, newMatchCard);
+                this.MachCardStackPanel.Children.Insert(index, newMatchCard);
             }
         }
 
@@ -202,7 +202,7 @@ namespace Leagueinator.Forms.Main {
 
             if (!roundRow.Equals(this.CurrentRoundRow)) return;
 
-            MatchCard matchCard = (MatchCard)this.CardStackPanel.Children[matchRow.Lane];
+            MatchCard matchCard = (MatchCard)this.MachCardStackPanel.Children[matchRow.Lane];
             TeamCard? teamCard = matchCard.GetTeamCard(teamRow.Index);
             if (teamCard is null) return;
 

@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
+using System.Diagnostics;
 
 namespace Leagueinator.Controls.MatchCards {
     [TimeTrace]

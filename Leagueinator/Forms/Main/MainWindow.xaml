@@ -103,7 +103,7 @@
         <!-- Match Cards (Get put into CardStackPanel) -->
         <Border BorderBrush="Black" BorderThickness="1 2 2 2" Grid.Column="2"  Grid.Row="1">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel x:Name="CardStackPanel"/>
+                <StackPanel x:Name="MachCardStackPanel"/>
             </ScrollViewer>
         </Border>
     </Grid>

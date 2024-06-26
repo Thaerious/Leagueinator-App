@@ -118,6 +118,13 @@ namespace Leagueinator.Model.Tables {
             return clone;
         }
 
+        public static string PrettyPrint(this CustomRow customRow, string? title = null) {
+            title = title ?? $"{customRow.GetType()}";
+            DataTable table = customRow.DataRow.Table;
+            List<DataRow> rowList = [customRow.DataRow];
+            return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
+        }
+
         public static string PrettyPrint(this IReadOnlyList<CustomRow> customRows, string? title = null) {
             title = title ?? $"{customRows.GetType()}";
             DataTable table = customRows.First().DataRow.Table;
