@@ -13,6 +13,8 @@ namespace Leagueinator.Model.Tables {
 
         internal int UID => (int)this[RoundTable.COL.UID];
 
+        public int Index => (int)this[RoundTable.COL.INDEX];
+
         public EventRow Event => this.League.EventTable.GetRow((int)this[RoundTable.COL.EVENT]);
 
 

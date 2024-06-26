@@ -112,11 +112,11 @@ namespace Leagueinator.Forms {
             string eventName = "Default Event";
 
             int i = 1;
-            while (this.League.EventTable.HasRow(eventName)) {
+            while (this.League.Events.Has(eventName)) {
                 eventName = $"Default Event {i++}";
             }
 
-            EventRow eventRow = this.League.EventTable.AddRow(eventName);
+            EventRow eventRow = this.League.Events.Add(eventName);
 
             NameDateCard card = new(eventRow);
             this.NamePanel.Children.Add(card);

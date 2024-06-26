@@ -3,20 +3,22 @@ using System.Collections;
 using System.Data;
 
 namespace Leagueinator.Model {
-    public abstract class LeagueTable<R> : DataTable, IEnumerable<R> where R : CustomRow {
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T">The type of CustomRow this table handles</typeparam>
+    public abstract class LeagueTable<T> : DataTable, IEnumerable<T> where T : CustomRow {
 
         /// <summary>
         ///  Implement New, Get, Has, for use with a RowBoundView
         ///  The object arrays are set as such [foreignKeyValues, ...Req].
         /// </summary>
+        internal Func<DataRow, T> NewInstance { get; set; }     // New row from a data row, does not add data to the table.
 
-        internal Func<DataRow, R> NewInstance { get; set; }     // New row from a data row, does not add data to the table.
+        public League League => (League)this.DataSet!;
 
-        public League League {
-            get => (League)this.DataSet!;
-        }
-
-        public R this[int index] {
+        public T this[int index] {
             get {
                 return this.NewInstance(this.Rows[index]);
             }
@@ -24,9 +26,23 @@ namespace Leagueinator.Model {
 
         internal LeagueTable(string tableName) : base(tableName) {
             NewInstance = args => throw new NotImplementedException();
+            base.RowDeleting += this.ForwardRowDeleting;
+            base.RowChanged += this.ForwardRowChanged;
         }
 
-        public LeagueTable<R> ImportTable(LeagueTable<R> source) {
+        private void ForwardRowDeleting(object sender, DataRowChangeEventArgs e) {
+            T customRow = this.NewInstance(e.Row);
+            CustomRowChangeEventArgs<T> args = new(customRow, e.Action);
+            this.RowDeleting.Invoke(this, args);
+        }
+
+        private void ForwardRowChanged(object sender, DataRowChangeEventArgs e) {
+            T customRow = this.NewInstance(e.Row);
+            CustomRowChangeEventArgs<T> args = new(customRow, e.Action);
+            this.RowChanged.Invoke(this, args);
+        }
+
+        public LeagueTable<T> ImportTable(LeagueTable<T> source) {
             foreach (DataRow row in source.Rows) {
                 this.ImportRow(row);
             }
@@ -42,7 +58,7 @@ namespace Leagueinator.Model {
 
         abstract internal void BuildColumns();
 
-        IEnumerator<R> IEnumerable<R>.GetEnumerator() {
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() {
             foreach (DataRow dataRow in this.Rows) {
                 yield return NewInstance(dataRow);
             }
@@ -51,5 +67,8 @@ namespace Leagueinator.Model {
         IEnumerator IEnumerable.GetEnumerator() {
             return this.GetEnumerator();
         }
+
+        new public event CustomRowChangeEventHandler<T> RowDeleting = delegate { };
+        new public event CustomRowChangeEventHandler<T> RowChanged = delegate { };
     }
 }

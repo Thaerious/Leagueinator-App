@@ -93,7 +93,7 @@ namespace Leagueinator.Forms.Main {
 
         private static League NewLeague() {
             League league = new();
-            EventRow eventRow = league.EventTable.AddRow("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
+            EventRow eventRow = league.Events.Add("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches();
             return league;

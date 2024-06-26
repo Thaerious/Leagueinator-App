@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class MemberTable : LeagueTable<MemberRow> {
-        internal MemberTable() : base("members") {
+        internal MemberTable() : base(tableName: "members") {
             this.NewInstance = dataRow => new MemberRow(dataRow);
 
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
@@ -17,7 +17,7 @@ namespace Leagueinator.Model.Tables {
 
                 // Remove any existing members with the same name.
                 var matchingMembers = memberRow.Round.Members.Where(row => row.Player.Equals(nameBeingAdded));
-                if (matchingMembers.Any()) matchingMembers.First().Remove();    
+                if (matchingMembers.Any()) matchingMembers.First().Remove();
             };
         }
 

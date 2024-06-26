@@ -2,7 +2,7 @@
 
 namespace Leagueinator.Model.Tables {
     public class IdleTable : LeagueTable<IdleRow> {
-        internal IdleTable() : base("idle_players") {
+        internal IdleTable() : base(tableName: "idle_players") {
             this.NewInstance = dataRow => new IdleRow(dataRow);
 
             // When a player is added to the idle table, remove it from any team tables.

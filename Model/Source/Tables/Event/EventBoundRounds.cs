@@ -11,6 +11,10 @@ namespace Leagueinator.Model.Tables {
 
         public RoundRow Add() => this.RoundTable.AddRow(this.EventRow.UID);
 
+        public RoundRow Get(int index) => this.RoundTable.GetRow(this.EventRow.UID, index);
+
+        public bool Has(int index) => this.RoundTable.HasRow(this.EventRow.UID, index);
+
         public new RoundRow this[int index] {
             get => new(base[index].Row);
         }

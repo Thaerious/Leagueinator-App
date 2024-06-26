@@ -2,7 +2,7 @@
 
 namespace Leagueinator.Model.Tables {
     public class EventTable : LeagueTable<EventRow> {
-        internal EventTable() : base("events") {
+        internal EventTable() : base(tableName: "events") {
             NewInstance = dataRow => new EventRow(dataRow);
         }
 

@@ -2,7 +2,7 @@
 
 namespace Leagueinator.Model.Tables {
     public class TeamTable : LeagueTable<TeamRow> {
-        internal TeamTable() : base("teams") {
+        internal TeamTable() : base(tableName: "teams") {
             this.NewInstance = dataRow => new TeamRow(dataRow);
         }
 

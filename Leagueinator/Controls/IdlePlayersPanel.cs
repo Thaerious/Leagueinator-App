@@ -87,9 +87,8 @@ namespace Leagueinator.Controls {
             }
         }
 
-        private void HndIdleTableDeletingRow(object sender, DataRowChangeEventArgs e) {
-            Debug.WriteLine("HndIdleTableDeletingRow");
-            IdleRow idleRow = new(e.Row);
+        private void HndIdleTableDeletingRow(object sender, CustomRowChangeEventArgs<IdleRow> e) {
+            IdleRow idleRow = e.Row;
 
             MemoryTextBox? target = null;
             foreach (MemoryTextBox textBox in this.Children) {
@@ -103,9 +102,8 @@ namespace Leagueinator.Controls {
             if (target != null) this.Children.Remove(target);
         }
 
-        private void HndIdleTableNewRow(object sender, DataRowChangeEventArgs e) {
-            Debug.WriteLine("HndIdleTableNewRow");
-            IdleRow idleRow = new(e.Row);
+        private void HndIdleTableNewRow(object sender, CustomRowChangeEventArgs<IdleRow> e) {
+            IdleRow idleRow = e.Row;
 
             // Check that the name is exists
             bool textBoxExists = false;

@@ -147,7 +147,7 @@ namespace Model_Test {
             MatchRow matchRow = roundRow.Matches.Add(0);
             TeamRow teamRow = matchRow.Teams.Add();
 
-            foreach(string name in names) teamRow.Members.Add(name);
+            foreach (string name in names) teamRow.Members.Add(name);
 
             List<MemberRow> memberList = roundRow.Members.ToList();
             List<string> nameList = roundRow.Members.Select(row => row.Player).ToList();
@@ -157,6 +157,43 @@ namespace Model_Test {
             Console.WriteLine(memberList.Count);
 
             Assert.AreEqual(names.Length, memberList.Count);
+        }
+
+        [TestMethod]
+        public void Set_Index_On_Create_Round() {
+            League league = new League();
+            EventRow eventRow1 = league.Events.Add("my_event1");
+            EventRow eventRow2 = league.Events.Add("my_event2");
+
+            // First round in an event has index of 0.
+            Assert.AreEqual(0, eventRow1.Rounds.Add().Index);
+
+            // Second round in an event has index of 1.
+            Assert.AreEqual(1, eventRow1.Rounds.Add().Index);
+
+            // First round in a different event has index of 0.
+            Assert.AreEqual(0, eventRow2.Rounds.Add().Index);
+        }
+
+        [TestMethod]
+        public void Get_Has_Row_By_Index() {
+            League league = new League();
+            EventRow eventRow1 = league.Events.Add("my_event1");
+            EventRow eventRow2 = league.Events.Add("my_event2");
+
+            var e1r0 = eventRow1.Rounds.Add();
+            var e1r1 = eventRow1.Rounds.Add();
+            var e2r0 = eventRow2.Rounds.Add();
+
+            Assert.IsTrue(eventRow1.Rounds.Has(0));
+            Assert.IsTrue(eventRow1.Rounds.Has(1));
+            Assert.IsFalse(eventRow1.Rounds.Has(2));
+            Assert.IsTrue(eventRow2.Rounds.Has(0));
+            Assert.IsFalse(eventRow2.Rounds.Has(1));
+
+            Assert.AreEqual(e1r0, eventRow1.Rounds.Get(0));
+            Assert.AreEqual(e1r1, eventRow1.Rounds.Get(1));
+            Assert.AreEqual(e2r0, eventRow2.Rounds.Get(0));
         }
     }
 }
