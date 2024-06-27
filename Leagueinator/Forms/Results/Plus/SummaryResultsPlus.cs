@@ -43,8 +43,8 @@ namespace Leagueinator.Forms.Results.Plus {
             if (that.Wins != this.Wins) return that.Wins - this.Wins;
             if (that.PointsFor != this.PointsFor) return that.PointsFor - this.PointsFor;
             if (that.PlusFor != this.PlusFor) return that.PlusFor - this.PlusFor;
-            if (that.PointsAgainst != this.PointsAgainst) return that.PointsAgainst - this.PointsAgainst;
-            if (that.PlusAgainst != this.PlusAgainst) return that.PlusAgainst - this.PlusAgainst;
+            if (that.PointsAgainst != this.PointsAgainst) return this.PointsAgainst - that.PointsAgainst;
+            if (that.PlusAgainst != this.PlusAgainst) return this.PlusAgainst - that.PlusAgainst;
             return 0;
         }
     }

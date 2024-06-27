@@ -128,15 +128,8 @@ namespace Leagueinator.Controls {
             }
         }
 
-        //protected void NormalizeTeams() {
-        //    foreach (TeamCard teamCard in this.Descendants<TeamCard>()) {
-        //        int index = teamCard.TeamIndex;
-        //        teamCard.TeamRow = this.MatchRow.Teams[index];
-        //    }
-        //}
-
         protected MatchRow? _matchRow = default;
         private Action _deferred = delegate { };
-        private bool IsLoaded = false;
+        new private bool IsLoaded = false;
     }
 }

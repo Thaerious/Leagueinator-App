@@ -43,15 +43,18 @@ namespace Model_Test {
         public void Update_Event_Triggers_RowUpdated() {
             bool isChanged = false;
             League league = new();
+            EventRow eventRow = league.Events.Add("my event");
+            RoundRow roundRow = eventRow.Rounds.Add();            
 
-            league.EventTable.RowUpdated += (s, args) => {
+            league.IdleTable.RowUpdating += (s, args) => {
                 Console.WriteLine(args.Row.PrettyPrint("Row Updating"));
-                Console.WriteLine(args.Changes.DelString(c=>$"{c.Column}, {c.OldValue}, {c.NewValue}", "\n"));
+                Console.WriteLine($" * {args.Change.Column}, {args.Change.OldValue}, {args.Change.NewValue}", "\n");
                 isChanged = true;
             };
 
-            EventRow eventRow = league.Events.Add("my_event");
-            eventRow.Name = "new event name";
+            IdleRow idleRow = roundRow.IdlePlayers.Add("Steve");
+            idleRow.Player = "Not Steve";
+
             Assert.IsTrue(isChanged);
         }
     }

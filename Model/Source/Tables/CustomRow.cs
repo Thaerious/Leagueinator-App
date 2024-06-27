@@ -31,5 +31,10 @@ namespace Leagueinator.Model {
         public override int GetHashCode() {
             return this.DataRow.GetHashCode();
         }
+
+        internal void InvokeRowUpdated(string propertyName, object? oldValue, object newValue) {
+            TableBase tableBase = (TableBase)this.DataRow.Table;
+            tableBase.InvokeRowUpdated(this, propertyName, oldValue, newValue);
+        }
     }
 }

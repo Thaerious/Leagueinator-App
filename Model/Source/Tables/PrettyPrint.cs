@@ -13,6 +13,14 @@ namespace Leagueinator.Model.Tables {
         }
 
         public static string PrettyPrint(this IEnumerable<CustomRow> customRows, string? title = null) {
+            if (customRows is DataTable dataTable) {
+                return PrettyPrint(dataTable, title);
+            }
+
+            if (customRows is DataView dataView) {
+                return PrettyPrint(dataView.ToTable(), title);
+            }
+
             title = title ?? $"{customRows.GetType()}";
             DataTable table = customRows.First().DataRow.Table;
             List<DataRow> rowList = [];
@@ -24,37 +32,11 @@ namespace Leagueinator.Model.Tables {
             return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
         }
 
-        //public static string PrettyPrint(this DataTable Table, string? title = null) {
-        //    DataRowCollection rowCollection = Table.Rows;
-        //    DataRow[] rowArray = new DataRow[rowCollection.Count];
-        //    rowCollection.CopyTo(rowArray, 0);
-        //    return Table.PrettyPrint(rowArray, title);
-        //}
-
-        //public static string PrettyPrint(this DataTable Table, DataRowCollection rowCollection, string? title = null) {
-        //    DataRow[] rowArray = new DataRow[rowCollection.Count];
-        //    rowCollection.CopyTo(rowArray, 0);
-        //    return Table.PrettyPrint(rowArray, title);
-        //}
-
-        //public static string PrettyPrint(this DataView view, string? title = null) {
-        //    title ??= $"View of Table '{view.Table!.TableName}'\n" +
-        //              $"{view.RowFilter}";
-
-        //    return view.ToTable().PrettyPrint(title);
-        //}
-
-        public static string PrettyPrint(this DataTable Table, DataRow row, string? title = null) {
-            return Table.PrettyPrint(new DataRow[] { row }, title);
-        }
-
-        public static string PrettyPrint(this DataRow row, string? title = null) {
-            return row.Table.PrettyPrint(new DataRow[] { row }, title);
-        }
-
-        public static string PrettyPrint(this IEnumerable<DataRow> rows) {
-            DataRow[] rowArray = rows.Cast<DataRow>().ToArray();
-            return rowArray[0].Table.PrettyPrint(rowArray);
+        public static string PrettyPrint(DataTable Table, string? title = null) {
+            DataRowCollection rowCollection = Table.Rows;
+            DataRow[] rowArray = new DataRow[rowCollection.Count];
+            rowCollection.CopyTo(rowArray, 0);
+            return Table.PrettyPrint(rowArray, title);
         }
 
         public static string PrettyPrint(this DataTable table, DataRow[] rows, string? title = null) {

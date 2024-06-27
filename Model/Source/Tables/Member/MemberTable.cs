@@ -36,9 +36,7 @@ namespace Leagueinator.Model.Tables {
             row[COL.INDEX] = index;
             row[COL.PLAYER] = name;
 
-            //this.League.EnforceConstraints = false;
             this.Rows.Add(row);
-            //this.League.EnforceConstraints = true;
             return new(row);
         }
 

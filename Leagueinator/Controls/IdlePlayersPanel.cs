@@ -1,4 +1,6 @@
-﻿using Leagueinator.Extensions;
+﻿using Antlr4.Runtime.Misc;
+using Leagueinator.Extensions;
+using Leagueinator.Forms.Main;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
 using System.Data;
@@ -25,8 +27,6 @@ namespace Leagueinator.Controls {
 
             string before = e.Before?.Trim() ?? "";
             string after = e.After?.Trim() ?? "";
-
-            Debug.WriteLine($"Idle Panel Update Text '{before}' => '{after}' {e.Cause}");
 
             // If idle table doesn't already have after, add it
             // Else clear text box
@@ -68,16 +68,16 @@ namespace Leagueinator.Controls {
             get => this._roundRow;
             set {
                 if (this.RoundRow is not null) {
-                    this.RoundRow.League.IdleTable.RowAdded -= this.HndIdleTableNewChanged;
-                    this.RoundRow.League.IdleTable.RowDeleting -= this.HndIdleTableDeletingRow;
+                    this.RoundRow.League.IdleTable.RowAdded -= this.HndIdleRowAdded;
+                    this.RoundRow.League.IdleTable.RowDeleting -= this.HndIdleRowDeleting;
                 }
 
                 this._roundRow = value;
                 this.Children.Clear();
                 if (this.RoundRow == null) return;
 
-                this.RoundRow.League.IdleTable.RowAdded += this.HndIdleTableNewChanged;
-                this.RoundRow.League.IdleTable.RowDeleting += this.HndIdleTableDeletingRow;
+                this.RoundRow.League.IdleTable.RowAdded += this.HndIdleRowAdded;
+                this.RoundRow.League.IdleTable.RowDeleting += this.HndIdleRowDeleting;
 
                 foreach (IdleRow idleRow in this.RoundRow.IdlePlayers) {
                     this.AddTextBox(idleRow.Player);
@@ -87,7 +87,7 @@ namespace Leagueinator.Controls {
             }
         }
 
-        private void HndIdleTableDeletingRow(object sender, CustomRowAddEventArgs<IdleRow> e) {
+        private void HndIdleRowDeleting(object sender, CustomRowAddEventArgs<IdleRow> e) {
             IdleRow idleRow = e.Row;
 
             MemoryTextBox? target = null;
@@ -102,16 +102,12 @@ namespace Leagueinator.Controls {
             if (target != null) this.Children.Remove(target);
         }
 
-        private void HndIdleTableNewChanged(object sender, CustomRowAddEventArgs<IdleRow> e) {
+        private void HndIdleRowAdded(object sender, CustomRowAddEventArgs<IdleRow> e) {
             IdleRow idleRow = e.Row;
-            if (e.Action == DataRowAction.Add) this.OnIdleTableAddPlayer(e.Row);
-            if (e.Action == DataRowAction.Change) this.OnIdleTableChangePlayer(e.Row);
+            if (e.Action != DataRowAction.Add) return;
 
-            
-        }
 
-        private void OnIdleTableAddPlayer(IdleRow idleRow) {
-            // Check that the name is exists
+            // Check that the name exists
             bool textBoxExists = false;
             foreach (MemoryTextBox textBox in this.Children) {
                 if (textBox.Text == idleRow.Player) {
@@ -130,12 +126,9 @@ namespace Leagueinator.Controls {
                 newTextBox.Text = "";
                 this.Children.Add(newTextBox);
             }
-        }
 
-        private void OnIdleTableChangePlayer(IdleRow idleRow) {
-            
-        }
 
+        }
 
         public MemoryTextBox AddTextBox(string playerName = "") {
             PlayerTextBox textBox = new(playerName) {
@@ -144,6 +137,15 @@ namespace Leagueinator.Controls {
 
             this.Children.Add(textBox);
             return textBox;
+        }
+
+        public void Rename(string from, string to) {
+            foreach (MemoryTextBox textBox in this.Children) {
+                if (textBox.Text == from) {
+                    textBox.Text = to;
+                    break;
+                }
+            }
         }
 
         private RoundRow? _roundRow = null;

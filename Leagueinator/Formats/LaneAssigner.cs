@@ -29,7 +29,6 @@ namespace Leagueinator.Formats {
 
         internal void AssignLanes() {
             this.RoundRow.League.EnforceConstraints = false;
-            Debug.WriteLine(this.RoundRow.Matches.PrettyPrint("AssignLanesToMatches"));
 
             this.PopulateUnassignedMatches();
             this.PopulateFreeLanes();
@@ -39,7 +38,6 @@ namespace Leagueinator.Formats {
             this.AssignLanesToMatches();
             this.AssignLanesToDeferredMatches();
 
-            Debug.WriteLine(this.RoundRow.Matches.PrettyPrint("AssignLanesToMatches"));
             this.RoundRow.League.EnforceConstraints = true;
         }
 

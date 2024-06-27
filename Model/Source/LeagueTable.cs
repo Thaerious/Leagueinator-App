@@ -1,15 +1,23 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Collections;
 using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Model {
+
+    public abstract class TableBase(string? tableName) : DataTable(tableName) {
+        internal void InvokeRowUpdated(CustomRow row, string columnName, object? oldValue, object? newValue) {
+            CustomRowUpdateEventArgs args = new(row, columnName, oldValue, newValue);
+            this.RowUpdating.Invoke(this, args);
+        }
+
+        public event CustomRowUpdateEventHandler RowUpdating = delegate { };
+    }
 
     /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T">The type of CustomRow this table handles</typeparam>
-    public abstract class LeagueTable<T> : DataTable, IEnumerable<T> where T : CustomRow {
+    public abstract class LeagueTable<T> : TableBase, IEnumerable<T> where T : CustomRow {
 
         /// <summary>
         ///  Implement New, Get, Has, for use with a RowBoundView
@@ -38,20 +46,10 @@ namespace Leagueinator.Model {
         }
 
         private void ForwardRowChanged(object sender, DataRowChangeEventArgs e) {
-            Debug.WriteLine($"{e.Action}, {e.Action == DataRowAction.Change}");
-
             if (e.Action == DataRowAction.Add) {
                 T customRow = this.NewInstance(e.Row);
                 CustomRowAddEventArgs<T> args = new(customRow, e.Action);
                 this.RowAdded.Invoke(this, args);
-            }
-
-            if (e.Action == DataRowAction.Change) {
-                Debug.WriteLine("Invoking Row Updated");
-                T customRow = this.NewInstance(e.Row);
-                CustomRowUpdateEventArgs<T> args = new(customRow, e);
-                this.RowUpdated.Invoke(this, args);
-                Debug.WriteLine("Invoked Row Updated");
             }
         }
 
@@ -82,7 +80,6 @@ namespace Leagueinator.Model {
         }
 
         new public event TableChangeEventHandler<T> RowDeleting = delegate { };
-        public event TableChangeEventHandler<T> RowAdded = delegate { };
-        public event CustomRowUpdateEventHandler<T> RowUpdated = delegate { };
+        public event TableChangeEventHandler<T> RowAdded = delegate { };        
     }
 }

@@ -8,9 +8,10 @@ namespace Leagueinator.Model.Tables {
         /// <summary>
         /// Set the player name.
         /// Will remove name from the idle table and other teams.
-        /// </summary>
+        /// </summary>        
         public string Player {
             get => (string)this[MemberTable.COL.PLAYER];
+            [UpdateTrigger]
             set => this[MemberTable.COL.PLAYER] = value;
         }
 

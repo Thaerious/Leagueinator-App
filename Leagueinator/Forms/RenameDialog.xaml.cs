@@ -21,7 +21,9 @@ namespace Leagueinator.Forms {
             if (e is not KeyEventArgs keyArgs) return;
 
             if (keyArgs.Key == Key.Enter) {
-                this.ButOk.Focus();
+                this.NewName = this.txtNewName.Text;
+                this.DialogResult = true;
+                this.Close();
             }
         }
 

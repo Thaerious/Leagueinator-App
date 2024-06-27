@@ -1,6 +1,9 @@
-﻿using Leagueinator.Formats;
+﻿using Leagueinator.Controls;
+using Leagueinator.Extensions;
+using Leagueinator.Formats;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,6 +23,8 @@ namespace Leagueinator.Forms.Main {
             get => this._league;
             set {
                 this.League.MemberTable.RowDeleting -= this.HndMemberTableDeletingRow;
+                this.League.IdleTable.RowUpdating -= this.HndIdleUpdating;
+                this.League.MemberTable.RowUpdating -= this.HndMemberUpdating;
 
                 this.League.LeagueUpdate -= this.HndLeagueUpdate;
                 this._league = value;
@@ -33,7 +38,28 @@ namespace Leagueinator.Forms.Main {
                 }
 
                 this.League.MemberTable.RowDeleting += this.HndMemberTableDeletingRow;
+                this.League.IdleTable.RowUpdating += this.HndIdleUpdating;
+                this.League.MemberTable.RowUpdating += this.HndMemberUpdating;
             }
+        }
+
+        private void HndMemberUpdating(object sender, CustomRowUpdateEventArgs args) {
+            if (args.Change.OldValue is null) return;
+            if (args.Change.NewValue is null) return;
+
+            var playerTextBoxes = this.MachCardStackPanel.Descendants<PlayerTextBox>();
+            foreach (PlayerTextBox playerTextBox in playerTextBoxes) {
+                if (playerTextBox.Text == (string)args.Change.OldValue) {
+                    playerTextBox.Text = (string)args.Change.NewValue;
+                }
+            }
+        }
+
+        private void HndIdleUpdating(object sender, CustomRowUpdateEventArgs args) {
+            if (args.Change.OldValue is null) return;
+            if (args.Change.NewValue is null) return;
+
+            this.IdlePlayerContainer.Rename((string)args.Change.OldValue, (string)args.Change.NewValue);
         }
 
         /// <summary>
