@@ -2,11 +2,18 @@
 
 namespace Leagueinator.Model.Tables {
     public class EventRow : CustomRow {
-        public readonly EventBoundRounds Rounds;
 
         internal EventRow(DataRow dataRow) : base(dataRow) {
             Rounds = new(this);
         }
+
+        public readonly EventBoundRounds Rounds;
+
+        public IEnumerable<MatchRow> Matches => this.Rounds.SelectMany(x => x.Matches);
+
+        public IEnumerable<TeamRow> Teams => this.Matches.SelectMany(x => x.Teams);
+
+        public IEnumerable<MemberRow> Members => this.Teams.SelectMany(x => x.Members);
 
         public int EndsDefault {
             get => (int)this[EventTable.COL.ENDS_DEFAULT];

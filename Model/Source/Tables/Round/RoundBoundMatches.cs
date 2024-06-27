@@ -7,6 +7,7 @@ namespace Model.Source.Tables.Round {
 
         internal RoundBoundMatches(RoundRow roundRow) : base(roundRow.League.MatchTable) {
             this.RoundRow = roundRow;
+            this.RowFilter = $"{IdleTable.COL.ROUND} = '{roundRow.UID}'";
         }
 
         private MatchTable MatchTable => this.RoundRow.League.MatchTable;

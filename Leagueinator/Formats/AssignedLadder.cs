@@ -7,7 +7,6 @@ using System.Diagnostics;
 
 namespace Leagueinator.Formats {
 
-    [TimeTrace]
     public class AssignedLadder : TournamentFormat {
         private readonly static Random random = new();
         private PlayersPreviousLanes previousLanes = [];
@@ -21,11 +20,7 @@ namespace Leagueinator.Formats {
             List<ResultsPlus> sortedResults = [.. results.Values];
             sortedResults.Sort();
             AssignMatches(eventRow, roundRow, sortedResults);
-            new LaneAssigner(eventRow, roundRow).AssignLanes();
-
-            Debug.WriteLine(roundRow.League.MatchTable.PrettyPrint());
-            Debug.WriteLine(roundRow.League.TeamTable.PrettyPrint());
-            Debug.WriteLine(roundRow.League.MemberTable.PrettyPrint());
+            new LaneAssigner(roundRow).AssignLanes();
 
             return roundRow;
         }

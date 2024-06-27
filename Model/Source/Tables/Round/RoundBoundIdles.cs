@@ -6,6 +6,7 @@ namespace Model.Source.Tables.Round {
 
         internal RoundBoundIdles(RoundRow roundRow) : base(roundRow.League.IdleTable) {
             this.RoundRow = roundRow;
+            this.RowFilter = $"{IdleTable.COL.ROUND} = '{roundRow.UID}'";
         }
 
         private IdleTable IdleTable => this.RoundRow.League.IdleTable;

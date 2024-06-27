@@ -10,7 +10,6 @@ namespace Leagueinator.Forms.Results.Plus {
     /// Includes each match (Matches[index]) and a summery result (Summary).
     /// When sorted, will sort by the summary result.
     /// </summary>
-    [TimeTrace]
     public class ResultsPlus(Team team) : IComparable<ResultsPlus> {
         public readonly Team Team = team;
 

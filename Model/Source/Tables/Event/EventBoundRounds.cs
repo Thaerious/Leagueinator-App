@@ -5,6 +5,7 @@ namespace Leagueinator.Model.Tables {
 
         internal EventBoundRounds(EventRow eventRow) : base(eventRow.League.RoundTable) {
             this.EventRow = eventRow;
+            this.RowFilter = $"{RoundTable.COL.EVENT} = '{eventRow.UID}'";
         }
 
         private RoundTable RoundTable => this.EventRow.League.RoundTable;

@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
+using System.Diagnostics;
 
 namespace Leagueinator.Formats {
     internal class LaneAssigner {
@@ -18,12 +19,18 @@ namespace Leagueinator.Formats {
         // Matches that have not been assigned a lane
         private readonly List<MatchRow> UnassignedMatches = [];
 
-        public LaneAssigner(EventRow eventRow, RoundRow roundRow) {
-            this.EventRow = eventRow;
+        /// <summary>
+        /// </summary>
+        /// <param name="roundRow">The round the lanes are being assigned for</param>
+        public LaneAssigner(RoundRow roundRow) {
+            this.EventRow = roundRow.Event;
             this.RoundRow = roundRow;
         }
 
         internal void AssignLanes() {
+            this.RoundRow.League.EnforceConstraints = false;
+            Debug.WriteLine(this.RoundRow.Matches.PrettyPrint("AssignLanesToMatches"));
+
             this.PopulateUnassignedMatches();
             this.PopulateFreeLanes();
             this.PopulateAvailableLanes();
@@ -31,17 +38,18 @@ namespace Leagueinator.Formats {
             this.RemovePlayedLanes();
             this.AssignLanesToMatches();
             this.AssignLanesToDeferredMatches();
+
+            Debug.WriteLine(this.RoundRow.Matches.PrettyPrint("AssignLanesToMatches"));
+            this.RoundRow.League.EnforceConstraints = true;
         }
 
         /// <summary>
-        /// Fill the unassigned matches list will each match.
+        /// Fill the unassigned matches list with each matches from the target round.
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
         private void PopulateUnassignedMatches() {
             foreach (MatchRow matchRow in this.RoundRow.Matches) {
-                if (matchRow.Members.Count > 0) {
-                    this.UnassignedMatches.Add(matchRow);
-                }
+                this.UnassignedMatches.Add(matchRow);
             }
         }
 
@@ -108,7 +116,7 @@ namespace Leagueinator.Formats {
         }
 
         /// <summary>
-        /// Assign a late to each match from the matches available lane list.
+        /// Assign a lane to each match from the matches available lane list.
         /// If the match has no available lanes, defer it.
         /// Remove this lane from the free lanes list.
         /// Remove this lane from the available lanes of each match.

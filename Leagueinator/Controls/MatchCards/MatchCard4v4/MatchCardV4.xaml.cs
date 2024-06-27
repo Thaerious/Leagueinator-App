@@ -9,7 +9,6 @@ namespace Leagueinator.Controls {
     /// <summary>
     /// Interaction logic for MatchCard.xaml
     /// </summary>
-    [TimeTrace]
     public partial class MatchCardV4 : MatchCard {
         public MatchCardV4() : base() {
             this.InitializeComponent();
@@ -22,8 +21,6 @@ namespace Leagueinator.Controls {
         public override MatchRow MatchRow {
             get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
             set {
-                Debug.WriteLine($"MatchCardV4.MatchRow.Set {value.Round.Index}.{value.Lane}");
-                Debug.WriteLine(value.PrettyPrint());
                 base.MatchRow = value;
 
                 value.ReduceTeams(2);
@@ -34,11 +31,7 @@ namespace Leagueinator.Controls {
                 this.CheckTie1.IsChecked = this.MatchRow.Teams[1]!.Tie == 1;
                 this.DataContext = value;
 
-                Debug.WriteLine($"{value.Round.Index}.{value.Lane}.{value.Teams[0].Index}");
-                Debug.WriteLine(value.Teams[0].PrettyPrint());
                 this.TeamCard0.TeamRow = value.Teams[0];
-                Debug.WriteLine($"{value.Round.Index}.{value.Lane}.{value.Teams[1].Index}");
-                Debug.WriteLine(value.Teams[1].PrettyPrint());
                 this.TeamCard1.TeamRow = value.Teams[1];
             }
         }

@@ -3,13 +3,18 @@ using System.Data;
 
 namespace Leagueinator.Model.Tables {
     public class RoundRow : CustomRow {
-        public readonly RoundBoundIdles IdlePlayers;
-        public readonly RoundBoundMatches Matches;
 
         internal RoundRow(DataRow dataRow) : base(dataRow) {
             this.IdlePlayers = new(this);
             this.Matches = new(this);
         }
+
+        public readonly RoundBoundIdles IdlePlayers;
+        public readonly RoundBoundMatches Matches;
+
+        public IEnumerable<TeamRow> Teams => this.Matches.SelectMany(x => x.Teams);
+
+        public IEnumerable<MemberRow> Members => this.Teams.SelectMany(x => x.Members);
 
         internal int UID => (int)this[RoundTable.COL.UID];
 
@@ -33,21 +38,6 @@ namespace Leagueinator.Model.Tables {
                 );
 
                 return allPlayers;
-            }
-        }
-
-        /// <summary>
-        /// Retreive a collection of team rows for all matches in this round.
-        /// </summary>
-        public IEnumerable<TeamRow> Teams {
-            get {
-                return this.Matches.SelectMany(matchRow => matchRow.Teams);
-            }
-        }
-
-        public IEnumerable<MemberRow> Members {
-            get {
-                return this.Teams.SelectMany(teamRow => teamRow.Members);
             }
         }
 

@@ -37,8 +37,6 @@ namespace Leagueinator.Controls {
         public virtual MatchRow MatchRow {
             get => this._matchRow ?? throw new InvalidOperationException("MatchRow not initialized");
             set {
-                Debug.WriteLine($"MatchCard.MatchRow.Set {value.Round.Index}.{value.Lane}");
-
                 this._matchRow = value;
                 if (this._matchRow is null) {
                     this.Clear();

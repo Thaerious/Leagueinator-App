@@ -19,7 +19,7 @@ namespace Leagueinator.Forms.Main {
             RenameDialog dialog = new RenameDialog(prevName);
 
             if (dialog.ShowDialog() == true) {
-                // TODO RENAME PLAYER
+                
             }
         }
     }

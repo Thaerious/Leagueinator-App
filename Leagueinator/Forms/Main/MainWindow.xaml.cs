@@ -13,7 +13,6 @@ namespace Leagueinator.Forms.Main {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    [TimeTrace]
     public partial class MainWindow : Window {
         public static string VERSION = "0.1.1";
 

@@ -1,12 +1,15 @@
 ﻿using System.Data;
 
 namespace Leagueinator.Model.Tables {
-    public class MatchRow : CustomRow {
-        public readonly MatchBoundTeams Teams;
+    public class MatchRow : CustomRow {      
 
         internal MatchRow(DataRow dataRow) : base(dataRow) {
             this.Teams = new(this);
         }
+
+        public readonly MatchBoundTeams Teams;
+
+        public IEnumerable<MemberRow> Members => this.Teams.SelectMany(x => x.Members);
 
         public int Lane {
             get => (int)this[MatchTable.COL.LANE];
