@@ -1,6 +1,5 @@
 ﻿using Leagueinator.Utility;
 using System.Data;
-using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
     public class MemberTable : LeagueTable<MemberRow> {

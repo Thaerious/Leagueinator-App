@@ -1,7 +1,6 @@
 ﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using static Leagueinator.Controls.MemoryTextBox;
@@ -107,13 +106,20 @@ namespace Leagueinator.Controls {
             }
 
             // Add new name to the teams table
+            TeamRow teamRow = this.MatchRow.Teams[teamIndex] ?? throw new NullReferenceException(); ;
+            bool teamHasName = teamRow.Members.Has(nameAfter);
+
+            if (teamHasName) {
+                e.TextBox.Clear();
+                return;
+            }
+
             if (!nameAfter.IsEmpty()) {
-                this.MatchRow.Teams[teamIndex]!.Members.Add(nameAfter);
+                teamRow.Members.Add(nameAfter);
             }
 
             // Remove the old name from the members table
             if (!nameBefore.IsEmpty()) {
-                TeamRow teamRow = this.MatchRow.Teams[teamIndex] ?? throw new NullReferenceException();
                 if (teamRow.Members.Has(nameBefore)) {
                     teamRow.Members.Get(nameBefore).Remove();
                 }

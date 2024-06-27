@@ -83,7 +83,6 @@ namespace Leagueinator.Controls {
         private void OnPreviewDragLeave(object sender, DragEventArgs e) {
             if (e.Data.GetDataPresent(DataFormats.Text)) {
                 string dragText = (string)e.Data.GetData(DataFormats.Text);
-                Debug.WriteLine($"OnPreviewDragLeave {dragText}");
                 this.Text = this.Memory;
             }
         }
