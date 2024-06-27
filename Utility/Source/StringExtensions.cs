@@ -4,16 +4,12 @@
             return string.Join(del, list.Select(t => t?.ToString()).ToArray());
         }
 
-        public static string DelString<T>(this IList<T> list, string del = ", ") {
-            return string.Join(del, list.Select(t => t?.ToString()).ToArray());
+        public static string DelString<T>(this IEnumerable<T> list, Func<T, string> func, string del = ", ") {
+            return string.Join(del, list.Select(t => func(t)).ToArray());
         }
 
-        public static string DelString<T>(this IEnumerable<T> inEnumerable, int colsize, string del = ", ") {
-            string?[] array = inEnumerable.Select(t => t?.ToString())
-                .NotNull()
-                .Select(t => t?.PadRight(colsize, ' '))
-                .ToArray();
-            return string.Join(del, array);
+        public static string DelString<T>(this IList<T> list, string del = ", ") {
+            return string.Join(del, list.Select(t => t?.ToString()).ToArray());
         }
 
         public static bool IsEmpty(this string str) {

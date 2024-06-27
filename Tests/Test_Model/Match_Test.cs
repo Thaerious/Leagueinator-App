@@ -100,7 +100,7 @@ namespace Model_Test {
             matchRow.Teams.Add(0);
             matchRow.Teams.Add(1);
 
-            Assert.AreEqual(0, matchRow.Members.Count);
+            Assert.AreEqual(0, matchRow.Members.ToArray().Length);
         }
 
         [TestMethod]

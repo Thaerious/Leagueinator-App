@@ -112,8 +112,6 @@ namespace Leagueinator.Model {
                    this.IdleTable.PrettyPrint() + "\n" +
                    this.TeamTable.PrettyPrint() + "\n" +
                    this.MemberTable.PrettyPrint();
-                   
-                   
         }
     }
 }

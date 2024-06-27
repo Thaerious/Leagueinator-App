@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Controls;
+using Leagueinator.Model.Tables;
 using System.Windows.Input;
 
 namespace Leagueinator.Forms.Main {
@@ -15,11 +16,15 @@ namespace Leagueinator.Forms.Main {
             if (Keyboard.FocusedElement is not PlayerTextBox textBox) return;
 
             this.ClearFocus();
-            string prevName = textBox.Text;
-            RenameDialog dialog = new RenameDialog(prevName);
+            string oldName = textBox.Text;
+            RenameDialog dialog = new RenameDialog(oldName);
 
             if (dialog.ShowDialog() == true) {
-                
+                var eventMembers = this.EventRow.Members.Where(x => x.Player.Equals(oldName));
+                var idlePlayers = this.EventRow.IdlePlayers.Where(x => x.Player.Equals(oldName));
+
+                foreach (MemberRow memberRow in eventMembers) memberRow.Player = dialog.NewName;
+                foreach (IdleRow idleRow in idlePlayers) idleRow.Player = dialog.NewName;
             }
         }
     }

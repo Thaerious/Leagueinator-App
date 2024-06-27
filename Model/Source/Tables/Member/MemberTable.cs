@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Utility;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
     public class MemberTable : LeagueTable<MemberRow> {
@@ -7,6 +8,8 @@ namespace Leagueinator.Model.Tables {
             this.NewInstance = dataRow => new MemberRow(dataRow);
 
             this.RowChanging += (object sender, DataRowChangeEventArgs e) => {
+                if (e.Action != DataRowAction.Add) return;
+
                 MemberRow memberRow = new(e.Row);
                 string nameBeingAdded = memberRow.Player;
 

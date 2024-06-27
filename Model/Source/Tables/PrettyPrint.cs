@@ -3,120 +3,7 @@ using System.Text;
 
 namespace Leagueinator.Model.Tables {
 
-    public static class TableExtensions {
-
-        public static string BuildRowFilter(DataColumn[] fkCol, object[] fkVal) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < fkCol.Length; i++) {
-                if (fkVal.GetType() == typeof(string)) {
-                    sb.Append($"{fkCol[i].ColumnName} = '{fkVal[i]}' ");
-                }
-                else {
-                    sb.Append($"{fkCol[i].ColumnName} = {fkVal[i]} ");
-                }
-                if (i < fkCol.Length - 1) sb.Append(" AND ");
-            }
-            return sb.ToString();
-        }
-
-        public static string BuildRowFilter(string[] fkCol, object[] fkVal) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < fkCol.Length; i++) {
-                if (fkVal.GetType() == typeof(string)) {
-                    sb.Append($"{fkCol[i]} = '{fkVal[i]}' ");
-                }
-                else {
-                    sb.Append($"{fkCol[i]} = {fkVal[i]} ");
-                }
-                if (i < fkCol.Length - 1) sb.Append(" AND ");
-            }
-            return sb.ToString();
-        }
-
-        public static bool Has<TYPE>(this DataTable table, string column, TYPE value) {
-            return table.AsEnumerable()
-                .Where(row => row[column].Equals(value))
-                .Any();
-        }
-
-        public static bool Has(this DataTable table, string[] column, object[] value) {
-            DataView dataView = new DataView(table) {
-                RowFilter = TableExtensions.BuildRowFilter(column, value)
-            };
-            return dataView.Count > 0;
-        }
-
-        /// <summary>
-        /// Extract a specific column as a list of values.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="table"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException"></exception>
-        public static List<T> ColValues<T>(this DataTable table, string column) {
-            if (!table.Columns.Contains(column)) throw new KeyNotFoundException(column);
-
-            var list = new List<T>();
-
-            foreach (DataRow row in table.Rows) {
-                list.Add(row.Field<T>(column)!);
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        /// Extract a specific column as a list of values.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="table"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException"></exception>
-        public static List<T> ColValues<T>(this DataView view, string column) {
-            if (view.Table == null) throw new NullReferenceException();
-            if (!view.Table.Columns.Contains(column)) throw new KeyNotFoundException(column);
-
-            var list = new List<T>();
-
-            foreach (DataRowView row in view) {
-                list.Add(row.Row.Field<T>(column)!);
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        /// Retrieve a enumerable of all values for a specified column.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="table"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        public static IEnumerable<T?> ColumnValues<T>(this DataTable table, string column) {
-            return table.AsEnumerable().Select(row => row.Field<T>(column));
-        }
-
-        public static List<string> ColumnNames(this DataTable table) {
-            List<string> list = [];
-            foreach (DataColumn column in table.Columns) list.Add(column.ColumnName);
-            return list;
-        }
-
-        public static DataView Clone(this DataView view) {
-            // Create a new DataView
-            DataView clone = new DataView {
-                // Copy the properties from the original DataView
-                Table = view.Table,
-                RowFilter = view.RowFilter,
-                Sort = view.Sort,
-                RowStateFilter = view.RowStateFilter
-            };
-
-            // Return the clone
-            return clone;
-        }
+    public static class PrettyPrintExtensions {
 
         public static string PrettyPrint(this CustomRow customRow, string? title = null) {
             title = title ?? $"{customRow.GetType()}";
@@ -125,34 +12,37 @@ namespace Leagueinator.Model.Tables {
             return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
         }
 
-        public static string PrettyPrint(this IReadOnlyList<CustomRow> customRows, string? title = null) {
+        public static string PrettyPrint(this IEnumerable<CustomRow> customRows, string? title = null) {
             title = title ?? $"{customRows.GetType()}";
             DataTable table = customRows.First().DataRow.Table;
             List<DataRow> rowList = [];
-            foreach (CustomRow row in customRows) rowList.Add(row.DataRow);
+            foreach (CustomRow row in customRows) {
+                if (row.DataRow.Table != table) throw new NotSupportedException("Tables must be the same for all rows");
+                rowList.Add(row.DataRow);
+            }
 
             return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
         }
 
-        public static string PrettyPrint(this DataTable Table, string? title = null) {
-            DataRowCollection rowCollection = Table.Rows;
-            DataRow[] rowArray = new DataRow[rowCollection.Count];
-            rowCollection.CopyTo(rowArray, 0);
-            return Table.PrettyPrint(rowArray, title);
-        }
+        //public static string PrettyPrint(this DataTable Table, string? title = null) {
+        //    DataRowCollection rowCollection = Table.Rows;
+        //    DataRow[] rowArray = new DataRow[rowCollection.Count];
+        //    rowCollection.CopyTo(rowArray, 0);
+        //    return Table.PrettyPrint(rowArray, title);
+        //}
 
-        public static string PrettyPrint(this DataTable Table, DataRowCollection rowCollection, string? title = null) {
-            DataRow[] rowArray = new DataRow[rowCollection.Count];
-            rowCollection.CopyTo(rowArray, 0);
-            return Table.PrettyPrint(rowArray, title);
-        }
+        //public static string PrettyPrint(this DataTable Table, DataRowCollection rowCollection, string? title = null) {
+        //    DataRow[] rowArray = new DataRow[rowCollection.Count];
+        //    rowCollection.CopyTo(rowArray, 0);
+        //    return Table.PrettyPrint(rowArray, title);
+        //}
 
-        public static string PrettyPrint(this DataView view, string? title = null) {
-            title ??= $"View of Table '{view.Table!.TableName}'\n" +
-                      $"{view.RowFilter}";
+        //public static string PrettyPrint(this DataView view, string? title = null) {
+        //    title ??= $"View of Table '{view.Table!.TableName}'\n" +
+        //              $"{view.RowFilter}";
 
-            return TableExtensions.PrettyPrint(view.ToTable(), title);
-        }
+        //    return view.ToTable().PrettyPrint(title);
+        //}
 
         public static string PrettyPrint(this DataTable Table, DataRow row, string? title = null) {
             return Table.PrettyPrint(new DataRow[] { row }, title);

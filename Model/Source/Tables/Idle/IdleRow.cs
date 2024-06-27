@@ -7,6 +7,7 @@ namespace Leagueinator.Model.Tables {
 
         public string Player {
             get => (string)this[IdleTable.COL.PLAYER];
+            set => this[IdleTable.COL.PLAYER] = value;
         }
 
         public RoundRow Round {

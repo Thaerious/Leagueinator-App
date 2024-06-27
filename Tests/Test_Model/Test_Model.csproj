@@ -14,8 +14,6 @@
     <Compile Remove="IdleTable_Test.cs" />
     <Compile Remove="Integration_Test.cs" />
     <Compile Remove="LeagueEventSettings_Test.cs" />
-    <Compile Remove="Mocks\Mock1.cs" />
-    <Compile Remove="Mocks\Mock2.cs" />
     <Compile Remove="PlusScore_Test.cs" />
   </ItemGroup>
 
@@ -29,10 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Model\Model.csproj" />
     <ProjectReference Include="..\..\Utility\Utility.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mocks\" />
   </ItemGroup>
 
 </Project>

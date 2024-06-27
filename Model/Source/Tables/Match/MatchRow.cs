@@ -31,13 +31,5 @@ namespace Leagueinator.Model.Tables {
         public RoundRow Round => this.League.RoundTable.GetRow((int)this[MatchTable.COL.ROUND]);
 
         public EventRow Event => this.Round.Event;
-
-        public IReadOnlyList<MemberRow> Members {
-            get {
-                return this.Teams
-                .SelectMany(teamRow => teamRow.Members)
-                .ToList();
-            }
-        }
     }
 }

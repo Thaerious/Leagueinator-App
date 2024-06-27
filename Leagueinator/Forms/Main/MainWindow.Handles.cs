@@ -194,7 +194,7 @@ namespace Leagueinator.Forms.Main {
             this.InvokeLastRoundButton();
         }
 
-        private void HndMemberTableDeletingRow(object sender, CustomRowChangeEventArgs<MemberRow> e) {
+        private void HndMemberTableDeletingRow(object sender, CustomRowAddEventArgs<MemberRow> e) {
             MemberRow memberRow = e.Row;
             TeamRow teamRow = memberRow.Team;
             MatchRow matchRow = teamRow.Match;

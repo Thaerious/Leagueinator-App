@@ -9,6 +9,8 @@ namespace Leagueinator.Model.Tables {
 
         public readonly EventBoundRounds Rounds;
 
+        public IEnumerable<IdleRow> IdlePlayers => this.Rounds.SelectMany(x => x.IdlePlayers);
+
         public IEnumerable<MatchRow> Matches => this.Rounds.SelectMany(x => x.Matches);
 
         public IEnumerable<TeamRow> Teams => this.Matches.SelectMany(x => x.Teams);

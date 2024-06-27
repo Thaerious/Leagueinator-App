@@ -68,7 +68,7 @@ namespace Leagueinator.Controls {
             get => this._roundRow;
             set {
                 if (this.RoundRow is not null) {
-                    this.RoundRow.League.IdleTable.RowChanged -= this.HndIdleTableNewRow;
+                    this.RoundRow.League.IdleTable.RowAdded -= this.HndIdleTableNewChanged;
                     this.RoundRow.League.IdleTable.RowDeleting -= this.HndIdleTableDeletingRow;
                 }
 
@@ -76,7 +76,7 @@ namespace Leagueinator.Controls {
                 this.Children.Clear();
                 if (this.RoundRow == null) return;
 
-                this.RoundRow.League.IdleTable.RowChanged += this.HndIdleTableNewRow;
+                this.RoundRow.League.IdleTable.RowAdded += this.HndIdleTableNewChanged;
                 this.RoundRow.League.IdleTable.RowDeleting += this.HndIdleTableDeletingRow;
 
                 foreach (IdleRow idleRow in this.RoundRow.IdlePlayers) {
@@ -87,7 +87,7 @@ namespace Leagueinator.Controls {
             }
         }
 
-        private void HndIdleTableDeletingRow(object sender, CustomRowChangeEventArgs<IdleRow> e) {
+        private void HndIdleTableDeletingRow(object sender, CustomRowAddEventArgs<IdleRow> e) {
             IdleRow idleRow = e.Row;
 
             MemoryTextBox? target = null;
@@ -102,9 +102,15 @@ namespace Leagueinator.Controls {
             if (target != null) this.Children.Remove(target);
         }
 
-        private void HndIdleTableNewRow(object sender, CustomRowChangeEventArgs<IdleRow> e) {
+        private void HndIdleTableNewChanged(object sender, CustomRowAddEventArgs<IdleRow> e) {
             IdleRow idleRow = e.Row;
+            if (e.Action == DataRowAction.Add) this.OnIdleTableAddPlayer(e.Row);
+            if (e.Action == DataRowAction.Change) this.OnIdleTableChangePlayer(e.Row);
 
+            
+        }
+
+        private void OnIdleTableAddPlayer(IdleRow idleRow) {
             // Check that the name is exists
             bool textBoxExists = false;
             foreach (MemoryTextBox textBox in this.Children) {
@@ -125,6 +131,11 @@ namespace Leagueinator.Controls {
                 this.Children.Add(newTextBox);
             }
         }
+
+        private void OnIdleTableChangePlayer(IdleRow idleRow) {
+            
+        }
+
 
         public MemoryTextBox AddTextBox(string playerName = "") {
             PlayerTextBox textBox = new(playerName) {

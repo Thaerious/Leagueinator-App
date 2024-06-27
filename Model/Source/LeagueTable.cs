@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Collections;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model {
 
@@ -32,14 +33,26 @@ namespace Leagueinator.Model {
 
         private void ForwardRowDeleting(object sender, DataRowChangeEventArgs e) {
             T customRow = this.NewInstance(e.Row);
-            CustomRowChangeEventArgs<T> args = new(customRow, e.Action);
+            CustomRowAddEventArgs<T> args = new(customRow, e.Action);
             this.RowDeleting.Invoke(this, args);
         }
 
         private void ForwardRowChanged(object sender, DataRowChangeEventArgs e) {
-            T customRow = this.NewInstance(e.Row);
-            CustomRowChangeEventArgs<T> args = new(customRow, e.Action);
-            this.RowChanged.Invoke(this, args);
+            Debug.WriteLine($"{e.Action}, {e.Action == DataRowAction.Change}");
+
+            if (e.Action == DataRowAction.Add) {
+                T customRow = this.NewInstance(e.Row);
+                CustomRowAddEventArgs<T> args = new(customRow, e.Action);
+                this.RowAdded.Invoke(this, args);
+            }
+
+            if (e.Action == DataRowAction.Change) {
+                Debug.WriteLine("Invoking Row Updated");
+                T customRow = this.NewInstance(e.Row);
+                CustomRowUpdateEventArgs<T> args = new(customRow, e);
+                this.RowUpdated.Invoke(this, args);
+                Debug.WriteLine("Invoked Row Updated");
+            }
         }
 
         public LeagueTable<T> ImportTable(LeagueTable<T> source) {
@@ -68,7 +81,8 @@ namespace Leagueinator.Model {
             return this.GetEnumerator();
         }
 
-        new public event CustomRowChangeEventHandler<T> RowDeleting = delegate { };
-        new public event CustomRowChangeEventHandler<T> RowChanged = delegate { };
+        new public event TableChangeEventHandler<T> RowDeleting = delegate { };
+        public event TableChangeEventHandler<T> RowAdded = delegate { };
+        public event CustomRowUpdateEventHandler<T> RowUpdated = delegate { };
     }
 }

@@ -70,7 +70,7 @@ namespace Leagueinator.Formats {
         /// </summary>
         private void PopulateAvailableLanes() {
             foreach (MatchRow matchRow in this.RoundRow.Matches) {
-                if (matchRow.Members.Count <= 0) continue;
+                if (matchRow.Members.ToList().Count <= 0) continue;
                 this.AvailableLanes[matchRow] = [];
 
                 for (int i = 0; i < this.EventRow.LaneCount; i++) {
