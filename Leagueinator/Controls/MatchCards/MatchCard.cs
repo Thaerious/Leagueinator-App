@@ -1,8 +1,10 @@
 ﻿using Leagueinator.Extensions;
 using Leagueinator.Model.Tables;
 using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using static Leagueinator.Controls.MemoryTextBox;
 
 namespace Leagueinator.Controls {
@@ -45,7 +47,7 @@ namespace Leagueinator.Controls {
             }
         }
         internal CardTarget? CardTarget { get; set; }
-               
+
 
         private void HndLoaded(object sender, RoutedEventArgs e) {
             this.IsLoaded = true;
@@ -99,7 +101,7 @@ namespace Leagueinator.Controls {
             string nameBefore = e.Before?.Trim() ?? "";
             string nameAfter = e.After?.Trim() ?? "";
             int teamIndex = e.TextBox.Ancestors<TeamCard>()[0].TeamIndex;
-                        
+
             // Ensure the team exists
             if (!this.MatchRow.Teams.Has(teamIndex)) {
                 this.MatchRow.Teams.Add(teamIndex);
@@ -131,6 +133,32 @@ namespace Leagueinator.Controls {
                 if (index + 1 < stackPanel.Children.Count) {
                     stackPanel.Children[index + 1].Focus();
                 }
+            }
+        }
+
+        public void PreventDefault(object sender, MouseButtonEventArgs e) {
+            Debug.WriteLine($"PreventDefault {sender} {e.Source}");
+
+            if (sender is TextBox textBox) {                
+                e.Handled = true;                
+            }
+        }
+
+        public void OnKBFocusSelectAll(object sender, KeyboardFocusChangedEventArgs e) {
+            if (sender is TextBox textBox) {
+                Debug.WriteLine($"OnKBFocusSelectAll {sender} {e.Source}");
+                e.Handled = true;
+                textBox.Focus();
+                textBox.SelectAll();
+            }
+        }
+
+        public void OnFocusSelectAll(object sender, RoutedEventArgs e) {
+            if (sender is TextBox textBox) {
+                Debug.WriteLine($"OnFocusSelectAll {sender} {e.Source}");
+                e.Handled = true;
+                textBox.Focus();
+                textBox.SelectAll();
             }
         }
 

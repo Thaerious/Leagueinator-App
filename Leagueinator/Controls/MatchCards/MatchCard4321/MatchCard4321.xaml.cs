@@ -1,4 +1,5 @@
-﻿using Leagueinator.Model.Tables;
+﻿using Leagueinator.Extensions;
+using Leagueinator.Model.Tables;
 using System.Diagnostics;
 
 namespace Leagueinator.Controls {
@@ -19,11 +20,16 @@ namespace Leagueinator.Controls {
 
             set {
                 base.MatchRow = value;
+                value.ReduceTeams(4);
+                value.IncreaseTeams(4);
+                value.TrimTeams(1);
 
-                this.Deferred = delegate {
-                    //this.NormalizeTeams(4, 1);
-                    this.DataContext = value;
-                };
+                this.TeamCard0.TeamRow = value.Teams[0];
+                this.TeamCard1.TeamRow = value.Teams[1];
+                this.TeamCard2.TeamRow = value.Teams[2];
+                this.TeamCard3.TeamRow = value.Teams[3];
+
+                this.DataContext = value;
             }
         }
 
@@ -56,10 +62,14 @@ namespace Leagueinator.Controls {
         }
 
         public override void Clear() {
-            this.Team0.Clear();
-            this.Team1.Clear();
+            this.TeamCard0.Clear();
+            this.TeamCard1.Clear();
+            this.TeamCard2.Clear();
+            this.TeamCard3.Clear();
             this.TxtBowls0.Text = "0";
             this.TxtBowls1.Text = "0";
+            this.TxtBowls2.Text = "0";
+            this.TxtBowls3.Text = "0";
             this.TxtEnds.Text = "0";
         }
 

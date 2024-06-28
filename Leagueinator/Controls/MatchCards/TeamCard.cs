@@ -112,7 +112,6 @@ namespace Leagueinator.Controls {
         }
 
         internal void RemoveName(string name) {
-            Debug.WriteLine($"RemoveName({name}");
             foreach (PlayerTextBox textBox in this.Descendants<PlayerTextBox>()) {
                 if (textBox.Text == name) textBox.Text = "";
             }

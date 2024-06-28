@@ -35,7 +35,8 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Team 1 Card -->
-                <local:TeamCard x:Name="Team0" Grid.Column="0" TeamIndex="0"
+                <local:TeamCard x:Name="TeamCard0" TeamIndex="0"
+                                Grid.Column="0"
                                 BorderBrush="Black" BorderThickness="0,0,1,0" 
                 >
                     <!-- Player Container -->
@@ -47,7 +48,8 @@
                 </local:TeamCard>
 
                 <!-- Team 2 Card -->
-                <local:TeamCard x:Name="Team1" Grid.Column="1" TeamIndex="1"
+                <local:TeamCard x:Name="TeamCard1" TeamIndex="1"
+                                Grid.Column="1"
                                 BorderBrush="Black" BorderThickness="0,0,1,0"
                 >
                     
@@ -80,7 +82,8 @@
 
                 <!-- Team 3 Card -->
                 <local:TeamCard 
-                    x:Name="Team2" Grid.Column="3" TeamIndex="2"
+                    x:Name="TeamCard2" TeamIndex="2"
+                    Grid.Column="3"
                     BorderBrush="Black" BorderThickness="1,0,1,0" 
                 >
                     <!-- Player Container -->
@@ -93,7 +96,8 @@
 
                 <!-- Team 4 Card -->
                 <local:TeamCard 
-                    x:Name="Team3" Grid.Column="4" TeamIndex="3"
+                    x:Name="TeamCard3" TeamIndex="3"
+                    Grid.Column="4"
                     BorderBrush="Black" BorderThickness="1,0,0,0"   
                 >
                     <!-- Player Container -->

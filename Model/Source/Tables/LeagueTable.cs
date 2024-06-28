@@ -79,7 +79,7 @@ namespace Leagueinator.Model {
             return this.GetEnumerator();
         }
 
-        new public event TableChangeEventHandler<T> RowDeleting = delegate { };
-        public event TableChangeEventHandler<T> RowAdded = delegate { };        
+        new public event CustomRowEventHandler<T> RowDeleting = delegate { };
+        public event CustomRowEventHandler<T> RowAdded = delegate { };        
     }
 }
