@@ -78,7 +78,7 @@ namespace Leagueinator.Forms.Main {
                 if (this.EventRow is null) return;
                 if (this.EventRow.Rounds.Count == 0) throw new NotSupportedException("Set event at minimum must have one round.");
 
-                // Add a round button for each round.
+                // Set a round button for each round.
                 foreach (RoundRow roundRow in this.EventRow.Rounds) {
                     this.AddRoundButton(roundRow);
                 }

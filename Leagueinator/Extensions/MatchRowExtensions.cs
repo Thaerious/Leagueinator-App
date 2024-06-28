@@ -23,7 +23,7 @@ namespace Leagueinator.Extensions {
         }
 
         /// <summary>
-        /// Add teams to the MatchRow until it has 'count' teams.
+        /// Set teams to the MatchRow until it has 'count' teams.
         /// </summary>
         /// <param name="matchRow"></param>
         /// <param name="count"></param>

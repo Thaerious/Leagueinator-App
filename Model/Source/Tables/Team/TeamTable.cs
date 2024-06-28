@@ -30,7 +30,7 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Add a row, infer the index from the previous indices.
+        /// Set a row, infer the index from the previous indices.
         /// </summary>
         /// <param name="match"></param>
         /// <returns></returns>

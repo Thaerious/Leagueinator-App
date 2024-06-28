@@ -12,6 +12,7 @@ namespace Leagueinator.Model {
         public TeamTable TeamTable { init; get; }
         public MemberTable MemberTable { init; get; }
         public IdleTable IdleTable { init; get; }
+        public LeagueSettingsTable LeagueTable { init; get; }
 
         public League() {
             this.EventTable = new();
@@ -20,6 +21,7 @@ namespace Leagueinator.Model {
             this.TeamTable = new();
             this.MemberTable = new();
             this.IdleTable = new();
+            this.LeagueTable = new();
 
             this.AddTables();
             this.AddListeners();
@@ -36,6 +38,7 @@ namespace Leagueinator.Model {
             this.TeamTable.ImportTable(that.TeamTable);
             this.MemberTable.ImportTable(that.MemberTable);
             this.IdleTable.ImportTable(that.IdleTable);
+            this.LeagueTable.ImportTable(that.LeagueTable);
         }
 
         private void AddListeners() {
@@ -52,6 +55,7 @@ namespace Leagueinator.Model {
             this.Tables.Add(this.TeamTable);
             this.Tables.Add(this.MemberTable);
             this.Tables.Add(this.IdleTable);
+            this.Tables.Add(this.LeagueTable);
         }
 
         private void BuildColumns() {
@@ -61,16 +65,17 @@ namespace Leagueinator.Model {
             this.TeamTable.BuildColumns();
             this.IdleTable.BuildColumns();
             this.MemberTable.BuildColumns();
+            this.LeagueTable.BuildColumns();
         }
 
         private void AddConstraints() {
             this.RoundTable.Constraints.Add(
-                            new ForeignKeyConstraint(
-                                "FK_Round_Event",
-                                [this.EventTable.Columns[EventTable.COL.UID]!],
-                                [this.RoundTable.Columns[RoundTable.COL.EVENT]!]
-                            )
-                        );
+                new ForeignKeyConstraint(
+                    "FK_Round_Event",
+                    [this.EventTable.Columns[EventTable.COL.UID]!],
+                    [this.RoundTable.Columns[RoundTable.COL.EVENT]!]
+                )
+            );
 
             this.MatchTable.Constraints.Add(
                 new ForeignKeyConstraint(
@@ -111,7 +116,7 @@ namespace Leagueinator.Model {
                    this.MatchTable.PrettyPrint() + "\n" +
                    this.IdleTable.PrettyPrint() + "\n" +
                    this.TeamTable.PrettyPrint() + "\n" +
-                   this.MemberTable.PrettyPrint();
+                   this.MemberTable.PrettyPrint() + "\n";
         }
     }
 }

@@ -107,7 +107,7 @@ namespace Leagueinator.Controls {
                 this.MatchRow.Teams.Add(teamIndex);
             }
 
-            // Add new name to the teams table
+            // Set new name to the teams table
             TeamRow teamRow = this.MatchRow.Teams[teamIndex] ?? throw new NullReferenceException(); ;
             bool teamHasName = teamRow.Members.Has(nameAfter);
 

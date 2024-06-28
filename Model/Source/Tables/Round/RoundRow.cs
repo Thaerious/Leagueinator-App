@@ -42,7 +42,7 @@ namespace Leagueinator.Model.Tables {
         }
 
         /// <summary>
-        /// Add empty matches to this round so that there are as many matches as the
+        /// Set empty matches to this round so that there are as many matches as the
         /// lane count value of the parent event.
         /// </summary>
         /// <param name="laneCount"></param>

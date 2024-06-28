@@ -73,7 +73,7 @@ namespace Leagueinator.Forms.Main {
         }
 
         /// <summary>
-        /// Add a new select-round button.
+        /// Set a new select-round button.
         /// </summary>
         /// <param name="roundRow">The associated roundRow</param>
         /// <returns></returns>
@@ -112,7 +112,7 @@ namespace Leagueinator.Forms.Main {
         }
 
         /// <summary>
-        /// Triggered when the "Add RoundIndex" button is clicked.
+        /// Triggered when the "Set RoundIndex" button is clicked.
         /// </summary>
         /// <param name="__"></param>
         /// <param name="_"></param>

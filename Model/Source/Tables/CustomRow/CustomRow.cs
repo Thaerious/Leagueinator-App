@@ -18,6 +18,8 @@ namespace Leagueinator.Model {
             get => this.DataRow[columnName];
             set {
                 this.DataRow[columnName] = value;
+
+                // Invoke the property change event for WPF
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(columnName));
             }
         }

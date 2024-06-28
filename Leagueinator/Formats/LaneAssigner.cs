@@ -62,7 +62,7 @@ namespace Leagueinator.Formats {
         }
 
         /// <summary>
-        /// Add a list of lanes to available lanes for each match.
+        /// Set a list of lanes to available lanes for each match.
         /// This list will have an entry for each possible lane.
         /// ie (Adam, Eve) => [0, 1, 2, 3, 4, 5, 6, 7]
         /// </summary>
@@ -78,7 +78,7 @@ namespace Leagueinator.Formats {
         }
 
         /// <summary>
-        /// Add a list of lanes that each player has already played on.
+        /// Set a list of lanes that each player has already played on.
         /// ie (Adam) => [2, 4];
         /// </summary>
         private void PopulatePreviousLanes() {

@@ -10,6 +10,16 @@ namespace Leagueinator.Model {
             this.RowUpdating.Invoke(this, args);
         }
 
+        public TableBase ImportTable(TableBase source) {
+            foreach (DataRow row in source.Rows) {
+                this.ImportRow(row);
+            }
+
+            return this;
+        }
+
+        abstract internal void BuildColumns();
+
         public event CustomRowUpdateEventHandler RowUpdating = delegate { };
     }
 
@@ -53,21 +63,11 @@ namespace Leagueinator.Model {
             }
         }
 
-        public LeagueTable<T> ImportTable(LeagueTable<T> source) {
-            foreach (DataRow row in source.Rows) {
-                this.ImportRow(row);
-            }
-
-            return this;
-        }
-
         public IEnumerator<EventRow> GetEnumerator() {
             foreach (DataRow row in this.Rows) {
                 yield return new EventRow(row);
             }
         }
-
-        abstract internal void BuildColumns();
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator() {
             foreach (DataRow dataRow in this.Rows) {

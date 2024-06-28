@@ -154,7 +154,7 @@ namespace Model_Test {
             // Initially, the table should be empty
             Assert.AreEqual(0, league.EventTable.Rows.Count);
 
-            // Add a few rows
+            // Set a few rows
             league.Events.Add("event_1");
             league.Events.Add("event_2");
             league.Events.Add("event_3");

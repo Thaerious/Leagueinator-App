@@ -120,7 +120,7 @@ namespace Leagueinator.Controls {
                 (this.Children[^1] as MemoryTextBox)!.Text = idleRow.Player;
             }
 
-            // Add a new empty text box as needed
+            // Set a new empty text box as needed
             if (!(this.Children[^1] as MemoryTextBox)!.Text.IsEmpty()) {
                 MemoryTextBox newTextBox = (this.Children[0] as MemoryTextBox)!.XAMLClone<MemoryTextBox>()!;
                 newTextBox.Text = "";

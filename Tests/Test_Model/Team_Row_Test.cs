@@ -119,18 +119,18 @@ namespace Model_Test {
         //[TestMethod]
         //public void Add_Multiple_Players_Mulitple_Teams() {
         //    League league = new();
-        //    var eventRow = league.Events.Add("My Event");
-        //    var roundRow = eventRow.Rounds.Add();
-        //    var matchRow = roundRow.Matches.Add(0, 10);
-        //    var teamRow1 = matchRow.Teams.Add();
-        //    var teamRow2 = matchRow.Teams.Add();
+        //    var eventRow = league.Events.Set("My Event");
+        //    var roundRow = eventRow.Rounds.Set();
+        //    var matchRow = roundRow.Matches.Set(0, 10);
+        //    var teamRow1 = matchRow.Teams.Set();
+        //    var teamRow2 = matchRow.Teams.Set();
 
         //    Console.WriteLine(teamRow1.UID);
         //    Console.WriteLine(teamRow2.UID);
         //    Assert.AreNotEqual(teamRow1.UID, teamRow2.UID);
 
-        //    MemberRow memberRow1 = teamRow1.Members.Add("Adam");
-        //    MemberRow memberRow2 = teamRow2.Members.Add("Eve");
+        //    MemberRow memberRow1 = teamRow1.Members.Set("Adam");
+        //    MemberRow memberRow2 = teamRow2.Members.Set("Eve");
 
         //    Console.WriteLine(memberRow1.Team);
         //    Console.WriteLine(memberRow2.Team);
@@ -140,20 +140,20 @@ namespace Model_Test {
         //[TestMethod]
         //public void List_Players() {
         //    League league = new();
-        //    EventRow eventRow = league.Events.Add("my_event");
-        //    RoundRow roundRow = eventRow.Rounds.Add();
-        //    MatchRow matchRow = roundRow.Matches.Add(0, 10);
-        //    TeamRow teamRow = matchRow.Teams.Add();
+        //    EventRow eventRow = league.Events.Set("my_event");
+        //    RoundRow roundRow = eventRow.Rounds.Set();
+        //    MatchRow matchRow = roundRow.Matches.Set(0, 10);
+        //    TeamRow teamRow = matchRow.Teams.Set();
 
-        //    league.PlayerTable.Add("Adam");
-        //    league.PlayerTable.Add("Eve");
-        //    league.PlayerTable.Add("Cain");
-        //    league.PlayerTable.Add("Able");
+        //    league.PlayerTable.Set("Adam");
+        //    league.PlayerTable.Set("Eve");
+        //    league.PlayerTable.Set("Cain");
+        //    league.PlayerTable.Set("Able");
 
-        //    teamRow.Members.Add("Adam");
-        //    teamRow.Members.Add("Eve");
-        //    teamRow.Members.Add("Cain");
-        //    teamRow.Members.Add("Able");
+        //    teamRow.Members.Set("Adam");
+        //    teamRow.Members.Set("Eve");
+        //    teamRow.Members.Set("Cain");
+        //    teamRow.Members.Set("Able");
 
         //    List<string> expected = ["Adam", "Eve", "Cain", "Able"];
         //    Console.WriteLine(teamRow.Members[0]);

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Source\Tables\League\LeagueSettingsTable.cs" />
     <Compile Update="Source\Tables\Match\MatchBoundTeams.cs" />
     <Compile Update="Source\Tables\Round\RoundBoundIdles.cs" />
   </ItemGroup>

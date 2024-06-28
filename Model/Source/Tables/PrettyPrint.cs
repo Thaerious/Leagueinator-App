@@ -73,7 +73,7 @@ namespace Leagueinator.Model.Tables {
                 sb.Append('+');
             }
 
-            // Add Headers
+            // Set Headers
             int headerSize = -1;
             sb.Append("\n| ");
             foreach (DataColumn column in columns) {

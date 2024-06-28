@@ -32,7 +32,7 @@ namespace Leagueinator.Forms {
 
                 xmlFragment["placement"][0].InnerText = $"{i + 1}";
 
-                // Add names to the xml fragment.
+                // Set names to the xml fragment.
                 foreach (string name in currentResult.Team.Players) {
                     xmlFragment["names"][0].AddChild(
                         new Element {
@@ -42,7 +42,7 @@ namespace Leagueinator.Forms {
                     );
                 }
 
-                // Add match sortedResults to the xml fragment.
+                // Set match sortedResults to the xml fragment.
                 foreach (MatchResultsPlus match in currentResult.MatchResults) {
                     Element row = rowXML.Clone();
 
