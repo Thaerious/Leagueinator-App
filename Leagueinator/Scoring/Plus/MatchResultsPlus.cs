@@ -1,6 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 
-namespace Leagueinator.Forms.Results.Plus {
+namespace Leagueinator.Scoring.Plus {
 
     public enum Result { Win, Loss, Tie, Bye };
 
@@ -10,8 +10,42 @@ namespace Leagueinator.Forms.Results.Plus {
     /// Calculates extra information for plus scoring.
     /// </summary>
     /// <param name="teamRow"></param>    
-    public record MatchResultsPlus : IComparable<MatchResultsPlus> {
-        public readonly TeamRow TeamRow;
+    public record MatchResultsPlus : IMatchResult<MatchResultsPlus> {
+
+        /// <summary>
+        /// The results of a single match for a single team.
+        /// Consolidates multiple table rows into one view.
+        /// </summary>
+        /// <param name="teamRow"></param>
+        public MatchResultsPlus(TeamRow teamRow) {
+            this._teamRow = teamRow;
+
+            // For a bye, average bowls for and against from all other matches.
+            // These values will be the same.
+            if (this.Result() == Plus.Result.Bye) {
+                RoundRow roundRow = this.TeamRow.Match.Round;
+                this.BowlsFor = (int)roundRow.Matches
+                                .SelectMany(match => match.Teams)
+                                .Where(team => team.Members.Count > 0)
+                                .Where(team => !team.Equals(teamRow))
+                                .Select(team => team.Bowls)
+                                .DefaultIfEmpty(0)
+                                .Average();
+
+                this.BowlsAgainst = this.BowlsFor;
+            }
+            else {
+                this.BowlsFor = teamRow.Bowls;
+                foreach (TeamRow t in teamRow.Match.Teams) {
+                    if (!t.Equals(teamRow)) this.BowlsAgainst += t.Bowls;
+                }
+            }
+        }
+
+        public TeamRow TeamRow {
+            get => _teamRow;
+        }
+
         public int Round { get => this.TeamRow.Match.Round.Index; }
         public int Lane { get => this.TeamRow.Match.Lane; }
         public int Ends { get => this.TeamRow.Match.Ends; }
@@ -33,36 +67,6 @@ namespace Leagueinator.Forms.Results.Plus {
 
         public int PlusAgainst {
             get => this.BowlsAgainst - this.PointsAgainst;
-        }
-
-        /// <summary>
-        /// The results of a single match for a single team.
-        /// Consolidates multiple table rows into one view.
-        /// </summary>
-        /// <param name="teamRow"></param>
-        public MatchResultsPlus(TeamRow teamRow) {
-            this.TeamRow = teamRow;
-
-            // For a bye, average th bowls for and against from all other matches.
-            // These values will be the same.
-            if (this.Result() == Plus.Result.Bye) {
-                RoundRow roundRow = this.TeamRow.Match.Round;
-                this.BowlsFor = (int)roundRow.Matches
-                                .SelectMany(match => match.Teams)
-                                .Where(team => team.Members.Count > 0)
-                                .Where(team => !team.Equals(teamRow))
-                                .Select(team => team.Bowls)
-                                .DefaultIfEmpty(0)
-                                .Average();
-
-                this.BowlsAgainst = this.BowlsFor;
-            }
-            else {
-                this.BowlsFor = teamRow.Bowls;
-                foreach (TeamRow t in teamRow.Match.Teams) {
-                    if (!t.Equals(teamRow)) this.BowlsAgainst += t.Bowls;
-                }
-            }
         }
 
         public override string ToString() {
@@ -97,5 +101,7 @@ namespace Leagueinator.Forms.Results.Plus {
             if (this.Lane != that.Lane) return this.Lane - that.Lane;
             return 0;
         }
+
+        private TeamRow _teamRow;
     }
 }

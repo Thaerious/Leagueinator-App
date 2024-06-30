@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Microsoft.Win32;
 using Leagueinator.Forms.MatchAssignments;
 using Leagueinator.Utility;
+using Leagueinator.Scoring.Plus;
 
 namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
@@ -328,7 +329,7 @@ namespace Leagueinator.Forms.Main {
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
             this.ClearFocus();
-            PrinterForm form = new(new ResultPlusXMLBuilder(this.EventRow)) {
+            PrinterForm form = new(new PointsPlusXMLBuilder(this.EventRow)) {
                 Owner = this
             };
             form.Show();

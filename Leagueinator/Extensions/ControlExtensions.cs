@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -16,7 +17,7 @@ namespace Leagueinator.Extensions {
             return split.Contains(tag);
         }
 
-        public static FrameworkElement? FindElementByTag(this UIElement source, string tag) {
+        public static FrameworkElement? FindParentByTag(this UIElement source, string tag) {
             if (source is null) return null;
             DependencyObject currentObject = source;
 
@@ -35,18 +36,19 @@ namespace Leagueinator.Extensions {
             return null;
         }
 
-        public static T? FindChildByTag<T>(this DependencyObject parent, string tag) where T : FrameworkElement {
-            if (parent is null) return null;
+        public static T? FindChildByTag<T>(this DependencyObject source, string tag) where T : FrameworkElement {
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
+
             Queue<DependencyObject> queue = [];
-            queue.Enqueue(parent);
+            queue.Enqueue(source);
 
             while (queue.Count > 0) {
                 DependencyObject current = queue.Dequeue();
 
-                // check each child, if one passes return it, else queue it
-                int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+                // check each child, if it has the tag return it, else queue it
+                int childrenCount = VisualTreeHelper.GetChildrenCount(source);
                 for (int i = 0; i < childrenCount; i++) {
-                    var child = VisualTreeHelper.GetChild(parent, i);
+                    var child = VisualTreeHelper.GetChild(source, i);
                     if (child is not T childElement) continue;
                     if (childElement.Tag is null) continue;
                     if (childElement.Tag is not string allTags) continue;

@@ -1,6 +1,7 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
+using Leagueinator.Scoring;
 using Printer;
 using System.Reflection;
 

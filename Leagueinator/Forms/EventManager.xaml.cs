@@ -1,5 +1,9 @@
-﻿using Leagueinator.Model;
+﻿using Leagueinator.Extensions;
+using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using Leagueinator.Scoring;
+using System.Diagnostics;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -7,8 +11,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Leagueinator.Forms {
-    public class NameDateCard : Grid {
-        public NameDateCard(EventRow eventRow) {
+
+    /// <summary>
+    /// The list of available events.
+    /// </summary>
+    public class EventsListCard : Grid {
+        public EventsListCard(EventRow eventRow) {
             this.EventRow = eventRow;
 
             this.ColumnDefinitions.Add(new() {
@@ -86,25 +94,42 @@ namespace Leagueinator.Forms {
     /// </summary>
     public partial class EventManager : Window {
         public EventManager(League league) {
-            this.InitializeComponent();
-            this.League = new(league);
-            this.PopulateNamePanel();
+            this.InitializeComponent();            
 
+            this.League = new(league);
+
+            // Default select last available event.
             if (league.EventTable.Rows.Count > 0) {
-                this.Selected = (NameDateCard?)this.NamePanel.Children[^1];
+                this.Selected = (EventsListCard?)this.NamePanel.Children[^1];
+            }
+        }
+
+        public League League {
+            get => this._league;
+            private set {
+                this._league = value;
+                ScoringFormat scoringFormat = this.League.LeagueTable.Get<ScoringFormat>("ScoringFormat");
+
+                var tagSource = this.ScoringFormatOptions;
+                Debug.WriteLine($"tagSource, scoringFormat = {tagSource} {scoringFormat}");
+
+                RadioButton radioButton = this.ScoringFormatOptions.FindChildByTag<RadioButton>(scoringFormat.ToString()) ?? throw new NullReferenceException();
+                radioButton.IsChecked = true;
+
+                this.PopulateNamePanel();
             }
         }
 
         private void PopulateNamePanel() {
             foreach (EventRow eventRow in this.League.EventTable) {
-                NameDateCard card = new(eventRow);
+                EventsListCard card = new(eventRow);
                 this.NamePanel.Children.Add(card);
                 card.MouseDown += this.HndCardMouseDown;
             }
         }
 
         private void HndCardMouseDown(object sender, MouseButtonEventArgs e) {
-            if (sender is not NameDateCard card) return;
+            if (sender is not EventsListCard card) return;
             this.Selected = card;
         }
 
@@ -118,7 +143,7 @@ namespace Leagueinator.Forms {
 
             EventRow eventRow = this.League.Events.Add(eventName);
 
-            NameDateCard card = new(eventRow);
+            EventsListCard card = new(eventRow);
             this.NamePanel.Children.Add(card);
             card.MouseDown += this.HndCardMouseDown;
             this.Selected = card;
@@ -157,9 +182,13 @@ namespace Leagueinator.Forms {
             this.Selected.EventRow.EventFormat = (EventFormat)Enum.Parse(typeof(EventFormat), (string)radioButton.Tag);
         }
 
-        public League League { get; }
+        private void HndScoringChecked(object sender, RoutedEventArgs args) {
+            if (sender is not RadioButton radioButton) return;
+            var value = (ScoringFormat)Enum.Parse(typeof(ScoringFormat), (string)radioButton.Tag);
+            this.League.LeagueTable.Set("ScoringFormat", value);
+        }
 
-        public NameDateCard? Selected {
+        public EventsListCard? Selected {
             get => this._selected;
             set {
                 if (this._selected is not null) {
@@ -190,6 +219,7 @@ namespace Leagueinator.Forms {
             }
         }
 
-        private NameDateCard? _selected = null;
+        private EventsListCard? _selected = null;
+        private League _league = new();
     }
 }

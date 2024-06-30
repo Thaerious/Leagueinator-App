@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<team>
+  <placement>
+    X
+  </placement>
+  <names>
+  </names>
+  <rounds>
+    <header>
+      <index>Rnd</index>
+      <lane>Lane</lane>
+      <result>Result</result>
+      <score>Score</score>
+    </header>
+  </rounds>
+</team>

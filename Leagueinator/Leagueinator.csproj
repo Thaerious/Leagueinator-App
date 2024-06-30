@@ -19,13 +19,13 @@
   <ItemGroup>
     <None Remove="Assets\default.style" />
     <None Remove="Assets\default.xml" />
-    <None Remove="Assets\EventScoreForm.style" />
-    <None Remove="Assets\EventScoreForm.xml" />
     <None Remove="Assets\MatchAssignments\Match.xml" />
     <None Remove="Assets\MatchAssignments\Root.style" />
     <None Remove="Assets\MatchAssignments\Root.xml" />
     <None Remove="Assets\ScoreRow.xml" />
     <None Remove="Assets\TeamScore.xml" />
+    <None Remove="Assets\WTL\ScoreRow.xml" />
+    <None Remove="Assets\WTL\TeamScore.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,10 +34,12 @@
     <EmbeddedResource Include="Assets\MatchAssignments\Root.xml" />
     <EmbeddedResource Include="Assets\TeamStandings\default.style" />
     <EmbeddedResource Include="Assets\TeamStandings\default.xml" />
-    <EmbeddedResource Include="Assets\TeamStandings\EventScoreForm.style" />
-    <EmbeddedResource Include="Assets\TeamStandings\EventScoreForm.xml" />
-    <EmbeddedResource Include="Assets\TeamStandings\ScoreRow.xml" />
-    <EmbeddedResource Include="Assets\TeamStandings\TeamScore.xml" />
+    <EmbeddedResource Include="Assets\EventScoreForm.style" />
+    <EmbeddedResource Include="Assets\EventScoreForm.xml" />
+    <EmbeddedResource Include="Assets\PointsPlus\ScoreRow.xml" />
+    <EmbeddedResource Include="Assets\PointsPlus\TeamScore.xml" />
+    <EmbeddedResource Include="Assets\WTL\ScoreRow.xml" />
+    <EmbeddedResource Include="Assets\WTL\TeamScore.xml" />
   </ItemGroup>
 
   <ItemGroup>

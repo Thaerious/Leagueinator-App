@@ -11,6 +11,8 @@ namespace Model_Test {
             League league = new();
             league.LeagueTable.Set("Ima Key", "Ima Value");
 
+            Console.WriteLine(league.LeagueTable.PrettyPrint());
+
             Assert.IsTrue(league.LeagueTable.Has("Ima Key"));
             Assert.AreEqual("Ima Value", league.LeagueTable.Get<string>("Ima Key"));
         }

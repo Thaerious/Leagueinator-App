@@ -17,8 +17,8 @@ namespace Model_Test {
             teamRow1.Members.Add("Adam");
             teamRow1.Members.Add("Eve");
 
-            Team team1 = new(teamRow1);
-            Team team2 = new(teamRow1);
+            TeamView team1 = new(teamRow1);
+            TeamView team2 = new(teamRow1);
             Console.WriteLine(team1.GetHashCode());
             Console.WriteLine(team2.GetHashCode());
 
@@ -36,8 +36,8 @@ namespace Model_Test {
             teamRow1.Members.Add("Adam");
             teamRow1.Members.Add("Eve");
 
-            Team team1 = new(teamRow1);
-            Team team2 = new(teamRow1);
+            TeamView team1 = new(teamRow1);
+            TeamView team2 = new(teamRow1);
             Console.WriteLine(team1.GetHashCode());
             Console.WriteLine(team2.GetHashCode());
 

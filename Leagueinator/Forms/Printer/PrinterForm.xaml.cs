@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Controls;
 using Leagueinator.Printer.Styles;
+using Leagueinator.Scoring;
 using System.Printing;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,9 +12,19 @@ namespace Leagueinator.Forms {
     /// Interaction logic for PrinterForm.xaml
     /// </summary>
     public partial class PrinterForm : Window {
-        private readonly Size Dims = new(850, 1100);
-        private int _page = 0;
+        /// <summary>
+        /// Create a new printer form for the specified eventRow.
+        /// </summary>
+        /// <param name="eventRow"></param>
+        public PrinterForm(IXMLBuilder xmlBuilder) {
+            this.InitializeComponent();
+            this.SizeChanged += this.HndSizeChanged;
+            this.InnerCanvas.Pages = new Flex().DoLayout(xmlBuilder.BuildElement());
+        }
 
+        /// <summary>
+        /// Set/Get the current page number.
+        /// </summary>
         private int Page {
             get => this._page;
             set {
@@ -30,18 +41,7 @@ namespace Leagueinator.Forms {
         }
 
         /// <summary>
-        /// Create a new printer form for the specified eventRow.
-        /// </summary>
-        /// <param name="eventRow"></param>
-        public PrinterForm(IXMLBuilder xmlBuilder) {
-            this.InitializeComponent();
-            this.SizeChanged += this.HndSizeChanged;
-            this.InnerCanvas.Pages = new Flex().DoLayout(xmlBuilder.BuildElement());
-        }
-
-        /// <summary>
         /// Attempt to fit the width of the inner to the width of the outer.
-        /// The width will be equal to the outer width.
         /// The height will be proportional to the width keeping the ratio of Dims.Width : Dim.Height.
         /// This is used to determine if the inner needs to pin to width or height.
         /// </summary>
@@ -78,6 +78,7 @@ namespace Leagueinator.Forms {
         private void HndPrintClick(object sender, RoutedEventArgs e) {
             PrintDialog dialog = new PrintDialog();
 
+            // Get printable width & height.
             PrintCapabilities capabilities = dialog.PrintQueue.GetPrintCapabilities(dialog.PrintTicket);
             double printableWidth = capabilities.PageImageableArea.ExtentWidth;
             double printableHeight = capabilities.PageImageableArea.ExtentHeight;
@@ -101,5 +102,8 @@ namespace Leagueinator.Forms {
         private void HndClickNext(object sender, RoutedEventArgs e) {
             this.Page = this.Page + 1;
         }
+
+        private readonly Size Dims = new(850, 1100);
+        private int _page = 0;
     }
 }

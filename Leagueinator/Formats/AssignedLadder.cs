@@ -1,9 +1,7 @@
-﻿using Leagueinator.Forms.Results.Plus;
-using Leagueinator.Model.Tables;
+﻿using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
-using Leagueinator.Utility;
+using Leagueinator.Scoring.Plus;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace Leagueinator.Formats {
 
@@ -15,24 +13,22 @@ namespace Leagueinator.Formats {
             this.previousLanes = new(eventRow);
 
             RoundRow roundRow = eventRow.Rounds.Add();
-            ReadOnlyDictionary<Team, ResultsPlus> results = ResultsPlus.AllResults(eventRow);
 
-            List<ResultsPlus> sortedResults = [.. results.Values];
-            sortedResults.Sort();
+            List<SummaryPlus> sortedResults = ResultsBuilderPlus.GetResults(eventRow);
             AssignMatches(eventRow, roundRow, sortedResults);
             new LaneAssigner(roundRow).AssignLanes();
 
             return roundRow;
         }
 
-        private static void AssignMatches(EventRow eventRow, RoundRow roundRow, List<ResultsPlus> sortedResults) {
+        private static void AssignMatches(EventRow eventRow, RoundRow roundRow, List<SummaryPlus> sortedResults) {
             roundRow.PopulateMatches();
 
             int match = 0;
             int team = 0;
 
             // Assign Matches
-            foreach (ResultsPlus result in sortedResults) {
+            foreach (SummaryPlus result in sortedResults) {
                 int maxTeams = roundRow.Matches[match]!.MatchFormat.TeamCount();
 
                 MatchRow matchRow = roundRow.Matches[match]!;
@@ -40,7 +36,7 @@ namespace Leagueinator.Formats {
                     matchRow.Teams.Add(matchRow.Teams.Count);
                 }
 
-                foreach (string player in result.Team.Players) {
+                foreach (string player in result.TeamView.Players) {
                     matchRow.Teams[team]!.Members.Add(player);
                 }
                 team++;

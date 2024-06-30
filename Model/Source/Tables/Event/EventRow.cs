@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Leagueinator.Model.Views;
+using System.Data;
 using System.Diagnostics;
 
 namespace Leagueinator.Model.Tables {
@@ -53,6 +54,17 @@ namespace Leagueinator.Model.Tables {
         public string Date {
             get => (string)this[EventTable.COL.DATE];
             set => this[EventTable.COL.DATE] = value;
+        }
+
+        public IReadOnlyList<TeamView> TeamViews() {
+            HashSet<TeamView> teamViews = [];
+
+            foreach (TeamRow teamRow in this.Teams) {
+                if (teamRow.Members.Count <= 0) continue;
+                teamViews.Add(new(teamRow));
+            }
+
+            return [.. teamViews];
         }
     }
 }

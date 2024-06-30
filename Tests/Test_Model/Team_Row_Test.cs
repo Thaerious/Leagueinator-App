@@ -132,9 +132,9 @@ namespace Model_Test {
         //    MemberRow memberRow1 = teamRow1.Members.Set("Adam");
         //    MemberRow memberRow2 = teamRow2.Members.Set("Eve");
 
-        //    Console.WriteLine(memberRow1.Team);
-        //    Console.WriteLine(memberRow2.Team);
-        //    Assert.AreNotEqual(memberRow1.Team.UID, memberRow2.Team.UID);
+        //    Console.WriteLine(memberRow1.TeamView);
+        //    Console.WriteLine(memberRow2.TeamView);
+        //    Assert.AreNotEqual(memberRow1.TeamView.UID, memberRow2.TeamView.UID);
         //}
 
         //[TestMethod]
@@ -167,7 +167,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
         //    bool actual = team.HasPlayer("Adam");
 
@@ -180,7 +180,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
         //    team.AddPlayer("Bart");
         //    team.AddPlayer("Carly");
@@ -200,7 +200,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    bool actual = team.HasPlayer("Adam");
 
         //    Assert.IsFalse(actual);
@@ -212,7 +212,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    List<String> list = team.Members;
 
         //    Assert.AreEqual(0, list.Count);
@@ -224,7 +224,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
         //    List<string> list = team.Members;
 
@@ -238,7 +238,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
         //    team.AddPlayer("Bart");
         //    team.AddPlayer("Carly");
@@ -260,7 +260,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
 
         //    bool result = team.RemovePlayer("Adam");
@@ -293,7 +293,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
         //    team.AddPlayer("Eve");
 
@@ -313,7 +313,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    team.AddPlayer("Adam");
         //    team.AddPlayer("Eve");
 
@@ -333,7 +333,7 @@ namespace Model_Test {
         //    LeagueEvent lEvent = league.NewLeagueEvent("my_event");
         //    RoundIndex round = lEvent.NewRound();
         //    MatchResultsPlus match = round.GetMatch(0);
-        //    Team team = match.NewTeam();
+        //    TeamView team = match.NewTeam();
         //    bool result = team.RemovePlayer("Adam");
         //    List<string> list = team.Members;
 

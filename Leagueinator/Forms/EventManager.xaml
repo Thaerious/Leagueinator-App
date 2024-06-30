@@ -69,10 +69,27 @@
                 </StackPanel>
 
                 <!-- Tournement Format -->
-                <Border BorderBrush="Black" BorderThickness="1" Height="100" Margin="10,0,10,0">
+                <Border BorderBrush="Black" BorderThickness="1" Height="60" Margin="10,0,10,0">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0">
-                        <Label Grid.Column="0" Content="Format" Margin="3,3,3,3" HorizontalAlignment="Center" />
-                        <RadioButton Tag="assigned_ladder" x:Name="RadioAssignedLadder" GroupName="TourneyFormat" IsChecked="True" Content="Assigned Ladder" VerticalAlignment="Top" Margin="0,0,10,0" HorizontalAlignment="Center" Checked="HndTourneyFormatChecked"/>
+                        <Label Grid.Column="0" Content="Format" Margin="0" HorizontalAlignment="Center" />
+                        <RadioButton Tag="assigned_ladder" x:Name="RadioAssignedLadder" GroupName="TourneyFormat" IsChecked="True" Content="Assigned Ladder" VerticalAlignment="Top" Margin="0,0,0,0" HorizontalAlignment="Center" Checked="HndTourneyFormatChecked"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- League Scoring -->
+                <Border BorderBrush="Black" BorderThickness="1" Height="60" Margin="10,3,10,0">
+                    <StackPanel x:Name="ScoringFormatOptions" Orientation="Vertical" Margin="5,0,5,0">
+                        <Label Grid.Column="0" Content="Scoring" Margin="0" HorizontalAlignment="Center" />
+                        
+                        <!-- Points Plus -->
+                        <RadioButton Tag="POINTS_PLUS" x:Name="ScorePointsPlus" GroupName="LeagueScoring" 
+                                     IsChecked="True" Content="Team Points Plus" VerticalAlignment="Top" 
+                                     Margin="0,0,0,0" HorizontalAlignment="Center" Checked="HndScoringChecked"/>
+                        
+                        <!-- WTL Scoring -->
+                        <RadioButton Tag="WTL" x:Name="ScoreWTL" GroupName="LeagueScoring" 
+                                     IsChecked="False" Content="Player Win-Tie-Loss" VerticalAlignment="Top" 
+                                     Margin="0,0,0,0" HorizontalAlignment="Center" Checked="HndScoringChecked"/>
                     </StackPanel>
                 </Border>
 

@@ -5,22 +5,31 @@ namespace Leagueinator.Model.Tables {
 
     public static class PrettyPrintExtensions {
 
-        public static string PrettyPrint(this CustomRow customRow, string? title = null) {
+        public static string PrettyPrint(this object @object, string? title = null) {
+            if (@object is DataTable dataTable) {
+                return PrettyPrint(dataTable, title);
+            }
+            else if (@object is DataView dataView) {
+                return PrettyPrint(dataView.ToTable(), title);
+            }
+            else if (@object is CustomRow customRow) {
+                return PrettyPrint(customRow, title);
+            }
+            else if (@object is IEnumerable<CustomRow> collection) {
+                return PrettyPrint(collection, title);
+            }
+
+            throw new NotSupportedException($"Can not pretty print object of type '{@object.GetType()}'");
+        }
+
+        private static string PrettyPrint(CustomRow customRow, string? title = null) {
             title = title ?? $"{customRow.GetType()}";
             DataTable table = customRow.DataRow.Table;
             List<DataRow> rowList = [customRow.DataRow];
             return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
         }
 
-        public static string PrettyPrint(this IEnumerable<CustomRow> customRows, string? title = null) {
-            if (customRows is DataTable dataTable) {
-                return PrettyPrint(dataTable, title);
-            }
-
-            if (customRows is DataView dataView) {
-                return PrettyPrint(dataView.ToTable(), title);
-            }
-
+        private static string PrettyPrint(this IEnumerable<CustomRow> customRows, string? title = null) {
             title = title ?? $"{customRows.GetType()}";
             DataTable table = customRows.First().DataRow.Table;
             List<DataRow> rowList = [];
@@ -32,14 +41,11 @@ namespace Leagueinator.Model.Tables {
             return PrettyPrint(title, table.Columns.Cast<DataColumn>().ToArray(), [.. rowList]);
         }
 
-        public static string PrettyPrint(DataTable Table, string? title = null) {
-            DataRowCollection rowCollection = Table.Rows;
+        private static string PrettyPrint(DataTable table, string? title = null) {
+            DataRowCollection rowCollection = table.Rows;
             DataRow[] rowArray = new DataRow[rowCollection.Count];
             rowCollection.CopyTo(rowArray, 0);
-            return Table.PrettyPrint(rowArray, title);
-        }
 
-        public static string PrettyPrint(this DataTable table, DataRow[] rows, string? title = null) {
             return PrettyPrint(
                 $"Table: '{table.TableName}'",
                 table.Columns.Cast<DataColumn>().ToArray(),
@@ -47,7 +53,7 @@ namespace Leagueinator.Model.Tables {
             );
         }
 
-        public static string PrettyPrint(string title, DataColumn[] columns, DataRow[] rows) {
+        private static string PrettyPrint(string title, DataColumn[] columns, DataRow[] rows) {
             var sb = new StringBuilder();
 
             Dictionary<DataColumn, int> colSizes = [];

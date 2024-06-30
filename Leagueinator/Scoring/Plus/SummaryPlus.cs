@@ -1,12 +1,14 @@
-﻿using Leagueinator.Model.Views;
+﻿using Leagueinator.Model.Tables;
+using Leagueinator.Model.Views;
+using System.Collections.ObjectModel;
 
-namespace Leagueinator.Forms.Results.Plus {
+namespace Leagueinator.Scoring.Plus {
 
     /// <summary>
     /// A summary of all match results for a specific team.
     /// </summary>
-    public record SummaryResultsPlus : IComparable<SummaryResultsPlus> {
-        public Team Team { get; }
+    public record SummaryPlus : ISummary<MatchResultsPlus, SummaryPlus> {
+        public TeamView TeamView { get; }
         public int GamesPlayed { get; }
         public int Ends { get; }
         public int BowlsFor { get; }
@@ -17,10 +19,10 @@ namespace Leagueinator.Forms.Results.Plus {
         public int PlusFor { get; }
         public int PlusAgainst { get; }
 
-        public SummaryResultsPlus(Team team, IReadOnlyList<MatchResultsPlus> matchResults) {
-            this.Team = team;
+        public SummaryPlus(TeamView team) {
+            this.TeamView = team;
 
-            foreach (MatchResultsPlus matchResult in matchResults) {
+            foreach (MatchResultsPlus matchResult in this.MatchResults()) {
                 this.GamesPlayed++;
                 this.Ends += matchResult.Ends;
                 this.BowlsFor += matchResult.BowlsFor;
@@ -33,11 +35,25 @@ namespace Leagueinator.Forms.Results.Plus {
             }
         }
 
+        public List<MatchResultsPlus> MatchResults (){
+            List<MatchResultsPlus> allResults = [];
+
+            foreach (MatchRow matchRow in this.TeamView.Matches) {
+                foreach (TeamRow teamRow in matchRow.Teams) {
+                    if (this.TeamView.Equals(teamRow)){
+                        allResults.Add(new MatchResultsPlus(teamRow));
+                    }
+                }
+            }
+
+            return allResults;
+        }
+
         public override string ToString() {
             return $"[{this.Wins}, {this.Ends}, {this.BowlsFor}, {this.BowlsAgainst}, {this.PointsFor}, {this.PlusFor}, {this.PointsAgainst}, {this.PlusAgainst}]";
         }
 
-        public int CompareTo(SummaryResultsPlus? that) {
+        public int CompareTo(SummaryPlus? that) {
             if (that is null) return -1;
 
             if (that.Wins != this.Wins) return that.Wins - this.Wins;

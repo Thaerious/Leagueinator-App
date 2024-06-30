@@ -1,9 +1,20 @@
 ﻿using Leagueinator.Model.Tables;
-using Leagueinator.Utility;
 
 namespace Leagueinator.Model.Views {
-    public class Team(TeamRow teamRow) : IEquatable<Team> {
+    public class TeamView(TeamRow teamRow) : IEquatable<TeamView> {
         public TeamRow TeamRow { get; } = teamRow;
+
+        public List<MatchRow> Matches {
+            get {
+                List<MatchRow> matches = [];
+
+                foreach (TeamRow teamRow in teamRow.Event.Teams) {
+                    if (this.Equals(teamRow)) matches.Add(teamRow.Match);
+                }
+
+                return matches;
+            } 
+        }
 
         /// <summary>
         /// A read only prevLanes of players on the team.
@@ -38,9 +49,15 @@ namespace Leagueinator.Model.Views {
             return prevLanes;
         }
 
+        /// <summary>
+        /// Return true is the other team has exactly the same set of players.
+        /// Can compart to both TeamView and TeamRow.
+        /// </summary>
+        /// <param name="object"></param>
+        /// <returns></returns>
         public override bool Equals(object? @object) {
             if (@object is null) return false;
-            else if (@object is Team otherTeam) {
+            else if (@object is TeamView otherTeam) {
                 if (otherTeam.Players.Count != this.Players.Count) return false;
                 foreach (string player in this.Players) {
                     if (!otherTeam.Players.Contains(player)) return false;
@@ -56,7 +73,7 @@ namespace Leagueinator.Model.Views {
             return true;
         }
 
-        public bool Equals(Team? that) {
+        public bool Equals(TeamView? that) {
             if (that is null) return false;
             if (that.Players.Count != this.Players.Count) return false;
             foreach (string player in this.Players) {

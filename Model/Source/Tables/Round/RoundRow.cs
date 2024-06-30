@@ -1,4 +1,5 @@
-﻿using Model.Source.Tables.Round;
+﻿using Leagueinator.Model.Views;
+using Model.Source.Tables.Round;
 using System.Data;
 
 namespace Leagueinator.Model.Tables {
@@ -70,6 +71,17 @@ namespace Leagueinator.Model.Tables {
             foreach (MemberRow memberRow in list) {
                 if (memberRow.Player == name) memberRow.Remove();
             }
+        }
+
+        public IReadOnlyList<TeamView> TeamViews() {
+            HashSet<TeamView> teamViews = [];
+
+            foreach (TeamRow teamRow in this.Teams) {
+                if (teamRow.Members.Count <= 0) continue;
+                teamViews.Add(new(teamRow));
+            }
+
+            return [.. teamViews];
         }
     }
 }

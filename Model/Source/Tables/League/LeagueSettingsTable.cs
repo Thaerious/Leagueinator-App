@@ -11,15 +11,6 @@ namespace Leagueinator.Model.Tables {
             public static readonly string TYPE = "type";
         }
 
-        public object this[string key] {
-            get {
-                return this.Get<object>(key);
-            }
-            set {
-                this.Set(key, value);
-            }
-        }
-
         public void Set(string key, object value) {
             if (this.Has(key)) {
                 this.Reset(key, value);
@@ -34,7 +25,7 @@ namespace Leagueinator.Model.Tables {
 
             row[COL.KEY] = key;
             row[COL.VALUE] = sw.ToString();
-            row[COL.TYPE] = value.GetType().FullName;
+            row[COL.TYPE] = $"{value.GetType().FullName}, {value.GetType().Assembly.GetName().Name}";
 
             this.Rows.Add(row);
         }
@@ -50,7 +41,7 @@ namespace Leagueinator.Model.Tables {
             xmlSerializer.Serialize(sw, value);
 
             row[COL.VALUE] = sw.ToString();
-            row[COL.TYPE] = value.GetType().FullName;
+            row[COL.TYPE] = $"{value.GetType().FullName}, {value.GetType().Assembly.GetName().Name}";
         }
 
         public bool UnSet(string key) {
@@ -70,12 +61,12 @@ namespace Leagueinator.Model.Tables {
         public T Get<T>(string key) {
             string query = $"{COL.KEY} = '{key}'";
             DataRow[] rows = this.Select(query);
-            if (rows.Length == 0) throw new KeyNotFoundException();
+            if (rows.Length == 0) throw new KeyNotFoundException(key);
 
             string valueString = (string)rows[0][COL.VALUE];
             string typeString = (string)rows[0][COL.TYPE];
 
-            Type type = Type.GetType(typeString) ?? throw new NullReferenceException();
+            Type type = Type.GetType(typeString) ?? throw new NullReferenceException($"Error referencing type '{typeString}'");
             XmlSerializer xmlSerializer = new XmlSerializer(type);
             using StringReader sr = new StringReader(valueString);
             return (T)(xmlSerializer.Deserialize(sr) ?? throw new NullReferenceException());

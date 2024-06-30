@@ -2,6 +2,7 @@
 using Leagueinator.Forms.MatchAssignments;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using Leagueinator.Scoring;
 using Leagueinator.Utility;
 using Microsoft.Win32;
 using System.Diagnostics;
@@ -40,6 +41,7 @@ namespace Leagueinator.Forms.Main {
             EventRow eventRow = league.Events.Add("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches();
+            league.LeagueTable.Set("ScoringFormat", ScoringFormat.POINTS_PLUS);
             return league;
         }
 
