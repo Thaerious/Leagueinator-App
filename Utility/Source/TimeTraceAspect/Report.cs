@@ -1,11 +1,11 @@
 ﻿using Leagueinator.Utility;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
 namespace Utility.Source.TimeTraceAspect {
 
     public static class ReportExt {
-
         /// <summary>
         /// Load a string from an embedded resource.
         /// </summary>
@@ -18,39 +18,29 @@ namespace Utility.Source.TimeTraceAspect {
             using StreamReader reader = new StreamReader(stream);
             return reader.ReadToEnd();
         }
+
+        public static double ToMS(this long value) {
+            double ms = value / TimeSpan.TicksPerMillisecond;
+            return Math.Truncate(ms * 10) / 10;
+        }
     }
 
     public class Report() {
         private Dictionary<Type, ClassRecord> ClassRecords = [];
 
-        public void AddCall(MemberInfo caller, MemberInfo callee, int time) {
+        internal void AddCall(MemberInfo caller, MemberInfo callee, long time) {
+            Debug.WriteLine($"AddCall {caller.DeclaringType.Name}::{caller.Name} {callee.DeclaringType.Name}::{callee.Name} {time.ToMS()}");
+
             MemberRecord callerRecord = this.MemberRecord(caller);
+            MemberRecord calleeRecord = this.MemberRecord(callee);
+            
+            callerRecord.AddCallee(callee, time);
+            calleeRecord.AddCaller(caller, time);            
+            calleeRecord.Self.AddCall(time);
+
+            Debug.WriteLine($"Callee elapsed time {calleeRecord.Self.TotalTime}");
         }
-
-        /// <summary>
-        /// Convert from call records to class/method records.
-        /// </summary>
-        /// <param name="rootCallRecord"></param>
-        /// <returns>A list of class records, which contain member (method) records.</returns>
-        public List<ClassRecord> CoalesceRecords(CallRecord rootCallRecord) {
-            Stack<CallRecord> callStack = [];
-            callStack.Push(rootCallRecord);
-
-            while (callStack.Count > 0) {
-                CallRecord current = callStack.Pop();
-                MemberRecord callingMember = this.MemberRecord(current);
-
-                foreach (CallRecord callRecord in current.Calls) {
-                    MemberRecord calledMember = this.MemberRecord(callRecord);
-                    callingMember.AddCallee(callRecord);
-                    callingMember.AddSelf(callRecord);
-                    calledMember.AddCaller(current);
-                    callStack.Push(callRecord);
-                }
-            }
-
-            return [.. ClassRecords.Values];
-        }
+              
 
         private ClassRecord ClassRecord(CallRecord callRecord) {
             var declaringType = callRecord.MemberInfo.DeclaringType;
@@ -64,7 +54,7 @@ namespace Utility.Source.TimeTraceAspect {
             return ClassRecords[declaringType];
         }
 
-        public MemberRecord MemberRecord(CallRecord callRecord) {
+        internal MemberRecord MemberRecord(CallRecord callRecord) {
             ClassRecord classRecord = this.ClassRecord(callRecord);
             return classRecord.MemberRecord(callRecord);
         }
@@ -74,7 +64,8 @@ namespace Utility.Source.TimeTraceAspect {
             return classRecord.MemberRecord(memberInfo);
         }
 
-        public void WriteFiles(string rootDir, CallRecord rootCallRecord) {
+        public void WriteFiles(string rootDir) {
+            TimeTrace.Terminate();
             StringBuilder sb = new();
             Directory.CreateDirectory(rootDir);
             
@@ -83,7 +74,7 @@ namespace Utility.Source.TimeTraceAspect {
             );
 
             int i = 0;
-            foreach (ClassRecord classRecord in CoalesceRecords(rootCallRecord)) {
+            foreach (ClassRecord classRecord in this.ClassRecords.Values) {
                 string className = classRecord.Type.Name;
                 sb.AppendLine($"<li class=\"item\" onclick=\"toggleVisibility('sublist{i}')\">{className}");
                 sb.AppendLine($"<ul id=\"sublist{i}\" class=\"sub-item\" onclick=\"event.stopPropagation();\">");
@@ -112,6 +103,8 @@ namespace Utility.Source.TimeTraceAspect {
         private void WriteFile(string rootDir, MemberRecord memberRecord, string fileName) {
             StringBuilder sb = new();
 
+            if (memberRecord.MemberInfo.DeclaringType == typeof(User)) return;
+
             string className = memberRecord.MemberInfo.DeclaringType!.Name;
             string methodName = memberRecord.MemberInfo.Name;
             string selfName = $"{className}.{methodName}";
@@ -134,8 +127,8 @@ namespace Utility.Source.TimeTraceAspect {
                     $"<tr class='caller_row'>" +
                          $"<td><a href='{fullName}.html'>{fullName}</a></td>" +
                          $"<td> {record.CallCount} </td>" +
-                         $"<td> {record.TotalTime} </td>" +
-                         $"<td> {(record.CallCount == 0 ? "NaN" : record.TotalTime / record.CallCount)} </td>" +
+                         $"<td> {record.TotalTime.ToMS()} </td>" +
+                         $"<td> {(record.TotalTime / record.CallCount).ToMS()} </td>" +
                          $"<td> Self Time </td>" +
                     $"</tr >"
                 );
@@ -145,8 +138,8 @@ namespace Utility.Source.TimeTraceAspect {
                 $"<tr class='self'>" +
                      $"<td>{selfName}</td>" +
                      $"<td> {memberRecord.Self.CallCount} </td>" +
-                     $"<td> {memberRecord.Self.TotalTime} </td>" +
-                     $"<td> {(memberRecord.Self.CallCount == 0 ? "NaN" : memberRecord.Self.TotalTime / memberRecord.Self.CallCount)} </td>" +
+                     $"<td> {memberRecord.Self.TotalTime.ToMS()} </td>" +
+                     $"<td> {(memberRecord.Self.TotalTime / memberRecord.Self.CallCount).ToMS()} </td>" +
                      $"<td> Self Time </td>" +
                 $"</tr >"
             );
@@ -160,8 +153,8 @@ namespace Utility.Source.TimeTraceAspect {
                     $"<tr class='callee_row'>" +
                          $"<td><a href='{fullName}.html'>{fullName}</a></td>" +
                          $"<td> {record.CallCount} </td>" +
-                         $"<td> {record.TotalTime} </td>" +
-                         $"<td> {record.TotalTime / record.CallCount} </td>" +
+                         $"<td> {record.TotalTime.ToMS()} </td>" +
+                         $"<td> {(record.TotalTime / record.CallCount).ToMS()} </td>" +
                          $"<td> Self Time </td>" +
                     $"</tr >"
                 );

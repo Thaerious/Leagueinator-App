@@ -1,4 +1,5 @@
 ﻿using AspectInjector.Broker;
+using System.Diagnostics;
 using System.Reflection;
 using Utility.Source.TimeTraceAspect;
 
@@ -12,7 +13,6 @@ namespace Leagueinator.Utility {
     [Aspect(Scope.Global)]
     [Injection(typeof(TimeTraceAspect))]
     public class TimeTraceAspect : Attribute {
-
         /// <summary>
         /// Invoked whenever a method annotated with [TimeTrace] is entered.
         /// Creates a CallRecord and adds it to the call tree.
@@ -23,6 +23,30 @@ namespace Leagueinator.Utility {
         /// <exception cref="NullReferenceException"></exception>
         [Advice(Kind.Before, Targets = Target.Any)]
         public void Enter([Argument(Source.Type)] Type type, [Argument(Source.Name)] string name, [Argument(Source.Arguments)] object[] args) {
+            if (TimeTrace.Terminated) return;
+
+            CallRecord caller = TimeTrace.Calls.Peek();
+
+            TimeTrace.Calls.Push(new CallRecord(GetMemberInfo(type, name, args)));
+            Debug.WriteLine($"Enter {caller.MemberInfo.DeclaringType.Name}::{caller.MemberInfo.Name} ==> {type.Name}::{name}");
+        }
+
+        [Advice(Kind.After, Targets = Target.Any)]
+        public void Exit() {
+            if (TimeTrace.Terminated) return;
+
+            CallRecord callee = TimeTrace.Calls.Pop();            
+            CallRecord caller = TimeTrace.Calls.Peek();
+
+            long startTime = callee.EntryTime;
+            long endTime = DateTime.Now.Ticks;
+            long elapsedTime = endTime - startTime;
+
+            TimeTrace.Report.AddCall(caller.MemberInfo, callee.MemberInfo, elapsedTime);
+            Debug.WriteLine($"Exit  {callee.MemberInfo.DeclaringType.Name}::{callee.MemberInfo.Name} ");
+        }
+
+        private MemberInfo GetMemberInfo(Type type, string name, object[] args) {
             MemberInfo? memberInfo = null;
 
             if (name is ".ctor") {
@@ -30,28 +54,43 @@ namespace Leagueinator.Utility {
                 memberInfo = type.GetConstructor(argTypes);
             }
             else {
-                memberInfo = type.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);                
+                memberInfo = type.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
             }
 
             if (memberInfo is null) throw new NullReferenceException(name);
-
-            if (TimeTrace.CurrentRecord is null) {
-                TimeTrace.Root = new(memberInfo);
-                TimeTrace.CurrentRecord = TimeTrace.Root;
-            }
-            else {
-                TimeTrace.CurrentRecord = TimeTrace.CurrentRecord.Call(memberInfo);
-            }           
-        }
-
-        [Advice(Kind.After, Targets = Target.Any)]
-        public void Exit() {
-            TimeTrace.CurrentRecord = TimeTrace.CurrentRecord!.Exit();
+            return memberInfo;
         }
     }
 
     public static class TimeTrace {
-        public static CallRecord? Root;
-        internal static CallRecord? CurrentRecord;
+        static public readonly long ProgramStartTime = DateTime.Now.Ticks;
+        static public double Elapsed = Math.Round((double)(DateTime.Now.Ticks - ProgramStartTime) / 10000, 1);
+
+        public static readonly Report Report = new();
+        public static readonly Stack<CallRecord> Calls = [];
+
+        internal static bool Terminated = false;
+
+        static TimeTrace(){
+            MemberInfo memberInfo = typeof(User).GetMethod("Action")!;
+            Calls.Push(new CallRecord(memberInfo));
+        }
+
+        public static void Terminate() {
+            Terminated = true;
+
+            CallRecord callee = TimeTrace.Calls.Pop();
+            CallRecord caller = TimeTrace.Calls.Peek();
+
+            long startTime = callee.EntryTime;
+            long endTime = DateTime.Now.Ticks;
+            long elapsedTime = endTime - startTime;
+
+            TimeTrace.Report.AddCall(caller.MemberInfo, callee.MemberInfo, elapsedTime);
+        }
     }
+
+    public class User{
+        public void Action() {}
+    };
 }

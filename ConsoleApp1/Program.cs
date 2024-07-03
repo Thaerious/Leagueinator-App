@@ -1,12 +1,11 @@
 ﻿using Leagueinator.Utility;
 using System.Diagnostics;
-using Utility.Source.TimeTraceAspect;
 
 [TimeTrace]
 class Program {
     static void Main() {
-        FooBar();
-        new Report("D:/scratch/web/trace/").WriteFiles(TimeTrace.Root);
+        FooBar();        
+        TimeTrace.Report.WriteFiles("D:/scratch/web/trace/");
         OpenBrowser("D:/scratch/web/trace/index.html");
     }
 
@@ -14,7 +13,10 @@ class Program {
         Foo foo = new ();
         Bar bar = new ();
 
-        foo.Recursive(10);
+        bar.Report();
+        bar.Report();
+        bar.Report();
+        //foo.Recursive(10);
     }
 
     static void OpenBrowser(string url) {
@@ -38,5 +40,8 @@ class Program {
 
     [TimeTrace]
     public class Bar {
+        public void Report() {
+            Thread.Sleep(1000);
+        }
     }
 }
