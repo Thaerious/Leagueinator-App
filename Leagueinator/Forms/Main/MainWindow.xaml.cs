@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using Utility.Source.TimeTraceAspect;
 using static Leagueinator.Controls.MatchCard;
 
 namespace Leagueinator.Forms.Main {
@@ -20,7 +21,7 @@ namespace Leagueinator.Forms.Main {
         public MainWindow() {
             this.Closed += (s, e) => {
                 Debug.WriteLine("TimeTrace Report");
-                Debug.WriteLine(TimeTrace.Report());
+                Debug.WriteLine(TimeTrace.Root!.ToString());
             };
 
             this.InitializeComponent();

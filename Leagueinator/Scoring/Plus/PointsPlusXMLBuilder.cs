@@ -2,11 +2,14 @@
 using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
+using Leagueinator.Utility;
 using Printer;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Leagueinator.Scoring.Plus {
+
+    [TimeTrace]
     internal class PointsPlusXMLBuilder(EventRow eventRow) : IXMLBuilder {
         private readonly EventRow EventRow = eventRow;
 

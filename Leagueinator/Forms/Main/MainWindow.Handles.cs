@@ -11,6 +11,7 @@ using Leagueinator.Utility;
 using Leagueinator.Scoring.Plus;
 
 namespace Leagueinator.Forms.Main {
+    [TimeTrace]
     public partial class MainWindow : Window {
         private DataButton<RoundRow>? CurrentRoundButton;
 
@@ -326,6 +327,8 @@ namespace Leagueinator.Forms.Main {
         private void HndIdleClick(object sender, RoutedEventArgs e) {
             new TableViewer().Show(this.League.IdleTable);
         }
+        
+        [TimeTrace]
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
             this.ClearFocus();

@@ -1,19 +1,26 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Model.Views {
-    public class TeamView(TeamRow teamRow) : IEquatable<TeamView> {
-        public TeamRow TeamRow { get; } = teamRow;
+
+    [TimeTrace]
+    public class TeamView : IEquatable<TeamView> {
+        public TeamRow TeamRow { get; }
+
+        public TeamView(TeamRow teamRow) {
+            this.TeamRow = teamRow;
+        }
 
         public List<MatchRow> Matches {
             get {
                 List<MatchRow> matches = [];
 
-                foreach (TeamRow teamRow in teamRow.Event.Teams) {
+                foreach (TeamRow teamRow in this.TeamRow.Event.Teams) {
                     if (this.Equals(teamRow)) matches.Add(teamRow.Match);
                 }
 
                 return matches;
-            } 
+            }
         }
 
         /// <summary>
@@ -57,17 +64,19 @@ namespace Leagueinator.Model.Views {
         /// <returns></returns>
         public override bool Equals(object? @object) {
             if (@object is null) return false;
-            else if (@object is TeamView otherTeam) {
-                if (otherTeam.Players.Count != this.Players.Count) return false;
-                foreach (string player in this.Players) {
-                    if (!otherTeam.Players.Contains(player)) return false;
-                }
-            }
-            else if (@object is TeamRow otherTeamRow) {
-                if (otherTeamRow.Members.Count != this.Players.Count) return false;
-                foreach (string player in this.Players) {
-                    if (!otherTeamRow.Members.Has(player)) return false;
-                }
+            List<string> thisPlayers = this.Players.ToList();
+            List<string> thatPlayers = [];
+
+            if (@object is TeamView otherTeam) thatPlayers = otherTeam.Players.ToList();
+            else if (@object is TeamRow teamRow) thatPlayers = teamRow.Members.Select(mr => mr.Player).ToList();
+
+            if (thisPlayers.Count != thatPlayers.Count) return false;
+
+            thisPlayers.Sort((a, b) => a.CompareTo(b));
+            thatPlayers.Sort((a, b) => a.CompareTo(b));
+
+            for (int i = 0; i < thisPlayers.Count; i++) {
+                if (!thisPlayers[i].Equals(thatPlayers[i])) return false;
             }
 
             return true;

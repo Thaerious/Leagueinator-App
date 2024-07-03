@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Model.Tables;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Scoring.Plus {
 
@@ -10,6 +11,7 @@ namespace Leagueinator.Scoring.Plus {
     /// Calculates extra information for plus scoring.
     /// </summary>
     /// <param name="teamRow"></param>    
+    [TimeTrace]
     public record MatchResultsPlus : IMatchResult<MatchResultsPlus> {
 
         /// <summary>

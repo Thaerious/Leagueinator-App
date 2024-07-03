@@ -7,6 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Source\TimeTraceAspect\Assets\ClassList.Prefix.html" />
+    <None Remove="Source\TimeTraceAspect\Assets\ClassList.Suffix.html" />
+    <None Remove="Source\TimeTraceAspect\Assets\Method.Prefix.html" />
+    <None Remove="Source\TimeTraceAspect\Assets\Method.Suffix.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Source\TimeTraceAspect\Assets\ClassList.Prefix.html" />
+    <EmbeddedResource Include="Source\TimeTraceAspect\Assets\ClassList.Suffix.html" />
+    <EmbeddedResource Include="Source\TimeTraceAspect\Assets\Method.Prefix.html" />
+    <EmbeddedResource Include="Source\TimeTraceAspect\Assets\Method.Suffix.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspectInjector" Version="2.8.2" />
   </ItemGroup>
 

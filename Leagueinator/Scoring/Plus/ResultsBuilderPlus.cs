@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
+using Leagueinator.Utility;
 
 namespace Leagueinator.Scoring.Plus {
     public class ResultsBuilderPlus {
@@ -11,6 +12,7 @@ namespace Leagueinator.Scoring.Plus {
         /// <typeparam name="T"></typeparam>
         /// <param name="eventRow"></param>
         /// <returns>A new non-reflective list of result summaries</returns>
+        [TimeTrace]
         public static List<SummaryPlus> GetResults(EventRow eventRow) {
             List<SummaryPlus> results = [];
 

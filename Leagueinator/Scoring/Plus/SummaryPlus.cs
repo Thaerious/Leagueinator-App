@@ -1,5 +1,6 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
+using Leagueinator.Utility;
 using System.Collections.ObjectModel;
 
 namespace Leagueinator.Scoring.Plus {
@@ -7,6 +8,7 @@ namespace Leagueinator.Scoring.Plus {
     /// <summary>
     /// A summary of all match results for a specific team.
     /// </summary>
+    [TimeTrace]
     public record SummaryPlus : ISummary<MatchResultsPlus, SummaryPlus> {
         public TeamView TeamView { get; }
         public int GamesPlayed { get; }

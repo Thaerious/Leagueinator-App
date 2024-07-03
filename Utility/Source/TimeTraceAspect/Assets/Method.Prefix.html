@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${Title}</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .caller_row {
+            background-color: #f5d5ed;
+        }
+        .callee_row {
+            background-color: #baffcd;
+        }
+        .self {
+            background-color: #c7fff9;
+        }
+    </style>
+</head>
+<body>
+
+<h2>${Title}</h2>
+
+<table>
+    <tr>
+        <th>Method Name</th>
+        <th>Call Count</th>
+        <th>Total Time</th>
+        <th>Average Time</th>
+        <th>Self Time</th>
+    </tr>
