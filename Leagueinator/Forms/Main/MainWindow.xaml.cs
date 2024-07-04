@@ -17,8 +17,8 @@ namespace Leagueinator.Forms.Main {
 
         public MainWindow() {
             this.Closed += (s, e) => {
-                TimeTrace.Report.WriteFiles("D:/scratch/web/leagueinator/");
-                OpenBrowser("D:/scratch/web/leagueinator/index.html");
+                //TimeTrace.Report.WriteFiles("D:/scratch/web/leagueinator/");
+                //OpenBrowser("D:/scratch/web/leagueinator/index.html");
             };
 
             this.InitializeComponent();

@@ -9,9 +9,9 @@ using Microsoft.Win32;
 using Leagueinator.Forms.MatchAssignments;
 using Leagueinator.Utility;
 using Leagueinator.Scoring.Plus;
+using Leagueinator.Formats;
 
 namespace Leagueinator.Forms.Main {
-    [TimeTrace]
     public partial class MainWindow : Window {
         private DataButton<RoundRow>? CurrentRoundButton;
 
@@ -132,7 +132,7 @@ namespace Leagueinator.Forms.Main {
             this.ClearFocus();
             RoundRow nextRound = this.TournamentFormat.GenerateNextRound(this.EventRow);
             this.AddRoundButton(nextRound);
-            this.InvokeLastRoundButton();
+            this.InvokeRoundButton();
         }
 
 
@@ -152,7 +152,7 @@ namespace Leagueinator.Forms.Main {
 
             // Make sure there is at least one button and select the last one.
             if (this.EventRow.Rounds.Count == 0) this.HndClickAddRound(null, null);
-            this.InvokeLastRoundButton();
+            this.InvokeRoundButton();
 
             // Rename buttons
             int i = 1;
@@ -161,7 +161,7 @@ namespace Leagueinator.Forms.Main {
             }
         }
 
-        private void InvokeLastRoundButton(DataButton<RoundRow>? button = null) {
+        private void InvokeRoundButton(DataButton<RoundRow>? button = null) {
             button ??= (DataButton<RoundRow>)this.RoundButtonContainer.Children[^1];
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
@@ -172,7 +172,7 @@ namespace Leagueinator.Forms.Main {
             RoundRow roundRow = this.EventRow.Rounds.Add();
             roundRow.PopulateMatches();
             this.AddRoundButton(roundRow);
-            this.InvokeLastRoundButton();
+            this.InvokeRoundButton();
         }
 
         public void HndGenNextRound(object sender, RoutedEventArgs args) {
@@ -180,7 +180,12 @@ namespace Leagueinator.Forms.Main {
             this.ClearFocus();
             RoundRow nextRound = this.TournamentFormat.GenerateNextRound(this.EventRow);
             this.AddRoundButton(nextRound);
-            this.InvokeLastRoundButton();
+            this.InvokeRoundButton();
+        }
+
+        public void HndAssignLanes(object sender, RoutedEventArgs args) {
+            new LaneAssigner(CurrentRoundRow).AssignLanes();
+            this.InvokeRoundButton(this.CurrentRoundButton);
         }
 
         public void HndCopyRnd(object sender, RoutedEventArgs args) {
@@ -205,7 +210,7 @@ namespace Leagueinator.Forms.Main {
             }
 
             this.AddRoundButton(newRoundRow);
-            this.InvokeLastRoundButton();
+            this.InvokeRoundButton();
         }
 
         private void HndMemberTableDeletingRow(object sender, CustomRowAddEventArgs<MemberRow> e) {
@@ -337,7 +342,6 @@ namespace Leagueinator.Forms.Main {
             new TableViewer().Show(this.League.IdleTable);
         }
         
-        [TimeTrace]
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
             this.ClearFocus();

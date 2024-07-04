@@ -7,11 +7,11 @@ namespace Leagueinator.Controls.MatchCards {
         public static MatchCard GenerateMatchCard(MatchRow matchRow) {
             switch (matchRow.MatchFormat) {
                 case MatchFormat.VS1:
-                    throw new NotImplementedException();
+                    return new MatchCardV1() { MatchRow = matchRow };
                 case MatchFormat.VS2:
-                    throw new NotImplementedException();
+                    return new MatchCardV2() { MatchRow = matchRow };
                 case MatchFormat.VS3:
-                    throw new NotImplementedException();
+                    return new MatchCardV3() { MatchRow = matchRow };
                 case MatchFormat.VS4:
                     return new MatchCardV4() { MatchRow = matchRow };
                 case MatchFormat.A4321:

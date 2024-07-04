@@ -3,7 +3,6 @@ using Leagueinator.Utility;
 
 namespace Leagueinator.Model.Views {
 
-    [TimeTrace]
     public class TeamView : IEquatable<TeamView> {
         public TeamRow TeamRow { get; }
 

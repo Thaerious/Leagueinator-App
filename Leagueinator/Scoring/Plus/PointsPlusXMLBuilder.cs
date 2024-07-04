@@ -9,7 +9,6 @@ using System.Reflection;
 
 namespace Leagueinator.Scoring.Plus {
 
-    [TimeTrace]
     internal class PointsPlusXMLBuilder(EventRow eventRow) : IXMLBuilder {
         private readonly EventRow EventRow = eventRow;
 

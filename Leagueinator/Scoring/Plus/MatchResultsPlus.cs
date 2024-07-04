@@ -11,7 +11,6 @@ namespace Leagueinator.Scoring.Plus {
     /// Calculates extra information for plus scoring.
     /// </summary>
     /// <param name="teamRow"></param>    
-    [TimeTrace]
     public record MatchResultsPlus : IMatchResult<MatchResultsPlus> {
 
         /// <summary>

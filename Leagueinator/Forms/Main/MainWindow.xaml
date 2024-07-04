@@ -50,6 +50,7 @@
                 <MenuItem Header="Generate Next Round" Click="HndGenNextRound"/>
                 <MenuItem Header="Add Empty Round" Click="HndGenEmptyRound"/>
                 <MenuItem Header="Copy Round" Click="HndCopyRnd"/>
+                <MenuItem Header="Assign Lanes" Click="HndAssignLanes"/>
             </MenuItem>
 
             <!-- Result (Report) Menu -->
