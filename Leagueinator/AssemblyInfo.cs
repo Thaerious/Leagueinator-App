@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using Leagueinator.Utility;
+using System.Reflection;
 using System.Windows;
+using AspectInjector.Broker;
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None,            //where theme specific resource dictionaries are located

@@ -1,14 +1,11 @@
 ﻿using Leagueinator.Controls;
-using Leagueinator.Forms.MatchAssignments;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
 using Leagueinator.Scoring;
 using Leagueinator.Utility;
-using Microsoft.Win32;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-using Utility.Source.TimeTraceAspect;
 using static Leagueinator.Controls.MatchCard;
 
 namespace Leagueinator.Forms.Main {
@@ -20,8 +17,8 @@ namespace Leagueinator.Forms.Main {
 
         public MainWindow() {
             this.Closed += (s, e) => {
-                Debug.WriteLine("TimeTrace Report");
-                Debug.WriteLine(TimeTrace.Root!.ToString());
+                TimeTrace.Report.WriteFiles("D:/scratch/web/leagueinator/");
+                OpenBrowser("D:/scratch/web/leagueinator/index.html");
             };
 
             this.InitializeComponent();
@@ -34,9 +31,20 @@ namespace Leagueinator.Forms.Main {
             SaveState.Filename = "";
             SaveState.ChangeState(this, false);
 
-            this.AddHandler(MatchCard.RegisteredFormatChangedEvent, new FormatChangedEventHandler(this.HndFormatChanged));
-        }               
+            this.AddHandler(MatchCard.RegisteredFormatChangedEvent, new FormatChangedEventHandler(this.HndMatchFormatChanged));
+        }
 
+        static void OpenBrowser(string url) {
+            try {
+                Process.Start(new ProcessStartInfo {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex) {
+                Console.WriteLine("Could not open browser: " + ex.Message);
+            }
+        }
         private static League NewLeague() {
             League league = new();
             EventRow eventRow = league.Events.Add("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));

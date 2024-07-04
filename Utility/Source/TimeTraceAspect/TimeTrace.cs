@@ -26,14 +26,17 @@ namespace Leagueinator.Utility {
             if (TimeTrace.Terminated) return;
 
             CallRecord caller = TimeTrace.Calls.Peek();
+            MemberInfo? memberInfo = GetMemberInfo(type, name, args);
+            if (memberInfo is null) return;
 
-            TimeTrace.Calls.Push(new CallRecord(GetMemberInfo(type, name, args)));
+            TimeTrace.Calls.Push(new CallRecord(memberInfo));
             Debug.WriteLine($"Enter {caller.MemberInfo.DeclaringType.Name}::{caller.MemberInfo.Name} ==> {type.Name}::{name}");
         }
 
         [Advice(Kind.After, Targets = Target.Any)]
         public void Exit() {
             if (TimeTrace.Terminated) return;
+            if (TimeTrace.Calls.Count <= 1) return;
 
             CallRecord callee = TimeTrace.Calls.Pop();            
             CallRecord caller = TimeTrace.Calls.Peek();
@@ -46,18 +49,23 @@ namespace Leagueinator.Utility {
             Debug.WriteLine($"Exit  {callee.MemberInfo.DeclaringType.Name}::{callee.MemberInfo.Name} ");
         }
 
-        private MemberInfo GetMemberInfo(Type type, string name, object[] args) {
+        private MemberInfo? GetMemberInfo(Type type, string name, object[] args) {
             MemberInfo? memberInfo = null;
 
-            if (name is ".ctor") {
+            if (name.StartsWith(".")) {
                 Type[] argTypes = args.Select(arg => arg.GetType()).ToArray();
                 memberInfo = type.GetConstructor(argTypes);
             }
-            else {
+            
+            if (memberInfo is null) {
                 memberInfo = type.GetMethod(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
             }
 
-            if (memberInfo is null) throw new NullReferenceException(name);
+            if (memberInfo is null) {
+                memberInfo = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            }
+
+            //if (memberInfo is null) throw new NullReferenceException($"{type.Name}::{name}");
             return memberInfo;
         }
     }
@@ -78,6 +86,7 @@ namespace Leagueinator.Utility {
 
         public static void Terminate() {
             Terminated = true;
+            if (TimeTrace.Calls.Count <= 1) return;
 
             CallRecord callee = TimeTrace.Calls.Pop();
             CallRecord caller = TimeTrace.Calls.Peek();

@@ -55,6 +55,15 @@
     <Compile Update="Controls\MatchCards\MatchCard4321\MatchCard4321.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\MatchCards\MatchCard4v4\MatchCardV1.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\MatchCards\MatchCard4v4\MatchCardV2.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\MatchCards\MatchCard4v4\MatchCardV3.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

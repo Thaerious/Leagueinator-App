@@ -1,5 +1,5 @@
 ﻿<local:MatchCard 
-             x:Class="Leagueinator.Controls.MatchCardV4"
+             x:Class="Leagueinator.Controls.MatchCardV2"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -21,7 +21,7 @@
                 <MenuItem Header="2 vs 2" Click="HndChangeFormat" Tag="VS2"/>
                 <MenuItem Header="3 vs 3" Click="HndChangeFormat" Tag="VS3"/>
                 <MenuItem Header="4 vs 4" Click="HndChangeFormat" Tag="VS4"/>
-                <MenuItem Header="4321" Click="HndChangeFormat" Tag="A4321"/>
+                <MenuItem Header="4321"  Click="HndChangeFormat" Tag="A4321"/>
             </ContextMenu>
         </Border.ContextMenu>
 
@@ -45,8 +45,6 @@
 
                     <!-- Player Container -->
                     <StackPanel VerticalAlignment="Center" Grid.Column="0" Margin="10 10 0 10">
-                        <local:PlayerTextBox Padding="2" />
-                        <local:PlayerTextBox Padding="2" />
                         <local:PlayerTextBox Padding="2" />
                         <local:PlayerTextBox Padding="2" />
                     </StackPanel>
@@ -104,8 +102,6 @@
                          VerticalAlignment="Center" Grid.Column="1" Margin="0 10 10 10"
                     >
                         <local:PlayerTextBox Padding="2" />
-                        <local:PlayerTextBox Padding="2"/>
-                        <local:PlayerTextBox Padding="2"/>
                         <local:PlayerTextBox Padding="2"/>
                     </StackPanel>
                 </Grid>

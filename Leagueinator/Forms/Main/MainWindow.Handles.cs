@@ -43,7 +43,7 @@ namespace Leagueinator.Forms.Main {
         /// </summary>
         /// <param name="source"></param>
         /// <param name="args"></param>
-        private void HndFormatChanged(object source, RoutedEventArgs args) {
+        private void HndMatchFormatChanged(object source, RoutedEventArgs args) {
             MatchCardFormatArgs formatArgs = (MatchCardFormatArgs)args;
             int index = this.MachCardStackPanel.Children.IndexOf(formatArgs.MatchCard);
             this.MachCardStackPanel.Children.Remove(formatArgs.MatchCard);
@@ -52,10 +52,19 @@ namespace Leagueinator.Forms.Main {
             MatchCard? newMatchCard = null;
             switch (formatArgs.MatchFormat) {
                 case MatchFormat.VS1:
+                    newMatchCard = new MatchCardV1() {
+                        MatchRow = formatArgs.MatchCard.MatchRow
+                    };
                     break;
                 case MatchFormat.VS2:
+                    newMatchCard = new MatchCardV2() {
+                        MatchRow = formatArgs.MatchCard.MatchRow
+                    };
                     break;
                 case MatchFormat.VS3:
+                    newMatchCard = new MatchCardV3() {
+                        MatchRow = formatArgs.MatchCard.MatchRow
+                    };
                     break;
                 case MatchFormat.VS4:
                     newMatchCard = new MatchCardV4() {
