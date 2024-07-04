@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Controls;
+using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
 using Leagueinator.Scoring;
 using System.Printing;
@@ -16,10 +17,10 @@ namespace Leagueinator.Forms {
         /// Create a new printer form for the specified eventRow.
         /// </summary>
         /// <param name="eventRow"></param>
-        public PrinterForm(IXMLBuilder xmlBuilder) {
+        public PrinterForm(Element element) {
             this.InitializeComponent();
             this.SizeChanged += this.HndSizeChanged;
-            this.InnerCanvas.Pages = new Flex().DoLayout(xmlBuilder.BuildElement());
+            this.InnerCanvas.Pages = new Flex().DoLayout(element);
         }
 
         /// <summary>

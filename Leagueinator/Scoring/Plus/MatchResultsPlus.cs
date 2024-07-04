@@ -75,7 +75,7 @@ namespace Leagueinator.Scoring.Plus {
         }
 
         /// <summary>
-        /// Calculate W/L/T based on bowls for vs bowls against.
+        /// Calculate W/L/MATCH_TYPE based on bowls for vs bowls against.
         /// 
         /// </summary>
         /// <returns></returns>

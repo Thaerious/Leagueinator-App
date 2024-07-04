@@ -6,16 +6,14 @@ using Printer;
 using System.Reflection;
 
 namespace Leagueinator.Forms.MatchAssignments {
-    internal class MatchAssignmentsBuilder(RoundRow roundRow) : IXMLBuilder {
+    internal class MatchAssignmentsBuilder : IRoundXMLBuilder {
 
-        private readonly RoundRow RoundRow = roundRow;
-
-        public Element BuildElement() {
+        public Element BuildElement(RoundRow roundRow) {
             LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.MatchAssignments.Root.style");
             Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.MatchAssignments.Root.xml");
             Element matchSrc = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.MatchAssignments.Match.xml");
 
-            List<MatchRow> matchRows = this.RoundRow.Matches.ToList();
+            List<MatchRow> matchRows = roundRow.Matches.ToList();
             matchRows.Sort((a, b) => {
                 return a.Lane > b.Lane ? 1 : -1;
             });

@@ -1,8 +1,8 @@
 ﻿using Leagueinator.Controls;
+using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
 using Leagueinator.Scoring;
-using Leagueinator.Utility;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -50,7 +50,7 @@ namespace Leagueinator.Forms.Main {
             EventRow eventRow = league.Events.Add("Default Event", DateTime.Today.ToString("yyyy-MM-dd"));
             RoundRow roundRow = eventRow.Rounds.Add();
             roundRow.PopulateMatches();
-            league.LeagueTable.Set("ScoringFormat", ScoringFormat.POINTS_PLUS);
+            league.LeagueSettingsTable.Set("ScoringFormat", ScoringFormat.POINTS_PLUS);
             return league;
         }
 
@@ -58,21 +58,27 @@ namespace Leagueinator.Forms.Main {
             FocusManager.SetFocusedElement(this, null);
         }
 
-        static class SaveState {
-            public delegate void StateChangedHandler(object? source, bool IsSaved);
-            public static event StateChangedHandler StateChanged = delegate { };
-            private static string _filename = "";
+        /// <summary>
+        /// Fill matchRow cards with values from "roundRow".
+        /// Clears all matchRow cards that does not have a value in "roundRow".
+        /// </summary>
+        /// <param name="roundRow"></param>
+        private void PopulateMatchCards(RoundRow roundRow) {
+            if (this.EventRow is null) throw new NullReferenceException();
 
-            public static bool IsSaved {
-                get; private set;
+            // Remove all match cards from panel.
+            while (this.MachCardStackPanel.Children.Count > 0) {
+                var child = this.MachCardStackPanel.Children[0];
+                this.MachCardStackPanel.Children.Remove(child);
             }
 
-            public static void ChangeState(object? sender, bool isSaved) {
-                IsSaved = isSaved;
-                StateChanged.Invoke(sender, isSaved);
-            }
+            List<MatchRow> matchList = [.. roundRow.Matches];
+            matchList.Sort((m1, m2) => m1.Lane.CompareTo(m2.Lane));
 
-            public static string Filename { get => _filename; set => _filename = value; }
+            foreach (MatchRow matchRow in matchList) {
+                MatchCard matchCard = MatchCardFactory.GenerateMatchCard(matchRow);
+                this.MachCardStackPanel.Children.Add(matchCard);
+            }
         }
     }
 }

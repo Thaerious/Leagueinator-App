@@ -9,30 +9,30 @@ namespace Model_Test {
         [TestMethod]
         public void Add_String() {
             League league = new();
-            league.LeagueTable.Set("Ima Key", "Ima Value");
+            league.LeagueSettingsTable.Set("Ima Key", "Ima Value");
 
-            Console.WriteLine(league.LeagueTable.PrettyPrint());
+            Console.WriteLine(league.LeagueSettingsTable.PrettyPrint());
 
-            Assert.IsTrue(league.LeagueTable.Has("Ima Key"));
-            Assert.AreEqual("Ima Value", league.LeagueTable.Get<string>("Ima Key"));
+            Assert.IsTrue(league.LeagueSettingsTable.Has("Ima Key"));
+            Assert.AreEqual("Ima Value", league.LeagueSettingsTable.Get<string>("Ima Key"));
         }
 
         [TestMethod]
         public void Change_Value() {
             League league = new();
-            league.LeagueTable.Set("Ima Key", "Ima Value");
-            league.LeagueTable.Set("Ima Key", "Ima Different Value");
+            league.LeagueSettingsTable.Set("Ima Key", "Ima Value");
+            league.LeagueSettingsTable.Set("Ima Key", "Ima Different Value");
 
-            Assert.AreEqual("Ima Different Value", league.LeagueTable.Get<string>("Ima Key"));
+            Assert.AreEqual("Ima Different Value", league.LeagueSettingsTable.Get<string>("Ima Key"));
         }
 
         [TestMethod]
         public void Remove_Value() {
             League league = new();
-            league.LeagueTable.Set("Ima Key", "Ima Value");
-            league.LeagueTable.UnSet("Ima Key");
+            league.LeagueSettingsTable.Set("Ima Key", "Ima Value");
+            league.LeagueSettingsTable.UnSet("Ima Key");
 
-            Assert.IsFalse(league.LeagueTable.Has("Ima Key"));
+            Assert.IsFalse(league.LeagueSettingsTable.Has("Ima Key"));
         }
     }
 }

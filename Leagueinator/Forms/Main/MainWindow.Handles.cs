@@ -1,5 +1,4 @@
 ﻿using Leagueinator.Controls;
-using Leagueinator.Controls.MatchCards;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
 using System.Windows;
@@ -8,35 +7,11 @@ using System.Windows.Media;
 using Microsoft.Win32;
 using Leagueinator.Forms.MatchAssignments;
 using Leagueinator.Utility;
-using Leagueinator.Scoring.Plus;
 using Leagueinator.Formats;
 
 namespace Leagueinator.Forms.Main {
     public partial class MainWindow : Window {
         private DataButton<RoundRow>? CurrentRoundButton;
-
-        /// <summary>
-        /// Fill matchRow cards with values from "roundRow".
-        /// Clears all matchRow cards that does not have a value in "roundRow".
-        /// </summary>
-        /// <param name="roundRow"></param>
-        private void PopulateMatchCards(RoundRow roundRow) {
-            if (this.EventRow is null) throw new NullReferenceException();
-
-            // Remove all match cards from panel.
-            while (this.MachCardStackPanel.Children.Count > 0) {
-                var child = this.MachCardStackPanel.Children[0];
-                this.MachCardStackPanel.Children.Remove(child);
-            }
-
-            List<MatchRow> matchList = [.. roundRow.Matches];
-            matchList.Sort((m1, m2) => m1.Lane.CompareTo(m2.Lane));
-
-            foreach (MatchRow matchRow in matchList) {
-                MatchCard matchCard = MatchCardFactory.GenerateMatchCard(matchRow);
-                this.MachCardStackPanel.Children.Add(matchCard);
-            }
-        }
 
         /// <summary>
         /// Triggered when a match card changes type.
@@ -345,7 +320,7 @@ namespace Leagueinator.Forms.Main {
         private void HndViewResults(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
             this.ClearFocus();
-            PrinterForm form = new(new PointsPlusXMLBuilder(this.EventRow)) {
+            PrinterForm form = new(this.ResultsXMLBuilder.BuildElement(this.EventRow)) {
                 Owner = this
             };
             form.Show();
@@ -354,7 +329,7 @@ namespace Leagueinator.Forms.Main {
         private void HndMatchAssignments(object sender, RoutedEventArgs e) {
             if (this.EventRow is null) throw new NullReferenceException(nameof(this.EventRow));
             this.ClearFocus();
-            PrinterForm form = new(new MatchAssignmentsBuilder(this.CurrentRoundRow)) {
+            PrinterForm form = new(new MatchAssignmentsBuilder().BuildElement(this.CurrentRoundRow)) {
                 Owner = this
             };
             form.Show();

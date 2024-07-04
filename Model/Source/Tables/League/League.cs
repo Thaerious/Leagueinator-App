@@ -12,7 +12,7 @@ namespace Leagueinator.Model {
         public TeamTable TeamTable { init; get; }
         public MemberTable MemberTable { init; get; }
         public IdleTable IdleTable { init; get; }
-        public LeagueSettingsTable LeagueTable { init; get; }
+        public LeagueSettingsTable LeagueSettingsTable { init; get; }
 
         public League() {
             this.EventTable = new();
@@ -21,7 +21,7 @@ namespace Leagueinator.Model {
             this.TeamTable = new();
             this.MemberTable = new();
             this.IdleTable = new();
-            this.LeagueTable = new();
+            this.LeagueSettingsTable = new();
 
             this.AddTables();
             this.AddListeners();
@@ -38,7 +38,7 @@ namespace Leagueinator.Model {
             this.TeamTable.ImportTable(that.TeamTable);
             this.MemberTable.ImportTable(that.MemberTable);
             this.IdleTable.ImportTable(that.IdleTable);
-            this.LeagueTable.ImportTable(that.LeagueTable);
+            this.LeagueSettingsTable.ImportTable(that.LeagueSettingsTable);
         }
 
         private void AddListeners() {
@@ -55,7 +55,7 @@ namespace Leagueinator.Model {
             this.Tables.Add(this.TeamTable);
             this.Tables.Add(this.MemberTable);
             this.Tables.Add(this.IdleTable);
-            this.Tables.Add(this.LeagueTable);
+            this.Tables.Add(this.LeagueSettingsTable);
         }
 
         private void BuildColumns() {
@@ -65,7 +65,7 @@ namespace Leagueinator.Model {
             this.TeamTable.BuildColumns();
             this.IdleTable.BuildColumns();
             this.MemberTable.BuildColumns();
-            this.LeagueTable.BuildColumns();
+            this.LeagueSettingsTable.BuildColumns();
         }
 
         private void AddConstraints() {

@@ -22,25 +22,30 @@ namespace Leagueinator.Forms.Main {
         internal League League {
             get => this._league;
             set {
-                this.League.MemberTable.RowDeleting -= this.HndMemberTableDeletingRow;
-                this.League.IdleTable.RowUpdating -= this.HndIdleUpdating;
-                this.League.MemberTable.RowUpdating -= this.HndMemberUpdating;
-
                 this.League.LeagueUpdate -= this.HndLeagueUpdate;
+                this.League.IdleTable.RowUpdating -= this.HndIdleUpdating;
+                this.League.MemberTable.RowDeleting -= this.HndMemberTableDeletingRow;                
+                this.League.MemberTable.RowUpdating -= this.HndMemberUpdating;               
+
                 this._league = value;
                 this.EventRow = this.League.EventTable.GetLast();
-                value.LeagueUpdate += this.HndLeagueUpdate;
-
+                
                 switch (this.EventRow.EventFormat) {
                     case EventFormat.AssignedLadder:
                         this.TournamentFormat = new AssignedLadder();
                         break;
                 }
 
-                this.League.MemberTable.RowDeleting += this.HndMemberTableDeletingRow;
+                this.League.LeagueUpdate += this.HndLeagueUpdate;
+                this.League.LeagueSettingsTable.RowChanging += this.HndSettingsChanging;
                 this.League.IdleTable.RowUpdating += this.HndIdleUpdating;
+                this.League.MemberTable.RowDeleting += this.HndMemberTableDeletingRow;
                 this.League.MemberTable.RowUpdating += this.HndMemberUpdating;
             }
+        }
+
+        private void HndSettingsChanging(object sender, System.Data.DataRowChangeEventArgs e) {
+            
         }
 
         private void HndMemberUpdating(object sender, CustomRowUpdateEventArgs args) {

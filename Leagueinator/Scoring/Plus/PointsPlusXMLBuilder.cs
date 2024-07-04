@@ -1,29 +1,24 @@
 ﻿using Leagueinator.Model.Tables;
-using Leagueinator.Model.Views;
 using Leagueinator.Printer.Elements;
 using Leagueinator.Printer.Styles;
-using Leagueinator.Utility;
 using Printer;
-using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Leagueinator.Scoring.Plus {
 
-    internal class PointsPlusXMLBuilder(EventRow eventRow) : IXMLBuilder {
-        private readonly EventRow EventRow = eventRow;
-
+    internal class PointsPlusXMLBuilder : IEventXMLBuilder {
         /// <resultsPlus>
         /// Build a XML element with a results resultsPlus organized by team.
         /// </resultsPlus>
-        /// <param name="this.EventRow"></param>
+        /// <param name="eventRow"></param>
         /// <returns></returns>
-        public Element BuildElement() {
+        public Element BuildElement(EventRow eventRow) {
             LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.EventScoreForm.style");
             Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.EventScoreForm.xml");
             Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.PointsPlus.TeamScore.xml");
             Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.PointsPlus.ScoreRow.xml");
 
-            List<SummaryPlus> summaryPlus = ResultsBuilderPlus.GetResults(this.EventRow);
+            List<SummaryPlus> summaryPlus = ResultsBuilderPlus.GetResults(eventRow);
 
             for (int i = 0; i < summaryPlus.Count; i++) {
                 SummaryPlus currentResult = summaryPlus[i];

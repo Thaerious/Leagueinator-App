@@ -108,7 +108,7 @@ namespace Leagueinator.Forms {
             get => this._league;
             private set {
                 this._league = value;
-                ScoringFormat scoringFormat = this.League.LeagueTable.Get<ScoringFormat>("ScoringFormat");
+                ScoringFormat scoringFormat = this.League.LeagueSettingsTable.Get<ScoringFormat>("ScoringFormat");
 
                 var tagSource = this.ScoringFormatOptions;
                 Debug.WriteLine($"tagSource, scoringFormat = {tagSource} {scoringFormat}");
@@ -185,7 +185,7 @@ namespace Leagueinator.Forms {
         private void HndScoringChecked(object sender, RoutedEventArgs args) {
             if (sender is not RadioButton radioButton) return;
             var value = (ScoringFormat)Enum.Parse(typeof(ScoringFormat), (string)radioButton.Tag);
-            this.League.LeagueTable.Set("ScoringFormat", value);
+            this.League.LeagueSettingsTable.Set("ScoringFormat", value);
         }
 
         public EventsListCard? Selected {
