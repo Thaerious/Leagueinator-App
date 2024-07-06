@@ -3,9 +3,12 @@ using Leagueinator.Extensions;
 using Leagueinator.Formats;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
+using Leagueinator.Scoring;
+using Model.Source.Tables.League;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using static System.Windows.Forms.DataFormats;
 
 namespace Leagueinator.Forms.Main {
     /// <summary>
@@ -22,10 +25,11 @@ namespace Leagueinator.Forms.Main {
         internal League League {
             get => this._league;
             set {
+                Debug.WriteLine($"in MainWindow {this.League.LeagueSettingsTable.GetHashCode()}");
                 this.League.LeagueUpdate -= this.HndLeagueUpdate;
-                this.League.IdleTable.RowUpdating -= this.HndIdleUpdating;
-                this.League.MemberTable.RowDeleting -= this.HndMemberTableDeletingRow;                
-                this.League.MemberTable.RowUpdating -= this.HndMemberUpdating;               
+                this.League.IdleTable.UpdateCustomRow -= this.HndIdleUpdating;
+                this.League.MemberTable.CustomRowDelete -= this.HndMemberTableDeletingRow;                
+                this.League.MemberTable.UpdateCustomRow -= this.HndMemberUpdating;               
 
                 this._league = value;
                 this.EventRow = this.League.EventTable.GetLast();
@@ -37,16 +41,23 @@ namespace Leagueinator.Forms.Main {
                 }
 
                 this.League.LeagueUpdate += this.HndLeagueUpdate;
-                this.League.LeagueSettingsTable.RowChanging += this.HndSettingsChanging;
-                this.League.IdleTable.RowUpdating += this.HndIdleUpdating;
-                this.League.MemberTable.RowDeleting += this.HndMemberTableDeletingRow;
-                this.League.MemberTable.RowUpdating += this.HndMemberUpdating;
+                this.League.IdleTable.UpdateCustomRow += this.HndIdleUpdating;
+                this.League.MemberTable.CustomRowDelete += this.HndMemberTableDeletingRow;
+                this.League.MemberTable.UpdateCustomRow += this.HndMemberUpdating;
+                Debug.WriteLine($"in MainWindow {this.League.LeagueSettingsTable.GetHashCode()}");
             }
         }
 
-        private void HndSettingsChanging(object sender, System.Data.DataRowChangeEventArgs e) {
-            
+        public ScoringFormat ScoringFormat {
+            get {
+                return this.League.LeagueSettingsTable.Get<ScoringFormat>("ScoringFormat");
+            }
+
+            set {
+                this.League.LeagueSettingsTable.Set("ScoringFormat", value);
+            }
         }
+
 
         private void HndMemberUpdating(object sender, CustomRowUpdateEventArgs args) {
             if (args.Change.OldValue is null) return;

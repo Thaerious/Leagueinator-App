@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Leagueinator.Scoring.Plus {
 
-    internal class PointsPlusXMLBuilder : IEventXMLBuilder {
+    internal class WTLXMLBuilder : IEventXMLBuilder {
         /// <resultsPlus>
         /// Build a XML element with a results resultsPlus organized by team.
         /// </resultsPlus>
@@ -15,13 +15,13 @@ namespace Leagueinator.Scoring.Plus {
         public Element BuildElement(EventRow eventRow) {
             LoadedStyles styles = Assembly.GetExecutingAssembly().LoadStyleResource("Leagueinator.Assets.EventScoreForm.style");
             Element docroot = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.EventScoreForm.xml");
-            Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.PointsPlus.TeamScore.xml");
-            Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.PointsPlus.ScoreRow.xml");
+            Element teamXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.WTL.TeamScore.xml");
+            Element rowXML = Assembly.GetExecutingAssembly().LoadXMLResource<Element>("Leagueinator.Assets.WTL.ScoreRow.xml");
 
-            List<SummaryPlus> summaryPlus = ResultsBuilderPlus.GetResults(eventRow);
+            List<PlusSummary> summaryPlus = WTLResultsBuilder.GetResults(eventRow);
 
             for (int i = 0; i < summaryPlus.Count; i++) {
-                SummaryPlus currentResult = summaryPlus[i];
+                PlusSummary currentResult = summaryPlus[i];
                 Element xmlFragment = teamXML.Clone();
 
                 xmlFragment["placement"][0].InnerText = $"{i + 1}";
@@ -37,7 +37,7 @@ namespace Leagueinator.Scoring.Plus {
                 }
 
                 // Set match sortedResults to the xml fragment.
-                foreach (MatchResultsPlus match in currentResult.MatchResults()) {
+                foreach (PlusMatchResults match in currentResult.MatchResults()) {
                     Element row = rowXML.Clone();
 
                     row["index"][0].InnerText = (match.Round + 1).ToString();

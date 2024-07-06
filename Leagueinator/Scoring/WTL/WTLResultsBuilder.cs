@@ -1,9 +1,8 @@
 ﻿using Leagueinator.Model.Tables;
 using Leagueinator.Model.Views;
-using Leagueinator.Utility;
 
 namespace Leagueinator.Scoring.Plus {
-    public class ResultsBuilderPlus {
+    public class WTLResultsBuilder {
 
         /// <summary>
         /// Build a results summary for each team in the event.
@@ -12,11 +11,11 @@ namespace Leagueinator.Scoring.Plus {
         /// <typeparam name="T"></typeparam>
         /// <param name="eventRow"></param>
         /// <returns>A new non-reflective list of result summaries</returns>
-        public static List<SummaryPlus> GetResults(EventRow eventRow) {
-            List<SummaryPlus> results = [];
+        public static List<PlusSummary> GetResults(EventRow eventRow) {
+            List<PlusSummary> results = [];
 
             foreach (TeamView teamView in eventRow.TeamViews()) {
-                results.Add(new SummaryPlus(teamView));
+                results.Add(new PlusSummary(teamView));
             }
 
             results.Sort();

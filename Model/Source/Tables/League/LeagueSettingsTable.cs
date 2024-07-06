@@ -1,18 +1,22 @@
-﻿using System.Data;
+﻿using Model.Source.Tables.League;
+using System.Data;
+using System.Diagnostics;
 using System.Xml.Serialization;
 
 namespace Leagueinator.Model.Tables {
-    public class LeagueSettingsTable : TableBase{
-        internal LeagueSettingsTable() : base(tableName: "league_settings") { }
+    public class LeagueSettingsTable : LeagueTable<LeagueSettingsRow>{
+        internal LeagueSettingsTable() : base(tableName: "league_settings") {
+            NewInstance = args => new LeagueSettingsRow(args);
+        }
 
-        internal static class COL {
+        public static class COL {
             public static readonly string KEY = "key";
             public static readonly string VALUE = "value";
             public static readonly string TYPE = "type";
         }
 
         public void Set(string key, object value) {
-            if (this.Has(key)) {
+            if (this.Has(key)) {                
                 this.Reset(key, value);
                 return;
             }
@@ -30,11 +34,13 @@ namespace Leagueinator.Model.Tables {
             this.Rows.Add(row);
         }
 
-        private void Reset(string key, object value) {            
+        private void Reset(string key, object value) {
+            object ? oldValue = this.Get<object?>(key);
+
             string query = $"{COL.KEY} = '{key}'";
             DataRow[] rows = this.Select(query);
             if (rows.Length == 0) throw new KeyNotFoundException(query);
-            var row = rows[0];
+            DataRow row = rows[0];
 
             XmlSerializer xmlSerializer = new XmlSerializer(value.GetType());
             using StringWriter sw = new StringWriter();
@@ -42,6 +48,8 @@ namespace Leagueinator.Model.Tables {
 
             row[COL.VALUE] = sw.ToString();
             row[COL.TYPE] = $"{value.GetType().FullName}, {value.GetType().Assembly.GetName().Name}";
+
+            this.InvokeRowUpdated(new LeagueSettingsRow(row), COL.VALUE, oldValue, value);
         }
 
         public bool UnSet(string key) {

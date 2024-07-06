@@ -2,9 +2,14 @@
 using System.Reflection;
 
 namespace Leagueinator.Model.Tables {
+
+    /// <summary>
+    /// Apply [UpdateTrigger] to a setter or method of a CustomRow.
+    /// Methods (usually setters) that have the [UpdateTrigger] annotation will trigger
+    /// the RowUpdatedEvent of the LeagueTable that the row belongs to.
+    /// </summary>
     [Aspect(Scope.Global)]
     [Injection(typeof(UpdateTrigger))]
-
     public class UpdateTrigger : Attribute {
         private bool preventReentry = false;
 

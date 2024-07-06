@@ -14,21 +14,21 @@ namespace Leagueinator.Formats {
 
             RoundRow roundRow = eventRow.Rounds.Add();
 
-            List<SummaryPlus> sortedResults = ResultsBuilderPlus.GetResults(eventRow);
+            List<PlusSummary> sortedResults = WTLResultsBuilder.GetResults(eventRow);
             AssignMatches(eventRow, roundRow, sortedResults);
             new LaneAssigner(roundRow).AssignLanes();
 
             return roundRow;
         }
 
-        private static void AssignMatches(EventRow eventRow, RoundRow roundRow, List<SummaryPlus> sortedResults) {
+        private static void AssignMatches(EventRow eventRow, RoundRow roundRow, List<PlusSummary> sortedResults) {
             roundRow.PopulateMatches();
 
             int match = 0;
             int team = 0;
 
             // Assign Matches
-            foreach (SummaryPlus result in sortedResults) {
+            foreach (PlusSummary result in sortedResults) {
                 int maxTeams = roundRow.Matches[match]!.MatchFormat.TeamCount();
 
                 MatchRow matchRow = roundRow.Matches[match]!;

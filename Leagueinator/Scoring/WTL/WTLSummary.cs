@@ -8,7 +8,7 @@ namespace Leagueinator.Scoring.Plus {
     /// <summary>
     /// A summary of all match results for a specific team.
     /// </summary>
-    public record SummaryPlus : ISummary<MatchResultsPlus, SummaryPlus> {
+    public record WTLSummary : ISummary<PlusMatchResults, PlusSummary> {
         public TeamView TeamView { get; }
         public int GamesPlayed { get; }
         public int Ends { get; }
@@ -20,10 +20,10 @@ namespace Leagueinator.Scoring.Plus {
         public int PlusFor { get; }
         public int PlusAgainst { get; }
 
-        public SummaryPlus(TeamView team) {
+        public WTLSummary(TeamView team) {
             this.TeamView = team;
 
-            foreach (MatchResultsPlus matchResult in this.MatchResults()) {
+            foreach (PlusMatchResults matchResult in this.MatchResults()) {
                 this.GamesPlayed++;
                 this.Ends += matchResult.Ends;
                 this.BowlsFor += matchResult.BowlsFor;
@@ -36,13 +36,13 @@ namespace Leagueinator.Scoring.Plus {
             }
         }
 
-        public List<MatchResultsPlus> MatchResults (){
-            List<MatchResultsPlus> allResults = [];
+        public List<PlusMatchResults> MatchResults (){
+            List<PlusMatchResults> allResults = [];
 
             foreach (MatchRow matchRow in this.TeamView.Matches) {
                 foreach (TeamRow teamRow in matchRow.Teams) {
                     if (this.TeamView.Equals(teamRow)){
-                        allResults.Add(new MatchResultsPlus(teamRow));
+                        allResults.Add(new PlusMatchResults(teamRow));
                     }
                 }
             }
@@ -54,7 +54,7 @@ namespace Leagueinator.Scoring.Plus {
             return $"[{this.Wins}, {this.Ends}, {this.BowlsFor}, {this.BowlsAgainst}, {this.PointsFor}, {this.PlusFor}, {this.PointsAgainst}, {this.PlusAgainst}]";
         }
 
-        public int CompareTo(SummaryPlus? that) {
+        public int CompareTo(PlusSummary? that) {
             if (that is null) return -1;
 
             if (that.Wins != this.Wins) return that.Wins - this.Wins;

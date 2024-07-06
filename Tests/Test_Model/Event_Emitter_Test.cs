@@ -15,7 +15,7 @@ namespace Model_Test {
             bool isAdded = false;
             League league = new();
 
-            league.EventTable.RowAdded += (s, args) => {
+            league.EventTable.CustomRowAdd += (s, args) => {
                 Console.WriteLine(args.Row.PrettyPrint("Row Added"));
                 isAdded = true;
             };
@@ -29,7 +29,7 @@ namespace Model_Test {
             bool isDeleted = false;
             League league = new();
 
-            league.EventTable.RowDeleting += (s, args) => {
+            league.EventTable.CustomRowDelete += (s, args) => {
                 Console.WriteLine(args.Row.PrettyPrint("Row Deleting"));
                 isDeleted = true;
             };
@@ -46,7 +46,7 @@ namespace Model_Test {
             EventRow eventRow = league.Events.Add("my event");
             RoundRow roundRow = eventRow.Rounds.Add();            
 
-            league.IdleTable.RowUpdating += (s, args) => {
+            league.IdleTable.UpdateCustomRow += (s, args) => {
                 Console.WriteLine(args.Row.PrettyPrint("Row Updating"));
                 Console.WriteLine($" * {args.Change.Column}, {args.Change.OldValue}, {args.Change.NewValue}", "\n");
                 isChanged = true;

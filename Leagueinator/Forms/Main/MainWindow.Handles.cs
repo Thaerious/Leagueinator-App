@@ -221,7 +221,8 @@ namespace Leagueinator.Forms.Main {
         }
 
         private void HndEventManagerClick(object sender, RoutedEventArgs e) {
-            EventManager dialog = new EventManager(this.League);
+            EventManager dialog = new EventManager(this);
+
             if (dialog.ShowDialog() == true) {
                 if (dialog.Selected is null) return;
 
@@ -232,7 +233,6 @@ namespace Leagueinator.Forms.Main {
                     roundRow.PopulateMatches();
                 }
 
-                this.League = dialog.Selected.EventRow.League;
                 this.EventRow = dialog.Selected.EventRow;
             }
         }

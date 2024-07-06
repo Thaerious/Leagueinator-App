@@ -1,13 +1,15 @@
 ﻿using Leagueinator.Model.Tables;
 using System.Collections;
 using System.Data;
+using System.Diagnostics;
 
 namespace Leagueinator.Model {
 
     public abstract class TableBase(string? tableName) : DataTable(tableName) {
         internal void InvokeRowUpdated(CustomRow row, string columnName, object? oldValue, object? newValue) {
+            Debug.WriteLine($"TableBase.InvokeRowUpdated({columnName}, {newValue}) : {this.GetHashCode()}");
             CustomRowUpdateEventArgs args = new(row, columnName, oldValue, newValue);
-            this.RowUpdating.Invoke(this, args);
+            this.UpdateCustomRow.Invoke(this, args);
         }
 
         public TableBase ImportTable(TableBase source) {
@@ -20,7 +22,7 @@ namespace Leagueinator.Model {
 
         abstract internal void BuildColumns();
 
-        public event CustomRowUpdateEventHandler RowUpdating = delegate { };
+        public event UpdateCustomRowEventHandler UpdateCustomRow = delegate { };
     }
 
     /// <summary>
@@ -52,14 +54,14 @@ namespace Leagueinator.Model {
         private void ForwardRowDeleting(object sender, DataRowChangeEventArgs e) {
             T customRow = this.NewInstance(e.Row);
             CustomRowAddEventArgs<T> args = new(customRow, e.Action);
-            this.RowDeleting.Invoke(this, args);
+            this.CustomRowDelete.Invoke(this, args);
         }
 
         private void ForwardRowChanged(object sender, DataRowChangeEventArgs e) {
             if (e.Action == DataRowAction.Add) {
                 T customRow = this.NewInstance(e.Row);
                 CustomRowAddEventArgs<T> args = new(customRow, e.Action);
-                this.RowAdded.Invoke(this, args);
+                this.CustomRowAdd.Invoke(this, args);
             }
         }
 
@@ -79,7 +81,7 @@ namespace Leagueinator.Model {
             return this.GetEnumerator();
         }
 
-        new public event CustomRowEventHandler<T> RowDeleting = delegate { };
-        public event CustomRowEventHandler<T> RowAdded = delegate { };        
+        public event CustomRowEventHandler<T> CustomRowDelete = delegate { };
+        public event CustomRowEventHandler<T> CustomRowAdd = delegate { };        
     }
 }

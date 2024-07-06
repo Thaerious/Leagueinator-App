@@ -68,16 +68,16 @@ namespace Leagueinator.Controls {
             get => this._roundRow;
             set {
                 if (this.RoundRow is not null) {
-                    this.RoundRow.League.IdleTable.RowAdded -= this.HndIdleRowAdded;
-                    this.RoundRow.League.IdleTable.RowDeleting -= this.HndIdleRowDeleting;
+                    this.RoundRow.League.IdleTable.CustomRowAdd -= this.HndIdleRowAdded;
+                    this.RoundRow.League.IdleTable.CustomRowDelete -= this.HndIdleRowDeleting;
                 }
 
                 this._roundRow = value;
                 this.Children.Clear();
                 if (this.RoundRow == null) return;
 
-                this.RoundRow.League.IdleTable.RowAdded += this.HndIdleRowAdded;
-                this.RoundRow.League.IdleTable.RowDeleting += this.HndIdleRowDeleting;
+                this.RoundRow.League.IdleTable.CustomRowAdd += this.HndIdleRowAdded;
+                this.RoundRow.League.IdleTable.CustomRowDelete += this.HndIdleRowDeleting;
 
                 foreach (IdleRow idleRow in this.RoundRow.IdlePlayers) {
                     this.AddTextBox(idleRow.Player);

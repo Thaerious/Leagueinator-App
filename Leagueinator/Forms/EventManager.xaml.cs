@@ -1,4 +1,5 @@
 ﻿using Leagueinator.Extensions;
+using Leagueinator.Forms.Main;
 using Leagueinator.Model;
 using Leagueinator.Model.Tables;
 using Leagueinator.Scoring;
@@ -93,32 +94,31 @@ namespace Leagueinator.Forms {
     /// Interaction logic for EventManager.xaml
     /// </summary>
     public partial class EventManager : Window {
-        public EventManager(League league) {
-            this.InitializeComponent();            
-
-            this.League = new(league);
+        public EventManager(MainWindow mainWindow) {
+            this.MainWindow = mainWindow;
+            this.InitializeComponent();
+            this.InitializePanels();
 
             // Default select last available event.
-            if (league.EventTable.Rows.Count > 0) {
+            if (this.League.EventTable.Rows.Count > 0) {
                 this.Selected = (EventsListCard?)this.NamePanel.Children[^1];
             }
         }
 
-        public League League {
-            get => this._league;
-            private set {
-                this._league = value;
-                ScoringFormat scoringFormat = this.League.LeagueSettingsTable.Get<ScoringFormat>("ScoringFormat");
+        private void InitializePanels() {
+            ScoringFormat scoringFormat = this.League.LeagueSettingsTable.Get<ScoringFormat>("ScoringFormat");
 
-                var tagSource = this.ScoringFormatOptions;
-                Debug.WriteLine($"tagSource, scoringFormat = {tagSource} {scoringFormat}");
+            var tagSource = this.ScoringFormatOptions;
 
-                RadioButton radioButton = this.ScoringFormatOptions.FindChildByTag<RadioButton>(scoringFormat.ToString()) ?? throw new NullReferenceException();
-                radioButton.IsChecked = true;
+            RadioButton radioButton = this.ScoringFormatOptions.FindChildByTag<RadioButton>(scoringFormat.ToString()) ?? throw new NullReferenceException();
+            radioButton.IsChecked = true;
 
-                this.PopulateNamePanel();
-            }
+            this.PopulateNamePanel();
         }
+
+        public MainWindow MainWindow { get; }
+
+        public League League { get => this.MainWindow.League; }
 
         private void PopulateNamePanel() {
             foreach (EventRow eventRow in this.League.EventTable) {
@@ -179,13 +179,14 @@ namespace Leagueinator.Forms {
         private void HndTourneyFormatChecked(object sender, RoutedEventArgs args) {
             if (this.Selected is null) return;
             if (sender is not RadioButton radioButton) return;
+
             this.Selected.EventRow.EventFormat = (EventFormat)Enum.Parse(typeof(EventFormat), (string)radioButton.Tag);
         }
 
         private void HndScoringChecked(object sender, RoutedEventArgs args) {
             if (sender is not RadioButton radioButton) return;
-            var value = (ScoringFormat)Enum.Parse(typeof(ScoringFormat), (string)radioButton.Tag);
-            this.League.LeagueSettingsTable.Set("ScoringFormat", value);
+            var scoringFormat = (ScoringFormat)Enum.Parse(typeof(ScoringFormat), (string)radioButton.Tag);
+            this.MainWindow.ScoringFormat = scoringFormat;
         }
 
         public EventsListCard? Selected {
@@ -214,7 +215,7 @@ namespace Leagueinator.Forms {
                     this.ButOpen.IsEnabled = true;
                     this.DatePicker.DataContext = value.EventRow;
                     this.TxtEventName.DataContext = value.EventRow;
-                    //this.OptionPanel.DataContext = value.EventRow.Settings; // TODO
+                    //this.OptionPanel.DataContext = scoringFormat.EventRow.Settings; // TODO
                 }
             }
         }
